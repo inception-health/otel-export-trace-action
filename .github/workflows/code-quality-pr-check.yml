@@ -1,0 +1,21 @@
+name: "code quality PR check"
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-format-check:
+    runs-on: [self-hosted, builder]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+          cache: "npm"
+      - name: Install Dependencies
+        run: npm install --ignore-scripts
+      - name: lint
+        run: npm run lint:ci
+      - name: format check
+        run: npm run format:ci

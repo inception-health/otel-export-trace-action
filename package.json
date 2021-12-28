@@ -1,0 +1,56 @@
+{
+  "private": true,
+  "name": "otel-export-trace",
+  "version": "1.0.0",
+  "description": "",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "prepare": "husky install",
+    "lint:fix": "eslint --cache --fix .",
+    "lint:ci": "eslint .",
+    "format:fix": "prettier --write .",
+    "format:ci": "prettier --check .",
+    "prebuild": "rm -fr lib || true",
+    "build": "tsc",
+    "package": "npm run build && ncc build --source-map --license licenses.txt",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "@actions/github": "^5.0.0",
+    "@octokit/webhooks-definitions": "^3.67.3",
+    "@opentelemetry/api": "^1.0.3",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.27.0",
+    "@opentelemetry/resources": "^1.0.1",
+    "@opentelemetry/sdk-trace-base": "^1.0.1",
+    "@opentelemetry/semantic-conventions": "^1.0.1"
+  },
+  "devDependencies": {
+    "@tsconfig/node12": "^1.0.9",
+    "@types/jest": "^27.0.3",
+    "jest": "^27.4.5",
+    "ts-jest": "^27.1.2",
+    "typescript": "^4.5.4",
+    "husky": "^7.0.4",
+    "prettier": "^2.5.1",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "eslint": "^8.4.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-markdown": "^2.2.1",
+    "eslint-plugin-yaml": "^0.5.0",
+    "@vercel/ncc": "^0.31.1"
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write .",
+      "eslint --cache --fix ."
+    ]
+  }
+}

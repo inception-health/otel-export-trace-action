@@ -1,0 +1,25 @@
+name: OpenTelemetry Export Trace
+description: Greet someone
+author: Inception Health
+
+runs:
+  using: node12
+  main: dist/index.js
+
+inputs:
+  otlpEndpoint:
+    description: The destination endpoint to export OpenTelemetry traces to
+    required: true
+  otlpHeaders:
+    description: Network Headers for the destination endpoint to export OpenTelemetry traces to
+    required: true
+  githubToken:
+    description: The repository token with Workflow permissions. i.e. secrets.GITHUB_TOKEN
+    required: false
+  runId:
+    description: Workflow Run ID to Export. Defaults to env.GITHUB_RUN_ID
+    required: false
+
+branding:
+  icon: activity
+  color: blue

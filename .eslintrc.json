@@ -1,0 +1,24 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": ["./tsconfig.json"]
+  },
+  "env": {
+    "node": true
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "yaml",
+    "markdown"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:yaml/recommended",
+    "plugin:markdown/recommended",
+    "prettier"
+  ]
+}

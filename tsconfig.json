@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node12/tsconfig.json",
+  "compilerOptions": {
+    "noImplicitAny": true, // ts recommended
+    "rootDir": "src",
+    "baseUrl": "src",
+    "outDir": "lib",
+    "resolveJsonModule": true
+  },
+  "exclude": ["jest.config.ts", "jest.setup.ts"]
+}
