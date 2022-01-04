@@ -1,0 +1,13 @@
+on:
+  push:
+    tags:
+      - "v*"
+
+name: Release
+jobs:
+  release:
+    name: Release GitHub Actions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release
+        uses: softprops/action-gh-release@v1

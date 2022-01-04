@@ -6,16 +6,34 @@ on:
 
 jobs:
   lint-and-format-check:
-    runs-on: [self-hosted, builder]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: "12"
           cache: "npm"
       - name: Install Dependencies
-        run: npm install --ignore-scripts
+        run: npm ci --ignore-scripts
       - name: lint
         run: npm run lint:ci
       - name: format check
         run: npm run format:ci
+  update-dist:
+    runs-on: ubuntu-latest
+    needs: [lint-and-format-check]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "12"
+          cache: "npm"
+      - name: npm ci
+        run: npm ci --omit=dev --ignore-scripts
+      - name: tsc
+        run: npm run package
+      - name: commit dist
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Add dist artifacts
+          file_pattern: dist
