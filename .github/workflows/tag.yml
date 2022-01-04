@@ -1,11 +1,11 @@
-name: "Publish Github Action"
+name: "Tag Github Action"
 on:
   push:
     branches:
       - main
 
 jobs:
-  publish:
+  tag:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
