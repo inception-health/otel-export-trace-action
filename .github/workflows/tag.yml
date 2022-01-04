@@ -9,8 +9,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: butlerlogic/action-autotag@stable
+      - name: autotag
+        uses: butlerlogic/action-autotag@stable
         with:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           strategy: package
           tag_prefix: "v"
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{ steps.autotag.outputs.tagname}}"
+          prerelease: false
