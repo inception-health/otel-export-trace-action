@@ -1,5 +1,5 @@
 name: OpenTelemetry Export Trace
-description: Greet someone
+description: Exports Workflow Run Telemetry Trace over OLTP
 author: Inception Health
 
 runs:
