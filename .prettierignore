@@ -25,3 +25,10 @@ coverage
 LICENSE
 
 .husky/**
+
+# images
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.gif
