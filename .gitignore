@@ -110,7 +110,8 @@ lib
 
 docker/
 
-*.js
+!./dist/index.js
+./src/*.js
 !jest.config.js
 !.dependency-cruiser.js
 *.d.ts
