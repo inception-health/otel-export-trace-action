@@ -37,7 +37,7 @@ jobs:
         with:
           commit_message: Add dist artifacts
           file_pattern: dist
-  release:
+  tag:
     runs-on: ubuntu-latest
     needs: [lint, update-dist]
     steps:
