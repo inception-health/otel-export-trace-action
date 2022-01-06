@@ -119,7 +119,7 @@ async function run() {
     console.log(`Create Trace Provider for ${otlpEndpoint}`);
     const provider = (0, tracing_1.createTracerProvider)(otlpEndpoint, otlpHeaders, workflowRunJobs);
     try {
-        console.log(`Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`);
+        console.log(`Trace Workflow Run Jobs for: ${runId} and export to ${otlpEndpoint}`);
         (0, tracing_1.traceWorkflowRunJobs)(api_1.context, api_1.trace, workflowRunJobs);
     }
     finally {

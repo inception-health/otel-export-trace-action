@@ -27,7 +27,7 @@ export async function run() {
 
   try {
     console.log(
-      `Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`
+      `Trace Workflow Run Jobs for: ${runId} and export to ${otlpEndpoint}`
     );
     traceWorkflowRunJobs(context, trace, workflowRunJobs);
   } finally {
