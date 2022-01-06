@@ -12,7 +12,7 @@ on:
 jobs:
   otel-export-trace:
     name: OpenTelemetry Export Trace
-    runs-on: [self-hosted, builder]
+    runs-on: ubuntu-latest
     steps:
       - name: export trace
         uses: inception-health/otel-export-trace-action@latest
