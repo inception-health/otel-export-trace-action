@@ -1,6 +1,10 @@
 name: "Release Github Action"
 on:
   push:
+    paths:
+      - "src/*"
+      - "package-lock.json"
+      - "action.yml"
     branches:
       - main
 

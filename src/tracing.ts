@@ -82,6 +82,7 @@ export function traceWorkflowRunJobs(
     "github.run_id": workflowRunJobs.workflowRun.id,
     "github.run_number": workflowRunJobs.workflowRun.run_number,
     "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
+    "github.run_url": workflowRunJobs.workflowRun.url,
     "github.event": workflowRunJobs.workflowRun.event,
     "github.head_sha": workflowRunJobs.workflowRun.head_sha,
     "github.git_refs_url": workflowRunJobs.workflowRun.repository.git_refs_url,

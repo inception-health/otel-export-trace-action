@@ -2,6 +2,11 @@ name: "code quality PR check"
 
 on:
   pull_request:
+    paths:
+      - "src/*"
+      - "package-lock.json"
+      - "tests/*"
+      - "tsconfig.json"
     branches: [main]
 
 jobs:
