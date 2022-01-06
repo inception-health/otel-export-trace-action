@@ -78,6 +78,7 @@ export function traceWorkflowRunJobs(
 ): void {
   const attributes: { [key: string]: SpanAttributeValue } = {
     "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
+    "github.workflow_url": workflowRunJobs.workflowRun.workflow_url,
     "github.run_id": workflowRunJobs.workflowRun.id,
     "github.run_number": workflowRunJobs.workflowRun.run_number,
     "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,

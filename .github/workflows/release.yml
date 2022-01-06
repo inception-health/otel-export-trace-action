@@ -42,16 +42,8 @@ jobs:
     needs: [lint, update-dist]
     steps:
       - uses: actions/checkout@v2
-      - name: autotag
-        uses: butlerlogic/action-autotag@stable
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: bubkoo/release-github-action@v1
         with:
-          strategy: package
-          tag_prefix: "v"
-      - name: Release Latest
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
           prerelease: false
