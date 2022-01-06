@@ -7,7 +7,6 @@ on:
       - "code quality PR check"
       - "Release"
       - "Keep the versions up-to-date"
-    branches: [main]
     types: [completed]
 
 jobs:
