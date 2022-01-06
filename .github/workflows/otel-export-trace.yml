@@ -5,8 +5,6 @@ on:
     workflows:
       - "Build Main"
       - "code quality PR check"
-      - "Release"
-      - "Keep the versions up-to-date"
     types: [completed]
 
 jobs:

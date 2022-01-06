@@ -4,6 +4,7 @@ on:
     paths:
       - "src/*"
       - "package-lock.json"
+      - "package.json"
       - "action.yml"
     branches:
       - main

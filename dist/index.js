@@ -215,20 +215,21 @@ function traceWorkflowRunJobs(context, trace, workflowRunJobs) {
     var _a;
     const attributes = {
         "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
-        "github.workflow_url": workflowRunJobs.workflowRun.workflow_url,
         "github.run_id": workflowRunJobs.workflowRun.id,
         "github.run_number": workflowRunJobs.workflowRun.run_number,
         "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
-        "github.run_url": workflowRunJobs.workflowRun.url,
+        "github.html_url": workflowRunJobs.workflowRun.html_url,
         "github.event": workflowRunJobs.workflowRun.event,
         "github.head_sha": workflowRunJobs.workflowRun.head_sha,
         "github.git_refs_url": workflowRunJobs.workflowRun.repository.git_refs_url,
+        error: false,
     };
     if (workflowRunJobs.workflowRun.name) {
         attributes["github.workflow"] = workflowRunJobs.workflowRun.name;
     }
     if (workflowRunJobs.workflowRun.conclusion) {
         attributes["github.conclusion"] = workflowRunJobs.workflowRun.conclusion;
+        attributes["error"] = workflowRunJobs.workflowRun.conclusion === "failure";
     }
     if ((_a = workflowRunJobs.workflowRun.head_commit) === null || _a === void 0 ? void 0 : _a.author) {
         attributes["github.author_name"] =

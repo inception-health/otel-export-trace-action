@@ -78,14 +78,14 @@ export function traceWorkflowRunJobs(
 ): void {
   const attributes: { [key: string]: SpanAttributeValue } = {
     "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
-    "github.workflow_url": workflowRunJobs.workflowRun.workflow_url,
     "github.run_id": workflowRunJobs.workflowRun.id,
     "github.run_number": workflowRunJobs.workflowRun.run_number,
     "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
-    "github.run_url": workflowRunJobs.workflowRun.url,
+    "github.html_url": workflowRunJobs.workflowRun.html_url,
     "github.event": workflowRunJobs.workflowRun.event,
     "github.head_sha": workflowRunJobs.workflowRun.head_sha,
     "github.git_refs_url": workflowRunJobs.workflowRun.repository.git_refs_url,
+    error: false,
   };
 
   if (workflowRunJobs.workflowRun.name) {
@@ -93,6 +93,7 @@ export function traceWorkflowRunJobs(
   }
   if (workflowRunJobs.workflowRun.conclusion) {
     attributes["github.conclusion"] = workflowRunJobs.workflowRun.conclusion;
+    attributes["error"] = workflowRunJobs.workflowRun.conclusion === "failure";
   }
   if (workflowRunJobs.workflowRun.head_commit?.author) {
     attributes["github.author_name"] =
