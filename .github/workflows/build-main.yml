@@ -1,4 +1,4 @@
-name: "Release Github Action"
+name: "Build Main"
 on:
   push:
     paths:
