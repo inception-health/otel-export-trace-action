@@ -4,8 +4,6 @@ on:
   workflow_run:
     workflows:
       - "Build Main"
-      - "Release"
-      - "Keep the versions up-to-date"
     types: [completed]
 
 jobs:
