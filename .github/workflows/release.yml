@@ -42,8 +42,10 @@ jobs:
     needs: [lint, update-dist]
     steps:
       - uses: actions/checkout@v2
-      - uses: bubkoo/release-github-action@v1
+      - name: autotag
+        uses: butlerlogic/action-autotag@stable
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          draft: false
-          prerelease: false
+          strategy: package
+          tag_prefix: "v"
