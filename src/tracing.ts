@@ -85,6 +85,7 @@ export function traceWorkflowRunJobs(
     "github.event": workflowRunJobs.workflowRun.event,
     "github.head_sha": workflowRunJobs.workflowRun.head_sha,
     "github.git_refs_url": workflowRunJobs.workflowRun.repository.git_refs_url,
+    error: false,
   };
 
   if (workflowRunJobs.workflowRun.name) {
@@ -92,6 +93,7 @@ export function traceWorkflowRunJobs(
   }
   if (workflowRunJobs.workflowRun.conclusion) {
     attributes["github.conclusion"] = workflowRunJobs.workflowRun.conclusion;
+    attributes["error"] = workflowRunJobs.workflowRun.conclusion === "failure";
   }
   if (workflowRunJobs.workflowRun.head_commit?.author) {
     attributes["github.author_name"] =

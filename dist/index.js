@@ -222,12 +222,14 @@ function traceWorkflowRunJobs(context, trace, workflowRunJobs) {
         "github.event": workflowRunJobs.workflowRun.event,
         "github.head_sha": workflowRunJobs.workflowRun.head_sha,
         "github.git_refs_url": workflowRunJobs.workflowRun.repository.git_refs_url,
+        error: false,
     };
     if (workflowRunJobs.workflowRun.name) {
         attributes["github.workflow"] = workflowRunJobs.workflowRun.name;
     }
     if (workflowRunJobs.workflowRun.conclusion) {
         attributes["github.conclusion"] = workflowRunJobs.workflowRun.conclusion;
+        attributes["error"] = workflowRunJobs.workflowRun.conclusion === "failure";
     }
     if ((_a = workflowRunJobs.workflowRun.head_commit) === null || _a === void 0 ? void 0 : _a.author) {
         attributes["github.author_name"] =
