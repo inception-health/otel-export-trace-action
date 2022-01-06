@@ -73,11 +73,10 @@ jobs:
 | service.version              | string  | Github Workflow Run HEAD SHA                      |
 | github.workflow_id           | integer | Github Workflow ID                                |
 | github.workflow              | string  | Github Workflow Name                              |
-| github.workflow_url          | string  | Github Workflow URL                               |
 | github.run_attempt           | integer | Github Workflow Run Attempt                       |
 | github.run_id                | integer | Github Workflow Run ID                            |
 | github.run_number            | integer | Github Workflow Run Number                        |
-| github.run_url               | string  | Github Workflow Run URL                           |
+| github.html_url              | string  | Github Workflow Run HTML URL                      |
 | github.author_email          | string  | Github Workflow Run Author Email                  |
 | github.author_name           | string  | Github Workflow Run Author Name                   |
 | github.conclusion            | string  | Github Workflow Run Conclusion                    |
