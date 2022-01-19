@@ -16,11 +16,25 @@ module.exports = {"i8":"1.4.5"};
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getWorkflowRunJobs = void 0;
-async function getWorkflowRunJobs(context, octokit, runId) {
-    const getWorkflowRunResponse = await octokit.rest.actions.getWorkflowRun({
-        ...context.repo,
-        run_id: runId,
-    });
+async function listWorkflowRunArtifacts(context, octokit, runId) {
+    const artifactsList = [];
+    const pageSize = 100;
+    for (let page = 1, hasNext = true; hasNext; page++) {
+        const listArtifactsResponse = await octokit.rest.actions.listWorkflowRunArtifacts({
+            ...context.repo,
+            run_id: runId,
+            page,
+            per_page: pageSize,
+        });
+        artifactsList.concat(...listArtifactsResponse.data.artifacts);
+        hasNext = artifactsList.length < listArtifactsResponse.data.total_count;
+    }
+    return artifactsList.reduce((result, item) => ({
+        ...result,
+        [item.name]: item,
+    }), {});
+}
+async function listJobsForWorkflowRun(context, octokit, runId) {
     const jobs = [];
     const pageSize = 100;
     for (let page = 1, hasNext = true; hasNext; page++) {
@@ -34,7 +48,20 @@ async function getWorkflowRunJobs(context, octokit, runId) {
         jobs.push(...listJobsForWorkflowRunResponse.data.jobs);
         hasNext = jobs.length < listJobsForWorkflowRunResponse.data.total_count;
     }
-    const workflowRunJobs = { workflowRun: getWorkflowRunResponse.data, jobs };
+    return jobs;
+}
+async function getWorkflowRunJobs(context, octokit, runId) {
+    const getWorkflowRunResponse = await octokit.rest.actions.getWorkflowRun({
+        ...context.repo,
+        run_id: runId,
+    });
+    const workflowRunArtifacts = await listWorkflowRunArtifacts(context, octokit, runId);
+    const jobs = await listJobsForWorkflowRun(context, octokit, runId);
+    const workflowRunJobs = {
+        workflowRun: getWorkflowRunResponse.data,
+        jobs,
+        workflowRunArtifacts,
+    };
     return workflowRunJobs;
 }
 exports.getWorkflowRunJobs = getWorkflowRunJobs;
@@ -182,6 +209,7 @@ function stringToHeader(value) {
         };
     }, {});
 }
+const workflowStepArtifactName = (job, step) => `${job}-${step}.traces`;
 function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs) {
     const serviceName = workflowRunJobs.workflowRun.name ||
         `${workflowRunJobs.workflowRun.workflow_id}`;
@@ -255,7 +283,7 @@ function traceWorkflowRunJobs(context, trace, workflowRunJobs) {
     console.log(`Root Span: ${rootSpan.spanContext().traceId}: ${workflowRunJobs.workflowRun.created_at}`);
     try {
         workflowRunJobs.jobs.forEach((job) => {
-            traceWorkflowRunJob(context, trace, rootSpan, tracer, job);
+            traceWorkflowRunJob(context, trace, rootSpan, tracer, job, workflowRunJobs.workflowRunArtifacts);
         });
     }
     finally {
@@ -263,7 +291,7 @@ function traceWorkflowRunJobs(context, trace, workflowRunJobs) {
     }
 }
 exports.traceWorkflowRunJobs = traceWorkflowRunJobs;
-function traceWorkflowRunJob(context, trace, rootSpan, tracer, job) {
+function traceWorkflowRunJob(context, trace, rootSpan, tracer, job, workflowArtifacts) {
     var _a, _b;
     console.log(`Trace Job ${job.id}`);
     if (!job.completed_at) {
@@ -301,7 +329,7 @@ function traceWorkflowRunJob(context, trace, rootSpan, tracer, job) {
         const numSteps = ((_a = job.steps) === null || _a === void 0 ? void 0 : _a.length) || 0;
         console.log(`Trace ${numSteps} Steps`);
         (_b = job.steps) === null || _b === void 0 ? void 0 : _b.forEach((step) => {
-            traceWorkflowRunStep(context, trace, jobSpan, tracer, step);
+            traceWorkflowRunStep(job.id, context, trace, jobSpan, tracer, workflowArtifacts, step);
         });
     }
     finally {
@@ -309,7 +337,7 @@ function traceWorkflowRunJob(context, trace, rootSpan, tracer, job) {
         jobSpan.end(new Date(completedAt));
     }
 }
-function traceWorkflowRunStep(context, trace, jobSpan, tracer, step) {
+function traceWorkflowRunStep(jobId, context, trace, jobSpan, tracer, workflowArtifacts, step) {
     if (!step || !step.completed_at || !step.started_at) {
         const stepName = (step === null || step === void 0 ? void 0 : step.name) || "UNDEFINED";
         console.warn(`Step ${stepName} is not completed yet`);
@@ -330,6 +358,9 @@ function traceWorkflowRunStep(context, trace, jobSpan, tracer, step) {
         if (step.conclusion) {
             stepSpan.setAttribute("github.job.step.conclusion", step.conclusion);
         }
+        const workflowArtifactName = workflowStepArtifactName(jobId, step.name);
+        const workflowArtifact = workflowArtifacts[workflowArtifactName];
+        console.log(workflowArtifact.id);
     }
     finally {
         stepSpan.end(new Date(step.completed_at));

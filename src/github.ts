@@ -18,22 +18,50 @@ export type WorkflowRunJobStep = {
 };
 export type WorkflowRun = GetWorkflowRunType["data"];
 
+export type WorkflowArtifact =
+  RestEndpointMethodTypes["actions"]["listWorkflowRunArtifacts"]["response"]["data"]["artifacts"][0];
+
+export type WorkflowArtifactMap = { [key: string]: WorkflowArtifact };
+
 export type WorkflowRunJobs = {
   workflowRun: WorkflowRun;
   jobs: WorkflowRunJob[];
+  workflowRunArtifacts: WorkflowArtifactMap;
 };
 
-export async function getWorkflowRunJobs(
+async function listWorkflowRunArtifacts(
   context: Context,
   octokit: InstanceType<typeof GitHub>,
   runId: number
-): Promise<WorkflowRunJobs> {
-  const getWorkflowRunResponse: GetWorkflowRunType =
-    await octokit.rest.actions.getWorkflowRun({
-      ...context.repo,
-      run_id: runId,
-    });
+): Promise<WorkflowArtifactMap> {
+  const artifactsList: WorkflowArtifact[] = [];
+  const pageSize = 100;
 
+  for (let page = 1, hasNext = true; hasNext; page++) {
+    const listArtifactsResponse =
+      await octokit.rest.actions.listWorkflowRunArtifacts({
+        ...context.repo,
+        run_id: runId,
+        page,
+        per_page: pageSize,
+      });
+    artifactsList.concat(...listArtifactsResponse.data.artifacts);
+    hasNext = artifactsList.length < listArtifactsResponse.data.total_count;
+  }
+  return artifactsList.reduce(
+    (result, item) => ({
+      ...result,
+      [item.name]: item,
+    }),
+    {}
+  );
+}
+
+async function listJobsForWorkflowRun(
+  context: Context,
+  octokit: InstanceType<typeof GitHub>,
+  runId: number
+): Promise<WorkflowRunJob[]> {
   const jobs: WorkflowRunJob[] = [];
   const pageSize = 100;
 
@@ -50,6 +78,32 @@ export async function getWorkflowRunJobs(
     jobs.push(...listJobsForWorkflowRunResponse.data.jobs);
     hasNext = jobs.length < listJobsForWorkflowRunResponse.data.total_count;
   }
-  const workflowRunJobs = { workflowRun: getWorkflowRunResponse.data, jobs };
+
+  return jobs;
+}
+
+export async function getWorkflowRunJobs(
+  context: Context,
+  octokit: InstanceType<typeof GitHub>,
+  runId: number
+): Promise<WorkflowRunJobs> {
+  const getWorkflowRunResponse: GetWorkflowRunType =
+    await octokit.rest.actions.getWorkflowRun({
+      ...context.repo,
+      run_id: runId,
+    });
+
+  const workflowRunArtifacts = await listWorkflowRunArtifacts(
+    context,
+    octokit,
+    runId
+  );
+  const jobs = await listJobsForWorkflowRun(context, octokit, runId);
+
+  const workflowRunJobs = {
+    workflowRun: getWorkflowRunResponse.data,
+    jobs,
+    workflowRunArtifacts,
+  };
   return workflowRunJobs;
 }

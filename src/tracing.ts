@@ -13,7 +13,13 @@ import {
   Tracer,
 } from "@opentelemetry/api";
 
-import { WorkflowRunJobs, WorkflowRunJob, WorkflowRunJobStep } from "./github";
+import {
+  WorkflowRunJobs,
+  WorkflowRunJob,
+  WorkflowRunJobStep,
+  WorkflowArtifactMap,
+  WorkflowArtifact,
+} from "./github";
 import { Resource } from "@opentelemetry/resources";
 
 type StringDict = { [key: string]: string };
@@ -28,6 +34,9 @@ function stringToHeader(value: string): StringDict {
     };
   }, {});
 }
+
+const workflowStepArtifactName = (job: number, step: string) =>
+  `${job}-${step}.traces`;
 
 export function createTracerProvider(
   otlpEndpoint: string,
@@ -132,7 +141,14 @@ export function traceWorkflowRunJobs(
 
   try {
     workflowRunJobs.jobs.forEach((job) => {
-      traceWorkflowRunJob(context, trace, rootSpan, tracer, job);
+      traceWorkflowRunJob(
+        context,
+        trace,
+        rootSpan,
+        tracer,
+        job,
+        workflowRunJobs.workflowRunArtifacts
+      );
     });
   } finally {
     rootSpan.end(new Date(workflowRunJobs.workflowRun.updated_at));
@@ -144,7 +160,8 @@ function traceWorkflowRunJob(
   trace: TraceAPI,
   rootSpan: Span,
   tracer: Tracer,
-  job: WorkflowRunJob
+  job: WorkflowRunJob,
+  workflowArtifacts: WorkflowArtifactMap
 ) {
   console.log(`Trace Job ${job.id}`);
   if (!job.completed_at) {
@@ -187,7 +204,15 @@ function traceWorkflowRunJob(
     const numSteps = job.steps?.length || 0;
     console.log(`Trace ${numSteps} Steps`);
     job.steps?.forEach((step?: WorkflowRunJobStep) => {
-      traceWorkflowRunStep(context, trace, jobSpan, tracer, step);
+      traceWorkflowRunStep(
+        job.id,
+        context,
+        trace,
+        jobSpan,
+        tracer,
+        workflowArtifacts,
+        step
+      );
     });
   } finally {
     const completedAt: string = job.completed_at;
@@ -196,10 +221,12 @@ function traceWorkflowRunJob(
 }
 
 function traceWorkflowRunStep(
+  jobId: number,
   context: ContextAPI,
   trace: TraceAPI,
   jobSpan: Span,
   tracer: Tracer,
+  workflowArtifacts: WorkflowArtifactMap,
   step?: WorkflowRunJobStep
 ) {
   if (!step || !step.completed_at || !step.started_at) {
@@ -228,6 +255,12 @@ function traceWorkflowRunStep(
     if (step.conclusion) {
       stepSpan.setAttribute("github.job.step.conclusion", step.conclusion);
     }
+
+    const workflowArtifactName = workflowStepArtifactName(jobId, step.name);
+    const workflowArtifact: WorkflowArtifact | undefined =
+      workflowArtifacts[workflowArtifactName];
+
+    console.log(workflowArtifact.id);
   } finally {
     stepSpan.end(new Date(step.completed_at));
   }
