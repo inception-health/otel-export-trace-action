@@ -12,11 +12,14 @@ on:
 jobs:
   lint-and-format-check:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["12", "14"]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: "12"
+          node-version: ${{ matrix.node-version }}
           cache: "npm"
       - name: Install Dependencies
         run: npm ci --ignore-scripts
