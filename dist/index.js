@@ -26,7 +26,7 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
             page,
             per_page: pageSize,
         });
-        artifactsList.concat(...listArtifactsResponse.data.artifacts);
+        artifactsList.push(...listArtifactsResponse.data.artifacts);
         hasNext = artifactsList.length < listArtifactsResponse.data.total_count;
     }
     return artifactsList.reduce((result, item) => ({
