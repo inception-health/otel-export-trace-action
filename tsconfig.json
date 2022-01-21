@@ -5,7 +5,13 @@
     "rootDir": "src",
     "baseUrl": "src",
     "outDir": "lib",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "plugins": [
+      {
+        "transform": "ts-auto-mock/transformer",
+        "cacheBetweenTests": false
+      }
+    ]
   },
-  "exclude": ["jest.config.ts", "jest.setup.ts"]
+  "exclude": ["jest.config.ts", "jest.setup.ts", "config.ts"]
 }

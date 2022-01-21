@@ -16,6 +16,17 @@ module.exports = {"i8":"1.4.5"};
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getWorkflowRunJobs = void 0;
+// async function downloadArtifact(
+//   context: Context,
+//   octokit: InstanceType<typeof GitHub>,
+//   artifact: WorkflowArtifact
+// ) {
+//   const artifactResponse = await octokit.rest.actions.downloadArtifact({
+//     ...context.repo,
+//     artifact_id: artifact.id,
+//     archive_format: "zip",
+//   });
+// }
 async function listWorkflowRunArtifacts(context, octokit, runId) {
     const artifactsList = [];
     const pageSize = 100;
@@ -31,7 +42,9 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
     }
     return artifactsList.reduce((result, item) => ({
         ...result,
-        [item.name]: item,
+        [item.name]: {
+            ...item,
+        },
     }), {});
 }
 async function listJobsForWorkflowRun(context, octokit, runId) {
@@ -133,7 +146,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const core = __importStar(__nccwpck_require__(2186));
 const api_1 = __nccwpck_require__(5163);
 const github_1 = __nccwpck_require__(5928);
-const tracing_1 = __nccwpck_require__(9682);
+const tracing_1 = __nccwpck_require__(6590);
 async function run() {
     const ghContext = github.context;
     const otlpEndpoint = core.getInput("otlpEndpoint");
@@ -168,77 +181,29 @@ exports.run = run;
 
 /***/ }),
 
-/***/ 9682:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ 6590:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.traceWorkflowRunJobs = exports.createTracerProvider = void 0;
-const grpc = __importStar(__nccwpck_require__(7025));
-const sdk_trace_base_1 = __nccwpck_require__(9253);
-const exporter_trace_otlp_grpc_1 = __nccwpck_require__(160);
-const semantic_conventions_1 = __nccwpck_require__(7275);
-const resources_1 = __nccwpck_require__(3871);
-function stringToHeader(value) {
-    const pairs = value.split(",");
-    return pairs.reduce((result, item) => {
-        const [key, value] = item.split("=");
-        return {
-            ...result,
-            [key.trim()]: value.trim(),
-        };
-    }, {});
-}
-const workflowStepArtifactName = (job, step) => `${job}-${step}.traces`;
-function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs) {
-    const serviceName = workflowRunJobs.workflowRun.name ||
-        `${workflowRunJobs.workflowRun.workflow_id}`;
-    const serviceInstanceId = [
-        workflowRunJobs.workflowRun.repository.full_name,
-        workflowRunJobs.workflowRun.workflow_id,
-        workflowRunJobs.workflowRun.id,
-        workflowRunJobs.workflowRun.run_attempt,
-    ].join("/");
-    const serviceNamespace = workflowRunJobs.workflowRun.repository.full_name;
-    const serviceVersion = workflowRunJobs.workflowRun.head_sha;
-    const provider = new sdk_trace_base_1.BasicTracerProvider({
-        resource: new resources_1.Resource({
-            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_NAME]: serviceName,
-            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_INSTANCE_ID]: serviceInstanceId,
-            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_NAMESPACE]: serviceNamespace,
-            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_VERSION]: serviceVersion,
-        }),
-    });
-    const credentials = otlpEndpoint ? grpc.credentials.createSsl() : undefined;
-    provider.addSpanProcessor(new sdk_trace_base_1.SimpleSpanProcessor(new exporter_trace_otlp_grpc_1.OTLPTraceExporter({
-        url: otlpEndpoint,
-        credentials,
-        metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
-    })));
-    provider.register();
-    return provider;
-}
-exports.createTracerProvider = createTracerProvider;
+exports.createTracerProvider = exports.traceWorkflowRunJobs = void 0;
+var job_1 = __nccwpck_require__(6314);
+Object.defineProperty(exports, "traceWorkflowRunJobs", ({ enumerable: true, get: function () { return job_1.traceWorkflowRunJobs; } }));
+var trace_1 = __nccwpck_require__(7390);
+Object.defineProperty(exports, "createTracerProvider", ({ enumerable: true, get: function () { return trace_1.createTracerProvider; } }));
+
+
+/***/ }),
+
+/***/ 6314:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.traceWorkflowRunJobs = void 0;
+const step_1 = __nccwpck_require__(9431);
 function traceWorkflowRunJobs(context, trace, workflowRunJobs) {
     var _a;
     const attributes = {
@@ -283,7 +248,14 @@ function traceWorkflowRunJobs(context, trace, workflowRunJobs) {
     console.log(`Root Span: ${rootSpan.spanContext().traceId}: ${workflowRunJobs.workflowRun.created_at}`);
     try {
         workflowRunJobs.jobs.forEach((job) => {
-            traceWorkflowRunJob(context, trace, rootSpan, tracer, job, workflowRunJobs.workflowRunArtifacts);
+            traceWorkflowRunJob({
+                context,
+                trace,
+                rootSpan,
+                tracer,
+                job,
+                workflowArtifacts: workflowRunJobs.workflowRunArtifacts,
+            });
         });
     }
     finally {
@@ -291,13 +263,14 @@ function traceWorkflowRunJobs(context, trace, workflowRunJobs) {
     }
 }
 exports.traceWorkflowRunJobs = traceWorkflowRunJobs;
-function traceWorkflowRunJob(context, trace, rootSpan, tracer, job, workflowArtifacts) {
+function traceWorkflowRunJob({ context, trace, rootSpan, tracer, job, workflowArtifacts, }) {
     var _a, _b;
     console.log(`Trace Job ${job.id}`);
     if (!job.completed_at) {
         console.warn(`Job ${job.id} is not completed yet`);
         return;
     }
+    job.name;
     const jobContext = trace.setSpan(context.active(), rootSpan);
     const startTime = new Date(job.started_at);
     const jobSpan = tracer.startSpan(job.name, {
@@ -329,7 +302,15 @@ function traceWorkflowRunJob(context, trace, rootSpan, tracer, job, workflowArti
         const numSteps = ((_a = job.steps) === null || _a === void 0 ? void 0 : _a.length) || 0;
         console.log(`Trace ${numSteps} Steps`);
         (_b = job.steps) === null || _b === void 0 ? void 0 : _b.forEach((step) => {
-            traceWorkflowRunStep(job.id, context, trace, jobSpan, tracer, workflowArtifacts, step);
+            (0, step_1.traceWorkflowRunStep)({
+                job,
+                context,
+                trace,
+                jobSpan,
+                tracer,
+                workflowArtifacts,
+                step,
+            });
         });
     }
     finally {
@@ -337,7 +318,18 @@ function traceWorkflowRunJob(context, trace, rootSpan, tracer, job, workflowArti
         jobSpan.end(new Date(completedAt));
     }
 }
-function traceWorkflowRunStep(jobId, context, trace, jobSpan, tracer, workflowArtifacts, step) {
+
+
+/***/ }),
+
+/***/ 9431:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.traceWorkflowRunStep = void 0;
+function traceWorkflowRunStep({ job, context, trace, jobSpan, tracer, workflowArtifacts, step, }) {
     if (!step || !step.completed_at || !step.started_at) {
         const stepName = (step === null || step === void 0 ? void 0 : step.name) || "UNDEFINED";
         console.warn(`Step ${stepName} is not completed yet`);
@@ -358,14 +350,98 @@ function traceWorkflowRunStep(jobId, context, trace, jobSpan, tracer, workflowAr
         if (step.conclusion) {
             stepSpan.setAttribute("github.job.step.conclusion", step.conclusion);
         }
-        const workflowArtifactName = workflowStepArtifactName(jobId, step.name);
-        const workflowArtifact = workflowArtifacts[workflowArtifactName];
-        console.log(workflowArtifact.id);
+        traceArtifact({
+            trace,
+            tracer,
+            stepSpan,
+            job,
+            step,
+            workflowArtifacts,
+        });
     }
     finally {
         stepSpan.end(new Date(step.completed_at));
     }
 }
+exports.traceWorkflowRunStep = traceWorkflowRunStep;
+function traceArtifact({ job, step, workflowArtifacts }) {
+    const junitArtifactName = `${job.name}/${step.name}/junit.xml`;
+    const junitArtifact = workflowArtifacts[junitArtifactName];
+}
+
+
+/***/ }),
+
+/***/ 7390:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createTracerProvider = void 0;
+const grpc = __importStar(__nccwpck_require__(7025));
+const sdk_trace_base_1 = __nccwpck_require__(9253);
+const exporter_trace_otlp_grpc_1 = __nccwpck_require__(160);
+const semantic_conventions_1 = __nccwpck_require__(7275);
+const resources_1 = __nccwpck_require__(3871);
+function stringToHeader(value) {
+    const pairs = value.split(",");
+    return pairs.reduce((result, item) => {
+        const [key, value] = item.split("=");
+        return {
+            ...result,
+            [key.trim()]: value.trim(),
+        };
+    }, {});
+}
+function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs) {
+    const serviceName = workflowRunJobs.workflowRun.name ||
+        `${workflowRunJobs.workflowRun.workflow_id}`;
+    const serviceInstanceId = [
+        workflowRunJobs.workflowRun.repository.full_name,
+        workflowRunJobs.workflowRun.workflow_id,
+        workflowRunJobs.workflowRun.id,
+        workflowRunJobs.workflowRun.run_attempt,
+    ].join("/");
+    const serviceNamespace = workflowRunJobs.workflowRun.repository.full_name;
+    const serviceVersion = workflowRunJobs.workflowRun.head_sha;
+    const provider = new sdk_trace_base_1.BasicTracerProvider({
+        resource: new resources_1.Resource({
+            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_NAME]: serviceName,
+            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_INSTANCE_ID]: serviceInstanceId,
+            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_NAMESPACE]: serviceNamespace,
+            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_VERSION]: serviceVersion,
+        }),
+    });
+    const credentials = otlpEndpoint ? grpc.credentials.createSsl() : undefined;
+    provider.addSpanProcessor(new sdk_trace_base_1.SimpleSpanProcessor(new exporter_trace_otlp_grpc_1.OTLPTraceExporter({
+        url: otlpEndpoint,
+        credentials,
+        metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
+    })));
+    provider.register();
+    return provider;
+}
+exports.createTracerProvider = createTracerProvider;
 
 
 /***/ }),

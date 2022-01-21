@@ -17,11 +17,17 @@ export type WorkflowRunJobStep = {
   completed_at?: string | null | undefined;
 };
 export type WorkflowRun = GetWorkflowRunType["data"];
+type DownloadArtifactParam =
+  RestEndpointMethodTypes["actions"]["downloadArtifact"]["parameters"];
+type DownloadArtifactResponse =
+  RestEndpointMethodTypes["actions"]["downloadArtifact"]["response"];
 
 export type WorkflowArtifact =
   RestEndpointMethodTypes["actions"]["listWorkflowRunArtifacts"]["response"]["data"]["artifacts"][0];
 
-export type WorkflowArtifactMap = { [key: string]: WorkflowArtifact };
+export type WorkflowArtifactMap = {
+  [key: string]: WorkflowArtifact | undefined;
+};
 
 export type WorkflowRunJobs = {
   workflowRun: WorkflowRun;
@@ -29,6 +35,18 @@ export type WorkflowRunJobs = {
   workflowRunArtifacts: WorkflowArtifactMap;
 };
 
+// async function downloadArtifact(
+//   context: Context,
+//   octokit: InstanceType<typeof GitHub>,
+//   artifact: WorkflowArtifact
+// ) {
+//   const artifactResponse = await octokit.rest.actions.downloadArtifact({
+//     ...context.repo,
+//     artifact_id: artifact.id,
+//     archive_format: "zip",
+//   });
+
+// }
 async function listWorkflowRunArtifacts(
   context: Context,
   octokit: InstanceType<typeof GitHub>,
@@ -51,7 +69,9 @@ async function listWorkflowRunArtifacts(
   return artifactsList.reduce(
     (result, item) => ({
       ...result,
-      [item.name]: item,
+      [item.name]: {
+        ...item,
+      },
     }),
     {}
   );

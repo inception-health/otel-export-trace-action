@@ -1,10 +1,3 @@
-import * as grpc from "@grpc/grpc-js";
-import {
-  BasicTracerProvider,
-  SimpleSpanProcessor,
-} from "@opentelemetry/sdk-trace-base";
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import {
   ContextAPI,
   Span,
@@ -18,67 +11,9 @@ import {
   WorkflowRunJob,
   WorkflowRunJobStep,
   WorkflowArtifactMap,
-  WorkflowArtifact,
-} from "./github";
-import { Resource } from "@opentelemetry/resources";
+} from "../github";
 
-type StringDict = { [key: string]: string };
-
-function stringToHeader(value: string): StringDict {
-  const pairs = value.split(",");
-  return pairs.reduce((result, item) => {
-    const [key, value] = item.split("=");
-    return {
-      ...result,
-      [key.trim()]: value.trim(),
-    };
-  }, {});
-}
-
-const workflowStepArtifactName = (job: number, step: string) =>
-  `${job}-${step}.traces`;
-
-export function createTracerProvider(
-  otlpEndpoint: string,
-  otlpHeaders: string,
-  workflowRunJobs: WorkflowRunJobs
-) {
-  const serviceName =
-    workflowRunJobs.workflowRun.name ||
-    `${workflowRunJobs.workflowRun.workflow_id}`;
-  const serviceInstanceId = [
-    workflowRunJobs.workflowRun.repository.full_name,
-    workflowRunJobs.workflowRun.workflow_id,
-    workflowRunJobs.workflowRun.id,
-    workflowRunJobs.workflowRun.run_attempt,
-  ].join("/");
-  const serviceNamespace = workflowRunJobs.workflowRun.repository.full_name;
-  const serviceVersion = workflowRunJobs.workflowRun.head_sha;
-
-  const provider = new BasicTracerProvider({
-    resource: new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
-      [SemanticResourceAttributes.SERVICE_INSTANCE_ID]: serviceInstanceId,
-      [SemanticResourceAttributes.SERVICE_NAMESPACE]: serviceNamespace,
-      [SemanticResourceAttributes.SERVICE_VERSION]: serviceVersion,
-    }),
-  });
-
-  const credentials = otlpEndpoint ? grpc.credentials.createSsl() : undefined;
-
-  provider.addSpanProcessor(
-    new SimpleSpanProcessor(
-      new OTLPTraceExporter({
-        url: otlpEndpoint,
-        credentials,
-        metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
-      })
-    )
-  );
-  provider.register();
-
-  return provider;
-}
+import { traceWorkflowRunStep } from "./step";
 
 export function traceWorkflowRunJobs(
   context: ContextAPI,
@@ -141,34 +76,43 @@ export function traceWorkflowRunJobs(
 
   try {
     workflowRunJobs.jobs.forEach((job) => {
-      traceWorkflowRunJob(
+      traceWorkflowRunJob({
         context,
         trace,
         rootSpan,
         tracer,
         job,
-        workflowRunJobs.workflowRunArtifacts
-      );
+        workflowArtifacts: workflowRunJobs.workflowRunArtifacts,
+      });
     });
   } finally {
     rootSpan.end(new Date(workflowRunJobs.workflowRun.updated_at));
   }
 }
 
-function traceWorkflowRunJob(
-  context: ContextAPI,
-  trace: TraceAPI,
-  rootSpan: Span,
-  tracer: Tracer,
-  job: WorkflowRunJob,
-  workflowArtifacts: WorkflowArtifactMap
-) {
+type TraceWorkflowRunJobParams = {
+  context: ContextAPI;
+  trace: TraceAPI;
+  rootSpan: Span;
+  tracer: Tracer;
+  job: WorkflowRunJob;
+  workflowArtifacts: WorkflowArtifactMap;
+};
+
+function traceWorkflowRunJob({
+  context,
+  trace,
+  rootSpan,
+  tracer,
+  job,
+  workflowArtifacts,
+}: TraceWorkflowRunJobParams) {
   console.log(`Trace Job ${job.id}`);
   if (!job.completed_at) {
     console.warn(`Job ${job.id} is not completed yet`);
     return;
   }
-
+  job.name;
   const jobContext = trace.setSpan(context.active(), rootSpan);
   const startTime = new Date(job.started_at);
   const jobSpan = tracer.startSpan(
@@ -204,64 +148,18 @@ function traceWorkflowRunJob(
     const numSteps = job.steps?.length || 0;
     console.log(`Trace ${numSteps} Steps`);
     job.steps?.forEach((step?: WorkflowRunJobStep) => {
-      traceWorkflowRunStep(
-        job.id,
+      traceWorkflowRunStep({
+        job,
         context,
         trace,
         jobSpan,
         tracer,
         workflowArtifacts,
-        step
-      );
+        step,
+      });
     });
   } finally {
     const completedAt: string = job.completed_at;
     jobSpan.end(new Date(completedAt));
-  }
-}
-
-function traceWorkflowRunStep(
-  jobId: number,
-  context: ContextAPI,
-  trace: TraceAPI,
-  jobSpan: Span,
-  tracer: Tracer,
-  workflowArtifacts: WorkflowArtifactMap,
-  step?: WorkflowRunJobStep
-) {
-  if (!step || !step.completed_at || !step.started_at) {
-    const stepName = step?.name || "UNDEFINED";
-    console.warn(`Step ${stepName} is not completed yet`);
-    return;
-  }
-  console.log(`Trace Step ${step.name}`);
-  const stepContext = trace.setSpan(context.active(), jobSpan);
-  const startTime = new Date(step.started_at);
-  const stepSpan = tracer.startSpan(
-    step.name,
-    {
-      attributes: {
-        "github.job.step.name": step.name,
-        "github.job.step.number": step.number,
-      },
-      startTime,
-    },
-    stepContext
-  );
-  try {
-    console.log(
-      `Job Span: ${stepSpan.spanContext().spanId}: ${step.started_at}`
-    );
-    if (step.conclusion) {
-      stepSpan.setAttribute("github.job.step.conclusion", step.conclusion);
-    }
-
-    const workflowArtifactName = workflowStepArtifactName(jobId, step.name);
-    const workflowArtifact: WorkflowArtifact | undefined =
-      workflowArtifacts[workflowArtifactName];
-
-    console.log(workflowArtifact.id);
-  } finally {
-    stepSpan.end(new Date(step.completed_at));
   }
 }
