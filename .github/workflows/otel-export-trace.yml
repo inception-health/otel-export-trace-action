@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: export trace
-        uses: inception-health/otel-export-trace-action@latest
+        uses: ./
         with:
           otlpEndpoint: grpc://api.honeycomb.io:443/
           otlpHeaders: ${{ secrets.DELIVERY_OTLP_HEADERS }}
