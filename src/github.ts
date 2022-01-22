@@ -45,8 +45,8 @@ export type WorkflowRunJobs = {
 //     artifact_id: artifact.id,
 //     archive_format: "zip",
 //   });
-
 // }
+
 async function listWorkflowRunArtifacts(
   context: Context,
   octokit: InstanceType<typeof GitHub>,
