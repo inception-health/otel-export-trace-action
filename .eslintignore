@@ -35,3 +35,4 @@ tsconfig.json
 *.jpeg
 *.svg
 *.gif
+**/__assets__/*

@@ -8,7 +8,7 @@ describe("createTracerProvider", () => {
   let subject: BasicTracerProvider;
   let mockWorkflowRunJobs: WorkflowRunJobs;
 
-  beforeEach(() => {
+  beforeAll(() => {
     jest.useFakeTimers();
     mockWorkflowRunJobs = createMock<WorkflowRunJobs>({
       workflowRun: {
@@ -28,7 +28,7 @@ describe("createTracerProvider", () => {
     );
   });
 
-  afterEach(() => {
+  afterAll(() => {
     jest.useRealTimers();
     return subject.shutdown();
   });

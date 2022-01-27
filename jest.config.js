@@ -9,6 +9,6 @@ module.exports = {
       compiler: "ttypescript",
     },
   },
-  setupFiles: ["<rootDir>/src/config.ts"],
+  setupFiles: ["<rootDir>/src/config.ts", "dotenv/config"],
   reporters: ["default", "jest-junit"],
 };

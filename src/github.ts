@@ -1,6 +1,9 @@
 import { Context } from "@actions/github/lib/context";
 import { GitHub } from "@actions/github/lib/utils";
 import { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods";
+import axios from "axios";
+import JSZip from "jszip";
+import fs from "fs";
 
 export type OctoKit = InstanceType<typeof GitHub>;
 export type GetWorkflowRunType =
@@ -17,41 +20,39 @@ export type WorkflowRunJobStep = {
   completed_at?: string | null | undefined;
 };
 export type WorkflowRun = GetWorkflowRunType["data"];
-type DownloadArtifactParam =
-  RestEndpointMethodTypes["actions"]["downloadArtifact"]["parameters"];
-type DownloadArtifactResponse =
-  RestEndpointMethodTypes["actions"]["downloadArtifact"]["response"];
 
 export type WorkflowArtifact =
   RestEndpointMethodTypes["actions"]["listWorkflowRunArtifacts"]["response"]["data"]["artifacts"][0];
 
 export type WorkflowArtifactMap = {
-  [key: string]: WorkflowArtifact | undefined;
+  [job: string]: {
+    [step: string]: WorkflowArtifactDownload;
+  };
 };
+
+export type WorkflowArtifactDownload = {
+  jobName: string;
+  stepName: string;
+  reportType: string;
+  path: string;
+};
+
+export type WorkflowArtifactLookup = (
+  jobName: string,
+  stepName: string
+) => WorkflowArtifactDownload | undefined;
 
 export type WorkflowRunJobs = {
   workflowRun: WorkflowRun;
   jobs: WorkflowRunJob[];
-  workflowRunArtifacts: WorkflowArtifactMap;
+  workflowRunArtifacts: WorkflowArtifactLookup;
 };
 
-// async function downloadArtifact(
-//   context: Context,
-//   octokit: InstanceType<typeof GitHub>,
-//   artifact: WorkflowArtifact
-// ) {
-//   const artifactResponse = await octokit.rest.actions.downloadArtifact({
-//     ...context.repo,
-//     artifact_id: artifact.id,
-//     archive_format: "zip",
-//   });
-// }
-
-async function listWorkflowRunArtifacts(
+export async function listWorkflowRunArtifacts(
   context: Context,
   octokit: InstanceType<typeof GitHub>,
   runId: number
-): Promise<WorkflowArtifactMap> {
+): Promise<WorkflowArtifactLookup> {
   const artifactsList: WorkflowArtifact[] = [];
   const pageSize = 100;
 
@@ -66,15 +67,62 @@ async function listWorkflowRunArtifacts(
     artifactsList.push(...listArtifactsResponse.data.artifacts);
     hasNext = artifactsList.length < listArtifactsResponse.data.total_count;
   }
-  return artifactsList.reduce(
-    (result, item) => ({
-      ...result,
-      [item.name]: {
-        ...item,
-      },
-    }),
-    {}
+
+  const artifactsLookup: WorkflowArtifactMap = await artifactsList.reduce(
+    async (resultP, artifact) => {
+      const result = await resultP;
+      const match = artifact.name.match(
+        /\{(?<jobName>.*)\}\{(?<stepName>.*)\}\{(?<reportType>.*)\}/
+      );
+      const next: WorkflowArtifactMap = { ...result };
+      if (
+        match?.groups?.jobName &&
+        match?.groups?.stepName &&
+        match?.groups?.reportType
+      ) {
+        const { jobName, stepName, reportType } = match.groups;
+
+        if (!(jobName in next)) {
+          next[jobName] = {};
+        }
+        const downloadResponse = await octokit.rest.actions.downloadArtifact({
+          ...context.repo,
+          artifact_id: artifact.id,
+          archive_format: "zip",
+        });
+
+        const response = await axios({
+          method: "get",
+          url: downloadResponse.url,
+          responseType: "arraybuffer",
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const zip = await JSZip.loadAsync(response.data);
+        console.log(Object.keys(zip.files));
+        const writeStream = fs.createWriteStream(`${artifact.name}.xml`);
+        zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
+
+        next[jobName][stepName] = {
+          reportType,
+          jobName,
+          stepName,
+          path: writeStream.path.toString(),
+        };
+      }
+
+      return next;
+    },
+    Promise.resolve({})
   );
+
+  return (jobName: string, stepName: string) => {
+    try {
+      return artifactsLookup[jobName][stepName];
+    } catch (e) {
+      return undefined;
+    }
+  };
 }
 
 async function listJobsForWorkflowRun(

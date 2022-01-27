@@ -1,10 +1,13 @@
+import { Context } from "@actions/github/lib/context";
 import { ContextAPI, Span, TraceAPI, Tracer } from "@opentelemetry/api";
 
 import {
   WorkflowRunJobStep,
   WorkflowArtifactMap,
   WorkflowRunJob,
+  WorkflowArtifactLookup,
 } from "../github";
+import { traceTestReportArtifact } from "./trace-test-report";
 
 export type TraceWorkflowRunStepParams = {
   job: WorkflowRunJob;
@@ -12,7 +15,7 @@ export type TraceWorkflowRunStepParams = {
   trace: TraceAPI;
   jobSpan: Span;
   tracer: Tracer;
-  workflowArtifacts: WorkflowArtifactMap;
+  workflowArtifacts: WorkflowArtifactLookup;
   step?: WorkflowRunJobStep;
 };
 export function traceWorkflowRunStep({
@@ -54,8 +57,10 @@ export function traceWorkflowRunStep({
       trace,
       tracer,
       stepSpan,
+      context,
       job,
       step,
+      startTime,
       workflowArtifacts,
     });
   } finally {
@@ -66,13 +71,36 @@ export function traceWorkflowRunStep({
 type TraceArtifactParams = {
   trace: TraceAPI;
   tracer: Tracer;
+  context: ContextAPI;
   stepSpan: Span;
   job: WorkflowRunJob;
   step: WorkflowRunJobStep;
-  workflowArtifacts: WorkflowArtifactMap;
+  startTime: Date;
+  workflowArtifacts: WorkflowArtifactLookup;
 };
 
-function traceArtifact({ job, step, workflowArtifacts }: TraceArtifactParams) {
-  const junitArtifactName = `${job.name}/${step.name}/junit.xml`;
-  const junitArtifact = workflowArtifacts[junitArtifactName];
+function traceArtifact({
+  trace,
+  tracer,
+  stepSpan,
+  job,
+  step,
+  context,
+  startTime,
+  workflowArtifacts,
+}: TraceArtifactParams) {
+  const artifact = workflowArtifacts(job.name, step.name);
+  if (artifact) {
+    traceTestReportArtifact({
+      trace,
+      tracer,
+      context,
+      stepSpan,
+      startTime,
+      type: artifact.reportType,
+      path: artifact.path,
+    });
+  } else {
+    console.log(`No Artifact to trace for Job<${job.name}> Step<${step.name}>`);
+  }
 }

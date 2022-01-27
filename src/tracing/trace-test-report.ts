@@ -10,7 +10,7 @@ export type TraceJunitArtifactParams = {
   stepSpan: Span;
   path: string;
   startTime: Date;
-  type: "junit" | "xunit" | "testng";
+  type: string;
 };
 
 export function traceTestReportArtifact({
@@ -22,6 +22,12 @@ export function traceTestReportArtifact({
   path,
   type,
 }: TraceJunitArtifactParams) {
+  if (!(type in ["junit", "xunit", "ngunit"])) {
+    console.log(
+      `Report tracing only supports junit, xunit, or ngunit. ${type} is not supported`
+    );
+    return;
+  }
   const result = parse({ type, files: [path] });
   stepSpan.setAttributes({
     "tests.type": type,

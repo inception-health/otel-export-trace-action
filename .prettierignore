@@ -32,3 +32,4 @@ LICENSE
 *.jpeg
 *.svg
 *.gif
+**/__assets__/*

@@ -11,6 +11,7 @@ import {
   WorkflowRunJob,
   WorkflowRunJobStep,
   WorkflowArtifactMap,
+  WorkflowArtifactLookup,
 } from "../github";
 
 import { traceWorkflowRunStep } from "./step";
@@ -96,7 +97,7 @@ type TraceWorkflowRunJobParams = {
   rootSpan: Span;
   tracer: Tracer;
   job: WorkflowRunJob;
-  workflowArtifacts: WorkflowArtifactMap;
+  workflowArtifacts: WorkflowArtifactLookup;
 };
 
 function traceWorkflowRunJob({

@@ -16,7 +16,7 @@
     "prebuild": "rm -fr lib || true",
     "build": "tsc",
     "package": "npm run build && ncc build --source-map --license licenses.txt",
-    "test": "jest"
+    "test": "NODE_ENV=test DOTENV_CONFIG_PATH=./.env.test jest"
   },
   "keywords": [],
   "author": "",
@@ -29,14 +29,18 @@
     "@opentelemetry/resources": "^1.0.1",
     "@opentelemetry/sdk-trace-base": "^1.0.1",
     "@opentelemetry/semantic-conventions": "^1.0.1",
+    "axios": "^0.25.0",
+    "jszip": "^3.7.1",
     "test-results-parser": "0.0.9"
   },
   "devDependencies": {
+    "@octokit/rest": "^18.12.0",
     "@tsconfig/node12": "^1.0.9",
     "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
     "@vercel/ncc": "^0.31.1",
+    "dotenv": "^14.3.2",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-markdown": "^2.2.1",
