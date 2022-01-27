@@ -313,6 +313,7 @@ function traceWorkflowRunJob({ context, trace, rootSpan, tracer, job, workflowAr
             "github.job.name": job.name,
             "github.job.run_id": job.run_id,
             "github.job.run_attempt": job.run_attempt || 1,
+            error: job.conclusion === "failure",
         },
         startTime,
     }, jobContext);
@@ -377,6 +378,7 @@ function traceWorkflowRunStep({ job, context, trace, jobSpan, tracer, workflowAr
         attributes: {
             "github.job.step.name": step.name,
             "github.job.step.number": step.number,
+            error: step.conclusion === "failure",
         },
         startTime,
     }, stepContext);

@@ -124,6 +124,7 @@ function traceWorkflowRunJob({
         "github.job.name": job.name,
         "github.job.run_id": job.run_id,
         "github.job.run_attempt": job.run_attempt || 1,
+        error: job.conclusion === "failure",
       },
       startTime,
     },

@@ -41,6 +41,7 @@ export function traceWorkflowRunStep({
       attributes: {
         "github.job.step.name": step.name,
         "github.job.step.number": step.number,
+        error: step.conclusion === "failure",
       },
       startTime,
     },
