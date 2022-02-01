@@ -1,24 +1,25 @@
-import { ContextAPI, Span, TraceAPI, Tracer } from "@opentelemetry/api";
+import { Span, TraceAPI, Tracer, Context } from "@opentelemetry/api";
 import { parse } from "test-results-parser";
 import TestCase = require("test-results-parser/src/models/TestCase");
+import TestStep = require("test-results-parser/src/models/TestStep");
 import TestSuite = require("test-results-parser/src/models/TestSuite");
 
 export type TraceJunitArtifactParams = {
   trace: TraceAPI;
   tracer: Tracer;
-  context: ContextAPI;
-  stepSpan: Span;
-  path: string;
+  parentContext: Context;
+  parentSpan: Span;
   startTime: Date;
+  path: string;
   type: string;
 };
 
 export function traceTestReportArtifact({
-  trace,
   tracer,
-  context,
-  stepSpan,
+  trace,
+  parentSpan,
   startTime,
+  parentContext,
   path,
   type,
 }: TraceJunitArtifactParams) {
@@ -29,7 +30,7 @@ export function traceTestReportArtifact({
     return;
   }
   const result = parse({ type, files: [path] });
-  stepSpan.setAttributes({
+  parentSpan.setAttributes({
     "tests.type": type,
     "tests.total": result.total,
     "tests.name": result.name,
@@ -42,151 +43,156 @@ export function traceTestReportArtifact({
   });
 
   result.suites.map((testSuite) => {
-    // TODO: Use tracer.startActiveSpan
-    const testSuiteCtx = trace.setSpan(context.active(), stepSpan);
-    const testSuiteSpan = tracer.startSpan(
-      testSuite.name,
-      {
-        startTime,
-        attributes: {
-          "tests.testSuite.duration": testSuite.duration,
-          "tests.testSuite.errors": testSuite.errors,
-          "tests.testSuite.failed": testSuite.failed,
-          "tests.testSuite.name": testSuite.name,
-          "tests.testSuite.passed": testSuite.passed,
-          "tests.testSuite.skipped": testSuite.skipped,
-          "tests.testSuite.status": testSuite.status,
-          "tests.testSuite.total": testSuite.total,
-        },
-      },
-      testSuiteCtx
-    );
-    try {
-      traceTestCases({
-        startTime,
-        testSuite,
-        trace,
-        context,
-        testSuiteSpan,
-        tracer,
-      });
-    } finally {
-      const endTime = new Date(startTime);
-      endTime.setMilliseconds(
-        startTime.getMilliseconds() + testSuite.duration * 1000
-      );
-      testSuiteSpan.end(endTime);
-    }
+    traceTestSuite({
+      startTime,
+      testSuite,
+      parentContext,
+      parentSpan,
+      tracer,
+      trace,
+    });
   });
 }
-
-type TraceTestCasesParams = {
-  startTime: Date;
+type TraceTestSuiteParams = {
   testSuite: TestSuite;
-  trace: TraceAPI;
-  context: ContextAPI;
-  testSuiteSpan: Span;
+  parentContext: Context;
+  parentSpan: Span;
+  startTime: Date;
   tracer: Tracer;
+  trace: TraceAPI;
 };
 
-function traceTestCases({
-  startTime,
+function traceTestSuite({
   testSuite,
+  parentContext,
+  parentSpan,
+  startTime,
   trace,
-  context,
-  testSuiteSpan,
   tracer,
-}: TraceTestCasesParams) {
+}: TraceTestSuiteParams) {
+  const attributes = {
+    "tests.testSuite.duration": testSuite.duration,
+    "tests.testSuite.errors": testSuite.errors,
+    "tests.testSuite.failed": testSuite.failed,
+    "tests.testSuite.name": testSuite.name,
+    "tests.testSuite.passed": testSuite.passed,
+    "tests.testSuite.skipped": testSuite.skipped,
+    "tests.testSuite.status": testSuite.status,
+    "tests.testSuite.total": testSuite.total,
+  };
+  const ctx = trace.setSpan(parentContext, parentSpan);
+  const span = tracer.startSpan(testSuite.name, { startTime, attributes }, ctx);
+  let testCaseStartTime = new Date(startTime);
   try {
-    let testCaseStartTime = new Date(startTime);
     testSuite.cases.map((testCase) => {
-      const testCaseCtx = trace.setSpan(context.active(), testSuiteSpan);
-      const testCaseSpan = tracer.startSpan(
-        testCase.name,
-        {
-          startTime: testCaseStartTime,
-          attributes: {
-            "tests.testCase.duration": testCase.duration,
-            "tests.testCase.errors": testCase.errors,
-            "tests.testCase.failed": testCase.failed,
-            "tests.testCase.failure": testCase.failure,
-            "tests.testCase.name": testCase.name,
-            "tests.testCase.passed": testCase.passed,
-            "tests.testCase.skipped": testCase.skipped,
-            "tests.testCase.stack_trace": testCase.stack_trace,
-            "tests.testCase.status": testCase.status,
-            "tests.testCase.total": testCase.total,
-          },
-        },
-        testCaseCtx
-      );
-      testCaseStartTime = traceTestSteps({
-        testCaseStartTime,
+      traceTestCases({
         testCase,
+        startTime: testCaseStartTime,
+        parentContext: ctx,
+        parentSpan: span,
         trace,
-        context,
-        testCaseSpan,
         tracer,
       });
+      testCaseStartTime = new Date(testCaseStartTime);
+      testCaseStartTime.setMilliseconds(
+        testCaseStartTime.getMilliseconds() + testCase.duration * 1000
+      );
     });
   } finally {
     const endTime = new Date(startTime);
     endTime.setMilliseconds(
-      endTime.getMilliseconds() + testSuite.duration * 1000
+      startTime.getMilliseconds() + testSuite.duration * 1000
     );
-    testSuiteSpan.end(endTime);
+    span.end(endTime);
+  }
+}
+
+type TraceTestCasesParams = {
+  testCase: TestCase;
+  parentContext: Context;
+  parentSpan: Span;
+  startTime: Date;
+  tracer: Tracer;
+  trace: TraceAPI;
+};
+
+function traceTestCases({
+  testCase,
+  parentContext,
+  parentSpan,
+  startTime,
+  trace,
+  tracer,
+}: TraceTestCasesParams) {
+  const attributes = {
+    "tests.testCase.duration": testCase.duration,
+    "tests.testCase.errors": testCase.errors,
+    "tests.testCase.failed": testCase.failed,
+    "tests.testCase.failure": testCase.failure,
+    "tests.testCase.name": testCase.name,
+    "tests.testCase.passed": testCase.passed,
+    "tests.testCase.skipped": testCase.skipped,
+    "tests.testCase.stack_trace": testCase.stack_trace,
+    "tests.testCase.status": testCase.status,
+    "tests.testCase.total": testCase.total,
+  };
+  const ctx = trace.setSpan(parentContext, parentSpan);
+  const span = tracer.startSpan(testCase.name, { startTime, attributes }, ctx);
+  let testStepStartTime = new Date(startTime);
+  try {
+    testCase.steps.map((testStep) => {
+      traceTestSteps({
+        testStep,
+        parentContext: ctx,
+        parentSpan: span,
+        startTime: testStepStartTime,
+        trace,
+        tracer,
+      });
+      testStepStartTime = new Date(testStepStartTime);
+      testStepStartTime.setMilliseconds(
+        testStepStartTime.getMilliseconds() + testStep.duration * 1000
+      );
+    });
+  } finally {
+    const endTime = new Date(startTime);
+    endTime.setMilliseconds(
+      endTime.getMilliseconds() + testCase.duration * 1000
+    );
+    span.end(endTime);
   }
 }
 
 type TraceTestStepsParams = {
-  testCaseStartTime: Date;
-  testCase: TestCase;
+  testStep: TestStep;
+  parentContext: Context;
+  parentSpan: Span;
+  startTime: Date;
   trace: TraceAPI;
-  context: ContextAPI;
-  testCaseSpan: Span;
   tracer: Tracer;
 };
 
 function traceTestSteps({
-  testCaseStartTime,
-  testCase,
+  testStep,
+  parentContext,
+  parentSpan,
+  startTime,
   trace,
-  context,
-  testCaseSpan,
   tracer,
 }: TraceTestStepsParams) {
-  try {
-    let testStepStartTime = new Date(testCaseStartTime);
-    testCase.steps.map((testStep) => {
-      const testStepCtx = trace.setSpan(context.active(), testCaseSpan);
-      const testStepSpan = tracer.startSpan(
-        testStep.name,
-        {
-          startTime: testStepStartTime,
-          attributes: {
-            "tests.testStep.duration": testStep.duration,
-            "tests.testStep.failure": testStep.failure,
-            "tests.testStep.name": testStep.name,
-            "tests.testStep.stack_trace": testStep.stack_trace,
-            "tests.testStep.status": testStep.status,
-          },
-        },
-        testStepCtx
-      );
-      const endTime = new Date(testStepStartTime);
-      endTime.setMilliseconds(
-        testStepStartTime.getMilliseconds() + testStep.duration * 1000
-      );
-      testStepSpan.end(endTime);
-      testStepStartTime = endTime;
-    });
-  } finally {
-    const endTime = new Date(testCaseStartTime);
-    endTime.setMilliseconds(
-      testCaseStartTime.getMilliseconds() + testCase.duration * 1000
-    );
-    testCaseSpan.end(endTime);
-    testCaseStartTime = endTime;
-  }
-  return testCaseStartTime;
+  const attributes = {
+    "tests.testStep.duration": testStep.duration,
+    "tests.testStep.failure": testStep.failure,
+    "tests.testStep.name": testStep.name,
+    "tests.testStep.stack_trace": testStep.stack_trace,
+    "tests.testStep.status": testStep.status,
+  };
+  const ctx = trace.setSpan(parentContext, parentSpan);
+  const span = tracer.startSpan(testStep.name, { startTime, attributes }, ctx);
+
+  const endTime = new Date(startTime);
+  endTime.setMilliseconds(
+    startTime.getMilliseconds() + testStep.duration * 1000
+  );
+  span.end(endTime);
 }

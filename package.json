@@ -16,7 +16,9 @@
     "prebuild": "rm -fr lib || true",
     "build": "tsc",
     "package": "npm run build && ncc build --source-map --license licenses.txt",
-    "test": "NODE_ENV=test DOTENV_CONFIG_PATH=./.env.test jest"
+    "test": "NODE_ENV=test DOTENV_CONFIG_PATH=./.env.test jest",
+    "test:watch": "NODE_ENV=test DOTENV_CONFIG_PATH=./.env.test jest --watch",
+    "test:ci": "NODE_ENV=test DOTENV_CONFIG_PATH=./.env.test jest --collect-coverage -ci"
   },
   "keywords": [],
   "author": "",

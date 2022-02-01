@@ -95,8 +95,8 @@ function traceArtifact({
     traceTestReportArtifact({
       trace,
       tracer,
-      context,
-      stepSpan,
+      parentContext: context.active(),
+      parentSpan: stepSpan,
       startTime,
       type: artifact.reportType,
       path: artifact.path,

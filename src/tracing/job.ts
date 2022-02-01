@@ -1,7 +1,7 @@
 import {
   ContextAPI,
   Span,
-  SpanAttributeValue,
+  AttributeValue,
   TraceAPI,
   Tracer,
 } from "@opentelemetry/api";
@@ -21,7 +21,7 @@ export function traceWorkflowRunJobs(
   trace: TraceAPI,
   workflowRunJobs: WorkflowRunJobs
 ): void {
-  const attributes: { [key: string]: SpanAttributeValue } = {
+  const attributes: { [key: string]: AttributeValue } = {
     "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
     "github.run_id": workflowRunJobs.workflowRun.id,
     "github.run_number": workflowRunJobs.workflowRun.run_number,

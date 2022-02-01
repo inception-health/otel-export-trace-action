@@ -10,9 +10,9 @@ Array [
     ],
     "_ended": true,
     "_spanContext": Object {
-      "spanId": "1234567894",
+      "spanId": "3",
       "traceFlags": 1,
-      "traceId": "1234567894",
+      "traceId": "3",
       "traceState": undefined,
     },
     "_spanLimits": Object {
@@ -60,7 +60,7 @@ Array [
     "parentSpanId": undefined,
     "resource": Resource {
       "attributes": Object {
-        "service.name": "traceTestReportArtifact - test",
+        "service.name": "traceTestReportArtifact",
         "telemetry.sdk.language": "nodejs",
         "telemetry.sdk.name": "opentelemetry",
         "telemetry.sdk.version": "1.0.1",
@@ -82,9 +82,9 @@ Array [
     ],
     "_ended": true,
     "_spanContext": Object {
-      "spanId": "1234567895",
+      "spanId": "4",
       "traceFlags": 1,
-      "traceId": "1234567895",
+      "traceId": "4",
       "traceState": undefined,
     },
     "_spanLimits": Object {
@@ -132,7 +132,7 @@ Array [
     "parentSpanId": undefined,
     "resource": Resource {
       "attributes": Object {
-        "service.name": "traceTestReportArtifact - test",
+        "service.name": "traceTestReportArtifact",
         "telemetry.sdk.language": "nodejs",
         "telemetry.sdk.name": "opentelemetry",
         "telemetry.sdk.version": "1.0.1",
@@ -154,9 +154,9 @@ Array [
     ],
     "_ended": true,
     "_spanContext": Object {
-      "spanId": "1234567896",
+      "spanId": "5",
       "traceFlags": 1,
-      "traceId": "1234567896",
+      "traceId": "5",
       "traceState": undefined,
     },
     "_spanLimits": Object {
@@ -204,7 +204,7 @@ Array [
     "parentSpanId": undefined,
     "resource": Resource {
       "attributes": Object {
-        "service.name": "traceTestReportArtifact - test",
+        "service.name": "traceTestReportArtifact",
         "telemetry.sdk.language": "nodejs",
         "telemetry.sdk.name": "opentelemetry",
         "telemetry.sdk.version": "1.0.1",
@@ -226,9 +226,9 @@ Array [
     ],
     "_ended": true,
     "_spanContext": Object {
-      "spanId": "1234567897",
+      "spanId": "6",
       "traceFlags": 1,
-      "traceId": "1234567897",
+      "traceId": "6",
       "traceState": undefined,
     },
     "_spanLimits": Object {
@@ -276,7 +276,7 @@ Array [
     "parentSpanId": undefined,
     "resource": Resource {
       "attributes": Object {
-        "service.name": "traceTestReportArtifact - test",
+        "service.name": "traceTestReportArtifact",
         "telemetry.sdk.language": "nodejs",
         "telemetry.sdk.name": "opentelemetry",
         "telemetry.sdk.version": "1.0.1",
@@ -298,9 +298,9 @@ Array [
     ],
     "_ended": true,
     "_spanContext": Object {
-      "spanId": "1234567893",
+      "spanId": "2",
       "traceFlags": 1,
-      "traceId": "1234567893",
+      "traceId": "2",
       "traceState": undefined,
     },
     "_spanLimits": Object {
@@ -346,7 +346,7 @@ Array [
     "parentSpanId": undefined,
     "resource": Resource {
       "attributes": Object {
-        "service.name": "traceTestReportArtifact - test",
+        "service.name": "traceTestReportArtifact",
         "telemetry.sdk.language": "nodejs",
         "telemetry.sdk.name": "opentelemetry",
         "telemetry.sdk.version": "1.0.1",
@@ -368,9 +368,9 @@ Array [
     ],
     "_ended": true,
     "_spanContext": Object {
-      "spanId": "1234567899",
+      "spanId": "8",
       "traceFlags": 1,
-      "traceId": "1234567899",
+      "traceId": "8",
       "traceState": undefined,
     },
     "_spanLimits": Object {
@@ -418,7 +418,7 @@ Array [
     "parentSpanId": undefined,
     "resource": Resource {
       "attributes": Object {
-        "service.name": "traceTestReportArtifact - test",
+        "service.name": "traceTestReportArtifact",
         "telemetry.sdk.language": "nodejs",
         "telemetry.sdk.name": "opentelemetry",
         "telemetry.sdk.version": "1.0.1",
@@ -440,9 +440,9 @@ Array [
     ],
     "_ended": true,
     "_spanContext": Object {
-      "spanId": "1234567898",
+      "spanId": "7",
       "traceFlags": 1,
-      "traceId": "1234567898",
+      "traceId": "7",
       "traceState": undefined,
     },
     "_spanLimits": Object {
@@ -488,7 +488,7 @@ Array [
     "parentSpanId": undefined,
     "resource": Resource {
       "attributes": Object {
-        "service.name": "traceTestReportArtifact - test",
+        "service.name": "traceTestReportArtifact",
         "telemetry.sdk.language": "nodejs",
         "telemetry.sdk.name": "opentelemetry",
         "telemetry.sdk.version": "1.0.1",
@@ -510,9 +510,9 @@ Array [
     ],
     "_ended": true,
     "_spanContext": Object {
-      "spanId": "1234567892",
+      "spanId": "1",
       "traceFlags": 1,
-      "traceId": "1234567892",
+      "traceId": "1",
       "traceState": undefined,
     },
     "_spanLimits": Object {
@@ -555,11 +555,11 @@ Array [
     },
     "kind": 0,
     "links": Array [],
-    "name": "test step span",
+    "name": "traceTestReportArtifact",
     "parentSpanId": undefined,
     "resource": Resource {
       "attributes": Object {
-        "service.name": "traceTestReportArtifact - test",
+        "service.name": "traceTestReportArtifact",
         "telemetry.sdk.language": "nodejs",
         "telemetry.sdk.name": "opentelemetry",
         "telemetry.sdk.version": "1.0.1",

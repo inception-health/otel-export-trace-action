@@ -1,33 +1,41 @@
 import { traceTestReportArtifact } from "./trace-test-report";
 import path from "path";
-import { context, trace } from "@opentelemetry/api";
+import { trace, ROOT_CONTEXT } from "@opentelemetry/api";
 import {
   BasicTracerProvider,
   InMemorySpanExporter,
   SimpleSpanProcessor,
 } from "@opentelemetry/sdk-trace-base";
+import { IdGenerator } from "@opentelemetry/core";
 import { Resource } from "@opentelemetry/resources";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 
-function idGenerator() {
-  let counter = 1;
-  return () => {
-    counter++;
-    return `123456789${counter}`;
-  };
+class TestIdGenerator implements IdGenerator {
+  traceIdCounter: number;
+  spanIdCounter: number;
+
+  constructor() {
+    this.traceIdCounter = 0;
+    this.spanIdCounter = 0;
+  }
+  generateTraceId() {
+    this.traceIdCounter += 1;
+    return `${this.traceIdCounter}`;
+  }
+
+  generateSpanId() {
+    this.spanIdCounter += 1;
+    return `${this.spanIdCounter}`;
+  }
 }
 
 describe("traceTestReportArtifact", () => {
   const memoryExporter = new InMemorySpanExporter();
   const tracerProvider = new BasicTracerProvider({
     resource: new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]:
-        "traceTestReportArtifact - test",
+      [SemanticResourceAttributes.SERVICE_NAME]: "traceTestReportArtifact",
     }),
-    idGenerator: {
-      generateTraceId: idGenerator(),
-      generateSpanId: idGenerator(),
-    },
+    idGenerator: new TestIdGenerator(),
   });
   tracerProvider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
   tracerProvider.register();
@@ -52,22 +60,21 @@ describe("traceTestReportArtifact", () => {
     );
     const startTime = new Date("2022-01-22T04:45:30");
 
-    tracer.startActiveSpan(
-      "test step span",
+    const span = tracer.startSpan(
+      "traceTestReportArtifact",
       { startTime, root: true },
-      (stepSpan) => {
-        traceTestReportArtifact({
-          trace,
-          tracer,
-          context,
-          stepSpan,
-          startTime,
-          path: junitFilePath,
-          type: "junit",
-        });
-        stepSpan.end(new Date("2022-01-22T04:45:34"));
-      }
+      ROOT_CONTEXT
     );
+    traceTestReportArtifact({
+      trace,
+      tracer,
+      parentContext: ROOT_CONTEXT,
+      parentSpan: span,
+      startTime,
+      path: junitFilePath,
+      type: "junit",
+    });
+    span.end(new Date("2022-01-22T04:45:34"));
 
     const spans = memoryExporter.getFinishedSpans();
     expect(spans).toMatchSnapshot();
