@@ -47,13 +47,11 @@ export function createTracerProvider(
     }),
   });
 
-  const credentials = otlpEndpoint ? grpc.credentials.createSsl() : undefined;
-
   provider.addSpanProcessor(
     new SimpleSpanProcessor(
       new OTLPTraceExporter({
         url: otlpEndpoint,
-        credentials,
+        credentials: grpc.credentials.createSsl(),
         metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
       })
     )

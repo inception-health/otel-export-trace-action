@@ -433,8 +433,7 @@ exports.traceTestReportArtifact = void 0;
 const test_results_parser_1 = __nccwpck_require__(3808);
 function traceTestReportArtifact({ tracer, trace, parentSpan, startTime, parentContext, path, type, }) {
     if (!["junit", "xunit", "ngunit"].includes(type)) {
-        console.log(`Report tracing only supports junit, xunit, or ngunit. ${type} is not supported`);
-        return;
+        throw TypeError(`Report tracing only supports junit, xunit, or ngunit. ${type} is not supported`);
     }
     const result = (0, test_results_parser_1.parse)({ type, files: [path] });
     parentSpan.setAttributes({
@@ -509,20 +508,22 @@ function traceTestCases({ testCase, parentContext, parentSpan, startTime, trace,
     };
     const ctx = trace.setSpan(parentContext, parentSpan);
     const span = tracer.startSpan(testCase.name, { startTime, attributes }, ctx);
-    let testStepStartTime = new Date(startTime);
+    // let testStepStartTime = new Date(startTime);
     try {
-        testCase.steps.map((testStep) => {
-            traceTestSteps({
-                testStep,
-                parentContext: ctx,
-                parentSpan: span,
-                startTime: testStepStartTime,
-                trace,
-                tracer,
-            });
-            testStepStartTime = new Date(testStepStartTime);
-            testStepStartTime.setMilliseconds(testStepStartTime.getMilliseconds() + testStep.duration * 1000);
-        });
+        // testCase.steps.map((testStep) => {
+        //   traceTestSteps({
+        //     testStep,
+        //     parentContext: ctx,
+        //     parentSpan: span,
+        //     startTime: testStepStartTime,
+        //     trace,
+        //     tracer,
+        //   });
+        //   testStepStartTime = new Date(testStepStartTime);
+        //   testStepStartTime.setMilliseconds(
+        //     testStepStartTime.getMilliseconds() + testStep.duration * 1000
+        //   );
+        // });
     }
     finally {
         const endTime = new Date(startTime);
@@ -530,20 +531,37 @@ function traceTestCases({ testCase, parentContext, parentSpan, startTime, trace,
         span.end(endTime);
     }
 }
-function traceTestSteps({ testStep, parentContext, parentSpan, startTime, trace, tracer, }) {
-    const attributes = {
-        "tests.testStep.duration": testStep.duration,
-        "tests.testStep.failure": testStep.failure,
-        "tests.testStep.name": testStep.name,
-        "tests.testStep.stack_trace": testStep.stack_trace,
-        "tests.testStep.status": testStep.status,
-    };
-    const ctx = trace.setSpan(parentContext, parentSpan);
-    const span = tracer.startSpan(testStep.name, { startTime, attributes }, ctx);
-    const endTime = new Date(startTime);
-    endTime.setMilliseconds(startTime.getMilliseconds() + testStep.duration * 1000);
-    span.end(endTime);
-}
+// type TraceTestStepsParams = {
+//   testStep: TestStep;
+//   parentContext: Context;
+//   parentSpan: Span;
+//   startTime: Date;
+//   trace: TraceAPI;
+//   tracer: Tracer;
+// };
+// function traceTestSteps({
+//   testStep,
+//   parentContext,
+//   parentSpan,
+//   startTime,
+//   trace,
+//   tracer,
+// }: TraceTestStepsParams) {
+//   const attributes = {
+//     "tests.testStep.duration": testStep.duration,
+//     "tests.testStep.failure": testStep.failure,
+//     "tests.testStep.name": testStep.name,
+//     "tests.testStep.stack_trace": testStep.stack_trace,
+//     "tests.testStep.status": testStep.status,
+//   };
+//   const ctx = trace.setSpan(parentContext, parentSpan);
+//   const span = tracer.startSpan(testStep.name, { startTime, attributes }, ctx);
+//   const endTime = new Date(startTime);
+//   endTime.setMilliseconds(
+//     startTime.getMilliseconds() + testStep.duration * 1000
+//   );
+//   span.end(endTime);
+// }
 
 
 /***/ }),
@@ -608,10 +626,9 @@ function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs) {
             [semantic_conventions_1.SemanticResourceAttributes.SERVICE_VERSION]: serviceVersion,
         }),
     });
-    const credentials = otlpEndpoint ? grpc.credentials.createSsl() : undefined;
     provider.addSpanProcessor(new sdk_trace_base_1.SimpleSpanProcessor(new exporter_trace_otlp_grpc_1.OTLPTraceExporter({
         url: otlpEndpoint,
-        credentials,
+        credentials: grpc.credentials.createSsl(),
         metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
     })));
     provider.register();

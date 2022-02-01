@@ -8,7 +8,7 @@ describe("createTracerProvider", () => {
   let subject: BasicTracerProvider;
   let mockWorkflowRunJobs: WorkflowRunJobs;
 
-  beforeAll(() => {
+  beforeEach(() => {
     jest.useFakeTimers();
     mockWorkflowRunJobs = mock<WorkflowRunJobs>({
       workflowRun: {
@@ -21,25 +21,42 @@ describe("createTracerProvider", () => {
         head_sha: "head-sha",
       },
     });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    return subject.shutdown();
+  });
+
+  it("test service.name resource is workflow name", () => {
     subject = createTracerProvider(
       "localhost",
       "test=foo",
       mockWorkflowRunJobs
     );
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
-    return subject.shutdown();
-  });
-
-  it("test service.name resource", () => {
     expect(
       subject.resource.attributes[SemanticResourceAttributes.SERVICE_NAME]
     ).toEqual(mockWorkflowRunJobs.workflowRun.name);
   });
 
+  it("test service.name resource is workflow id", () => {
+    mockWorkflowRunJobs.workflowRun.name = undefined;
+    subject = createTracerProvider(
+      "localhost",
+      "test=foo",
+      mockWorkflowRunJobs
+    );
+    expect(
+      subject.resource.attributes[SemanticResourceAttributes.SERVICE_NAME]
+    ).toEqual(mockWorkflowRunJobs.workflowRun.id);
+  });
+
   it("test service.instance.id resource", () => {
+    subject = createTracerProvider(
+      "localhost",
+      "test=foo",
+      mockWorkflowRunJobs
+    );
     expect(
       subject.resource.attributes[
         SemanticResourceAttributes.SERVICE_INSTANCE_ID
@@ -55,12 +72,22 @@ describe("createTracerProvider", () => {
   });
 
   it("test service.namespace resource", () => {
+    subject = createTracerProvider(
+      "localhost",
+      "test=foo",
+      mockWorkflowRunJobs
+    );
     expect(
       subject.resource.attributes[SemanticResourceAttributes.SERVICE_NAMESPACE]
     );
   });
 
   it("test active span processor", () => {
+    subject = createTracerProvider(
+      "localhost",
+      "test=foo",
+      mockWorkflowRunJobs
+    );
     const spanProcessor = subject.getActiveSpanProcessor();
     expect(spanProcessor).toBeDefined();
   });
