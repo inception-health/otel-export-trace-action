@@ -1,8 +1,8 @@
 import { createTracerProvider } from "./trace";
 import { WorkflowRunJobs } from "../github";
-import { createMock } from "ts-auto-mock";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { BasicTracerProvider } from "@opentelemetry/sdk-trace-base";
+import { mock } from "jest-mock-extended";
 
 describe("createTracerProvider", () => {
   let subject: BasicTracerProvider;
@@ -10,7 +10,7 @@ describe("createTracerProvider", () => {
 
   beforeAll(() => {
     jest.useFakeTimers();
-    mockWorkflowRunJobs = createMock<WorkflowRunJobs>({
+    mockWorkflowRunJobs = mock<WorkflowRunJobs>({
       workflowRun: {
         name: "workflow-name",
         workflow_id: 1,

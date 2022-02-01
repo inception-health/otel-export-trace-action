@@ -20,9 +20,11 @@ export type WorkflowRunJobStep = {
   completed_at?: string | null | undefined;
 };
 export type WorkflowRun = GetWorkflowRunType["data"];
+export type ListWorkflowRunArtifactsResponse =
+  RestEndpointMethodTypes["actions"]["listWorkflowRunArtifacts"]["response"];
 
 export type WorkflowArtifact =
-  RestEndpointMethodTypes["actions"]["listWorkflowRunArtifacts"]["response"]["data"]["artifacts"][0];
+  ListWorkflowRunArtifactsResponse["data"]["artifacts"][0];
 
 export type WorkflowArtifactMap = {
   [job: string]: {
@@ -96,10 +98,8 @@ export async function listWorkflowRunArtifacts(
           url: downloadResponse.url,
           responseType: "arraybuffer",
         });
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const zip = await JSZip.loadAsync(response.data);
-        console.log(Object.keys(zip.files));
+        const buf = response.data as Buffer;
+        const zip = await JSZip.loadAsync(buf);
         const writeStream = fs.createWriteStream(`${artifact.name}.xml`);
         zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
 

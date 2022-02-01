@@ -22,7 +22,7 @@ export function traceTestReportArtifact({
   path,
   type,
 }: TraceJunitArtifactParams) {
-  if (!(type in ["junit", "xunit", "ngunit"])) {
+  if (!["junit", "xunit", "ngunit"].includes(type)) {
     console.log(
       `Report tracing only supports junit, xunit, or ngunit. ${type} is not supported`
     );
@@ -42,6 +42,7 @@ export function traceTestReportArtifact({
   });
 
   result.suites.map((testSuite) => {
+    // TODO: Use tracer.startActiveSpan
     const testSuiteCtx = trace.setSpan(context.active(), stepSpan);
     const testSuiteSpan = tracer.startSpan(
       testSuite.name,
@@ -60,14 +61,22 @@ export function traceTestReportArtifact({
       },
       testSuiteCtx
     );
-    traceTestCases({
-      startTime,
-      testSuite,
-      trace,
-      context,
-      testSuiteSpan,
-      tracer,
-    });
+    try {
+      traceTestCases({
+        startTime,
+        testSuite,
+        trace,
+        context,
+        testSuiteSpan,
+        tracer,
+      });
+    } finally {
+      const endTime = new Date(startTime);
+      endTime.setMilliseconds(
+        startTime.getMilliseconds() + testSuite.duration * 1000
+      );
+      testSuiteSpan.end(endTime);
+    }
   });
 }
 

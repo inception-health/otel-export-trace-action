@@ -33,3 +33,4 @@ LICENSE
 *.svg
 *.gif
 **/__assets__/*
+**/__snapshots__/*
