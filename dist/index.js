@@ -82,6 +82,8 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
     };
 }
 exports.listWorkflowRunArtifacts = listWorkflowRunArtifacts;
+// TODO add test coverage
+/* istanbul ignore next */
 async function listJobsForWorkflowRun(context, octokit, runId) {
     const jobs = [];
     const pageSize = 100;
@@ -98,6 +100,8 @@ async function listJobsForWorkflowRun(context, octokit, runId) {
     }
     return jobs;
 }
+// TODO add test coverage
+/* istanbul ignore next */
 async function getWorkflowRunJobs(context, octokit, runId) {
     const getWorkflowRunResponse = await octokit.rest.actions.getWorkflowRun({
         ...context.repo,

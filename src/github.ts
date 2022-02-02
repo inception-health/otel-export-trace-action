@@ -127,6 +127,8 @@ export async function listWorkflowRunArtifacts(
   };
 }
 
+// TODO add test coverage
+/* istanbul ignore next */
 async function listJobsForWorkflowRun(
   context: Context,
   octokit: InstanceType<typeof GitHub>,
@@ -152,6 +154,8 @@ async function listJobsForWorkflowRun(
   return jobs;
 }
 
+// TODO add test coverage
+/* istanbul ignore next */
 export async function getWorkflowRunJobs(
   context: Context,
   octokit: InstanceType<typeof GitHub>,
