@@ -48,7 +48,7 @@ describe("createTracerProvider", () => {
     );
     expect(
       subject.resource.attributes[SemanticResourceAttributes.SERVICE_NAME]
-    ).toEqual(mockWorkflowRunJobs.workflowRun.id);
+    ).toEqual(`${mockWorkflowRunJobs.workflowRun.id}`);
   });
 
   it("test service.instance.id resource", () => {

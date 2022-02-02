@@ -1,4 +1,11 @@
-import { Span, TraceAPI, Tracer, Context } from "@opentelemetry/api";
+import {
+  Span,
+  TraceAPI,
+  Tracer,
+  Context,
+  SpanStatusCode,
+  SpanStatus,
+} from "@opentelemetry/api";
 import { parse } from "test-results-parser";
 import TestCase = require("test-results-parser/src/models/TestCase");
 import TestStep = require("test-results-parser/src/models/TestStep");
@@ -51,6 +58,9 @@ export function traceTestReportArtifact({
       trace,
     });
   });
+  parentSpan.setStatus({
+    code: result.status === "PASS" ? SpanStatusCode.OK : SpanStatusCode.ERROR,
+  });
 }
 type TraceTestSuiteParams = {
   testSuite: TestSuite;
@@ -81,6 +91,10 @@ function traceTestSuite({
   };
   const ctx = trace.setSpan(parentContext, parentSpan);
   const span = tracer.startSpan(testSuite.name, { startTime, attributes }, ctx);
+  span.setStatus({
+    code:
+      testSuite.status === "PASS" ? SpanStatusCode.OK : SpanStatusCode.ERROR,
+  });
   let testCaseStartTime = new Date(startTime);
   try {
     testSuite.cases.map((testCase) => {
@@ -137,6 +151,13 @@ function traceTestCases({
   };
   const ctx = trace.setSpan(parentContext, parentSpan);
   const span = tracer.startSpan(testCase.name, { startTime, attributes }, ctx);
+  const spanStatus: SpanStatus = {
+    code: testCase.status === "PASS" ? SpanStatusCode.OK : SpanStatusCode.ERROR,
+  };
+  if (testCase.failure) {
+    spanStatus.message = testCase.failure;
+  }
+  span.setStatus(spanStatus);
   // let testStepStartTime = new Date(startTime);
   try {
     // testCase.steps.map((testStep) => {

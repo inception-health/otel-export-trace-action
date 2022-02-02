@@ -1,28 +1,32 @@
-import { Context } from "@actions/github/lib/context";
-import { ContextAPI, Span, TraceAPI, Tracer } from "@opentelemetry/api";
+import {
+  Span,
+  TraceAPI,
+  Tracer,
+  Context,
+  SpanStatusCode,
+} from "@opentelemetry/api";
 
 import {
   WorkflowRunJobStep,
-  WorkflowArtifactMap,
   WorkflowRunJob,
   WorkflowArtifactLookup,
 } from "../github";
-import { traceTestReportArtifact } from "./trace-test-report";
+import { traceJunitArtifact } from "./trace-junit";
 
 export type TraceWorkflowRunStepParams = {
   job: WorkflowRunJob;
-  context: ContextAPI;
   trace: TraceAPI;
-  jobSpan: Span;
+  parentSpan: Span;
+  parentContext: Context;
   tracer: Tracer;
   workflowArtifacts: WorkflowArtifactLookup;
   step?: WorkflowRunJobStep;
 };
-export function traceWorkflowRunStep({
+export async function traceWorkflowRunStep({
   job,
-  context,
+  parentContext,
+  parentSpan,
   trace,
-  jobSpan,
   tracer,
   workflowArtifacts,
   step,
@@ -33,9 +37,9 @@ export function traceWorkflowRunStep({
     return;
   }
   console.log(`Trace Step ${step.name}`);
-  const stepContext = trace.setSpan(context.active(), jobSpan);
+  const ctx = trace.setSpan(parentContext, parentSpan);
   const startTime = new Date(step.started_at);
-  const stepSpan = tracer.startSpan(
+  const span = tracer.startSpan(
     step.name,
     {
       attributes: {
@@ -45,60 +49,61 @@ export function traceWorkflowRunStep({
       },
       startTime,
     },
-    stepContext
+    ctx
   );
   try {
-    console.log(
-      `Job Span: ${stepSpan.spanContext().spanId}: ${step.started_at}`
-    );
-    if (step.conclusion) {
-      stepSpan.setAttribute("github.job.step.conclusion", step.conclusion);
+    span.setStatus({ code: SpanStatusCode.ERROR });
+    if (step.conclusion !== "failure") {
+      span.setStatus({ code: SpanStatusCode.OK });
     }
-    traceArtifact({
+    console.log(`Job Span: ${span.spanContext().spanId}: ${step.started_at}`);
+    if (step.conclusion) {
+      span.setAttribute("github.job.step.conclusion", step.conclusion);
+    }
+    await traceArtifact({
       trace,
       tracer,
-      stepSpan,
-      context,
+      parentSpan: span,
+      parentContext: ctx,
       job,
       step,
       startTime,
       workflowArtifacts,
     });
   } finally {
-    stepSpan.end(new Date(step.completed_at));
+    span.end(new Date(step.completed_at));
   }
 }
 
 type TraceArtifactParams = {
   trace: TraceAPI;
   tracer: Tracer;
-  context: ContextAPI;
-  stepSpan: Span;
+  parentContext: Context;
+  parentSpan: Span;
   job: WorkflowRunJob;
   step: WorkflowRunJobStep;
   startTime: Date;
   workflowArtifacts: WorkflowArtifactLookup;
 };
 
-function traceArtifact({
+async function traceArtifact({
   trace,
   tracer,
-  stepSpan,
+  parentSpan,
+  parentContext,
   job,
   step,
-  context,
   startTime,
   workflowArtifacts,
 }: TraceArtifactParams) {
   const artifact = workflowArtifacts(job.name, step.name);
   if (artifact) {
-    traceTestReportArtifact({
+    await traceJunitArtifact({
       trace,
       tracer,
-      parentContext: context.active(),
-      parentSpan: stepSpan,
+      parentContext,
+      parentSpan,
       startTime,
-      type: artifact.reportType,
       path: artifact.path,
     });
   } else {

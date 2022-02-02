@@ -77,6 +77,7 @@ export async function listWorkflowRunArtifacts(
         /\{(?<jobName>.*)\}\{(?<stepName>.*)\}\{(?<reportType>.*)\}/
       );
       const next: WorkflowArtifactMap = { ...result };
+      /* istanbul ignore next */
       if (
         match?.groups?.jobName &&
         match?.groups?.stepName &&
@@ -120,6 +121,7 @@ export async function listWorkflowRunArtifacts(
     try {
       return artifactsLookup[jobName][stepName];
     } catch (e) {
+      /* istanbul ignore next */
       return undefined;
     }
   };

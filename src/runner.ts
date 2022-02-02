@@ -29,7 +29,7 @@ export async function run() {
     console.log(
       `Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`
     );
-    traceWorkflowRunJobs(context, trace, workflowRunJobs);
+    await traceWorkflowRunJobs({ trace, workflowRunJobs });
   } finally {
     console.log("Shutdown Trace Provider");
     setTimeout(() => {

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite errors="0" failures="0" skipped="0" tests="4">
+  <testcase classname="createTracerProvider test service.name resource" name="createTracerProvider test service.name resource" time="0.013">
+  </testcase>
+  <testcase classname="createTracerProvider test service.instance.id resource" name="createTracerProvider test service.instance.id resource" time="0.029">
+  </testcase>
+  <testcase classname="createTracerProvider test service.namespace resource" name="createTracerProvider test service.namespace resource" time="0.002">
+  </testcase>
+  <testcase classname="createTracerProvider test active span processor" name="createTracerProvider test active span processor" time="0.003">
+  </testcase>
+</testsuite>

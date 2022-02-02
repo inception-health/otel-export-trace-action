@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="5" failures="0" errors="0" time="3.839">
-  <testsuite name="createTracerProvider" errors="0" failures="0" skipped="0" timestamp="2022-01-22T04:45:30" time="3.581" tests="4">
+<testsuites name="jest tests" tests="5" failures="0" errors="0">
+  <testsuite name="createTracerProvider" errors="0" failures="0" skipped="0" time="3.581" tests="4">
     <testcase classname="createTracerProvider test service.name resource" name="createTracerProvider test service.name resource" time="0.013">
     </testcase>
     <testcase classname="createTracerProvider test service.instance.id resource" name="createTracerProvider test service.instance.id resource" time="0.029">

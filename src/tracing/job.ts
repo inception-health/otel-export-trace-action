@@ -1,61 +1,30 @@
 import {
-  ContextAPI,
   Span,
-  AttributeValue,
   TraceAPI,
   Tracer,
+  SpanStatusCode,
+  ROOT_CONTEXT,
+  Context,
 } from "@opentelemetry/api";
 
 import {
   WorkflowRunJobs,
   WorkflowRunJob,
   WorkflowRunJobStep,
-  WorkflowArtifactMap,
   WorkflowArtifactLookup,
 } from "../github";
 
 import { traceWorkflowRunStep } from "./step";
 
-export function traceWorkflowRunJobs(
-  context: ContextAPI,
-  trace: TraceAPI,
-  workflowRunJobs: WorkflowRunJobs
-): void {
-  const attributes: { [key: string]: AttributeValue } = {
-    "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
-    "github.run_id": workflowRunJobs.workflowRun.id,
-    "github.run_number": workflowRunJobs.workflowRun.run_number,
-    "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
-    "github.html_url": workflowRunJobs.workflowRun.html_url,
-    "github.event": workflowRunJobs.workflowRun.event,
-    "github.head_sha": workflowRunJobs.workflowRun.head_sha,
-    "github.git_refs_url": workflowRunJobs.workflowRun.repository.git_refs_url,
-    error: false,
-  };
+export type TraceWorkflowRunJobsParams = {
+  trace: TraceAPI;
+  workflowRunJobs: WorkflowRunJobs;
+};
 
-  if (workflowRunJobs.workflowRun.name) {
-    attributes["github.workflow"] = workflowRunJobs.workflowRun.name;
-  }
-  if (workflowRunJobs.workflowRun.conclusion) {
-    attributes["github.conclusion"] = workflowRunJobs.workflowRun.conclusion;
-    attributes["error"] = workflowRunJobs.workflowRun.conclusion === "failure";
-  }
-  if (workflowRunJobs.workflowRun.head_commit?.author) {
-    attributes["github.author_name"] =
-      workflowRunJobs.workflowRun.head_commit.author.name;
-    attributes["github.author_email"] =
-      workflowRunJobs.workflowRun.head_commit.author.email;
-  }
-  if (
-    workflowRunJobs.workflowRun.pull_requests &&
-    workflowRunJobs.workflowRun.pull_requests.length > 0
-  ) {
-    attributes["github.head_ref"] =
-      workflowRunJobs.workflowRun.pull_requests[0].head.ref;
-    attributes["github.base_ref"] =
-      workflowRunJobs.workflowRun.pull_requests[0].base.ref;
-  }
-
+export async function traceWorkflowRunJobs({
+  trace,
+  workflowRunJobs,
+}: TraceWorkflowRunJobsParams) {
   const tracer = trace.getTracer("otel-export-trace");
   const startTime = new Date(workflowRunJobs.workflowRun.created_at);
 
@@ -63,12 +32,43 @@ export function traceWorkflowRunJobs(
     workflowRunJobs.workflowRun.name ||
       `${workflowRunJobs.workflowRun.workflow_id}`,
     {
-      attributes,
+      attributes: {
+        "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
+        "github.run_id": workflowRunJobs.workflowRun.id,
+        "github.run_number": workflowRunJobs.workflowRun.run_number,
+        "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
+        "github.html_url": workflowRunJobs.workflowRun.html_url,
+        "github.event": workflowRunJobs.workflowRun.event,
+        "github.workflow": workflowRunJobs.workflowRun.name || undefined,
+        "github.conclusion":
+          workflowRunJobs.workflowRun.conclusion || undefined,
+        "github.author_name":
+          workflowRunJobs.workflowRun.head_commit?.author?.name || undefined,
+        "github.author_email":
+          workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
+        "github.head_sha": workflowRunJobs.workflowRun.head_sha,
+        "github.head_ref":
+          (workflowRunJobs.workflowRun.pull_requests || [{}])[0].head?.ref ||
+          undefined,
+        "github.base_ref":
+          (workflowRunJobs.workflowRun.pull_requests || [{}])[0].base?.ref ||
+          undefined,
+        "github.base_sha":
+          (workflowRunJobs.workflowRun.pull_requests || [{}])[0].base?.sha ||
+          undefined,
+        error: workflowRunJobs.workflowRun.conclusion === "failure",
+      },
       root: true,
       startTime,
-    }
+    },
+    ROOT_CONTEXT
   );
 
+  let code = SpanStatusCode.OK;
+  if (workflowRunJobs.workflowRun.conclusion === "failure") {
+    code = SpanStatusCode.ERROR;
+  }
+  rootSpan.setStatus({ code });
   console.log(
     `Root Span: ${rootSpan.spanContext().traceId}: ${
       workflowRunJobs.workflowRun.created_at
@@ -76,34 +76,42 @@ export function traceWorkflowRunJobs(
   );
 
   try {
-    workflowRunJobs.jobs.forEach((job) => {
-      traceWorkflowRunJob({
-        context,
+    if (workflowRunJobs.jobs.length > 0) {
+      const firstJob = workflowRunJobs.jobs[0];
+      const queueCtx = trace.setSpan(ROOT_CONTEXT, rootSpan);
+      const queueSpan = tracer.startSpan("Queued", { startTime }, queueCtx);
+      queueSpan.end(new Date(firstJob.started_at));
+    }
+
+    for (let i = 0; i < workflowRunJobs.jobs.length; i++) {
+      const job = workflowRunJobs.jobs[i];
+      await traceWorkflowRunJob({
+        parentSpan: rootSpan,
+        parentContext: ROOT_CONTEXT,
         trace,
-        rootSpan,
         tracer,
         job,
         workflowArtifacts: workflowRunJobs.workflowRunArtifacts,
       });
-    });
+    }
   } finally {
     rootSpan.end(new Date(workflowRunJobs.workflowRun.updated_at));
   }
 }
 
 type TraceWorkflowRunJobParams = {
-  context: ContextAPI;
+  parentContext: Context;
+  parentSpan: Span;
   trace: TraceAPI;
-  rootSpan: Span;
   tracer: Tracer;
   job: WorkflowRunJob;
   workflowArtifacts: WorkflowArtifactLookup;
 };
 
-function traceWorkflowRunJob({
-  context,
+async function traceWorkflowRunJob({
+  parentContext,
   trace,
-  rootSpan,
+  parentSpan,
   tracer,
   job,
   workflowArtifacts,
@@ -114,9 +122,9 @@ function traceWorkflowRunJob({
     return;
   }
   job.name;
-  const jobContext = trace.setSpan(context.active(), rootSpan);
+  const ctx = trace.setSpan(parentContext, parentSpan);
   const startTime = new Date(job.started_at);
-  const jobSpan = tracer.startSpan(
+  const span = tracer.startSpan(
     job.name,
     {
       attributes: {
@@ -124,44 +132,43 @@ function traceWorkflowRunJob({
         "github.job.name": job.name,
         "github.job.run_id": job.run_id,
         "github.job.run_attempt": job.run_attempt || 1,
+        "github.job.runner_group_id": job.runner_group_id || undefined,
+        "github.job.runner_group_name": job.runner_group_name || undefined,
+        "github.job.runner_name": job.runner_name || undefined,
+        "github.job.conclusion": job.conclusion || undefined,
+        "github.job.labels": job.labels.join(", ") || undefined,
+        "github.conclusion": job.conclusion || undefined,
         error: job.conclusion === "failure",
       },
       startTime,
     },
-    jobContext
+    ctx
   );
-  console.log(`Job Span: ${jobSpan.spanContext().spanId}: ${job.started_at}`);
-  if (job.runner_group_id) {
-    jobSpan.setAttribute("github.job.runner_group_id", job.runner_group_id);
-  }
-  if (job.runner_group_name) {
-    jobSpan.setAttribute("github.job.runner_group_name", job.runner_group_name);
-  }
-  if (job.runner_name) {
-    jobSpan.setAttribute("github.job.runner_name", job.runner_name);
-  }
-  if (job.conclusion) {
-    jobSpan.setAttribute("github.job.conclusion", job.conclusion);
-  }
-  if (job.labels.length > 0) {
-    jobSpan.setAttribute("github.job.labels", job.labels.join(", "));
-  }
+  console.log(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
+
   try {
+    let code = SpanStatusCode.OK;
+    if (job.conclusion === "failure") {
+      code = SpanStatusCode.ERROR;
+    }
+    span.setStatus({ code });
     const numSteps = job.steps?.length || 0;
     console.log(`Trace ${numSteps} Steps`);
-    job.steps?.forEach((step?: WorkflowRunJobStep) => {
-      traceWorkflowRunStep({
-        job,
-        context,
-        trace,
-        jobSpan,
-        tracer,
-        workflowArtifacts,
-        step,
-      });
-    });
+    if (job.steps !== undefined) {
+      for (let i = 0; i < job.steps.length; i++) {
+        const step: WorkflowRunJobStep = job.steps[i];
+        await traceWorkflowRunStep({
+          job,
+          parentContext: ctx,
+          trace,
+          parentSpan: span,
+          tracer,
+          workflowArtifacts,
+          step,
+        });
+      }
+    }
   } finally {
-    const completedAt: string = job.completed_at;
-    jobSpan.end(new Date(completedAt));
+    span.end(new Date(job.completed_at));
   }
 }

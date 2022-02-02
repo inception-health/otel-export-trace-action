@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="9" failures="1" errors="0" time="3.385">
+  <testsuite name="createTracerProvider" errors="0" failures="1" skipped="0" timestamp="2022-02-01T18:37:11" time="2.492" tests="5">
+    <testcase classname="createTracerProvider test service.name resource is workflow name" name="createTracerProvider test service.name resource is workflow name" time="0.019">
+    </testcase>
+    <testcase classname="createTracerProvider test service.name resource is workflow id" name="createTracerProvider test service.name resource is workflow id" time="0.023">
+      <failure message="Error: expect(received).toEqual(expected) // deep equality">
+
+Expected: 1
+Received: &quot;1&quot;
+    at Object.&lt;anonymous&gt; (/Users/nick/work/otel-export-trace-action/src/tracing/trace.test.ts:51:7)
+    at Promise.then.completed (/Users/nick/work/otel-export-trace-action/node_modules/jest-circus/build/utils.js:391:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/nick/work/otel-export-trace-action/node_modules/jest-circus/build/utils.js:316:10)
+    at _callCircusTest (/Users/nick/work/otel-export-trace-action/node_modules/jest-circus/build/run.js:218:40)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at _runTest (/Users/nick/work/otel-export-trace-action/node_modules/jest-circus/build/run.js:155:3)
+    at _runTestsForDescribeBlock (/Users/nick/work/otel-export-trace-action/node_modules/jest-circus/build/run.js:66:9)
+    at _runTestsForDescribeBlock (/Users/nick/work/otel-export-trace-action/node_modules/jest-circus/build/run.js:60:9)
+    at run (/Users/nick/work/otel-export-trace-action/node_modules/jest-circus/build/run.js:25:3)</failure>
+    </testcase>
+    <testcase classname="createTracerProvider test service.instance.id resource" name="createTracerProvider test service.instance.id resource" time="0.002">
+    </testcase>
+    <testcase classname="createTracerProvider test service.namespace resource" name="createTracerProvider test service.namespace resource" time="0.002">
+    </testcase>
+    <testcase classname="createTracerProvider test active span processor" name="createTracerProvider test active span processor" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="listWorkflowRunArtifacts" errors="0" failures="0" skipped="0" timestamp="2022-02-01T18:37:14" time="0.159" tests="2">
+    <testcase classname="listWorkflowRunArtifacts test WorkflowArtifactDownload return to be defined" name="listWorkflowRunArtifacts test WorkflowArtifactDownload return to be defined" time="0.001">
+    </testcase>
+    <testcase classname="listWorkflowRunArtifacts test WorkflowArtifactDownload path exists" name="listWorkflowRunArtifacts test WorkflowArtifactDownload path exists" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="traceTestReportArtifact" errors="0" failures="0" skipped="0" timestamp="2022-02-01T18:37:14" time="0.552" tests="2">
+    <testcase classname="traceTestReportArtifact test report type not supported" name="traceTestReportArtifact test report type not supported" time="0.004">
+    </testcase>
+    <testcase classname="traceTestReportArtifact test junit spans match snapshot" name="traceTestReportArtifact test junit spans match snapshot" time="0.009">
+    </testcase>
+  </testsuite>
+</testsuites>
