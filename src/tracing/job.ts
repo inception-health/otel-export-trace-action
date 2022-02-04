@@ -1,12 +1,12 @@
 import {
   Span,
   TraceAPI,
-  Tracer,
   SpanStatusCode,
   ROOT_CONTEXT,
   Context,
+  trace,
 } from "@opentelemetry/api";
-
+import { BasicTracerProvider, Tracer } from "@opentelemetry/sdk-trace-base";
 import {
   WorkflowRunJobs,
   WorkflowRunJob,
@@ -17,15 +17,16 @@ import {
 import { traceWorkflowRunStep } from "./step";
 
 export type TraceWorkflowRunJobsParams = {
-  trace: TraceAPI;
+  provider: BasicTracerProvider;
   workflowRunJobs: WorkflowRunJobs;
 };
 
 export async function traceWorkflowRunJobs({
-  trace,
+  provider,
   workflowRunJobs,
 }: TraceWorkflowRunJobsParams) {
-  const tracer = trace.getTracer("otel-export-trace");
+  const tracer = provider.getTracer("otel-export-trace");
+
   const startTime = new Date(workflowRunJobs.workflowRun.created_at);
 
   const rootSpan = tracer.startSpan(
@@ -63,7 +64,7 @@ export async function traceWorkflowRunJobs({
     },
     ROOT_CONTEXT
   );
-
+  rootSpan.spanContext().traceId;
   let code = SpanStatusCode.OK;
   if (workflowRunJobs.workflowRun.conclusion === "failure") {
     code = SpanStatusCode.ERROR;

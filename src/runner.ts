@@ -1,6 +1,6 @@
 import * as github from "@actions/github";
 import * as core from "@actions/core";
-import { context, trace } from "@opentelemetry/api";
+import { trace } from "@opentelemetry/api";
 
 import { getWorkflowRunJobs } from "./github";
 import { createTracerProvider, traceWorkflowRunJobs } from "./tracing";
@@ -29,7 +29,7 @@ export async function run() {
     console.log(
       `Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`
     );
-    await traceWorkflowRunJobs({ trace, workflowRunJobs });
+    await traceWorkflowRunJobs({ provider, workflowRunJobs });
   } finally {
     console.log("Shutdown Trace Provider");
     setTimeout(() => {

@@ -1,17 +1,12 @@
-import {
-  Span,
-  TraceAPI,
-  Tracer,
-  Context,
-  SpanStatusCode,
-} from "@opentelemetry/api";
-
+import { TraceAPI, Context, SpanStatusCode, Span } from "@opentelemetry/api";
+import { Tracer } from "@opentelemetry/sdk-trace-base";
 import {
   WorkflowRunJobStep,
   WorkflowRunJob,
   WorkflowArtifactLookup,
 } from "../github";
 import { traceJunitArtifact } from "./trace-junit";
+import { traceOTLPFile } from "./trace-otlp-file";
 
 export type TraceWorkflowRunStepParams = {
   job: WorkflowRunJob;
@@ -98,8 +93,7 @@ async function traceArtifact({
 }: TraceArtifactParams) {
   const artifact = workflowArtifacts(job.name, step.name);
   if (artifact) {
-    await traceJunitArtifact({
-      trace,
+    await traceOTLPFile({
       tracer,
       parentContext,
       parentSpan,

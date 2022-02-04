@@ -30,6 +30,15 @@ jobs:
         with:
           name: "{lint-and-format-check}{run tests}{junit}"
           path: junit.xml
+      - uses: inception-health/otel-upload-test-artifact-action@v0.1.0
+        if: always()
+        with:
+          jobName: "lint-and-test"
+          stepName: "run tests"
+          path: "junit.xml"
+          type: "junit"
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
   update-dist:
     runs-on: ubuntu-latest
     needs: [lint-and-format-check]
@@ -48,3 +57,14 @@ jobs:
         with:
           commit_message: Add dist artifacts
           file_pattern: dist
+  otel:
+    name: OpenTelemetry Export Trace
+    needs: [update-dist, lint-and-format-check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: export trace
+        uses: ./
+        with:
+          otlpEndpoint: grpc://api.honeycomb.io:443/
+          otlpHeaders: ${{ secrets.DELIVERY_OTLP_HEADERS }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
