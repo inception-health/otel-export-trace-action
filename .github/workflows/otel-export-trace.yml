@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows:
       - "Build Main"
+      - "code quality PR check"
     types: [completed]
 
 jobs:
@@ -12,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: export trace
-        uses: ./
+        uses: inception-health/otel-export-trace-action@1.5.0-rc1
         with:
           otlpEndpoint: grpc://api.honeycomb.io:443/
           otlpHeaders: ${{ secrets.DELIVERY_OTLP_HEADERS }}
