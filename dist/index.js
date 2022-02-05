@@ -600,6 +600,8 @@ function toSpan({ otlpSpan, tracer, parentSpan }) {
     }, toSpanKind(otlpSpan.kind), otlpSpan.parentSpanId || parentSpan.spanContext().spanId, toLinks(otlpSpan.links), otlpSpan.startTimeUnixNano);
 }
 async function traceOTLPFile({ tracer, parentSpan, path, }) {
+    const fileExists = fs.existsSync(path);
+    core.info(`Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`);
     const readStream = fs.createReadStream(path);
     const rl = readline.createInterface({
         input: readStream,

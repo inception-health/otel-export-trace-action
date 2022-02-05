@@ -120,6 +120,10 @@ export async function traceOTLPFile({
   parentSpan,
   path,
 }: TraceOTLPFileParams): Promise<void> {
+  const fileExists = fs.existsSync(path);
+  core.info(
+    `Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`
+  );
   const readStream = fs.createReadStream(path);
   const rl = readline.createInterface({
     input: readStream,
