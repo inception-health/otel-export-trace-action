@@ -134,7 +134,7 @@ export async function traceOTLPFile({
         for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
           if (libSpans.instrumentationLibrary) {
             for (const otlpSpan of libSpans.spans) {
-              core.info(`Trace Test Span<${otlpSpan.spanId}>`);
+              core.info(`Trace test Span<${otlpSpan.spanId}>`);
               const span = toSpan({
                 otlpSpan,
                 tracer,
