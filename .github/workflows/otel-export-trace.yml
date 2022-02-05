@@ -12,8 +12,11 @@ jobs:
     name: OpenTelemetry Export Trace
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: feat-artifacts
       - name: export trace
-        uses: inception-health/otel-export-trace-action@1.5.0-rc1
+        uses: ./
         with:
           otlpEndpoint: grpc://api.honeycomb.io:443/
           otlpHeaders: ${{ secrets.DELIVERY_OTLP_HEADERS }}
