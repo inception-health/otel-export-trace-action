@@ -14,11 +14,31 @@ module.exports = {"i8":"1.5.3"};
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getWorkflowRunJobs = exports.listWorkflowRunArtifacts = void 0;
+const core = __importStar(__nccwpck_require__(2186));
 const axios_1 = __importDefault(__nccwpck_require__(6545));
 const jszip_1 = __importDefault(__nccwpck_require__(3592));
 const fs_1 = __importDefault(__nccwpck_require__(5747));
@@ -43,7 +63,7 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
         /* istanbul ignore next */
         if (((_a = match === null || match === void 0 ? void 0 : match.groups) === null || _a === void 0 ? void 0 : _a.jobName) && ((_b = match === null || match === void 0 ? void 0 : match.groups) === null || _b === void 0 ? void 0 : _b.stepName)) {
             const { jobName, stepName } = match.groups;
-            console.log(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
+            core.info(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
             if (!(jobName in next)) {
                 next[jobName] = {};
             }
@@ -62,7 +82,7 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
             const writeStream = fs_1.default.createWriteStream(`${artifact.name}.log`);
             try {
                 zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
-                console.log(`Downloaded Artifact ${writeStream.path.toString()}`);
+                core.info(`Downloaded Artifact ${writeStream.path.toString()}`);
                 next[jobName][stepName] = {
                     jobName,
                     stepName,
@@ -239,13 +259,33 @@ Object.defineProperty(exports, "createTracerProvider", ({ enumerable: true, get:
 /***/ }),
 
 /***/ 6314:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.traceWorkflowRunJobs = void 0;
 const api_1 = __nccwpck_require__(5163);
+const core = __importStar(__nccwpck_require__(2186));
 const step_1 = __nccwpck_require__(9431);
 async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
     var _a, _b, _c, _d, _e, _f, _g;
@@ -276,13 +316,13 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
         root: true,
         startTime,
     }, api_1.ROOT_CONTEXT);
-    rootSpan.spanContext().traceId;
+    core.info(`TraceID: ${rootSpan.spanContext().traceId}`);
     let code = api_1.SpanStatusCode.OK;
     if (workflowRunJobs.workflowRun.conclusion === "failure") {
         code = api_1.SpanStatusCode.ERROR;
     }
     rootSpan.setStatus({ code });
-    console.log(`Root Span: ${rootSpan.spanContext().traceId}: ${workflowRunJobs.workflowRun.created_at}`);
+    core.info(`Root Span: ${rootSpan.spanContext().traceId}: ${workflowRunJobs.workflowRun.created_at}`);
     try {
         if (workflowRunJobs.jobs.length > 0) {
             const firstJob = workflowRunJobs.jobs[0];
@@ -309,7 +349,7 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
 exports.traceWorkflowRunJobs = traceWorkflowRunJobs;
 async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, job, workflowArtifacts, }) {
     var _a;
-    console.log(`Trace Job ${job.id}`);
+    core.info(`Trace Job ${job.id}`);
     if (!job.completed_at) {
         console.warn(`Job ${job.id} is not completed yet`);
         return;
@@ -333,7 +373,7 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
         },
         startTime,
     }, ctx);
-    console.log(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
+    core.info(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
     try {
         let code = api_1.SpanStatusCode.OK;
         if (job.conclusion === "failure") {
@@ -341,7 +381,7 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
         }
         span.setStatus({ code });
         const numSteps = ((_a = job.steps) === null || _a === void 0 ? void 0 : _a.length) || 0;
-        console.log(`Trace ${numSteps} Steps`);
+        core.info(`Trace ${numSteps} Steps`);
         if (job.steps !== undefined) {
             for (let i = 0; i < job.steps.length; i++) {
                 const step = job.steps[i];
@@ -366,12 +406,32 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
 /***/ }),
 
 /***/ 9431:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.traceWorkflowRunStep = void 0;
+const core = __importStar(__nccwpck_require__(2186));
 const api_1 = __nccwpck_require__(5163);
 const trace_otlp_file_1 = __nccwpck_require__(535);
 async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tracer, workflowArtifacts, step, }) {
@@ -380,7 +440,7 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
         console.warn(`Step ${stepName} is not completed yet`);
         return;
     }
-    console.log(`Trace Step ${step.name}`);
+    core.info(`Trace Step ${step.name}`);
     const ctx = trace.setSpan(parentContext, parentSpan);
     const startTime = new Date(step.started_at);
     const span = tracer.startSpan(step.name, {
@@ -396,7 +456,7 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
         if (step.conclusion !== "failure") {
             span.setStatus({ code: api_1.SpanStatusCode.OK });
         }
-        console.log(`Job Span: ${span.spanContext().spanId}: ${step.started_at}`);
+        core.info(`Job Span: ${span.spanContext().spanId}: ${step.started_at}`);
         if (step.conclusion) {
             span.setAttribute("github.job.step.conclusion", step.conclusion);
         }
@@ -417,6 +477,7 @@ exports.traceWorkflowRunStep = traceWorkflowRunStep;
 async function traceArtifact({ tracer, parentSpan, job, step, startTime, workflowArtifacts, }) {
     const artifact = workflowArtifacts(job.name, step.name);
     if (artifact) {
+        core.info(`Found Artifact ${artifact === null || artifact === void 0 ? void 0 : artifact.path}`);
         await (0, trace_otlp_file_1.traceOTLPFile)({
             tracer,
             parentSpan,
@@ -425,7 +486,7 @@ async function traceArtifact({ tracer, parentSpan, job, step, startTime, workflo
         });
     }
     else {
-        console.log(`No Artifact to trace for Job<${job.name}> Step<${step.name}>`);
+        core.info(`No Artifact to trace for Job<${job.name}> Step<${step.name}>`);
     }
 }
 
@@ -461,6 +522,7 @@ exports.traceOTLPFile = void 0;
 const sdk_trace_base_1 = __nccwpck_require__(9253);
 const core_1 = __nccwpck_require__(9736);
 const exporter_trace_otlp_http_1 = __nccwpck_require__(5401);
+const core = __importStar(__nccwpck_require__(2186));
 const fs = __importStar(__nccwpck_require__(5747));
 const readline = __importStar(__nccwpck_require__(1058));
 const api = __importStar(__nccwpck_require__(5163));
@@ -550,6 +612,7 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
                 for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
                     if (libSpans.instrumentationLibrary) {
                         for (const otlpSpan of libSpans.spans) {
+                            core.info(`Trace Test Span<${otlpSpan.spanId}>`);
                             const span = toSpan({
                                 otlpSpan,
                                 tracer,

@@ -1,5 +1,6 @@
 import { Context } from "@actions/github/lib/context";
 import { GitHub } from "@actions/github/lib/utils";
+import * as core from "@actions/core";
 import { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods";
 import axios from "axios";
 import JSZip from "jszip";
@@ -79,7 +80,7 @@ export async function listWorkflowRunArtifacts(
       /* istanbul ignore next */
       if (match?.groups?.jobName && match?.groups?.stepName) {
         const { jobName, stepName } = match.groups;
-        console.log(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
+        core.info(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
         if (!(jobName in next)) {
           next[jobName] = {};
         }
@@ -99,7 +100,7 @@ export async function listWorkflowRunArtifacts(
         const writeStream = fs.createWriteStream(`${artifact.name}.log`);
         try {
           zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
-          console.log(`Downloaded Artifact ${writeStream.path.toString()}`);
+          core.info(`Downloaded Artifact ${writeStream.path.toString()}`);
           next[jobName][stepName] = {
             jobName,
             stepName,

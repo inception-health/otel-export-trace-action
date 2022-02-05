@@ -1,6 +1,7 @@
 import { Tracer, Span as SpanImpl } from "@opentelemetry/sdk-trace-base";
 import { TraceState } from "@opentelemetry/core";
 import { otlpTypes } from "@opentelemetry/exporter-trace-otlp-http";
+import * as core from "@actions/core";
 import * as fs from "fs";
 import * as readline from "readline";
 import * as api from "@opentelemetry/api";
@@ -133,6 +134,7 @@ export async function traceOTLPFile({
         for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
           if (libSpans.instrumentationLibrary) {
             for (const otlpSpan of libSpans.spans) {
+              core.info(`Trace Test Span<${otlpSpan.spanId}>`);
               const span = toSpan({
                 otlpSpan,
                 tracer,

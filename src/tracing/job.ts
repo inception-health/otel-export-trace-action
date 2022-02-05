@@ -7,6 +7,7 @@ import {
   trace,
 } from "@opentelemetry/api";
 import { BasicTracerProvider, Tracer } from "@opentelemetry/sdk-trace-base";
+import * as core from "@actions/core";
 import {
   WorkflowRunJobs,
   WorkflowRunJob,
@@ -64,13 +65,13 @@ export async function traceWorkflowRunJobs({
     },
     ROOT_CONTEXT
   );
-  rootSpan.spanContext().traceId;
+  core.info(`TraceID: ${rootSpan.spanContext().traceId}`);
   let code = SpanStatusCode.OK;
   if (workflowRunJobs.workflowRun.conclusion === "failure") {
     code = SpanStatusCode.ERROR;
   }
   rootSpan.setStatus({ code });
-  console.log(
+  core.info(
     `Root Span: ${rootSpan.spanContext().traceId}: ${
       workflowRunJobs.workflowRun.created_at
     }`
@@ -117,7 +118,7 @@ async function traceWorkflowRunJob({
   job,
   workflowArtifacts,
 }: TraceWorkflowRunJobParams) {
-  console.log(`Trace Job ${job.id}`);
+  core.info(`Trace Job ${job.id}`);
   if (!job.completed_at) {
     console.warn(`Job ${job.id} is not completed yet`);
     return;
@@ -145,7 +146,7 @@ async function traceWorkflowRunJob({
     },
     ctx
   );
-  console.log(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
+  core.info(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
 
   try {
     let code = SpanStatusCode.OK;
@@ -154,7 +155,7 @@ async function traceWorkflowRunJob({
     }
     span.setStatus({ code });
     const numSteps = job.steps?.length || 0;
-    console.log(`Trace ${numSteps} Steps`);
+    core.info(`Trace ${numSteps} Steps`);
     if (job.steps !== undefined) {
       for (let i = 0; i < job.steps.length; i++) {
         const step: WorkflowRunJobStep = job.steps[i];
