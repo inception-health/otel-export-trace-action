@@ -54,16 +54,3 @@ jobs:
         with:
           commit_message: Add dist artifacts
           file_pattern: dist
-  otel:
-    name: OpenTelemetry Export Trace
-    needs: [update-dist, lint-and-format-check]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - uses: actions/checkout@v2
-      - name: export trace
-        uses: ./
-        with:
-          otlpEndpoint: grpc://api.honeycomb.io:443/
-          otlpHeaders: ${{ secrets.DELIVERY_OTLP_HEADERS }}
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
