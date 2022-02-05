@@ -60,6 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
+      - uses: actions/checkout@v2
       - name: export trace
         uses: ./
         with:
