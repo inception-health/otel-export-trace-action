@@ -1,6 +1,5 @@
 import * as github from "@actions/github";
 import * as core from "@actions/core";
-import { trace } from "@opentelemetry/api";
 
 import { getWorkflowRunJobs } from "./github";
 import { createTracerProvider, traceWorkflowRunJobs } from "./tracing";

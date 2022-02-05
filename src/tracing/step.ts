@@ -5,7 +5,6 @@ import {
   WorkflowRunJob,
   WorkflowArtifactLookup,
 } from "../github";
-import { traceJunitArtifact } from "./trace-junit";
 import { traceOTLPFile } from "./trace-otlp-file";
 
 export type TraceWorkflowRunStepParams = {
@@ -56,10 +55,8 @@ export async function traceWorkflowRunStep({
       span.setAttribute("github.job.step.conclusion", step.conclusion);
     }
     await traceArtifact({
-      trace,
       tracer,
       parentSpan: span,
-      parentContext: ctx,
       job,
       step,
       startTime,
@@ -71,9 +68,7 @@ export async function traceWorkflowRunStep({
 }
 
 type TraceArtifactParams = {
-  trace: TraceAPI;
   tracer: Tracer;
-  parentContext: Context;
   parentSpan: Span;
   job: WorkflowRunJob;
   step: WorkflowRunJobStep;
@@ -82,10 +77,8 @@ type TraceArtifactParams = {
 };
 
 async function traceArtifact({
-  trace,
   tracer,
   parentSpan,
-  parentContext,
   job,
   step,
   startTime,
@@ -95,7 +88,6 @@ async function traceArtifact({
   if (artifact) {
     await traceOTLPFile({
       tracer,
-      parentContext,
       parentSpan,
       startTime,
       path: artifact.path,

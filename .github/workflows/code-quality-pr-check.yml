@@ -58,6 +58,7 @@ jobs:
     name: OpenTelemetry Export Trace
     needs: [update-dist, lint-and-format-check]
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - name: export trace
         uses: ./

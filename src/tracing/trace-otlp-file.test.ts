@@ -1,34 +1,16 @@
 import path from "path";
-import { trace, ROOT_CONTEXT, SpanStatusCode } from "@opentelemetry/api";
+import * as api from "@opentelemetry/api";
 import {
   Tracer,
   BasicTracerProvider,
   InMemorySpanExporter,
   SimpleSpanProcessor,
+  Span,
 } from "@opentelemetry/sdk-trace-base";
-import { IdGenerator } from "@opentelemetry/core";
 import { Resource } from "@opentelemetry/resources";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 
 import { traceOTLPFile } from "./trace-otlp-file";
-class TestIdGenerator implements IdGenerator {
-  traceIdCounter: number;
-  spanIdCounter: number;
-
-  constructor() {
-    this.traceIdCounter = 0;
-    this.spanIdCounter = 0;
-  }
-  generateTraceId() {
-    this.traceIdCounter += 1;
-    return `${this.traceIdCounter}`;
-  }
-
-  generateSpanId() {
-    this.spanIdCounter += 1;
-    return `${this.spanIdCounter}`;
-  }
-}
 
 describe("traceJunitArtifact", () => {
   let memoryExporter: InMemorySpanExporter;
@@ -72,12 +54,11 @@ describe("traceJunitArtifact", () => {
     const span = tracer.startSpan(
       "traceTestReportArtifact",
       { startTime, root: true, attributes: { root: true } },
-      ROOT_CONTEXT
+      api.ROOT_CONTEXT
     );
     await traceOTLPFile({
       tracer,
-      parentContext: ROOT_CONTEXT,
-      parentSpan: span,
+      parentSpan: span as Span,
       startTime,
       path: junitFilePath,
     });
@@ -94,7 +75,7 @@ describe("traceJunitArtifact", () => {
       expect(s.endTime[0]).toBeGreaterThanOrEqual(s.startTime[0]);
       expect(s.endTime[1]).toBeGreaterThanOrEqual(s.startTime[1]);
       expect(s.status).toBeDefined();
-      if (s.status.code === SpanStatusCode.ERROR) {
+      if (s.status.code === api.SpanStatusCode.ERROR) {
         expect(s.attributes.error).toBeTruthy();
       } else {
         expect(s.attributes.error).toBeFalsy();
@@ -114,12 +95,11 @@ describe("traceJunitArtifact", () => {
     const span = tracer.startSpan(
       "traceTestReportArtifact",
       { startTime, root: true, attributes: { root: true } },
-      ROOT_CONTEXT
+      api.ROOT_CONTEXT
     );
     await traceOTLPFile({
       tracer,
-      parentContext: ROOT_CONTEXT,
-      parentSpan: span,
+      parentSpan: span as Span,
       startTime,
       path: junitFilePath,
     });
@@ -136,7 +116,7 @@ describe("traceJunitArtifact", () => {
       expect(s.endTime[0]).toBeGreaterThanOrEqual(s.startTime[0]);
       expect(s.endTime[1]).toBeGreaterThanOrEqual(s.startTime[1]);
       expect(s.status).toBeDefined();
-      if (s.status.code === SpanStatusCode.ERROR) {
+      if (s.status.code === api.SpanStatusCode.ERROR) {
         expect(s.attributes.error).toBeTruthy();
       } else {
         expect(s.attributes.error).toBeFalsy();
@@ -156,12 +136,11 @@ describe("traceJunitArtifact", () => {
     const span = tracer.startSpan(
       "traceTestReportArtifact",
       { startTime, root: true, attributes: { root: true } },
-      ROOT_CONTEXT
+      api.ROOT_CONTEXT
     );
     await traceOTLPFile({
       tracer,
-      parentContext: ROOT_CONTEXT,
-      parentSpan: span,
+      parentSpan: span as Span,
       startTime,
       path: junitFilePath,
     });
@@ -178,7 +157,7 @@ describe("traceJunitArtifact", () => {
       expect(s.endTime[0]).toBeGreaterThanOrEqual(s.startTime[0]);
       expect(s.endTime[1]).toBeGreaterThanOrEqual(s.startTime[1]);
       expect(s.status).toBeDefined();
-      if (s.status.code === SpanStatusCode.ERROR) {
+      if (s.status.code === api.SpanStatusCode.ERROR) {
         expect(s.attributes.error).toBeTruthy();
       } else {
         expect(s.attributes.error).toBeFalsy();

@@ -397,10 +397,8 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
             span.setAttribute("github.job.step.conclusion", step.conclusion);
         }
         await traceArtifact({
-            trace,
             tracer,
             parentSpan: span,
-            parentContext: ctx,
             job,
             step,
             startTime,
@@ -412,12 +410,11 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
     }
 }
 exports.traceWorkflowRunStep = traceWorkflowRunStep;
-async function traceArtifact({ trace, tracer, parentSpan, parentContext, job, step, startTime, workflowArtifacts, }) {
+async function traceArtifact({ tracer, parentSpan, job, step, startTime, workflowArtifacts, }) {
     const artifact = workflowArtifacts(job.name, step.name);
     if (artifact) {
         await (0, trace_otlp_file_1.traceOTLPFile)({
             tracer,
-            parentContext,
             parentSpan,
             startTime,
             path: artifact.path,
@@ -463,29 +460,38 @@ const exporter_trace_otlp_http_1 = __nccwpck_require__(5401);
 const fs = __importStar(__nccwpck_require__(5747));
 const readline = __importStar(__nccwpck_require__(1058));
 const api = __importStar(__nccwpck_require__(5163));
+/* istanbul ignore next */
 function toSpanKind(spanKind) {
     switch (spanKind) {
+        /* istanbul ignore next */
         case exporter_trace_otlp_http_1.otlpTypes.opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_CLIENT:
             return api.SpanKind.CLIENT;
+        /* istanbul ignore next */
         case exporter_trace_otlp_http_1.otlpTypes.opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_CONSUMER:
             return api.SpanKind.CONSUMER;
         case exporter_trace_otlp_http_1.otlpTypes.opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_INTERNAL:
             return api.SpanKind.INTERNAL;
+        /* istanbul ignore next */
         case exporter_trace_otlp_http_1.otlpTypes.opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_PRODUCER:
             return api.SpanKind.PRODUCER;
+        /* istanbul ignore next */
         case exporter_trace_otlp_http_1.otlpTypes.opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_SERVER:
             return api.SpanKind.SERVER;
+        /* istanbul ignore next */
         default:
             return api.SpanKind.INTERNAL;
     }
 }
 function toLinks(links) {
+    /* istanbul ignore if */
     if (links === undefined) {
         return undefined;
     }
+    // TODO implement Links
 }
 function toAttributeValue(value) {
     var _a, _b;
+    /* istanbul ignore else */
     if ("stringValue" in value) {
         return value.stringValue;
     }
@@ -506,9 +512,11 @@ function toAttributeValue(value) {
             return { ...result, [key]: toAttributeValue(value) };
         }, {}));
     }
+    /* istanbul ignore next */
     return undefined;
 }
 function toAttributes(attributes) {
+    /* istanbul ignore if */
     if (!attributes) {
         return {};
     }
@@ -517,15 +525,15 @@ function toAttributes(attributes) {
     }, {});
     return rv;
 }
-function toSpan({ otlpSpan, tracer, context, parentSpan, }) {
-    return new sdk_trace_base_1.Span(tracer, context, otlpSpan.name, {
+function toSpan({ otlpSpan, tracer, parentSpan }) {
+    return new sdk_trace_base_1.Span(tracer, api.context.active(), otlpSpan.name, {
         traceId: parentSpan.spanContext().traceId,
         spanId: otlpSpan.spanId,
         traceFlags: parentSpan.spanContext().traceFlags,
         traceState: new core_1.TraceState(otlpSpan.traceState),
     }, toSpanKind(otlpSpan.kind), otlpSpan.parentSpanId || parentSpan.spanContext().spanId, toLinks(otlpSpan.links), otlpSpan.startTimeUnixNano);
 }
-async function traceOTLPFile({ tracer, parentSpan, parentContext, startTime, path, }) {
+async function traceOTLPFile({ tracer, parentSpan, path, }) {
     const readStream = fs.createReadStream(path);
     const rl = readline.createInterface({
         input: readStream,
@@ -537,8 +545,11 @@ async function traceOTLPFile({ tracer, parentSpan, parentContext, startTime, pat
             for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
                 if (libSpans.instrumentationLibrary) {
                     for (const otlpSpan of libSpans.spans) {
-                        const context = api.trace.setSpan(parentContext, parentSpan);
-                        const span = toSpan({ otlpSpan, tracer, context, parentSpan });
+                        const span = toSpan({
+                            otlpSpan,
+                            tracer,
+                            parentSpan,
+                        });
                         const attributes = toAttributes(otlpSpan.attributes);
                         if (attributes) {
                             span.setAttributes(attributes);
