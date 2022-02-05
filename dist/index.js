@@ -5,7 +5,7 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /***/ ((module) => {
 
 "use strict";
-module.exports = {"i8":"1.4.5"};
+module.exports = {"i8":"1.5.3"};
 
 /***/ }),
 
@@ -2676,7 +2676,7 @@ class Http2CallStream {
                             break;
                         case http2.constants.NGHTTP2_ENHANCE_YOUR_CALM:
                             code = constants_1.Status.RESOURCE_EXHAUSTED;
-                            details = 'Bandwidth exhausted';
+                            details = 'Bandwidth exhausted or memory limit exceeded';
                             break;
                         case http2.constants.NGHTTP2_INADEQUATE_SECURITY:
                             code = constants_1.Status.PERMISSION_DENIED;
@@ -3160,11 +3160,12 @@ class SecureChannelCredentialsImpl extends ChannelCredentials {
             cert: certChain || undefined,
             ciphers: tls_helpers_1.CIPHER_SUITES,
         });
-        this.connectionOptions = { secureContext };
-        if (verifyOptions && verifyOptions.checkServerIdentity) {
-            this.connectionOptions.checkServerIdentity = (host, cert) => {
-                return verifyOptions.checkServerIdentity(host, { raw: cert.raw });
-            };
+        this.connectionOptions = {
+            secureContext
+        };
+        // Node asserts that this option is a function, so we cannot pass undefined
+        if (verifyOptions === null || verifyOptions === void 0 ? void 0 : verifyOptions.checkServerIdentity) {
+            this.connectionOptions.checkServerIdentity = verifyOptions.checkServerIdentity;
         }
     }
     compose(callCredentials) {
@@ -3496,7 +3497,7 @@ class ChannelImplementation {
             new call_credentials_filter_1.CallCredentialsFilterFactory(this),
             new deadline_filter_1.DeadlineFilterFactory(this),
             new max_message_size_filter_1.MaxMessageSizeFilterFactory(this.options),
-            new compression_filter_1.CompressionFilterFactory(this),
+            new compression_filter_1.CompressionFilterFactory(this, this.options),
         ]);
         this.trace('Channel constructed with options ' + JSON.stringify(options, undefined, 2));
     }
@@ -5298,6 +5299,40 @@ exports.Client = Client;
 
 /***/ }),
 
+/***/ 4789:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright 2021 gRPC authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CompressionAlgorithms = void 0;
+var CompressionAlgorithms;
+(function (CompressionAlgorithms) {
+    CompressionAlgorithms[CompressionAlgorithms["identity"] = 0] = "identity";
+    CompressionAlgorithms[CompressionAlgorithms["deflate"] = 1] = "deflate";
+    CompressionAlgorithms[CompressionAlgorithms["gzip"] = 2] = "gzip";
+})(CompressionAlgorithms = exports.CompressionAlgorithms || (exports.CompressionAlgorithms = {}));
+;
+//# sourceMappingURL=compression-algorithms.js.map
+
+/***/ }),
+
 /***/ 7616:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -5322,7 +5357,13 @@ exports.Client = Client;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CompressionFilterFactory = exports.CompressionFilter = void 0;
 const zlib = __nccwpck_require__(8761);
+const compression_algorithms_1 = __nccwpck_require__(4789);
+const constants_1 = __nccwpck_require__(634);
 const filter_1 = __nccwpck_require__(3392);
+const logging = __nccwpck_require__(5993);
+const isCompressionAlgorithmKey = (key) => {
+    return typeof key === 'number' && typeof compression_algorithms_1.CompressionAlgorithms[key] === 'string';
+};
 class CompressionHandler {
     /**
      * @param message Raw uncompressed message bytes
@@ -5448,15 +5489,46 @@ function getCompressionHandler(compressionName) {
     }
 }
 class CompressionFilter extends filter_1.BaseFilter {
-    constructor() {
-        super(...arguments);
+    constructor(channelOptions, sharedFilterConfig) {
+        var _a;
+        super();
+        this.sharedFilterConfig = sharedFilterConfig;
         this.sendCompression = new IdentityHandler();
         this.receiveCompression = new IdentityHandler();
+        this.currentCompressionAlgorithm = 'identity';
+        const compressionAlgorithmKey = channelOptions['grpc.default_compression_algorithm'];
+        if (compressionAlgorithmKey !== undefined) {
+            if (isCompressionAlgorithmKey(compressionAlgorithmKey)) {
+                const clientSelectedEncoding = compression_algorithms_1.CompressionAlgorithms[compressionAlgorithmKey];
+                const serverSupportedEncodings = (_a = sharedFilterConfig.serverSupportedEncodingHeader) === null || _a === void 0 ? void 0 : _a.split(',');
+                /**
+                 * There are two possible situations here:
+                 * 1) We don't have any info yet from the server about what compression it supports
+                 *    In that case we should just use what the client tells us to use
+                 * 2) We've previously received a response from the server including a grpc-accept-encoding header
+                 *    In that case we only want to use the encoding chosen by the client if the server supports it
+                 */
+                if (!serverSupportedEncodings || serverSupportedEncodings.includes(clientSelectedEncoding)) {
+                    this.currentCompressionAlgorithm = clientSelectedEncoding;
+                    this.sendCompression = getCompressionHandler(this.currentCompressionAlgorithm);
+                }
+            }
+            else {
+                logging.log(constants_1.LogVerbosity.ERROR, `Invalid value provided for grpc.default_compression_algorithm option: ${compressionAlgorithmKey}`);
+            }
+        }
     }
     async sendMetadata(metadata) {
         const headers = await metadata;
         headers.set('grpc-accept-encoding', 'identity,deflate,gzip');
         headers.set('accept-encoding', 'identity');
+        // No need to send the header if it's "identity" -  behavior is identical; save the bandwidth
+        if (this.currentCompressionAlgorithm === 'identity') {
+            headers.remove('grpc-encoding');
+        }
+        else {
+            headers.set('grpc-encoding', this.currentCompressionAlgorithm);
+        }
         return headers;
     }
     receiveMetadata(metadata) {
@@ -5468,17 +5540,33 @@ class CompressionFilter extends filter_1.BaseFilter {
             }
         }
         metadata.remove('grpc-encoding');
+        /* Check to see if the compression we're using to send messages is supported by the server
+         * If not, reset the sendCompression filter and have it use the default IdentityHandler */
+        const serverSupportedEncodingsHeader = metadata.get('grpc-accept-encoding')[0];
+        if (serverSupportedEncodingsHeader) {
+            this.sharedFilterConfig.serverSupportedEncodingHeader = serverSupportedEncodingsHeader;
+            const serverSupportedEncodings = serverSupportedEncodingsHeader.split(',');
+            if (!serverSupportedEncodings.includes(this.currentCompressionAlgorithm)) {
+                this.sendCompression = new IdentityHandler();
+                this.currentCompressionAlgorithm = 'identity';
+            }
+        }
         metadata.remove('grpc-accept-encoding');
         return metadata;
     }
     async sendMessage(message) {
+        var _a;
         /* This filter is special. The input message is the bare message bytes,
          * and the output is a framed and possibly compressed message. For this
          * reason, this filter should be at the bottom of the filter stack */
         const resolvedMessage = await message;
-        const compress = resolvedMessage.flags === undefined
-            ? false
-            : (resolvedMessage.flags & 2 /* NoCompress */) === 0;
+        let compress;
+        if (this.sendCompression instanceof IdentityHandler) {
+            compress = false;
+        }
+        else {
+            compress = (((_a = resolvedMessage.flags) !== null && _a !== void 0 ? _a : 0) & 2 /* NoCompress */) === 0;
+        }
         return {
             message: await this.sendCompression.writeMessage(resolvedMessage.message, compress),
             flags: resolvedMessage.flags,
@@ -5494,11 +5582,13 @@ class CompressionFilter extends filter_1.BaseFilter {
 }
 exports.CompressionFilter = CompressionFilter;
 class CompressionFilterFactory {
-    constructor(channel) {
+    constructor(channel, options) {
         this.channel = channel;
+        this.options = options;
+        this.sharedFilterConfig = {};
     }
     createFilter(callStream) {
-        return new CompressionFilter();
+        return new CompressionFilter(this.options, this.sharedFilterConfig);
     }
 }
 exports.CompressionFilterFactory = CompressionFilterFactory;
@@ -6025,6 +6115,9 @@ function mapProxyName(target, options) {
     if (((_a = options['grpc.enable_http_proxy']) !== null && _a !== void 0 ? _a : 1) === 0) {
         return noProxyResult;
     }
+    if (target.scheme === 'unix') {
+        return noProxyResult;
+    }
     const proxyInfo = getProxyInfo();
     if (!proxyInfo.address) {
         return noProxyResult;
@@ -6182,11 +6275,13 @@ exports.getProxiedConnection = getProxiedConnection;
  *
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.experimental = exports.StatusBuilder = exports.getClientChannel = exports.ServerCredentials = exports.Server = exports.setLogVerbosity = exports.setLogger = exports.load = exports.loadObject = exports.CallCredentials = exports.ChannelCredentials = exports.waitForClientReady = exports.closeClient = exports.Channel = exports.makeGenericClientConstructor = exports.makeClientConstructor = exports.loadPackageDefinition = exports.Client = exports.propagate = exports.connectivityState = exports.status = exports.logVerbosity = exports.Metadata = exports.credentials = void 0;
+exports.experimental = exports.StatusBuilder = exports.getClientChannel = exports.ServerCredentials = exports.Server = exports.setLogVerbosity = exports.setLogger = exports.load = exports.loadObject = exports.CallCredentials = exports.ChannelCredentials = exports.waitForClientReady = exports.closeClient = exports.Channel = exports.makeGenericClientConstructor = exports.makeClientConstructor = exports.loadPackageDefinition = exports.Client = exports.compressionAlgorithms = exports.propagate = exports.connectivityState = exports.status = exports.logVerbosity = exports.Metadata = exports.credentials = void 0;
 const call_credentials_1 = __nccwpck_require__(1426);
 Object.defineProperty(exports, "CallCredentials", ({ enumerable: true, get: function () { return call_credentials_1.CallCredentials; } }));
 const channel_1 = __nccwpck_require__(3860);
 Object.defineProperty(exports, "Channel", ({ enumerable: true, get: function () { return channel_1.ChannelImplementation; } }));
+const compression_algorithms_1 = __nccwpck_require__(4789);
+Object.defineProperty(exports, "compressionAlgorithms", ({ enumerable: true, get: function () { return compression_algorithms_1.CompressionAlgorithms; } }));
 const connectivity_state_1 = __nccwpck_require__(878);
 Object.defineProperty(exports, "connectivityState", ({ enumerable: true, get: function () { return connectivity_state_1.ConnectivityState; } }));
 const channel_credentials_1 = __nccwpck_require__(4030);
@@ -6799,9 +6894,13 @@ class PickFirstLoadBalancer {
     destroy() {
         this.resetSubchannelList();
         if (this.currentPick !== null) {
-            this.currentPick.unref();
-            this.currentPick.removeConnectivityStateListener(this.pickedSubchannelStateListener);
-            this.channelControlHelper.removeChannelzChild(this.currentPick.getChannelzRef());
+            /* Unref can cause a state change, which can cause a change in the value
+             * of this.currentPick, so we hold a local reference to make sure that
+             * does not impact this function. */
+            const currentPick = this.currentPick;
+            currentPick.unref();
+            currentPick.removeConnectivityStateListener(this.pickedSubchannelStateListener);
+            this.channelControlHelper.removeChannelzChild(currentPick.getChannelzRef());
         }
     }
     getTypeName() {
@@ -7863,6 +7962,7 @@ const logging = __nccwpck_require__(5993);
 const constants_2 = __nccwpck_require__(634);
 const uri_parser_1 = __nccwpck_require__(5974);
 const net_1 = __nccwpck_require__(1631);
+const backoff_timeout_1 = __nccwpck_require__(4186);
 const TRACER_NAME = 'dns_resolver';
 function trace(text) {
     logging.trace(constants_2.LogVerbosity.DEBUG, TRACER_NAME, text);
@@ -7902,6 +8002,7 @@ class DnsResolver {
         this.latestLookupResult = null;
         this.latestServiceConfig = null;
         this.latestServiceConfigError = null;
+        this.continueResolving = false;
         trace('Resolver constructed for target ' + uri_parser_1.uriToString(target));
         const hostPort = uri_parser_1.splitHostPort(target.path);
         if (hostPort === null) {
@@ -7932,6 +8033,16 @@ class DnsResolver {
             details: `Name resolution failed for target ${uri_parser_1.uriToString(this.target)}`,
             metadata: new metadata_1.Metadata(),
         };
+        const backoffOptions = {
+            initialDelay: channelOptions['grpc.initial_reconnect_backoff_ms'],
+            maxDelay: channelOptions['grpc.max_reconnect_backoff_ms'],
+        };
+        this.backoff = new backoff_timeout_1.BackoffTimeout(() => {
+            if (this.continueResolving) {
+                this.startResolutionWithBackoff();
+            }
+        }, backoffOptions);
+        this.backoff.unref();
     }
     /**
      * If the target is an IP address, just provide that address as a result.
@@ -7946,6 +8057,7 @@ class DnsResolver {
             return;
         }
         if (this.dnsHostname === null) {
+            trace('Failed to parse DNS address ' + uri_parser_1.uriToString(this.target));
             setImmediate(() => {
                 this.listener.onError({
                     code: constants_1.Status.UNAVAILABLE,
@@ -7955,6 +8067,7 @@ class DnsResolver {
             });
         }
         else {
+            trace('Looking up DNS hostname ' + this.dnsHostname);
             /* We clear out latestLookupResult here to ensure that it contains the
              * latest result since the last time we started resolving. That way, the
              * TXT resolution handler can use it, but only if it finishes second. We
@@ -7970,6 +8083,7 @@ class DnsResolver {
             this.pendingLookupPromise = dnsLookupPromise(hostname, { all: true });
             this.pendingLookupPromise.then((addressList) => {
                 this.pendingLookupPromise = null;
+                this.backoff.reset();
                 const ip4Addresses = addressList.filter((addr) => addr.family === 4);
                 const ip6Addresses = addressList.filter((addr) => addr.family === 6);
                 this.latestLookupResult = mergeArrays(ip6Addresses, ip4Addresses).map((addr) => ({ host: addr.address, port: +this.port }));
@@ -8037,10 +8151,21 @@ class DnsResolver {
             }
         }
     }
+    startResolutionWithBackoff() {
+        this.startResolution();
+        this.backoff.runOnce();
+    }
     updateResolution() {
-        trace('Resolution update requested for target ' + uri_parser_1.uriToString(this.target));
+        /* If there is a pending lookup, just let it finish. Otherwise, if the
+         * backoff timer is running, do another lookup when it ends, and if not,
+         * do another lookup immeidately. */
         if (this.pendingLookupPromise === null) {
-            this.startResolution();
+            if (this.backoff.isRunning()) {
+                this.continueResolving = true;
+            }
+            else {
+                this.startResolutionWithBackoff();
+            }
         }
     }
     destroy() {
@@ -8616,6 +8741,7 @@ exports.Http2ServerCallStream = exports.ServerDuplexStreamImpl = exports.ServerW
 const events_1 = __nccwpck_require__(8614);
 const http2 = __nccwpck_require__(7565);
 const stream_1 = __nccwpck_require__(2413);
+const zlib = __nccwpck_require__(8761);
 const constants_1 = __nccwpck_require__(634);
 const metadata_1 = __nccwpck_require__(3665);
 const stream_decoder_1 = __nccwpck_require__(6575);
@@ -8641,7 +8767,7 @@ const deadlineUnitsToMs = {
 const defaultResponseHeaders = {
     // TODO(cjihrig): Remove these encoding headers from the default response
     // once compression is integrated.
-    [GRPC_ACCEPT_ENCODING_HEADER]: 'identity',
+    [GRPC_ACCEPT_ENCODING_HEADER]: 'identity,deflate,gzip',
     [GRPC_ENCODING_HEADER]: 'identity',
     [http2.constants.HTTP2_HEADER_STATUS]: http2.constants.HTTP_STATUS_OK,
     [http2.constants.HTTP2_HEADER_CONTENT_TYPE]: 'application/grpc+proto',
@@ -8670,14 +8796,14 @@ class ServerUnaryCallImpl extends events_1.EventEmitter {
 }
 exports.ServerUnaryCallImpl = ServerUnaryCallImpl;
 class ServerReadableStreamImpl extends stream_1.Readable {
-    constructor(call, metadata, deserialize) {
+    constructor(call, metadata, deserialize, encoding) {
         super({ objectMode: true });
         this.call = call;
         this.metadata = metadata;
         this.deserialize = deserialize;
         this.cancelled = false;
         this.call.setupSurfaceCall(this);
-        this.call.setupReadable(this);
+        this.call.setupReadable(this, encoding);
     }
     _read(size) {
         if (!this.call.consumeUnpushedMessages(this)) {
@@ -8749,12 +8875,12 @@ class ServerWritableStreamImpl extends stream_1.Writable {
         if (metadata) {
             this.trailingMetadata = metadata;
         }
-        super.end();
+        return super.end();
     }
 }
 exports.ServerWritableStreamImpl = ServerWritableStreamImpl;
 class ServerDuplexStreamImpl extends stream_1.Duplex {
-    constructor(call, metadata, serialize, deserialize) {
+    constructor(call, metadata, serialize, deserialize, encoding) {
         super({ objectMode: true });
         this.call = call;
         this.metadata = metadata;
@@ -8763,7 +8889,7 @@ class ServerDuplexStreamImpl extends stream_1.Duplex {
         this.cancelled = false;
         this.trailingMetadata = new metadata_1.Metadata();
         this.call.setupSurfaceCall(this);
-        this.call.setupReadable(this);
+        this.call.setupReadable(this, encoding);
         this.on('error', (err) => {
             this.call.sendError(err);
             this.end();
@@ -8783,7 +8909,7 @@ class ServerDuplexStreamImpl extends stream_1.Duplex {
         if (metadata) {
             this.trailingMetadata = metadata;
         }
-        super.end();
+        return super.end();
     }
 }
 exports.ServerDuplexStreamImpl = ServerDuplexStreamImpl;
@@ -8793,7 +8919,6 @@ ServerDuplexStreamImpl.prototype._write =
     ServerWritableStreamImpl.prototype._write;
 ServerDuplexStreamImpl.prototype._final =
     ServerWritableStreamImpl.prototype._final;
-ServerDuplexStreamImpl.prototype.end = ServerWritableStreamImpl.prototype.end;
 // Internal class that wraps the HTTP2 request.
 class Http2ServerCallStream extends events_1.EventEmitter {
     constructor(stream, handler, options) {
@@ -8849,6 +8974,52 @@ class Http2ServerCallStream extends events_1.EventEmitter {
         }
         return this.cancelled;
     }
+    getDecompressedMessage(message, encoding) {
+        switch (encoding) {
+            case 'deflate': {
+                return new Promise((resolve, reject) => {
+                    zlib.inflate(message.slice(5), (err, output) => {
+                        if (err) {
+                            this.sendError({
+                                code: constants_1.Status.INTERNAL,
+                                details: `Received "grpc-encoding" header "${encoding}" but ${encoding} decompression failed`,
+                            });
+                            resolve();
+                        }
+                        else {
+                            resolve(output);
+                        }
+                    });
+                });
+            }
+            case 'gzip': {
+                return new Promise((resolve, reject) => {
+                    zlib.unzip(message.slice(5), (err, output) => {
+                        if (err) {
+                            this.sendError({
+                                code: constants_1.Status.INTERNAL,
+                                details: `Received "grpc-encoding" header "${encoding}" but ${encoding} decompression failed`,
+                            });
+                            resolve();
+                        }
+                        else {
+                            resolve(output);
+                        }
+                    });
+                });
+            }
+            case 'identity': {
+                return Promise.resolve(message.slice(5));
+            }
+            default: {
+                this.sendError({
+                    code: constants_1.Status.UNIMPLEMENTED,
+                    details: `Received message compressed with unsupported encoding "${encoding}"`,
+                });
+                return Promise.resolve();
+            }
+        }
+    }
     sendMetadata(customMetadata) {
         if (this.checkCancelled()) {
             return;
@@ -8872,7 +9043,7 @@ class Http2ServerCallStream extends events_1.EventEmitter {
                 const err = new Error('Invalid deadline');
                 err.code = constants_1.Status.OUT_OF_RANGE;
                 this.sendError(err);
-                return;
+                return metadata;
             }
             const timeout = (+match[1] * deadlineUnitsToMs[match[2]]) | 0;
             const now = new Date();
@@ -8884,11 +9055,10 @@ class Http2ServerCallStream extends events_1.EventEmitter {
         metadata.remove(http2.constants.HTTP2_HEADER_ACCEPT_ENCODING);
         metadata.remove(http2.constants.HTTP2_HEADER_TE);
         metadata.remove(http2.constants.HTTP2_HEADER_CONTENT_TYPE);
-        metadata.remove('grpc-encoding');
         metadata.remove('grpc-accept-encoding');
         return metadata;
     }
-    receiveUnaryMessage() {
+    receiveUnaryMessage(encoding) {
         return new Promise((resolve, reject) => {
             const stream = this.stream;
             const chunks = [];
@@ -8909,7 +9079,17 @@ class Http2ServerCallStream extends events_1.EventEmitter {
                         resolve();
                     }
                     this.emit('receiveMessage');
-                    resolve(this.deserializeMessage(requestBytes));
+                    const compressed = requestBytes.readUInt8(0) === 1;
+                    const compressedMessageEncoding = compressed ? encoding : 'identity';
+                    const decompressedMessage = await this.getDecompressedMessage(requestBytes, compressedMessageEncoding);
+                    // Encountered an error with decompression; it'll already have been propogated back
+                    // Just return early
+                    if (!decompressedMessage) {
+                        resolve();
+                    }
+                    else {
+                        resolve(this.deserializeMessage(decompressedMessage));
+                    }
                 }
                 catch (err) {
                     err.code = constants_1.Status.INTERNAL;
@@ -8930,9 +9110,7 @@ class Http2ServerCallStream extends events_1.EventEmitter {
         return output;
     }
     deserializeMessage(bytes) {
-        // TODO(cjihrig): Call compression aware deserializeMessage().
-        const receivedMessage = bytes.slice(5);
-        return this.handler.deserialize(receivedMessage);
+        return this.handler.deserialize(bytes);
     }
     async sendUnaryMessage(err, value, metadata, flags) {
         if (this.checkCancelled()) {
@@ -9027,10 +9205,21 @@ class Http2ServerCallStream extends events_1.EventEmitter {
             call.emit('cancelled', reason);
         });
     }
-    setupReadable(readable) {
+    setupReadable(readable, encoding) {
         const decoder = new stream_decoder_1.StreamDecoder();
+        let readsDone = false;
+        let pendingMessageProcessing = false;
+        let pushedEnd = false;
+        const maybePushEnd = () => {
+            if (!pushedEnd && readsDone && !pendingMessageProcessing) {
+                pushedEnd = true;
+                this.pushOrBufferMessage(readable, null);
+            }
+        };
         this.stream.on('data', async (data) => {
             const messages = decoder.write(data);
+            pendingMessageProcessing = true;
+            this.stream.pause();
             for (const message of messages) {
                 if (this.maxReceiveMessageSize !== -1 &&
                     message.length > this.maxReceiveMessageSize) {
@@ -9041,11 +9230,22 @@ class Http2ServerCallStream extends events_1.EventEmitter {
                     return;
                 }
                 this.emit('receiveMessage');
-                this.pushOrBufferMessage(readable, message);
+                const compressed = message.readUInt8(0) === 1;
+                const compressedMessageEncoding = compressed ? encoding : 'identity';
+                const decompressedMessage = await this.getDecompressedMessage(message, compressedMessageEncoding);
+                // Encountered an error with decompression; it'll already have been propogated back
+                // Just return early
+                if (!decompressedMessage)
+                    return;
+                this.pushOrBufferMessage(readable, decompressedMessage);
             }
+            pendingMessageProcessing = false;
+            this.stream.resume();
+            maybePushEnd();
         });
         this.stream.once('end', () => {
-            this.pushOrBufferMessage(readable, null);
+            readsDone = true;
+            maybePushEnd();
         });
     }
     consumeUnpushedMessages(readable) {
@@ -9070,6 +9270,7 @@ class Http2ServerCallStream extends events_1.EventEmitter {
     }
     async pushMessage(readable, messageBytes) {
         if (messageBytes === null) {
+            trace('Received end of stream');
             if (this.canPush) {
                 readable.push(null);
             }
@@ -9078,6 +9279,7 @@ class Http2ServerCallStream extends events_1.EventEmitter {
             }
             return;
         }
+        trace('Received message of length ' + messageBytes.length);
         this.isPushPending = true;
         try {
             const deserialized = await this.deserializeMessage(messageBytes);
@@ -9479,6 +9681,13 @@ class Server {
             if (creds._isSecure()) {
                 const secureServerOptions = Object.assign(serverOptions, creds._getSettings());
                 http2Server = http2.createSecureServer(secureServerOptions);
+                http2Server.on('secureConnection', (socket) => {
+                    /* These errors need to be handled by the user of Http2SecureServer,
+                     * according to https://github.com/nodejs/node/issues/35824 */
+                    socket.on('error', (e) => {
+                        this.trace('An incoming TLS connection closed with error: ' + e.message);
+                    });
+                });
             }
             else {
                 http2Server = http2.createServer(serverOptions);
@@ -9760,6 +9969,7 @@ class Server {
             return;
         }
         http2Server.on('stream', (stream, headers) => {
+            var _a;
             const channelzSessionInfo = this.sessions.get(stream.session);
             this.callTracker.addCallStarted();
             channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallStarted();
@@ -9826,18 +10036,20 @@ class Server {
                     });
                 }
                 const metadata = call.receiveMetadata(headers);
+                const encoding = (_a = metadata.get('grpc-encoding')[0]) !== null && _a !== void 0 ? _a : 'identity';
+                metadata.remove('grpc-encoding');
                 switch (handler.type) {
                     case 'unary':
-                        handleUnary(call, handler, metadata);
+                        handleUnary(call, handler, metadata, encoding);
                         break;
                     case 'clientStream':
-                        handleClientStreaming(call, handler, metadata);
+                        handleClientStreaming(call, handler, metadata, encoding);
                         break;
                     case 'serverStream':
-                        handleServerStreaming(call, handler, metadata);
+                        handleServerStreaming(call, handler, metadata, encoding);
                         break;
                     case 'bidi':
-                        handleBidiStreaming(call, handler, metadata);
+                        handleBidiStreaming(call, handler, metadata, encoding);
                         break;
                     default:
                         throw new Error(`Unknown handler type: ${handler.type}`);
@@ -9888,8 +10100,8 @@ class Server {
     }
 }
 exports.Server = Server;
-async function handleUnary(call, handler, metadata) {
-    const request = await call.receiveUnaryMessage();
+async function handleUnary(call, handler, metadata, encoding) {
+    const request = await call.receiveUnaryMessage(encoding);
     if (request === undefined || call.cancelled) {
         return;
     }
@@ -9898,8 +10110,8 @@ async function handleUnary(call, handler, metadata) {
         call.sendUnaryMessage(err, value, trailer, flags);
     });
 }
-function handleClientStreaming(call, handler, metadata) {
-    const stream = new server_call_1.ServerReadableStreamImpl(call, metadata, handler.deserialize);
+function handleClientStreaming(call, handler, metadata, encoding) {
+    const stream = new server_call_1.ServerReadableStreamImpl(call, metadata, handler.deserialize, encoding);
     function respond(err, value, trailer, flags) {
         stream.destroy();
         call.sendUnaryMessage(err, value, trailer, flags);
@@ -9910,16 +10122,16 @@ function handleClientStreaming(call, handler, metadata) {
     stream.on('error', respond);
     handler.func(stream, respond);
 }
-async function handleServerStreaming(call, handler, metadata) {
-    const request = await call.receiveUnaryMessage();
+async function handleServerStreaming(call, handler, metadata, encoding) {
+    const request = await call.receiveUnaryMessage(encoding);
     if (request === undefined || call.cancelled) {
         return;
     }
     const stream = new server_call_1.ServerWritableStreamImpl(call, metadata, handler.serialize, request);
     handler.func(stream);
 }
-function handleBidiStreaming(call, handler, metadata) {
-    const stream = new server_call_1.ServerDuplexStreamImpl(call, metadata, handler.serialize, handler.deserialize);
+function handleBidiStreaming(call, handler, metadata, encoding) {
+    const stream = new server_call_1.ServerDuplexStreamImpl(call, metadata, handler.serialize, handler.deserialize, encoding);
     if (call.cancelled) {
         return;
     }
@@ -13984,7 +14196,7 @@ var isPlainObject = __nccwpck_require__(3287);
 var nodeFetch = _interopDefault(__nccwpck_require__(467));
 var requestError = __nccwpck_require__(537);
 
-const VERSION = "5.6.2";
+const VERSION = "5.6.3";
 
 function getBufferResponse(response) {
   return response.arrayBuffer();
@@ -14292,14 +14504,15 @@ var DiagAPI = /** @class */ (function () {
     function DiagAPI() {
         function _logProxy(funcName) {
             return function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
                 var logger = global_utils_1.getGlobal('diag');
                 // shortcut if logger not set
                 if (!logger)
                     return;
-                return logger[funcName].apply(logger, 
-                // work around Function.prototype.apply types
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                arguments);
+                return logger[funcName].apply(logger, args);
             };
         }
         // Using self local variable for minification purposes as 'this' cannot be minified
@@ -14781,6 +14994,31 @@ exports.baggageEntryMetadataFromString = baggageEntryMetadataFromString;
 
 /***/ }),
 
+/***/ 1109:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=Attributes.js.map
+
+/***/ }),
+
 /***/ 4447:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -15086,17 +15324,22 @@ var DiagConsoleLogger = /** @class */ (function () {
     function DiagConsoleLogger() {
         function _consoleFunc(funcName) {
             return function () {
-                var orgArguments = arguments;
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
                 if (console) {
                     // Some environments only expose the console when the F12 developer console is open
+                    // eslint-disable-next-line no-console
                     var theFunc = console[funcName];
                     if (typeof theFunc !== 'function') {
                         // Not all environments support all functions
+                        // eslint-disable-next-line no-console
                         theFunc = console.log;
                     }
                     // One last final check
                     if (typeof theFunc === 'function') {
-                        return theFunc.apply(console, orgArguments);
+                        return theFunc.apply(console, args);
                     }
                 }
             };
@@ -15283,12 +15526,13 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.diag = exports.propagation = exports.trace = exports.context = exports.INVALID_SPAN_CONTEXT = exports.INVALID_TRACEID = exports.INVALID_SPANID = exports.isValidSpanId = exports.isValidTraceId = exports.isSpanContextValid = exports.baggageEntryMetadataFromString = void 0;
+exports.diag = exports.propagation = exports.trace = exports.context = exports.INVALID_SPAN_CONTEXT = exports.INVALID_TRACEID = exports.INVALID_SPANID = exports.isValidSpanId = exports.isValidTraceId = exports.isSpanContextValid = exports.createTraceState = exports.baggageEntryMetadataFromString = void 0;
 __exportStar(__nccwpck_require__(1508), exports);
 var utils_1 = __nccwpck_require__(8136);
 Object.defineProperty(exports, "baggageEntryMetadataFromString", ({ enumerable: true, get: function () { return utils_1.baggageEntryMetadataFromString; } }));
 __exportStar(__nccwpck_require__(4447), exports);
 __exportStar(__nccwpck_require__(2358), exports);
+__exportStar(__nccwpck_require__(1109), exports);
 __exportStar(__nccwpck_require__(1634), exports);
 __exportStar(__nccwpck_require__(865), exports);
 __exportStar(__nccwpck_require__(7492), exports);
@@ -15304,8 +15548,11 @@ __exportStar(__nccwpck_require__(955), exports);
 __exportStar(__nccwpck_require__(8845), exports);
 __exportStar(__nccwpck_require__(6905), exports);
 __exportStar(__nccwpck_require__(8384), exports);
+var utils_2 = __nccwpck_require__(2615);
+Object.defineProperty(exports, "createTraceState", ({ enumerable: true, get: function () { return utils_2.createTraceState; } }));
 __exportStar(__nccwpck_require__(891), exports);
 __exportStar(__nccwpck_require__(3168), exports);
+__exportStar(__nccwpck_require__(1823), exports);
 var spancontext_utils_1 = __nccwpck_require__(9745);
 Object.defineProperty(exports, "isSpanContextValid", ({ enumerable: true, get: function () { return spancontext_utils_1.isSpanContextValid; } }));
 Object.defineProperty(exports, "isValidTraceId", ({ enumerable: true, get: function () { return spancontext_utils_1.isValidTraceId; } }));
@@ -15926,7 +16173,7 @@ var NoopTracer_1 = __nccwpck_require__(7606);
 var NoopTracerProvider = /** @class */ (function () {
     function NoopTracerProvider() {
     }
-    NoopTracerProvider.prototype.getTracer = function (_name, _version) {
+    NoopTracerProvider.prototype.getTracer = function (_name, _version, _options) {
         return new NoopTracer_1.NoopTracer();
     };
     return NoopTracerProvider;
@@ -15964,10 +16211,11 @@ var NOOP_TRACER = new NoopTracer_1.NoopTracer();
  * Proxy tracer provided by the proxy tracer provider
  */
 var ProxyTracer = /** @class */ (function () {
-    function ProxyTracer(_provider, name, version) {
+    function ProxyTracer(_provider, name, version, options) {
         this._provider = _provider;
         this.name = name;
         this.version = version;
+        this.options = options;
     }
     ProxyTracer.prototype.startSpan = function (name, options, context) {
         return this._getTracer().startSpan(name, options, context);
@@ -15984,7 +16232,7 @@ var ProxyTracer = /** @class */ (function () {
         if (this._delegate) {
             return this._delegate;
         }
-        var tracer = this._provider.getDelegateTracer(this.name, this.version);
+        var tracer = this._provider.getDelegateTracer(this.name, this.version, this.options);
         if (!tracer) {
             return NOOP_TRACER;
         }
@@ -16037,9 +16285,9 @@ var ProxyTracerProvider = /** @class */ (function () {
     /**
      * Get a {@link ProxyTracer}
      */
-    ProxyTracerProvider.prototype.getTracer = function (name, version) {
+    ProxyTracerProvider.prototype.getTracer = function (name, version, options) {
         var _a;
-        return ((_a = this.getDelegateTracer(name, version)) !== null && _a !== void 0 ? _a : new ProxyTracer_1.ProxyTracer(this, name, version));
+        return ((_a = this.getDelegateTracer(name, version, options)) !== null && _a !== void 0 ? _a : new ProxyTracer_1.ProxyTracer(this, name, version, options));
     };
     ProxyTracerProvider.prototype.getDelegate = function () {
         var _a;
@@ -16051,9 +16299,9 @@ var ProxyTracerProvider = /** @class */ (function () {
     ProxyTracerProvider.prototype.setDelegate = function (delegate) {
         this._delegate = delegate;
     };
-    ProxyTracerProvider.prototype.getDelegateTracer = function (name, version) {
+    ProxyTracerProvider.prototype.getDelegateTracer = function (name, version, options) {
         var _a;
-        return (_a = this._delegate) === null || _a === void 0 ? void 0 : _a.getTracer(name, version);
+        return (_a = this._delegate) === null || _a === void 0 ? void 0 : _a.getTracer(name, version, options);
     };
     return ProxyTracerProvider;
 }());
@@ -16263,6 +16511,202 @@ function getSpanContext(context) {
 }
 exports.getSpanContext = getSpanContext;
 //# sourceMappingURL=context-utils.js.map
+
+/***/ }),
+
+/***/ 2110:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceStateImpl = void 0;
+var tracestate_validators_1 = __nccwpck_require__(4864);
+var MAX_TRACE_STATE_ITEMS = 32;
+var MAX_TRACE_STATE_LEN = 512;
+var LIST_MEMBERS_SEPARATOR = ',';
+var LIST_MEMBER_KEY_VALUE_SPLITTER = '=';
+/**
+ * TraceState must be a class and not a simple object type because of the spec
+ * requirement (https://www.w3.org/TR/trace-context/#tracestate-field).
+ *
+ * Here is the list of allowed mutations:
+ * - New key-value pair should be added into the beginning of the list
+ * - The value of any key can be updated. Modified keys MUST be moved to the
+ * beginning of the list.
+ */
+var TraceStateImpl = /** @class */ (function () {
+    function TraceStateImpl(rawTraceState) {
+        this._internalState = new Map();
+        if (rawTraceState)
+            this._parse(rawTraceState);
+    }
+    TraceStateImpl.prototype.set = function (key, value) {
+        // TODO: Benchmark the different approaches(map vs list) and
+        // use the faster one.
+        var traceState = this._clone();
+        if (traceState._internalState.has(key)) {
+            traceState._internalState.delete(key);
+        }
+        traceState._internalState.set(key, value);
+        return traceState;
+    };
+    TraceStateImpl.prototype.unset = function (key) {
+        var traceState = this._clone();
+        traceState._internalState.delete(key);
+        return traceState;
+    };
+    TraceStateImpl.prototype.get = function (key) {
+        return this._internalState.get(key);
+    };
+    TraceStateImpl.prototype.serialize = function () {
+        var _this = this;
+        return this._keys()
+            .reduce(function (agg, key) {
+            agg.push(key + LIST_MEMBER_KEY_VALUE_SPLITTER + _this.get(key));
+            return agg;
+        }, [])
+            .join(LIST_MEMBERS_SEPARATOR);
+    };
+    TraceStateImpl.prototype._parse = function (rawTraceState) {
+        if (rawTraceState.length > MAX_TRACE_STATE_LEN)
+            return;
+        this._internalState = rawTraceState
+            .split(LIST_MEMBERS_SEPARATOR)
+            .reverse() // Store in reverse so new keys (.set(...)) will be placed at the beginning
+            .reduce(function (agg, part) {
+            var listMember = part.trim(); // Optional Whitespace (OWS) handling
+            var i = listMember.indexOf(LIST_MEMBER_KEY_VALUE_SPLITTER);
+            if (i !== -1) {
+                var key = listMember.slice(0, i);
+                var value = listMember.slice(i + 1, part.length);
+                if (tracestate_validators_1.validateKey(key) && tracestate_validators_1.validateValue(value)) {
+                    agg.set(key, value);
+                }
+                else {
+                    // TODO: Consider to add warning log
+                }
+            }
+            return agg;
+        }, new Map());
+        // Because of the reverse() requirement, trunc must be done after map is created
+        if (this._internalState.size > MAX_TRACE_STATE_ITEMS) {
+            this._internalState = new Map(Array.from(this._internalState.entries())
+                .reverse() // Use reverse same as original tracestate parse chain
+                .slice(0, MAX_TRACE_STATE_ITEMS));
+        }
+    };
+    TraceStateImpl.prototype._keys = function () {
+        return Array.from(this._internalState.keys()).reverse();
+    };
+    TraceStateImpl.prototype._clone = function () {
+        var traceState = new TraceStateImpl();
+        traceState._internalState = new Map(this._internalState);
+        return traceState;
+    };
+    return TraceStateImpl;
+}());
+exports.TraceStateImpl = TraceStateImpl;
+//# sourceMappingURL=tracestate-impl.js.map
+
+/***/ }),
+
+/***/ 4864:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.validateValue = exports.validateKey = void 0;
+var VALID_KEY_CHAR_RANGE = '[_0-9a-z-*/]';
+var VALID_KEY = "[a-z]" + VALID_KEY_CHAR_RANGE + "{0,255}";
+var VALID_VENDOR_KEY = "[a-z0-9]" + VALID_KEY_CHAR_RANGE + "{0,240}@[a-z]" + VALID_KEY_CHAR_RANGE + "{0,13}";
+var VALID_KEY_REGEX = new RegExp("^(?:" + VALID_KEY + "|" + VALID_VENDOR_KEY + ")$");
+var VALID_VALUE_BASE_REGEX = /^[ -~]{0,255}[!-~]$/;
+var INVALID_VALUE_COMMA_EQUAL_REGEX = /,|=/;
+/**
+ * Key is opaque string up to 256 characters printable. It MUST begin with a
+ * lowercase letter, and can only contain lowercase letters a-z, digits 0-9,
+ * underscores _, dashes -, asterisks *, and forward slashes /.
+ * For multi-tenant vendor scenarios, an at sign (@) can be used to prefix the
+ * vendor name. Vendors SHOULD set the tenant ID at the beginning of the key.
+ * see https://www.w3.org/TR/trace-context/#key
+ */
+function validateKey(key) {
+    return VALID_KEY_REGEX.test(key);
+}
+exports.validateKey = validateKey;
+/**
+ * Value is opaque string up to 256 characters printable ASCII RFC0020
+ * characters (i.e., the range 0x20 to 0x7E) except comma , and =.
+ */
+function validateValue(value) {
+    return (VALID_VALUE_BASE_REGEX.test(value) &&
+        !INVALID_VALUE_COMMA_EQUAL_REGEX.test(value));
+}
+exports.validateValue = validateValue;
+//# sourceMappingURL=tracestate-validators.js.map
+
+/***/ }),
+
+/***/ 2615:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createTraceState = void 0;
+var tracestate_impl_1 = __nccwpck_require__(2110);
+function createTraceState(rawTraceState) {
+    return new tracestate_impl_1.TraceStateImpl(rawTraceState);
+}
+exports.createTraceState = createTraceState;
+//# sourceMappingURL=utils.js.map
 
 /***/ }),
 
@@ -16597,6 +17041,31 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
+/***/ 1823:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=tracer_options.js.map
+
+/***/ }),
+
 /***/ 891:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -16645,7 +17114,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.VERSION = void 0;
 // this is autogenerated file, see scripts/version-update.js
-exports.VERSION = '1.0.3';
+exports.VERSION = '1.1.0';
 //# sourceMappingURL=version.js.map
 
 /***/ }),
@@ -27683,9 +28152,17 @@ AbortError.prototype = Object.create(Error.prototype);
 AbortError.prototype.constructor = AbortError;
 AbortError.prototype.name = 'AbortError';
 
+const URL$1 = Url.URL || whatwgUrl.URL;
+
 // fix an issue where "PassThrough", "resolve" aren't a named export for node <10
 const PassThrough$1 = Stream.PassThrough;
-const resolve_url = Url.resolve;
+
+const isDomainOrSubdomain = function isDomainOrSubdomain(destination, original) {
+	const orig = new URL$1(original).hostname;
+	const dest = new URL$1(destination).hostname;
+
+	return orig === dest || orig[orig.length - dest.length - 1] === '.' && orig.endsWith(dest);
+};
 
 /**
  * Fetch function
@@ -27773,7 +28250,19 @@ function fetch(url, opts) {
 				const location = headers.get('Location');
 
 				// HTTP fetch step 5.3
-				const locationURL = location === null ? null : resolve_url(request.url, location);
+				let locationURL = null;
+				try {
+					locationURL = location === null ? null : new URL$1(location, request.url).toString();
+				} catch (err) {
+					// error here can only be invalid URL in Location: header
+					// do not throw when options.redirect == manual
+					// let the user extract the errorneous redirect URL
+					if (request.redirect !== 'manual') {
+						reject(new FetchError(`uri requested responds with an invalid redirect URL: ${location}`, 'invalid-redirect'));
+						finalize();
+						return;
+					}
+				}
 
 				// HTTP fetch step 5.5
 				switch (request.redirect) {
@@ -27820,6 +28309,12 @@ function fetch(url, opts) {
 							timeout: request.timeout,
 							size: request.size
 						};
+
+						if (!isDomainOrSubdomain(request.url, locationURL)) {
+							for (const name of ['authorization', 'www-authenticate', 'cookie', 'cookie2']) {
+								requestOpts.headers.delete(name);
+							}
+						}
 
 						// HTTP-redirect fetch step 9
 						if (res.statusCode !== 303 && request.body && getTotalBytes(request) === null) {
