@@ -62,7 +62,7 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
             const writeStream = fs_1.default.createWriteStream(`${artifact.name}.log`);
             try {
                 zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
-                console.log(`Downloaded artifact ${writeStream.path.toString()}`);
+                console.log(`Downloaded Artifact ${writeStream.path.toString()}`);
                 next[jobName][stepName] = {
                     jobName,
                     stepName,

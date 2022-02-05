@@ -99,7 +99,7 @@ export async function listWorkflowRunArtifacts(
         const writeStream = fs.createWriteStream(`${artifact.name}.log`);
         try {
           zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
-          console.log(`Downloaded artifact ${writeStream.path.toString()}`);
+          console.log(`Downloaded Artifact ${writeStream.path.toString()}`);
           next[jobName][stepName] = {
             jobName,
             stepName,
