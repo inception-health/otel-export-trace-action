@@ -35,7 +35,6 @@ export type WorkflowArtifactMap = {
 export type WorkflowArtifactDownload = {
   jobName: string;
   stepName: string;
-  reportType: string;
   path: string;
 };
 
@@ -74,17 +73,13 @@ export async function listWorkflowRunArtifacts(
     async (resultP, artifact) => {
       const result = await resultP;
       const match = artifact.name.match(
-        /\{(?<jobName>.*)\}\{(?<stepName>.*)\}\{(?<reportType>.*)\}/
+        /\{(?<jobName>.*)\}\{(?<stepName>.*)\}/
       );
       const next: WorkflowArtifactMap = { ...result };
       /* istanbul ignore next */
-      if (
-        match?.groups?.jobName &&
-        match?.groups?.stepName &&
-        match?.groups?.reportType
-      ) {
-        const { jobName, stepName, reportType } = match.groups;
-
+      if (match?.groups?.jobName && match?.groups?.stepName) {
+        const { jobName, stepName } = match.groups;
+        console.log(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
         if (!(jobName in next)) {
           next[jobName] = {};
         }
@@ -101,15 +96,18 @@ export async function listWorkflowRunArtifacts(
         });
         const buf = response.data as Buffer;
         const zip = await JSZip.loadAsync(buf);
-        const writeStream = fs.createWriteStream(`${artifact.name}.xml`);
-        zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
-
-        next[jobName][stepName] = {
-          reportType,
-          jobName,
-          stepName,
-          path: writeStream.path.toString(),
-        };
+        const writeStream = fs.createWriteStream(`${artifact.name}.log`);
+        try {
+          zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
+          console.log(`Downloaded artifact ${writeStream.path.toString()}`);
+          next[jobName][stepName] = {
+            jobName,
+            stepName,
+            path: writeStream.path.toString(),
+          };
+        } finally {
+          writeStream.close();
+        }
       }
 
       return next;

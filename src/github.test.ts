@@ -42,7 +42,7 @@ describe("listWorkflowRunArtifacts", () => {
           artifacts: [
             mock<WorkflowArtifact>({
               id: 1,
-              name: "{lint-and-format-check}{run tests}{junit}",
+              name: "{lint-and-test}{run tests}",
             }),
           ],
         },
@@ -53,9 +53,8 @@ describe("listWorkflowRunArtifacts", () => {
     );
     const filePath = path.join(
       __dirname,
-      "tracing",
       "__assets__",
-      "{lint-and-format-check}{run tests}{junit}.zip"
+      "{lint-and-test}{run tests}.zip"
     );
     const zipFile = fs.readFileSync(filePath);
     (axios as jest.MockedFunction<typeof axios>).mockResolvedValue({
@@ -66,7 +65,7 @@ describe("listWorkflowRunArtifacts", () => {
       config: {},
     });
     const lookup = await listWorkflowRunArtifacts(mockContext, mockOctokit, 1);
-    const response = lookup("lint-and-format-check", "run tests");
+    const response = lookup("lint-and-test", "run tests");
     if (!response) {
       fail("Lookup Failed: Did not parse zip file correctly");
     }
@@ -84,9 +83,7 @@ describe("listWorkflowRunArtifacts", () => {
   });
 
   it("test WorkflowArtifactDownload path exists", () => {
-    expect(subject.path).toEqual(
-      "{lint-and-format-check}{run tests}{junit}.xml"
-    );
+    expect(subject.path).toEqual("{lint-and-test}{run tests}.log");
     expect(fs.existsSync(subject?.path)).toBeTruthy();
   });
 });

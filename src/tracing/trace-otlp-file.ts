@@ -124,31 +124,34 @@ export async function traceOTLPFile({
     input: readStream,
     crlfDelay: Infinity,
   });
-
-  for await (const line of rl) {
-    const serviceRequest: ExportTraceServiceRequest = JSON.parse(
-      line
-    ) as ExportTraceServiceRequest;
-    for (const resourceSpans of serviceRequest.resourceSpans) {
-      for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
-        if (libSpans.instrumentationLibrary) {
-          for (const otlpSpan of libSpans.spans) {
-            const span = toSpan({
-              otlpSpan,
-              tracer,
-              parentSpan,
-            });
-            const attributes = toAttributes(otlpSpan.attributes);
-            if (attributes) {
-              span.setAttributes(attributes);
+  try {
+    for await (const line of rl) {
+      const serviceRequest: ExportTraceServiceRequest = JSON.parse(
+        line
+      ) as ExportTraceServiceRequest;
+      for (const resourceSpans of serviceRequest.resourceSpans) {
+        for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
+          if (libSpans.instrumentationLibrary) {
+            for (const otlpSpan of libSpans.spans) {
+              const span = toSpan({
+                otlpSpan,
+                tracer,
+                parentSpan,
+              });
+              const attributes = toAttributes(otlpSpan.attributes);
+              if (attributes) {
+                span.setAttributes(attributes);
+              }
+              if (otlpSpan.status) {
+                span.setStatus(otlpSpan.status);
+              }
+              span.end(otlpSpan.endTimeUnixNano);
             }
-            if (otlpSpan.status) {
-              span.setStatus(otlpSpan.status);
-            }
-            span.end(otlpSpan.endTimeUnixNano);
           }
         }
       }
     }
+  } finally {
+    readStream.close();
   }
 }

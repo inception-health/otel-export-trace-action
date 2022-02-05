@@ -36,15 +36,14 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
         hasNext = artifactsList.length < listArtifactsResponse.data.total_count;
     }
     const artifactsLookup = await artifactsList.reduce(async (resultP, artifact) => {
-        var _a, _b, _c;
+        var _a, _b;
         const result = await resultP;
-        const match = artifact.name.match(/\{(?<jobName>.*)\}\{(?<stepName>.*)\}\{(?<reportType>.*)\}/);
+        const match = artifact.name.match(/\{(?<jobName>.*)\}\{(?<stepName>.*)\}/);
         const next = { ...result };
         /* istanbul ignore next */
-        if (((_a = match === null || match === void 0 ? void 0 : match.groups) === null || _a === void 0 ? void 0 : _a.jobName) &&
-            ((_b = match === null || match === void 0 ? void 0 : match.groups) === null || _b === void 0 ? void 0 : _b.stepName) &&
-            ((_c = match === null || match === void 0 ? void 0 : match.groups) === null || _c === void 0 ? void 0 : _c.reportType)) {
-            const { jobName, stepName, reportType } = match.groups;
+        if (((_a = match === null || match === void 0 ? void 0 : match.groups) === null || _a === void 0 ? void 0 : _a.jobName) && ((_b = match === null || match === void 0 ? void 0 : match.groups) === null || _b === void 0 ? void 0 : _b.stepName)) {
+            const { jobName, stepName } = match.groups;
+            console.log(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
             if (!(jobName in next)) {
                 next[jobName] = {};
             }
@@ -60,14 +59,19 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
             });
             const buf = response.data;
             const zip = await jszip_1.default.loadAsync(buf);
-            const writeStream = fs_1.default.createWriteStream(`${artifact.name}.xml`);
-            zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
-            next[jobName][stepName] = {
-                reportType,
-                jobName,
-                stepName,
-                path: writeStream.path.toString(),
-            };
+            const writeStream = fs_1.default.createWriteStream(`${artifact.name}.log`);
+            try {
+                zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
+                console.log(`Downloaded artifact ${writeStream.path.toString()}`);
+                next[jobName][stepName] = {
+                    jobName,
+                    stepName,
+                    path: writeStream.path.toString(),
+                };
+            }
+            finally {
+                writeStream.close();
+            }
         }
         return next;
     }, Promise.resolve({}));
@@ -539,29 +543,34 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
         input: readStream,
         crlfDelay: Infinity,
     });
-    for await (const line of rl) {
-        const serviceRequest = JSON.parse(line);
-        for (const resourceSpans of serviceRequest.resourceSpans) {
-            for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
-                if (libSpans.instrumentationLibrary) {
-                    for (const otlpSpan of libSpans.spans) {
-                        const span = toSpan({
-                            otlpSpan,
-                            tracer,
-                            parentSpan,
-                        });
-                        const attributes = toAttributes(otlpSpan.attributes);
-                        if (attributes) {
-                            span.setAttributes(attributes);
+    try {
+        for await (const line of rl) {
+            const serviceRequest = JSON.parse(line);
+            for (const resourceSpans of serviceRequest.resourceSpans) {
+                for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
+                    if (libSpans.instrumentationLibrary) {
+                        for (const otlpSpan of libSpans.spans) {
+                            const span = toSpan({
+                                otlpSpan,
+                                tracer,
+                                parentSpan,
+                            });
+                            const attributes = toAttributes(otlpSpan.attributes);
+                            if (attributes) {
+                                span.setAttributes(attributes);
+                            }
+                            if (otlpSpan.status) {
+                                span.setStatus(otlpSpan.status);
+                            }
+                            span.end(otlpSpan.endTimeUnixNano);
                         }
-                        if (otlpSpan.status) {
-                            span.setStatus(otlpSpan.status);
-                        }
-                        span.end(otlpSpan.endTimeUnixNano);
                     }
                 }
             }
         }
+    }
+    finally {
+        readStream.close();
     }
 }
 exports.traceOTLPFile = traceOTLPFile;
