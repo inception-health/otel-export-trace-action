@@ -127,6 +127,8 @@ export async function traceOTLPFile({
   });
   try {
     for await (const line of rl) {
+      core.info("Tracing test OTLP Service Request");
+      core.info(line);
       const serviceRequest: ExportTraceServiceRequest = JSON.parse(
         line
       ) as ExportTraceServiceRequest;

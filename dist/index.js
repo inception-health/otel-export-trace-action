@@ -607,6 +607,8 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
     });
     try {
         for await (const line of rl) {
+            core.info("Tracing test OTLP Service Request");
+            core.info(line);
             const serviceRequest = JSON.parse(line);
             for (const resourceSpans of serviceRequest.resourceSpans) {
                 for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
