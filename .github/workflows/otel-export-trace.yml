@@ -4,7 +4,6 @@ on:
   workflow_run:
     workflows:
       - "Build Main"
-      - "code quality PR check"
     types: [completed]
 
 jobs:
