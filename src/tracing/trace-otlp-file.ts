@@ -6,6 +6,7 @@ import * as fs from "fs";
 import * as readline from "readline";
 import * as api from "@opentelemetry/api";
 import { Attributes, AttributeValue, Link } from "@opentelemetry/api";
+import * as exec from "@actions/exec";
 
 type ExportTraceServiceRequest =
   otlpTypes.opentelemetryProto.collector.trace.v1.ExportTraceServiceRequest;
@@ -124,6 +125,8 @@ export async function traceOTLPFile({
   core.info(
     `Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`
   );
+  await exec.exec(`cat ${path}`);
+
   const readStream = fs.createReadStream(path);
   const rl = readline.createInterface({
     input: readStream,

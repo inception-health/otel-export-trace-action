@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.6.0",
+    "@actions/exec": "^1.1.0",
     "@actions/github": "^5.0.0",
     "@opentelemetry/api": "^1.0.3",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.27.0",
