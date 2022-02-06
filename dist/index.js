@@ -526,6 +526,7 @@ const core_1 = __nccwpck_require__(9736);
 const exporter_trace_otlp_http_1 = __nccwpck_require__(5401);
 const core = __importStar(__nccwpck_require__(2186));
 const fs = __importStar(__nccwpck_require__(5747));
+const readline = __importStar(__nccwpck_require__(1058));
 const api = __importStar(__nccwpck_require__(5163));
 /* istanbul ignore next */
 function toSpanKind(spanKind) {
@@ -601,41 +602,19 @@ function toSpan({ otlpSpan, tracer, parentSpan }) {
     }, toSpanKind(otlpSpan.kind), otlpSpan.parentSpanId || parentSpan.spanContext().spanId, toLinks(otlpSpan.links), new Date(otlpSpan.startTimeUnixNano / 1000000));
 }
 async function traceOTLPFile({ tracer, parentSpan, path, }) {
-    // const parentSpanContext = parentSpan.spanContext();
-    const fileExists = fs.existsSync(path);
-    core.info(`Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`);
-    const data = fs.readFileSync(path, { encoding: "utf8", flag: "r" });
-    // core.info(data);
-    const lines = data.split("\n");
-    core.info(`File lines: ${lines.length}`);
-    for (const line of lines) {
-        core.info("Tracing test OTLP Service Request");
-        // core.info(line);
+    const fileStream = fs.createReadStream(path);
+    const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity,
+    });
+    for await (const line of rl) {
         if (line) {
             const serviceRequest = JSON.parse(line);
             for (const resourceSpans of serviceRequest.resourceSpans) {
                 for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
                     if (libSpans.instrumentationLibrary) {
                         for (const otlpSpan of libSpans.spans) {
-                            core.info(`Trace test Span<${otlpSpan.spanId}>`);
-                            // const ctx = api.trace.setSpanContext(api.context.active(), {
-                            //   traceId: parentSpanContext.traceId,
-                            //   spanId: otlpSpan.parentSpanId || parentSpanContext.spanId,
-                            //   traceFlags: parentSpanContext.traceFlags,
-                            //   traceState: new TraceState(otlpSpan.traceState),
-                            // });
-                            // const span = tracer.startSpan(
-                            //   otlpSpan.name as string,
-                            //   {
-                            //     kind: toSpanKind(otlpSpan.kind),
-                            //     attributes: toAttributes(otlpSpan.attributes),
-                            //     links: toLinks(otlpSpan.links),
-                            //     startTime: new Date(
-                            //       (otlpSpan.startTimeUnixNano as number) / 1000000
-                            //     ),
-                            //   },
-                            //   ctx
-                            // );
+                            core.info(`Trace Test ParentSpan<${otlpSpan.parentSpanId || parentSpan.spanContext().spanId}> -> Span<${otlpSpan.spanId}> `);
                             const span = toSpan({
                                 otlpSpan,
                                 tracer,
@@ -655,7 +634,6 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
             }
         }
     }
-    return Promise.resolve();
 }
 exports.traceOTLPFile = traceOTLPFile;
 
@@ -59552,6 +59530,14 @@ module.exports = require("perf_hooks");
 
 "use strict";
 module.exports = require("punycode");
+
+/***/ }),
+
+/***/ 1058:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("readline");
 
 /***/ }),
 

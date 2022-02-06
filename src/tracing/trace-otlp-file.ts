@@ -6,7 +6,6 @@ import * as fs from "fs";
 import * as readline from "readline";
 import * as api from "@opentelemetry/api";
 import { Attributes, AttributeValue, Link } from "@opentelemetry/api";
-import * as exec from "@actions/exec";
 
 type ExportTraceServiceRequest =
   otlpTypes.opentelemetryProto.collector.trace.v1.ExportTraceServiceRequest;
@@ -121,18 +120,13 @@ export async function traceOTLPFile({
   parentSpan,
   path,
 }: TraceOTLPFileParams): Promise<void> {
-  // const parentSpanContext = parentSpan.spanContext();
-  const fileExists = fs.existsSync(path);
-  core.info(
-    `Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`
-  );
-  const data = fs.readFileSync(path, { encoding: "utf8", flag: "r" });
-  // core.info(data);
-  const lines = data.split("\n");
-  core.info(`File lines: ${lines.length}`);
-  for (const line of lines) {
-    core.info("Tracing test OTLP Service Request");
-    // core.info(line);
+  const fileStream = fs.createReadStream(path);
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity,
+  });
+
+  for await (const line of rl) {
     if (line) {
       const serviceRequest: ExportTraceServiceRequest = JSON.parse(
         line
@@ -141,28 +135,11 @@ export async function traceOTLPFile({
         for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
           if (libSpans.instrumentationLibrary) {
             for (const otlpSpan of libSpans.spans) {
-              core.info(`Trace test Span<${otlpSpan.spanId}>`);
-
-              // const ctx = api.trace.setSpanContext(api.context.active(), {
-              //   traceId: parentSpanContext.traceId,
-              //   spanId: otlpSpan.parentSpanId || parentSpanContext.spanId,
-              //   traceFlags: parentSpanContext.traceFlags,
-              //   traceState: new TraceState(otlpSpan.traceState),
-              // });
-
-              // const span = tracer.startSpan(
-              //   otlpSpan.name as string,
-              //   {
-              //     kind: toSpanKind(otlpSpan.kind),
-              //     attributes: toAttributes(otlpSpan.attributes),
-              //     links: toLinks(otlpSpan.links),
-              //     startTime: new Date(
-              //       (otlpSpan.startTimeUnixNano as number) / 1000000
-              //     ),
-              //   },
-              //   ctx
-              // );
-
+              core.info(
+                `Trace Test ParentSpan<${
+                  otlpSpan.parentSpanId || parentSpan.spanContext().spanId
+                }> -> Span<${otlpSpan.spanId}> `
+              );
               const span = toSpan({
                 otlpSpan,
                 tracer,
@@ -185,5 +162,4 @@ export async function traceOTLPFile({
       }
     }
   }
-  return Promise.resolve();
 }
