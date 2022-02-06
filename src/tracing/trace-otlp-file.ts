@@ -125,44 +125,37 @@ export async function traceOTLPFile({
   core.info(
     `Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`
   );
-  await exec.exec(`cat ${path}`);
-
-  const readStream = fs.createReadStream(path);
-  const rl = readline.createInterface({
-    input: readStream,
-    crlfDelay: Infinity,
-  });
-  try {
-    for await (const line of rl) {
-      core.info("Tracing test OTLP Service Request");
-      core.info(line);
-      const serviceRequest: ExportTraceServiceRequest = JSON.parse(
-        line
-      ) as ExportTraceServiceRequest;
-      for (const resourceSpans of serviceRequest.resourceSpans) {
-        for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
-          if (libSpans.instrumentationLibrary) {
-            for (const otlpSpan of libSpans.spans) {
-              core.info(`Trace test Span<${otlpSpan.spanId}>`);
-              const span = toSpan({
-                otlpSpan,
-                tracer,
-                parentSpan,
-              });
-              const attributes = toAttributes(otlpSpan.attributes);
-              if (attributes) {
-                span.setAttributes(attributes);
-              }
-              if (otlpSpan.status) {
-                span.setStatus(otlpSpan.status);
-              }
-              span.end(otlpSpan.endTimeUnixNano);
+  const data = fs.readFileSync(path, { encoding: "utf8", flag: "r" });
+  const lines = data.split(/\r?\n/);
+  console.log(`File lines: ${lines.length}`);
+  for (const line of lines) {
+    core.info("Tracing test OTLP Service Request");
+    core.info(line);
+    const serviceRequest: ExportTraceServiceRequest = JSON.parse(
+      line
+    ) as ExportTraceServiceRequest;
+    for (const resourceSpans of serviceRequest.resourceSpans) {
+      for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
+        if (libSpans.instrumentationLibrary) {
+          for (const otlpSpan of libSpans.spans) {
+            core.info(`Trace test Span<${otlpSpan.spanId}>`);
+            const span = toSpan({
+              otlpSpan,
+              tracer,
+              parentSpan,
+            });
+            const attributes = toAttributes(otlpSpan.attributes);
+            if (attributes) {
+              span.setAttributes(attributes);
             }
+            if (otlpSpan.status) {
+              span.setStatus(otlpSpan.status);
+            }
+            span.end(otlpSpan.endTimeUnixNano);
           }
         }
       }
     }
-  } finally {
-    readStream.close();
   }
+  return Promise.resolve();
 }
