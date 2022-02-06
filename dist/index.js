@@ -619,7 +619,7 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
                                 kind: toSpanKind(otlpSpan.kind),
                                 attributes: toAttributes(otlpSpan.attributes),
                                 links: toLinks(otlpSpan.links),
-                                startTime: otlpSpan.startTimeUnixNano,
+                                startTime: new Date(otlpSpan.startTimeUnixNano / 1000000),
                             }, ctx);
                             // const span = toSpan({
                             //   otlpSpan,
@@ -633,7 +633,7 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
                             if (otlpSpan.status) {
                                 span.setStatus(otlpSpan.status);
                             }
-                            span.end(otlpSpan.endTimeUnixNano);
+                            span.end(new Date(otlpSpan.endTimeUnixNano / 1000000));
                         }
                     }
                 }

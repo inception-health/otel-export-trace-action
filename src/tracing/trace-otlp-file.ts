@@ -156,7 +156,9 @@ export async function traceOTLPFile({
                   kind: toSpanKind(otlpSpan.kind),
                   attributes: toAttributes(otlpSpan.attributes),
                   links: toLinks(otlpSpan.links),
-                  startTime: otlpSpan.startTimeUnixNano,
+                  startTime: new Date(
+                    (otlpSpan.startTimeUnixNano as number) / 1000000
+                  ),
                 },
                 ctx
               );
@@ -174,7 +176,9 @@ export async function traceOTLPFile({
               if (otlpSpan.status) {
                 span.setStatus(otlpSpan.status);
               }
-              span.end(otlpSpan.endTimeUnixNano);
+              span.end(
+                new Date((otlpSpan.endTimeUnixNano as number) / 1000000)
+              );
             }
           }
         }
