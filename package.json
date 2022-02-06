@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "otel-export-trace",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Github Action to export Open Telemetry traces for Workflow runs",
   "engines": {
     "node": ">=12.0.0"
@@ -16,36 +16,47 @@
     "prebuild": "rm -fr lib || true",
     "build": "tsc",
     "package": "npm run build && ncc build --source-map --license licenses.txt",
-    "test": "jest"
+    "test": "NODE_ENV=test DOTENV_CONFIG_PATH=./.env.test jest",
+    "test:watch": "NODE_ENV=test DOTENV_CONFIG_PATH=./.env.test jest --watch",
+    "test:ci": "NODE_ENV=test DOTENV_CONFIG_PATH=./.env.test jest --collect-coverage -ci"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.6.0",
+    "@actions/exec": "^1.1.0",
     "@actions/github": "^5.0.0",
-    "@octokit/webhooks-definitions": "^3.67.3",
     "@opentelemetry/api": "^1.0.3",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.27.0",
     "@opentelemetry/resources": "^1.0.1",
     "@opentelemetry/sdk-trace-base": "^1.0.1",
-    "@opentelemetry/semantic-conventions": "^1.0.1"
+    "@opentelemetry/semantic-conventions": "^1.0.1",
+    "axios": "^0.25.0",
+    "jszip": "^3.7.1",
+    "junit2json": "^2.0.6",
+    "test-results-parser": "0.0.9"
   },
   "devDependencies": {
+    "@octokit/rest": "^18.12.0",
     "@tsconfig/node12": "^1.0.9",
     "@types/jest": "^27.0.3",
-    "jest": "^27.4.5",
-    "ts-jest": "^27.1.2",
-    "typescript": "^4.5.4",
-    "husky": "^7.0.4",
-    "prettier": "^2.5.1",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
+    "@vercel/ncc": "^0.31.1",
+    "dotenv": "^14.3.2",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-markdown": "^2.2.1",
     "eslint-plugin-yaml": "^0.5.0",
-    "@vercel/ncc": "^0.31.1"
+    "husky": "^7.0.4",
+    "jest": "^27.4.5",
+    "jest-junit": "^13.0.0",
+    "jest-mock-extended": "^2.0.4",
+    "prettier": "^2.5.1",
+    "ts-jest": "^27.1.2",
+    "ttypescript": "^1.5.13",
+    "typescript": "^4.5.4"
   },
   "lint-staged": {
     "*": [

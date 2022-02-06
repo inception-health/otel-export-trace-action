@@ -1,6 +1,5 @@
 import * as github from "@actions/github";
 import * as core from "@actions/core";
-import { context, trace } from "@opentelemetry/api";
 
 import { getWorkflowRunJobs } from "./github";
 import { createTracerProvider, traceWorkflowRunJobs } from "./tracing";
@@ -14,10 +13,10 @@ export async function run() {
     core.getInput("githubToken") || process.env.GITHUB_TOKEN || "";
   const octokit = github.getOctokit(ghToken);
 
-  console.log(`Get Workflow Run Jobs for ${runId}`);
+  core.info(`Get Workflow Run Jobs for ${runId}`);
   const workflowRunJobs = await getWorkflowRunJobs(ghContext, octokit, runId);
 
-  console.log(`Create Trace Provider for ${otlpEndpoint}`);
+  core.info(`Create Trace Provider for ${otlpEndpoint}`);
 
   const provider = createTracerProvider(
     otlpEndpoint,
@@ -26,17 +25,21 @@ export async function run() {
   );
 
   try {
-    console.log(
+    core.info(
       `Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`
     );
-    traceWorkflowRunJobs(context, trace, workflowRunJobs);
+    const spanContext = await traceWorkflowRunJobs({
+      provider,
+      workflowRunJobs,
+    });
+    core.setOutput("traceId", spanContext.traceId);
   } finally {
-    console.log("Shutdown Trace Provider");
+    core.info("Shutdown Trace Provider");
     setTimeout(() => {
       provider
         .shutdown()
         .then(() => {
-          console.log("Provider shutdown");
+          core.info("Provider shutdown");
         })
         .catch((error: Error) => {
           console.warn(error.message);

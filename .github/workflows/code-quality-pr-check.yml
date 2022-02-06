@@ -7,6 +7,7 @@ on:
       - "package-lock.json"
       - "tests/*"
       - "tsconfig.json"
+      - ".github/workflows/code-quality-pr-check.yml"
     branches: [main]
 
 jobs:
@@ -24,6 +25,17 @@ jobs:
         run: npm run lint:ci
       - name: format check
         run: npm run format:ci
+      - name: run tests
+        run: npm run test:ci
+      - uses: inception-health/otel-upload-test-artifact-action@v1
+        if: always()
+        with:
+          jobName: "lint-and-format-check"
+          stepName: "run tests"
+          path: "junit.xml"
+          type: "junit"
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
   update-dist:
     runs-on: ubuntu-latest
     needs: [lint-and-format-check]
