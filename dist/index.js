@@ -602,6 +602,7 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
     const fileExists = fs.existsSync(path);
     core.info(`Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`);
     const data = fs.readFileSync(path, { encoding: "utf8", flag: "r" });
+    core.info(data);
     const lines = data.split("\n");
     core.info(`File lines: ${lines.length}`);
     for (const line of lines) {
