@@ -84,6 +84,12 @@ describe("listWorkflowRunArtifacts", () => {
 
   it("test WorkflowArtifactDownload path exists", () => {
     expect(subject.path).toEqual("{lint-and-test}{run tests}.log");
-    expect(fs.existsSync(subject?.path)).toBeTruthy();
+    expect(fs.existsSync(subject.path)).toBeTruthy();
+  });
+  it("test WorkflowArtifactDownload has data", () => {
+    const data = fs.readFileSync(subject.path, { encoding: "utf8", flag: "r" });
+    // expect(data.length).toBeGreaterThan(0);
+    const lines = data.split("\n");
+    expect(lines.length).toBeGreaterThan(1);
   });
 });

@@ -82,6 +82,7 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
             const writeStream = fs_1.default.createWriteStream(`${artifact.name}.log`);
             try {
                 zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
+                await new Promise((fulfill) => writeStream.on("finish", fulfill));
                 core.info(`Downloaded Artifact ${writeStream.path.toString()}`);
                 next[jobName][stepName] = {
                     jobName,
@@ -90,6 +91,7 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
                 };
             }
             finally {
+                console.log(`Bytes Written: ${writeStream.bytesWritten}`);
                 writeStream.close();
             }
         }
@@ -602,12 +604,12 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
     const fileExists = fs.existsSync(path);
     core.info(`Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`);
     const data = fs.readFileSync(path, { encoding: "utf8", flag: "r" });
-    core.info(data);
+    // core.info(data);
     const lines = data.split("\n");
     core.info(`File lines: ${lines.length}`);
     for (const line of lines) {
         core.info("Tracing test OTLP Service Request");
-        core.info(line);
+        // core.info(line);
         if (line) {
             const serviceRequest = JSON.parse(line);
             for (const resourceSpans of serviceRequest.resourceSpans) {

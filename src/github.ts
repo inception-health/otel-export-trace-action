@@ -100,6 +100,7 @@ export async function listWorkflowRunArtifacts(
         const writeStream = fs.createWriteStream(`${artifact.name}.log`);
         try {
           zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
+          await new Promise((fulfill) => writeStream.on("finish", fulfill));
           core.info(`Downloaded Artifact ${writeStream.path.toString()}`);
           next[jobName][stepName] = {
             jobName,
@@ -107,6 +108,7 @@ export async function listWorkflowRunArtifacts(
             path: writeStream.path.toString(),
           };
         } finally {
+          console.log(`Bytes Written: ${writeStream.bytesWritten}`);
           writeStream.close();
         }
       }

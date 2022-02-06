@@ -126,12 +126,12 @@ export async function traceOTLPFile({
     `Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`
   );
   const data = fs.readFileSync(path, { encoding: "utf8", flag: "r" });
-  core.info(data);
+  // core.info(data);
   const lines = data.split("\n");
   core.info(`File lines: ${lines.length}`);
   for (const line of lines) {
     core.info("Tracing test OTLP Service Request");
-    core.info(line);
+    // core.info(line);
     if (line) {
       const serviceRequest: ExportTraceServiceRequest = JSON.parse(
         line
