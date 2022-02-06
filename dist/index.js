@@ -521,6 +521,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.traceOTLPFile = void 0;
+const sdk_trace_base_1 = __nccwpck_require__(9253);
 const core_1 = __nccwpck_require__(9736);
 const exporter_trace_otlp_http_1 = __nccwpck_require__(5401);
 const core = __importStar(__nccwpck_require__(2186));
@@ -591,8 +592,16 @@ function toAttributes(attributes) {
     }, {});
     return rv;
 }
+function toSpan({ otlpSpan, tracer, parentSpan }) {
+    return new sdk_trace_base_1.Span(tracer, api.context.active(), otlpSpan.name, {
+        traceId: parentSpan.spanContext().traceId,
+        spanId: otlpSpan.spanId,
+        traceFlags: parentSpan.spanContext().traceFlags,
+        traceState: new core_1.TraceState(otlpSpan.traceState),
+    }, toSpanKind(otlpSpan.kind), otlpSpan.parentSpanId || parentSpan.spanContext().spanId, toLinks(otlpSpan.links), new Date(otlpSpan.startTimeUnixNano / 1000000));
+}
 async function traceOTLPFile({ tracer, parentSpan, path, }) {
-    const parentSpanContext = parentSpan.spanContext();
+    // const parentSpanContext = parentSpan.spanContext();
     const fileExists = fs.existsSync(path);
     core.info(`Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`);
     const data = fs.readFileSync(path, { encoding: "utf8", flag: "r" });
@@ -609,27 +618,33 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
                     if (libSpans.instrumentationLibrary) {
                         for (const otlpSpan of libSpans.spans) {
                             core.info(`Trace test Span<${otlpSpan.spanId}>`);
-                            const ctx = api.trace.setSpanContext(api.context.active(), {
-                                traceId: parentSpanContext.traceId,
-                                spanId: otlpSpan.parentSpanId || parentSpanContext.spanId,
-                                traceFlags: parentSpanContext.traceFlags,
-                                traceState: new core_1.TraceState(otlpSpan.traceState),
-                            });
-                            const span = tracer.startSpan(otlpSpan.name, {
-                                kind: toSpanKind(otlpSpan.kind),
-                                attributes: toAttributes(otlpSpan.attributes),
-                                links: toLinks(otlpSpan.links),
-                                startTime: new Date(otlpSpan.startTimeUnixNano / 1000000),
-                            }, ctx);
-                            // const span = toSpan({
-                            //   otlpSpan,
-                            //   tracer,
-                            //   parentSpan,
+                            // const ctx = api.trace.setSpanContext(api.context.active(), {
+                            //   traceId: parentSpanContext.traceId,
+                            //   spanId: otlpSpan.parentSpanId || parentSpanContext.spanId,
+                            //   traceFlags: parentSpanContext.traceFlags,
+                            //   traceState: new TraceState(otlpSpan.traceState),
                             // });
-                            // const attributes = toAttributes(otlpSpan.attributes);
-                            // if (attributes) {
-                            //   span.setAttributes(attributes);
-                            // }
+                            // const span = tracer.startSpan(
+                            //   otlpSpan.name as string,
+                            //   {
+                            //     kind: toSpanKind(otlpSpan.kind),
+                            //     attributes: toAttributes(otlpSpan.attributes),
+                            //     links: toLinks(otlpSpan.links),
+                            //     startTime: new Date(
+                            //       (otlpSpan.startTimeUnixNano as number) / 1000000
+                            //     ),
+                            //   },
+                            //   ctx
+                            // );
+                            const span = toSpan({
+                                otlpSpan,
+                                tracer,
+                                parentSpan,
+                            });
+                            const attributes = toAttributes(otlpSpan.attributes);
+                            if (attributes) {
+                                span.setAttributes(attributes);
+                            }
                             if (otlpSpan.status) {
                                 span.setStatus(otlpSpan.status);
                             }

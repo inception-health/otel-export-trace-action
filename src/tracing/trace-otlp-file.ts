@@ -92,23 +92,23 @@ type ToSpanParams = {
   parentSpan: api.Span;
 };
 
-// function toSpan({ otlpSpan, tracer, parentSpan }: ToSpanParams): api.Span {
-//   return new SpanImpl(
-//     tracer,
-//     api.context.active(),
-//     otlpSpan.name as string,
-//     {
-//       traceId: parentSpan.spanContext().traceId,
-//       spanId: otlpSpan.spanId,
-//       traceFlags: parentSpan.spanContext().traceFlags,
-//       traceState: new TraceState(otlpSpan.traceState),
-//     },
-//     toSpanKind(otlpSpan.kind),
-//     otlpSpan.parentSpanId || parentSpan.spanContext().spanId,
-//     toLinks(otlpSpan.links),
-//     otlpSpan.startTimeUnixNano
-//   );
-// }
+function toSpan({ otlpSpan, tracer, parentSpan }: ToSpanParams): api.Span {
+  return new SpanImpl(
+    tracer,
+    api.context.active(),
+    otlpSpan.name as string,
+    {
+      traceId: parentSpan.spanContext().traceId,
+      spanId: otlpSpan.spanId,
+      traceFlags: parentSpan.spanContext().traceFlags,
+      traceState: new TraceState(otlpSpan.traceState),
+    },
+    toSpanKind(otlpSpan.kind),
+    otlpSpan.parentSpanId || parentSpan.spanContext().spanId,
+    toLinks(otlpSpan.links),
+    new Date((otlpSpan.startTimeUnixNano as number) / 1000000)
+  );
+}
 
 export type TraceOTLPFileParams = {
   tracer: Tracer;
@@ -121,7 +121,7 @@ export async function traceOTLPFile({
   parentSpan,
   path,
 }: TraceOTLPFileParams): Promise<void> {
-  const parentSpanContext = parentSpan.spanContext();
+  // const parentSpanContext = parentSpan.spanContext();
   const fileExists = fs.existsSync(path);
   core.info(
     `Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`
@@ -143,36 +143,36 @@ export async function traceOTLPFile({
             for (const otlpSpan of libSpans.spans) {
               core.info(`Trace test Span<${otlpSpan.spanId}>`);
 
-              const ctx = api.trace.setSpanContext(api.context.active(), {
-                traceId: parentSpanContext.traceId,
-                spanId: otlpSpan.parentSpanId || parentSpanContext.spanId,
-                traceFlags: parentSpanContext.traceFlags,
-                traceState: new TraceState(otlpSpan.traceState),
-              });
-
-              const span = tracer.startSpan(
-                otlpSpan.name as string,
-                {
-                  kind: toSpanKind(otlpSpan.kind),
-                  attributes: toAttributes(otlpSpan.attributes),
-                  links: toLinks(otlpSpan.links),
-                  startTime: new Date(
-                    (otlpSpan.startTimeUnixNano as number) / 1000000
-                  ),
-                },
-                ctx
-              );
-
-              // const span = toSpan({
-              //   otlpSpan,
-              //   tracer,
-              //   parentSpan,
+              // const ctx = api.trace.setSpanContext(api.context.active(), {
+              //   traceId: parentSpanContext.traceId,
+              //   spanId: otlpSpan.parentSpanId || parentSpanContext.spanId,
+              //   traceFlags: parentSpanContext.traceFlags,
+              //   traceState: new TraceState(otlpSpan.traceState),
               // });
 
-              // const attributes = toAttributes(otlpSpan.attributes);
-              // if (attributes) {
-              //   span.setAttributes(attributes);
-              // }
+              // const span = tracer.startSpan(
+              //   otlpSpan.name as string,
+              //   {
+              //     kind: toSpanKind(otlpSpan.kind),
+              //     attributes: toAttributes(otlpSpan.attributes),
+              //     links: toLinks(otlpSpan.links),
+              //     startTime: new Date(
+              //       (otlpSpan.startTimeUnixNano as number) / 1000000
+              //     ),
+              //   },
+              //   ctx
+              // );
+
+              const span = toSpan({
+                otlpSpan,
+                tracer,
+                parentSpan,
+              });
+
+              const attributes = toAttributes(otlpSpan.attributes);
+              if (attributes) {
+                span.setAttributes(attributes);
+              }
               if (otlpSpan.status) {
                 span.setStatus(otlpSpan.status);
               }
