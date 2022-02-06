@@ -137,3 +137,6 @@ jobs:
 ## Honeycomb Example Trace
 
 ![HoneyComb Example](./docs/honeycomb-example.png)
+
+_with junit traces_
+![HoneyComb Junit Example](./docs/honeycomb-junit-example.png)
