@@ -592,6 +592,7 @@ function toAttributes(attributes) {
     return rv;
 }
 async function traceOTLPFile({ tracer, parentSpan, path, }) {
+    const parentSpanContext = parentSpan.spanContext();
     const fileExists = fs.existsSync(path);
     core.info(`Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`);
     const data = fs.readFileSync(path, { encoding: "utf8", flag: "r" });
@@ -609,9 +610,9 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
                         for (const otlpSpan of libSpans.spans) {
                             core.info(`Trace test Span<${otlpSpan.spanId}>`);
                             const ctx = api.trace.setSpanContext(api.context.active(), {
-                                traceId: parentSpan.spanContext().traceId,
-                                spanId: otlpSpan.parentSpanId || parentSpan.spanContext().spanId,
-                                traceFlags: parentSpan.spanContext().traceFlags,
+                                traceId: parentSpanContext.traceId,
+                                spanId: otlpSpan.parentSpanId || parentSpanContext.spanId,
+                                traceFlags: parentSpanContext.traceFlags,
                                 traceState: new core_1.TraceState(otlpSpan.traceState),
                             });
                             const span = tracer.startSpan(otlpSpan.name, {

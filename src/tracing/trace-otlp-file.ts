@@ -121,6 +121,7 @@ export async function traceOTLPFile({
   parentSpan,
   path,
 }: TraceOTLPFileParams): Promise<void> {
+  const parentSpanContext = parentSpan.spanContext();
   const fileExists = fs.existsSync(path);
   core.info(
     `Create ReadStream for ${path}. File exists: ${JSON.stringify(fileExists)}`
@@ -143,10 +144,9 @@ export async function traceOTLPFile({
               core.info(`Trace test Span<${otlpSpan.spanId}>`);
 
               const ctx = api.trace.setSpanContext(api.context.active(), {
-                traceId: parentSpan.spanContext().traceId,
-                spanId:
-                  otlpSpan.parentSpanId || parentSpan.spanContext().spanId,
-                traceFlags: parentSpan.spanContext().traceFlags,
+                traceId: parentSpanContext.traceId,
+                spanId: otlpSpan.parentSpanId || parentSpanContext.spanId,
+                traceFlags: parentSpanContext.traceFlags,
                 traceState: new TraceState(otlpSpan.traceState),
               });
 
