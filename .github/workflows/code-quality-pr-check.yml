@@ -27,7 +27,7 @@ jobs:
         run: npm run format:ci
       - name: run tests
         run: npm run test:ci
-      - uses: inception-health/otel-upload-test-artifact-action@v0.1.0
+      - uses: inception-health/otel-upload-test-artifact-action@v1
         if: always()
         with:
           jobName: "lint-and-format-check"
