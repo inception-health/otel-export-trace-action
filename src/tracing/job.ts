@@ -5,6 +5,7 @@ import {
   ROOT_CONTEXT,
   Context,
   trace,
+  SpanContext,
 } from "@opentelemetry/api";
 import { BasicTracerProvider, Tracer } from "@opentelemetry/sdk-trace-base";
 import * as core from "@actions/core";
@@ -25,7 +26,7 @@ export type TraceWorkflowRunJobsParams = {
 export async function traceWorkflowRunJobs({
   provider,
   workflowRunJobs,
-}: TraceWorkflowRunJobsParams) {
+}: TraceWorkflowRunJobsParams): Promise<SpanContext> {
   const tracer = provider.getTracer("otel-export-trace");
 
   const startTime = new Date(workflowRunJobs.workflowRun.created_at);
@@ -65,13 +66,13 @@ export async function traceWorkflowRunJobs({
     },
     ROOT_CONTEXT
   );
-  core.info(`TraceID: ${rootSpan.spanContext().traceId}`);
+  core.debug(`TraceID: ${rootSpan.spanContext().traceId}`);
   let code = SpanStatusCode.OK;
   if (workflowRunJobs.workflowRun.conclusion === "failure") {
     code = SpanStatusCode.ERROR;
   }
   rootSpan.setStatus({ code });
-  core.info(
+  core.debug(
     `Root Span: ${rootSpan.spanContext().traceId}: ${
       workflowRunJobs.workflowRun.created_at
     }`
@@ -99,6 +100,7 @@ export async function traceWorkflowRunJobs({
   } finally {
     rootSpan.end(new Date(workflowRunJobs.workflowRun.updated_at));
   }
+  return rootSpan.spanContext();
 }
 
 type TraceWorkflowRunJobParams = {
@@ -118,7 +120,7 @@ async function traceWorkflowRunJob({
   job,
   workflowArtifacts,
 }: TraceWorkflowRunJobParams) {
-  core.info(`Trace Job ${job.id}`);
+  core.debug(`Trace Job ${job.id}`);
   if (!job.completed_at) {
     console.warn(`Job ${job.id} is not completed yet`);
     return;
@@ -146,7 +148,7 @@ async function traceWorkflowRunJob({
     },
     ctx
   );
-  core.info(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
+  core.debug(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
 
   try {
     let code = SpanStatusCode.OK;
@@ -155,7 +157,7 @@ async function traceWorkflowRunJob({
     }
     span.setStatus({ code });
     const numSteps = job.steps?.length || 0;
-    core.info(`Trace ${numSteps} Steps`);
+    core.debug(`Trace ${numSteps} Steps`);
     if (job.steps !== undefined) {
       for (let i = 0; i < job.steps.length; i++) {
         const step: WorkflowRunJobStep = job.steps[i];

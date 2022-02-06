@@ -80,7 +80,7 @@ export async function listWorkflowRunArtifacts(
       /* istanbul ignore next */
       if (match?.groups?.jobName && match?.groups?.stepName) {
         const { jobName, stepName } = match.groups;
-        core.info(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
+        core.debug(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
         if (!(jobName in next)) {
           next[jobName] = {};
         }
@@ -101,14 +101,13 @@ export async function listWorkflowRunArtifacts(
         try {
           zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
           await new Promise((fulfill) => writeStream.on("finish", fulfill));
-          core.info(`Downloaded Artifact ${writeStream.path.toString()}`);
+          core.debug(`Downloaded Artifact ${writeStream.path.toString()}`);
           next[jobName][stepName] = {
             jobName,
             stepName,
             path: writeStream.path.toString(),
           };
         } finally {
-          console.log(`Bytes Written: ${writeStream.bytesWritten}`);
           writeStream.close();
         }
       }

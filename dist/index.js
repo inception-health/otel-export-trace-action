@@ -63,7 +63,7 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
         /* istanbul ignore next */
         if (((_a = match === null || match === void 0 ? void 0 : match.groups) === null || _a === void 0 ? void 0 : _a.jobName) && ((_b = match === null || match === void 0 ? void 0 : match.groups) === null || _b === void 0 ? void 0 : _b.stepName)) {
             const { jobName, stepName } = match.groups;
-            core.info(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
+            core.debug(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
             if (!(jobName in next)) {
                 next[jobName] = {};
             }
@@ -83,7 +83,7 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
             try {
                 zip.files[Object.keys(zip.files)[0]].nodeStream().pipe(writeStream);
                 await new Promise((fulfill) => writeStream.on("finish", fulfill));
-                core.info(`Downloaded Artifact ${writeStream.path.toString()}`);
+                core.debug(`Downloaded Artifact ${writeStream.path.toString()}`);
                 next[jobName][stepName] = {
                     jobName,
                     stepName,
@@ -91,7 +91,6 @@ async function listWorkflowRunArtifacts(context, octokit, runId) {
                 };
             }
             finally {
-                console.log(`Bytes Written: ${writeStream.bytesWritten}`);
                 writeStream.close();
             }
         }
@@ -218,21 +217,25 @@ async function run() {
     const runId = parseInt(core.getInput("runId") || `${ghContext.runId}`);
     const ghToken = core.getInput("githubToken") || process.env.GITHUB_TOKEN || "";
     const octokit = github.getOctokit(ghToken);
-    console.log(`Get Workflow Run Jobs for ${runId}`);
+    core.info(`Get Workflow Run Jobs for ${runId}`);
     const workflowRunJobs = await (0, github_1.getWorkflowRunJobs)(ghContext, octokit, runId);
-    console.log(`Create Trace Provider for ${otlpEndpoint}`);
+    core.info(`Create Trace Provider for ${otlpEndpoint}`);
     const provider = (0, tracing_1.createTracerProvider)(otlpEndpoint, otlpHeaders, workflowRunJobs);
     try {
-        console.log(`Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`);
-        await (0, tracing_1.traceWorkflowRunJobs)({ provider, workflowRunJobs });
+        core.info(`Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`);
+        const spanContext = await (0, tracing_1.traceWorkflowRunJobs)({
+            provider,
+            workflowRunJobs,
+        });
+        core.setOutput("traceId", spanContext.traceId);
     }
     finally {
-        console.log("Shutdown Trace Provider");
+        core.info("Shutdown Trace Provider");
         setTimeout(() => {
             provider
                 .shutdown()
                 .then(() => {
-                console.log("Provider shutdown");
+                core.info("Provider shutdown");
             })
                 .catch((error) => {
                 console.warn(error.message);
@@ -318,13 +321,13 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
         root: true,
         startTime,
     }, api_1.ROOT_CONTEXT);
-    core.info(`TraceID: ${rootSpan.spanContext().traceId}`);
+    core.debug(`TraceID: ${rootSpan.spanContext().traceId}`);
     let code = api_1.SpanStatusCode.OK;
     if (workflowRunJobs.workflowRun.conclusion === "failure") {
         code = api_1.SpanStatusCode.ERROR;
     }
     rootSpan.setStatus({ code });
-    core.info(`Root Span: ${rootSpan.spanContext().traceId}: ${workflowRunJobs.workflowRun.created_at}`);
+    core.debug(`Root Span: ${rootSpan.spanContext().traceId}: ${workflowRunJobs.workflowRun.created_at}`);
     try {
         if (workflowRunJobs.jobs.length > 0) {
             const firstJob = workflowRunJobs.jobs[0];
@@ -347,11 +350,12 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
     finally {
         rootSpan.end(new Date(workflowRunJobs.workflowRun.updated_at));
     }
+    return rootSpan.spanContext();
 }
 exports.traceWorkflowRunJobs = traceWorkflowRunJobs;
 async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, job, workflowArtifacts, }) {
     var _a;
-    core.info(`Trace Job ${job.id}`);
+    core.debug(`Trace Job ${job.id}`);
     if (!job.completed_at) {
         console.warn(`Job ${job.id} is not completed yet`);
         return;
@@ -375,7 +379,7 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
         },
         startTime,
     }, ctx);
-    core.info(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
+    core.debug(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
     try {
         let code = api_1.SpanStatusCode.OK;
         if (job.conclusion === "failure") {
@@ -383,7 +387,7 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
         }
         span.setStatus({ code });
         const numSteps = ((_a = job.steps) === null || _a === void 0 ? void 0 : _a.length) || 0;
-        core.info(`Trace ${numSteps} Steps`);
+        core.debug(`Trace ${numSteps} Steps`);
         if (job.steps !== undefined) {
             for (let i = 0; i < job.steps.length; i++) {
                 const step = job.steps[i];
@@ -442,7 +446,7 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
         console.warn(`Step ${stepName} is not completed yet`);
         return;
     }
-    core.info(`Trace Step ${step.name}`);
+    core.debug(`Trace Step ${step.name}`);
     const ctx = trace.setSpan(parentContext, parentSpan);
     const startTime = new Date(step.started_at);
     const span = tracer.startSpan(step.name, {
@@ -458,7 +462,7 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
         if (step.conclusion !== "failure") {
             span.setStatus({ code: api_1.SpanStatusCode.OK });
         }
-        core.info(`Job Span: ${span.spanContext().spanId}: ${step.started_at}`);
+        core.debug(`Job Span: ${span.spanContext().spanId}: ${step.started_at}`);
         if (step.conclusion) {
             span.setAttribute("github.job.step.conclusion", step.conclusion);
         }
@@ -479,7 +483,7 @@ exports.traceWorkflowRunStep = traceWorkflowRunStep;
 async function traceArtifact({ tracer, parentSpan, job, step, startTime, workflowArtifacts, }) {
     const artifact = workflowArtifacts(job.name, step.name);
     if (artifact) {
-        core.info(`Found Artifact ${artifact === null || artifact === void 0 ? void 0 : artifact.path}`);
+        core.debug(`Found Artifact ${artifact === null || artifact === void 0 ? void 0 : artifact.path}`);
         await (0, trace_otlp_file_1.traceOTLPFile)({
             tracer,
             parentSpan,
@@ -488,7 +492,7 @@ async function traceArtifact({ tracer, parentSpan, job, step, startTime, workflo
         });
     }
     else {
-        core.info(`No Artifact to trace for Job<${job.name}> Step<${step.name}>`);
+        core.debug(`No Artifact to trace for Job<${job.name}> Step<${step.name}>`);
     }
 }
 
@@ -614,7 +618,7 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
                 for (const libSpans of resourceSpans.instrumentationLibrarySpans) {
                     if (libSpans.instrumentationLibrary) {
                         for (const otlpSpan of libSpans.spans) {
-                            core.info(`Trace Test ParentSpan<${otlpSpan.parentSpanId || parentSpan.spanContext().spanId}> -> Span<${otlpSpan.spanId}> `);
+                            core.debug(`Trace Test ParentSpan<${otlpSpan.parentSpanId || parentSpan.spanContext().spanId}> -> Span<${otlpSpan.spanId}> `);
                             const span = toSpan({
                                 otlpSpan,
                                 tracer,
