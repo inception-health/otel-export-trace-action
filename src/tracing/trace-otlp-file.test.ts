@@ -65,7 +65,7 @@ describe("traceJunitArtifact", () => {
     span.end(new Date("2022-01-22T04:45:34"));
 
     const spans = memoryExporter.getFinishedSpans();
-    expect(spans.length).toEqual(9);
+    expect(spans.length).toEqual(8);
 
     spans.forEach((s) => {
       expect(s.attributes).toBeDefined();
