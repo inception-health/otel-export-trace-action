@@ -6,6 +6,7 @@ on:
       - "package-lock.json"
       - "package.json"
       - "action.yml"
+      - ".github/workflows/build-main.yml"
     branches:
       - main
 
