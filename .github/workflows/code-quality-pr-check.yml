@@ -34,7 +34,7 @@ jobs:
         if: always()
         with:
           jobName: "lint-and-format-check"
-          stepName: "run tests"
+          stepName: "run tests - ${{matrix.test}}"
           path: "junit.xml"
           type: "junit"
           githubToken: ${{ secrets.GITHUB_TOKEN }}
