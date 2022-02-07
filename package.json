@@ -66,11 +66,10 @@
     ]
   },
   "jest-junit": {
-    "suiteNameTemplate": "{title}",
+    "suiteNameTemplate": "{filepath}",
     "titleTemplate": "{title}",
-    "ancestorSeparator": "❯",
-    "classNameTemplate": "{title}",
-    "addFileAttribute": "true",
+    "ancestorSeparator": " ❯ ",
+    "classNameTemplate": "{classname}",
     "includeConsoleOutput": "true",
     "reportTestSuiteErrors": "true"
   }

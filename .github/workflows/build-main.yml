@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  lint:
+  lint-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -24,6 +24,16 @@ jobs:
         run: npm run lint:ci
       - name: format check
         run: npm run format:ci
+      - name: run tests
+        run: npm run test:ci
+      - uses: inception-health/otel-upload-test-artifact-action@v1
+        if: always()
+        with:
+          jobName: "lint-and-format-check"
+          stepName: "run tests"
+          path: "junit.xml"
+          type: "junit"
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
   update-dist:
     runs-on: ubuntu-latest
     needs: [lint]
