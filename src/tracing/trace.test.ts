@@ -28,7 +28,7 @@ describe("createTracerProvider", () => {
     return subject.shutdown();
   });
 
-  it("test service.name resource is workflow name", () => {
+  it("has service.name resource as workflow name", () => {
     subject = createTracerProvider(
       "localhost",
       "test=foo",
@@ -39,7 +39,7 @@ describe("createTracerProvider", () => {
     ).toEqual(mockWorkflowRunJobs.workflowRun.name);
   });
 
-  it("test service.name resource is workflow id", () => {
+  it("has service.name resource as workflow id", () => {
     mockWorkflowRunJobs.workflowRun.name = undefined;
     subject = createTracerProvider(
       "localhost",
@@ -51,7 +51,7 @@ describe("createTracerProvider", () => {
     ).toEqual(`${mockWorkflowRunJobs.workflowRun.id}`);
   });
 
-  it("test service.instance.id resource", () => {
+  it("has service.instance.id resource", () => {
     subject = createTracerProvider(
       "localhost",
       "test=foo",
@@ -71,7 +71,7 @@ describe("createTracerProvider", () => {
     );
   });
 
-  it("test service.namespace resource", () => {
+  it("has service.namespace resource", () => {
     subject = createTracerProvider(
       "localhost",
       "test=foo",
@@ -82,7 +82,7 @@ describe("createTracerProvider", () => {
     ).toEqual(mockWorkflowRunJobs.workflowRun.repository.full_name);
   });
 
-  it("test active span processor", () => {
+  it("has active span processor", () => {
     subject = createTracerProvider(
       "localhost",
       "test=foo",
