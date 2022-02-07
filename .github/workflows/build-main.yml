@@ -2,7 +2,7 @@ name: "Build Main"
 on:
   push:
     paths:
-      - "src/*"
+      - "src/**"
       - "package-lock.json"
       - "package.json"
       - "action.yml"
