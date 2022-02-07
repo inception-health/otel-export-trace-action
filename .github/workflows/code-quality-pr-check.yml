@@ -13,6 +13,9 @@ on:
 jobs:
   lint-and-format-check:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test: [1, 2]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -25,7 +28,7 @@ jobs:
         run: npm run lint:ci
       - name: format check
         run: npm run format:ci
-      - name: run tests
+      - name: run tests - ${{matrix.test}}
         run: npm run test:ci
       - uses: inception-health/otel-upload-test-artifact-action@v1
         if: always()
