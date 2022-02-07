@@ -30,6 +30,21 @@ export async function traceWorkflowRunJobs({
   const tracer = provider.getTracer("otel-export-trace");
 
   const startTime = new Date(workflowRunJobs.workflowRun.created_at);
+  let headRef = undefined;
+  if (
+    workflowRunJobs.workflowRun.pull_requests &&
+    workflowRunJobs.workflowRun.pull_requests.length > 0
+  ) {
+    headRef = workflowRunJobs.workflowRun.pull_requests[0].head?.ref;
+  }
+
+  let baseRef = undefined;
+  if (
+    workflowRunJobs.workflowRun.pull_requests &&
+    workflowRunJobs.workflowRun.pull_requests.length > 0
+  ) {
+    baseRef = workflowRunJobs.workflowRun.pull_requests[0].base?.ref;
+  }
 
   const rootSpan = tracer.startSpan(
     workflowRunJobs.workflowRun.name ||
@@ -50,12 +65,8 @@ export async function traceWorkflowRunJobs({
         "github.author_email":
           workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
         "github.head_sha": workflowRunJobs.workflowRun.head_sha,
-        "github.head_ref":
-          (workflowRunJobs.workflowRun.pull_requests || [{}])[0].head?.ref ||
-          undefined,
-        "github.base_ref":
-          (workflowRunJobs.workflowRun.pull_requests || [{}])[0].base?.ref ||
-          undefined,
+        "github.head_ref": headRef,
+        "github.base_ref": baseRef,
         "github.base_sha":
           (workflowRunJobs.workflowRun.pull_requests || [{}])[0].base?.sha ||
           undefined,

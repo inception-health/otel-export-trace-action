@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "otel-export-trace",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Github Action to export Open Telemetry traces for Workflow runs",
   "engines": {
     "node": ">=12.0.0"
@@ -55,6 +55,7 @@
     "jest-mock-extended": "^2.0.4",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.2",
+    "ts-node": "^10.5.0",
     "ttypescript": "^1.5.13",
     "typescript": "^4.5.4"
   },
@@ -63,5 +64,14 @@
       "prettier --write .",
       "eslint --cache --fix ."
     ]
+  },
+  "jest-junit": {
+    "suiteNameTemplate": "{title}",
+    "titleTemplate": "{title}",
+    "ancestorSeparator": "❯",
+    "classNameTemplate": "{title}",
+    "addFileAttribute": "true",
+    "includeConsoleOutput": "true",
+    "reportTestSuiteErrors": "true"
   }
 }

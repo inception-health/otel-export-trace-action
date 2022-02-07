@@ -296,6 +296,16 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
     var _a, _b, _c, _d, _e, _f, _g;
     const tracer = provider.getTracer("otel-export-trace");
     const startTime = new Date(workflowRunJobs.workflowRun.created_at);
+    let headRef = undefined;
+    if (workflowRunJobs.workflowRun.pull_requests &&
+        workflowRunJobs.workflowRun.pull_requests.length > 0) {
+        headRef = (_a = workflowRunJobs.workflowRun.pull_requests[0].head) === null || _a === void 0 ? void 0 : _a.ref;
+    }
+    let baseRef = undefined;
+    if (workflowRunJobs.workflowRun.pull_requests &&
+        workflowRunJobs.workflowRun.pull_requests.length > 0) {
+        baseRef = (_b = workflowRunJobs.workflowRun.pull_requests[0].base) === null || _b === void 0 ? void 0 : _b.ref;
+    }
     const rootSpan = tracer.startSpan(workflowRunJobs.workflowRun.name ||
         `${workflowRunJobs.workflowRun.workflow_id}`, {
         attributes: {
@@ -307,13 +317,11 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
             "github.event": workflowRunJobs.workflowRun.event,
             "github.workflow": workflowRunJobs.workflowRun.name || undefined,
             "github.conclusion": workflowRunJobs.workflowRun.conclusion || undefined,
-            "github.author_name": ((_b = (_a = workflowRunJobs.workflowRun.head_commit) === null || _a === void 0 ? void 0 : _a.author) === null || _b === void 0 ? void 0 : _b.name) || undefined,
-            "github.author_email": ((_d = (_c = workflowRunJobs.workflowRun.head_commit) === null || _c === void 0 ? void 0 : _c.author) === null || _d === void 0 ? void 0 : _d.email) || undefined,
+            "github.author_name": ((_d = (_c = workflowRunJobs.workflowRun.head_commit) === null || _c === void 0 ? void 0 : _c.author) === null || _d === void 0 ? void 0 : _d.name) || undefined,
+            "github.author_email": ((_f = (_e = workflowRunJobs.workflowRun.head_commit) === null || _e === void 0 ? void 0 : _e.author) === null || _f === void 0 ? void 0 : _f.email) || undefined,
             "github.head_sha": workflowRunJobs.workflowRun.head_sha,
-            "github.head_ref": ((_e = (workflowRunJobs.workflowRun.pull_requests || [{}])[0].head) === null || _e === void 0 ? void 0 : _e.ref) ||
-                undefined,
-            "github.base_ref": ((_f = (workflowRunJobs.workflowRun.pull_requests || [{}])[0].base) === null || _f === void 0 ? void 0 : _f.ref) ||
-                undefined,
+            "github.head_ref": headRef,
+            "github.base_ref": baseRef,
             "github.base_sha": ((_g = (workflowRunJobs.workflowRun.pull_requests || [{}])[0].base) === null || _g === void 0 ? void 0 : _g.sha) ||
                 undefined,
             error: workflowRunJobs.workflowRun.conclusion === "failure",
