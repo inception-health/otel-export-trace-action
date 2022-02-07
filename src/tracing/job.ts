@@ -31,18 +31,12 @@ export async function traceWorkflowRunJobs({
 
   const startTime = new Date(workflowRunJobs.workflowRun.created_at);
   let headRef = undefined;
-  if (
-    workflowRunJobs.workflowRun.pull_requests &&
-    workflowRunJobs.workflowRun.pull_requests.length > 0
-  ) {
-    headRef = workflowRunJobs.workflowRun.pull_requests[0].head?.ref;
-  }
-
   let baseRef = undefined;
   if (
     workflowRunJobs.workflowRun.pull_requests &&
     workflowRunJobs.workflowRun.pull_requests.length > 0
   ) {
+    headRef = workflowRunJobs.workflowRun.pull_requests[0].head?.ref;
     baseRef = workflowRunJobs.workflowRun.pull_requests[0].base?.ref;
   }
 

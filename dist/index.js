@@ -297,13 +297,10 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
     const tracer = provider.getTracer("otel-export-trace");
     const startTime = new Date(workflowRunJobs.workflowRun.created_at);
     let headRef = undefined;
-    if (workflowRunJobs.workflowRun.pull_requests &&
-        workflowRunJobs.workflowRun.pull_requests.length > 0) {
-        headRef = (_a = workflowRunJobs.workflowRun.pull_requests[0].head) === null || _a === void 0 ? void 0 : _a.ref;
-    }
     let baseRef = undefined;
     if (workflowRunJobs.workflowRun.pull_requests &&
         workflowRunJobs.workflowRun.pull_requests.length > 0) {
+        headRef = (_a = workflowRunJobs.workflowRun.pull_requests[0].head) === null || _a === void 0 ? void 0 : _a.ref;
         baseRef = (_b = workflowRunJobs.workflowRun.pull_requests[0].base) === null || _b === void 0 ? void 0 : _b.ref;
     }
     const rootSpan = tracer.startSpan(workflowRunJobs.workflowRun.name ||
