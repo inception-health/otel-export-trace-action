@@ -32,12 +32,14 @@ export async function traceWorkflowRunJobs({
   const startTime = new Date(workflowRunJobs.workflowRun.created_at);
   let headRef = undefined;
   let baseRef = undefined;
+  let baseSha = undefined;
   if (
     workflowRunJobs.workflowRun.pull_requests &&
     workflowRunJobs.workflowRun.pull_requests.length > 0
   ) {
     headRef = workflowRunJobs.workflowRun.pull_requests[0].head?.ref;
     baseRef = workflowRunJobs.workflowRun.pull_requests[0].base?.ref;
+    baseSha = workflowRunJobs.workflowRun.pull_requests[0].base?.sha;
   }
 
   const rootSpan = tracer.startSpan(
@@ -61,9 +63,7 @@ export async function traceWorkflowRunJobs({
         "github.head_sha": workflowRunJobs.workflowRun.head_sha,
         "github.head_ref": headRef,
         "github.base_ref": baseRef,
-        "github.base_sha":
-          (workflowRunJobs.workflowRun.pull_requests || [{}])[0].base?.sha ||
-          undefined,
+        "github.base_sha": baseSha,
         error: workflowRunJobs.workflowRun.conclusion === "failure",
       },
       root: true,
