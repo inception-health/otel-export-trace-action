@@ -28,7 +28,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        os: ["ubuntu-latest"]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
