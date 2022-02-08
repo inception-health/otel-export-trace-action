@@ -7,20 +7,17 @@ on:
       - "package-lock.json"
       - "tests/*"
       - "tsconfig.json"
-      - ".github/workflows/code-quality-pr-check.yml"
+      - .github/workflows/code-quality-pr-check.yml
     branches: [main]
 
 jobs:
-  lint-and-format-check:
+  lint-and-format:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        test: [1, 2]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: "12"
+          node-version: "16"
           cache: "npm"
       - name: Install Dependencies
         run: npm ci --ignore-scripts
@@ -28,28 +25,40 @@ jobs:
         run: npm run lint:ci
       - name: format check
         run: npm run format:ci
-      - name: run tests - ${{matrix.test}}
-        run: npm run test:ci
-      - uses: inception-health/otel-upload-test-artifact-action@v1
-        if: always()
-        with:
-          jobName: "lint-and-format-check"
-          stepName: "run tests - ${{matrix.test}}"
-          path: "junit.xml"
-          type: "junit"
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-
-  update-dist:
-    runs-on: ubuntu-latest
-    needs: [lint-and-format-check]
+  tests:
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: "12"
+          node-version: "16"
+          cache: "npm"
+      - name: Install Dependencies
+        run: npm ci --ignore-scripts
+      - name: run tests
+        run: npm run test:ci
+      - uses: ./
+        if: always()
+        with:
+          jobName: "tests (${{ matrix.os }})"
+          stepName: "run tests"
+          path: "junit.xml"
+          type: "junit"
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+  update-dist:
+    runs-on: ubuntu-latest
+    needs: [lint-and-format, tests]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
           cache: "npm"
       - name: npm ci
-        run: npm ci --omit=dev --ignore-scripts
+        run: npm ci --ignore-scripts
       - name: tsc
         run: npm run package
       - name: commit dist
