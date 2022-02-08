@@ -3,8 +3,10 @@ import { GitHub } from "@actions/github/lib/utils";
 import * as core from "@actions/core";
 import { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods";
 import axios from "axios";
-import JSZip from "jszip";
-import fs from "fs";
+import * as JSZip from "jszip";
+import * as fs from "fs";
+import * as artifact from "@actions/artifact";
+import * as path from "path";
 
 export type OctoKit = InstanceType<typeof GitHub>;
 export type GetWorkflowRunType =
@@ -55,6 +57,29 @@ export async function listWorkflowRunArtifacts(
   octokit: InstanceType<typeof GitHub>,
   runId: number
 ): Promise<WorkflowArtifactLookup> {
+  let artifactsLookup: WorkflowArtifactMap = {};
+
+  /* istanbul ignore if */
+  if (runId === context.runId) {
+    artifactsLookup = await getSelfArtifactMap();
+  } else {
+    artifactsLookup = await getWorkflowRunArtifactMap(context, octokit, runId);
+  }
+  return (jobName: string, stepName: string) => {
+    try {
+      return artifactsLookup[jobName][stepName];
+    } catch (e) {
+      /* istanbul ignore next */
+      return undefined;
+    }
+  };
+}
+
+async function getWorkflowRunArtifactMap(
+  context: Context,
+  octokit: InstanceType<typeof GitHub>,
+  runId: number
+): Promise<WorkflowArtifactMap> {
   const artifactsList: WorkflowArtifact[] = [];
   const pageSize = 100;
 
@@ -116,15 +141,39 @@ export async function listWorkflowRunArtifacts(
     },
     Promise.resolve({})
   );
+  return artifactsLookup;
+}
 
-  return (jobName: string, stepName: string) => {
-    try {
-      return artifactsLookup[jobName][stepName];
-    } catch (e) {
-      /* istanbul ignore next */
-      return undefined;
-    }
-  };
+/* istanbul ignore next */
+async function getSelfArtifactMap(): Promise<WorkflowArtifactMap> {
+  const client = artifact.create();
+  const responses: artifact.DownloadResponse[] =
+    await client.downloadAllArtifacts();
+  const artifactsMap: WorkflowArtifactMap = responses.reduce(
+    (result, { artifactName, downloadPath }) => {
+      const next: WorkflowArtifactMap = { ...result };
+      const match = artifactName.match(/\{(?<jobName>.*)\}\{(?<stepName>.*)\}/);
+      if (match?.groups?.jobName && match?.groups?.stepName) {
+        const { jobName, stepName } = match.groups;
+        core.debug(`Found Artifact for Job<${jobName}> Step<${stepName}>`);
+        if (!(jobName in next)) {
+          next[jobName] = {};
+        }
+        const artifactDirFiles = fs.readdirSync(downloadPath);
+        if (artifactDirFiles && artifactDirFiles.length > 0) {
+          next[jobName][stepName] = {
+            jobName,
+            stepName,
+            path: path.join(downloadPath, artifactDirFiles[0]),
+          };
+        }
+      }
+      return next;
+    },
+    {}
+  );
+
+  return artifactsMap;
 }
 
 // TODO add test coverage
