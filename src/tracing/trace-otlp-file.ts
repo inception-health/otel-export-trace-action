@@ -5,7 +5,11 @@ import * as core from "@actions/core";
 import * as fs from "fs";
 import * as readline from "readline";
 import * as api from "@opentelemetry/api";
-import { Attributes, AttributeValue, Link } from "@opentelemetry/api";
+import {
+  SpanAttributes as Attributes,
+  SpanAttributeValue as AttributeValue,
+  Link,
+} from "@opentelemetry/api";
 
 type ExportTraceServiceRequest =
   otlpTypes.opentelemetryProto.collector.trace.v1.ExportTraceServiceRequest;

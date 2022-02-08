@@ -3,9 +3,6 @@
   "name": "otel-export-trace",
   "version": "1.5.2",
   "description": "Github Action to export Open Telemetry traces for Workflow runs",
-  "engines": {
-    "node": ">=12.0.0"
-  },
   "main": "lib/index.js",
   "scripts": {
     "prepare": "husky install",
@@ -13,7 +10,7 @@
     "lint:ci": "eslint .",
     "format:fix": "prettier --write .",
     "format:ci": "prettier --check .",
-    "prebuild": "rm -fr lib || true",
+    "prebuild": "rimraf lib",
     "build": "tsc",
     "package": "npm run build && ncc build --source-map --license licenses.txt",
     "test": "cross-env NODE_ENV=test DOTENV_CONFIG_PATH=./.env.test jest",
@@ -34,12 +31,11 @@
     "@opentelemetry/semantic-conventions": "^1.0.1",
     "axios": "^0.25.0",
     "jszip": "^3.7.1",
-    "junit2json": "^2.0.6",
-    "test-results-parser": "0.0.9"
+    "junit2json": "^2.0.6"
   },
   "devDependencies": {
     "@octokit/rest": "^18.12.0",
-    "@tsconfig/node12": "^1.0.9",
+    "@tsconfig/node16": "^1.0.2",
     "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
@@ -55,6 +51,7 @@
     "jest-junit": "^13.0.0",
     "jest-mock-extended": "^2.0.4",
     "prettier": "^2.5.1",
+    "rimraf": "^3.0.2",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.5.0",
     "ttypescript": "^1.5.13",
