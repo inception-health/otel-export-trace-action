@@ -67,6 +67,8 @@ jobs:
           commit_message: Add dist artifacts
           file_pattern: dist
   otel-export-trace:
+    needs: [update-dist, tests, lint-and-format]
+    if: always()
     name: OpenTelemetry Export Trace
     runs-on: ubuntu-latest
     steps:
