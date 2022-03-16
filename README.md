@@ -149,6 +149,8 @@ jobs:
 | github.head_sha              | string  | Github Workflow Run HEAD SHA                      |
 | github.job.id                | float   | Github Job Run ID                                 |
 | github.job.name              | string  | Github Job Run Name                               |
+| github.job.started_at        | string  | Github Job Run started_at                         |
+| github.job.completed_at      | string  | Github Job Run completed_at                       |
 | github.job.conclusion        | string  | Github Job Run Conclusion                         |
 | github.job.labels            | string  | Github Job Run Labels. Comma separated values     |
 | github.job.run_attempt       | integer | Github Job Run Run Attempt                        |
@@ -159,6 +161,8 @@ jobs:
 | github.job.step.conclusion   | string  | Github Step Run Conclusion                        |
 | github.job.step.name         | string  | Github Step Run Name                              |
 | github.job.step.number       | integer | Github Step Run Number                            |
+| github.job.step.started_at   | string  | Github Step Run started_at                        |
+| github.job.step.completed_at | string  | Github Step Run completed_at                      |
 
 ## Honeycomb Example Trace
 
