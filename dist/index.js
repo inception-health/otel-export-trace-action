@@ -425,7 +425,8 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
         },
         startTime,
     }, ctx);
-    core.debug(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
+    const spanId = span.spanContext().spanId;
+    core.debug(`Job Span<${spanId}>: Started<${job.started_at}>`);
     try {
         let code = api_1.SpanStatusCode.OK;
         if (job.conclusion === "failure") {
@@ -450,6 +451,7 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
         }
     }
     finally {
+        core.debug(`Job Span<${spanId}>: Ended<${job.completed_at}>`);
         span.end(new Date(job.completed_at));
     }
 }
@@ -503,12 +505,13 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
         },
         startTime,
     }, ctx);
+    const spanId = span.spanContext().spanId;
     try {
         span.setStatus({ code: api_1.SpanStatusCode.ERROR });
         if (step.conclusion !== "failure") {
             span.setStatus({ code: api_1.SpanStatusCode.OK });
         }
-        core.debug(`Job Span: ${span.spanContext().spanId}: ${step.started_at}`);
+        core.debug(`Step Span<${spanId}>: Started<${step.started_at}>`);
         if (step.conclusion) {
             span.setAttribute("github.job.step.conclusion", step.conclusion);
         }
@@ -522,6 +525,7 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
         });
     }
     finally {
+        core.debug(`Step Span<${spanId}>: Ended<${step.completed_at}>`);
         span.end(new Date(step.completed_at));
     }
 }

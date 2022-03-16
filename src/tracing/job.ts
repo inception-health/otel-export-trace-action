@@ -153,7 +153,8 @@ async function traceWorkflowRunJob({
     },
     ctx
   );
-  core.debug(`Job Span: ${span.spanContext().spanId}: ${job.started_at}`);
+  const spanId = span.spanContext().spanId;
+  core.debug(`Job Span<${spanId}>: Started<${job.started_at}>`);
 
   try {
     let code = SpanStatusCode.OK;
@@ -178,6 +179,7 @@ async function traceWorkflowRunJob({
       }
     }
   } finally {
+    core.debug(`Job Span<${spanId}>: Ended<${job.completed_at}>`);
     span.end(new Date(job.completed_at));
   }
 }

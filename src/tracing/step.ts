@@ -46,12 +46,13 @@ export async function traceWorkflowRunStep({
     },
     ctx
   );
+  const spanId = span.spanContext().spanId;
   try {
     span.setStatus({ code: SpanStatusCode.ERROR });
     if (step.conclusion !== "failure") {
       span.setStatus({ code: SpanStatusCode.OK });
     }
-    core.debug(`Job Span: ${span.spanContext().spanId}: ${step.started_at}`);
+    core.debug(`Step Span<${spanId}>: Started<${step.started_at}>`);
     if (step.conclusion) {
       span.setAttribute("github.job.step.conclusion", step.conclusion);
     }
@@ -64,6 +65,7 @@ export async function traceWorkflowRunStep({
       workflowArtifacts,
     });
   } finally {
+    core.debug(`Step Span<${spanId}>: Ended<${step.completed_at}>`);
     span.end(new Date(step.completed_at));
   }
 }
