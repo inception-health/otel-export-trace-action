@@ -409,6 +409,7 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
     job.name;
     const ctx = trace.setSpan(parentContext, parentSpan);
     const startTime = new Date(job.started_at);
+    const completedTime = new Date(job.completed_at);
     const span = tracer.startSpan(job.name, {
         attributes: {
             "github.job.id": job.id,
@@ -452,7 +453,8 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
     }
     finally {
         core.debug(`Job Span<${spanId}>: Ended<${job.completed_at}>`);
-        span.end(new Date(job.completed_at));
+        // Some skipped and post jobs return completed_at dates that are older than started_at
+        span.end(new Date(Math.max(startTime.getTime(), completedTime.getTime())));
     }
 }
 
@@ -497,6 +499,7 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
     core.debug(`Trace Step ${step.name}`);
     const ctx = trace.setSpan(parentContext, parentSpan);
     const startTime = new Date(step.started_at);
+    const completedTime = new Date(step.completed_at);
     const span = tracer.startSpan(step.name, {
         attributes: {
             "github.job.step.name": step.name,
@@ -526,7 +529,8 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
     }
     finally {
         core.debug(`Step Span<${spanId}>: Ended<${step.completed_at}>`);
-        span.end(new Date(step.completed_at));
+        // Some skipped and post jobs return completed_at dates that are older than started_at
+        span.end(new Date(Math.max(startTime.getTime(), completedTime.getTime())));
     }
 }
 exports.traceWorkflowRunStep = traceWorkflowRunStep;

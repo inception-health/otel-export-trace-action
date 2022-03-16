@@ -34,6 +34,7 @@ export async function traceWorkflowRunStep({
   core.debug(`Trace Step ${step.name}`);
   const ctx = trace.setSpan(parentContext, parentSpan);
   const startTime = new Date(step.started_at);
+  const completedTime = new Date(step.completed_at);
   const span = tracer.startSpan(
     step.name,
     {
@@ -66,7 +67,8 @@ export async function traceWorkflowRunStep({
     });
   } finally {
     core.debug(`Step Span<${spanId}>: Ended<${step.completed_at}>`);
-    span.end(new Date(step.completed_at));
+    // Some skipped and post jobs return completed_at dates that are older than started_at
+    span.end(new Date(Math.max(startTime.getTime(), completedTime.getTime())));
   }
 }
 

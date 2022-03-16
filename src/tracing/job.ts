@@ -133,6 +133,7 @@ async function traceWorkflowRunJob({
   job.name;
   const ctx = trace.setSpan(parentContext, parentSpan);
   const startTime = new Date(job.started_at);
+  const completedTime = new Date(job.completed_at);
   const span = tracer.startSpan(
     job.name,
     {
@@ -180,6 +181,7 @@ async function traceWorkflowRunJob({
     }
   } finally {
     core.debug(`Job Span<${spanId}>: Ended<${job.completed_at}>`);
-    span.end(new Date(job.completed_at));
+    // Some skipped and post jobs return completed_at dates that are older than started_at
+    span.end(new Date(Math.max(startTime.getTime(), completedTime.getTime())));
   }
 }
