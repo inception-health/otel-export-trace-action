@@ -41,6 +41,8 @@ export async function traceWorkflowRunStep({
       attributes: {
         "github.job.step.name": step.name,
         "github.job.step.number": step.number,
+        "github.job.step.started_at": step.started_at || undefined,
+        "github.job.step.completed_at": step.completed_at || undefined,
         error: step.conclusion === "failure",
       },
       startTime,

@@ -147,6 +147,8 @@ async function traceWorkflowRunJob({
         "github.job.runner_name": job.runner_name || undefined,
         "github.job.conclusion": job.conclusion || undefined,
         "github.job.labels": job.labels.join(", ") || undefined,
+        "github.job.started_at": job.started_at || undefined,
+        "github.job.completed_at": job.completed_at || undefined,
         "github.conclusion": job.conclusion || undefined,
         error: job.conclusion === "failure",
       },

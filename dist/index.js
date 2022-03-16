@@ -421,6 +421,8 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
             "github.job.runner_name": job.runner_name || undefined,
             "github.job.conclusion": job.conclusion || undefined,
             "github.job.labels": job.labels.join(", ") || undefined,
+            "github.job.started_at": job.started_at || undefined,
+            "github.job.completed_at": job.completed_at || undefined,
             "github.conclusion": job.conclusion || undefined,
             error: job.conclusion === "failure",
         },
@@ -504,6 +506,8 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
         attributes: {
             "github.job.step.name": step.name,
             "github.job.step.number": step.number,
+            "github.job.step.started_at": step.started_at || undefined,
+            "github.job.step.completed_at": step.completed_at || undefined,
             error: step.conclusion === "failure",
         },
         startTime,
