@@ -52,6 +52,7 @@ export async function traceWorkflowRunJobs({
         "github.run_number": workflowRunJobs.workflowRun.run_number,
         "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
         "github.html_url": workflowRunJobs.workflowRun.html_url,
+        "github.workflow_url": workflowRunJobs.workflowRun.workflow_url,
         "github.event": workflowRunJobs.workflowRun.event,
         "github.workflow": workflowRunJobs.workflowRun.name || undefined,
         "github.conclusion":
