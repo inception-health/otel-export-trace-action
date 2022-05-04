@@ -29,7 +29,10 @@ export async function traceWorkflowRunJobs({
 }: TraceWorkflowRunJobsParams): Promise<SpanContext> {
   const tracer = provider.getTracer("otel-export-trace");
 
-  const startTime = new Date(workflowRunJobs.workflowRun.created_at);
+  const startTime = new Date(
+    workflowRunJobs.workflowRun.run_started_at ||
+      workflowRunJobs.workflowRun.created_at
+  );
   let headRef = undefined;
   let baseRef = undefined;
   let baseSha = undefined;

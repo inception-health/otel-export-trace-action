@@ -335,7 +335,8 @@ const step_1 = __nccwpck_require__(9431);
 async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
     var _a, _b, _c, _d, _e, _f, _g;
     const tracer = provider.getTracer("otel-export-trace");
-    const startTime = new Date(workflowRunJobs.workflowRun.created_at);
+    const startTime = new Date(workflowRunJobs.workflowRun.run_started_at ||
+        workflowRunJobs.workflowRun.created_at);
     let headRef = undefined;
     let baseRef = undefined;
     let baseSha = undefined;
