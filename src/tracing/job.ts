@@ -56,6 +56,9 @@ export async function traceWorkflowRunJobs({
         "github.workflow": workflowRunJobs.workflowRun.name || undefined,
         "github.conclusion":
           workflowRunJobs.workflowRun.conclusion || undefined,
+        "github.created_at": workflowRunJobs.workflowRun.created_at,
+        "github.updated_at": workflowRunJobs.workflowRun.updated_at,
+        "github.run_started_at": workflowRunJobs.workflowRun.run_started_at,
         "github.author_name":
           workflowRunJobs.workflowRun.head_commit?.author?.name || undefined,
         "github.author_email":

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "otel-export-trace",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "Github Action to export Open Telemetry traces for Workflow runs",
   "main": "lib/index.js",
   "scripts": {

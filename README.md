@@ -140,6 +140,9 @@ jobs:
 | github.run_attempt           | integer | Github Workflow Run Attempt                       |
 | github.run_id                | integer | Github Workflow Run ID                            |
 | github.run_number            | integer | Github Workflow Run Number                        |
+| github.created_at            | integer | Github Workflow Run Created Timestamp             |
+| github.updated_at            | integer | Github Workflow Run Updated Timestamp             |
+| github.run_started_at        | integer | Github Workflow Run Started Timestamp             |
 | github.html_url              | string  | Github Workflow Run HTML URL                      |
 | github.author_email          | string  | Github Workflow Run Author Email                  |
 | github.author_name           | string  | Github Workflow Run Author Name                   |
