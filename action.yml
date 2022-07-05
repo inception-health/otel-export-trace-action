@@ -13,6 +13,10 @@ inputs:
   otlpHeaders:
     description: Network Headers for the destination endpoint to export OpenTelemetry traces to
     required: true
+  otelServiceName:
+    description: OpenTelemetry service name
+    required: false
+    default: ""
   githubToken:
     description: The repository token with Workflow permissions. i.e. secrets.GITHUB_TOKEN
     required: false
