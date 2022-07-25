@@ -660,6 +660,7 @@ function toAttributeValue(value) {
     var _a, _b, _c, _d, _e, _f;
     /* istanbul ignore else */
     if ("stringValue" in value) {
+        /* istanbul ignore next */
         return (_a = value.stringValue) !== null && _a !== void 0 ? _a : undefined;
     }
     else if ("arrayValue" in value) {
@@ -694,11 +695,13 @@ function toAttributes(attributes) {
 }
 function toSpan({ otlpSpan, tracer, parentSpan }) {
     var _a;
+    /* istanbul ignore next */
+    const traceStateParams = (_a = otlpSpan.traceState) !== null && _a !== void 0 ? _a : undefined;
     return new sdk_trace_base_1.Span(tracer, api.context.active(), otlpSpan.name, {
         traceId: parentSpan.spanContext().traceId,
         spanId: otlpSpan.spanId,
         traceFlags: parentSpan.spanContext().traceFlags,
-        traceState: new core_1.TraceState((_a = otlpSpan.traceState) !== null && _a !== void 0 ? _a : undefined),
+        traceState: new core_1.TraceState(traceStateParams),
     }, toSpanKind(otlpSpan.kind), otlpSpan.parentSpanId || parentSpan.spanContext().spanId, toLinks(otlpSpan.links), new Date(otlpSpan.startTimeUnixNano / 1000000));
 }
 async function traceOTLPFile({ tracer, parentSpan, path, }) {
@@ -711,10 +714,15 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
     for await (const line of rl) {
         if (line) {
             const serviceRequest = JSON.parse(line);
-            for (const resourceSpans of serviceRequest.resourceSpans || []) {
+            /* istanbul ignore next */
+            const serviceRequestSpans = serviceRequest.resourceSpans || [];
+            for (const resourceSpans of serviceRequestSpans) {
+                // TODO add tests for otlp scopeSpans
                 const legacyResourceScopeSpans = (_a = resourceSpans.scopeSpans) !== null && _a !== void 0 ? _a : resourceSpans.instrumentationLibrarySpans;
                 for (const scopeSpans of legacyResourceScopeSpans) {
-                    for (const otlpSpan of scopeSpans.spans || []) {
+                    /* istanbul ignore next */
+                    const otlpSpans = scopeSpans.spans || [];
+                    for (const otlpSpan of otlpSpans) {
                         core.debug(`Trace Test ParentSpan<${otlpSpan.parentSpanId || parentSpan.spanContext().spanId}> -> Span<${otlpSpan.spanId}> `);
                         const span = toSpan({
                             otlpSpan,

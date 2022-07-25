@@ -55,6 +55,7 @@ function toLinks(links: ILink[] | undefined): Link[] | undefined {
 function toAttributeValue(value: IAnyValue): AttributeValue | undefined {
   /* istanbul ignore else */
   if ("stringValue" in value) {
+    /* istanbul ignore next */
     return value.stringValue ?? undefined;
   } else if ("arrayValue" in value) {
     return JSON.stringify(value.arrayValue?.values);
@@ -95,6 +96,8 @@ type ToSpanParams = {
 };
 
 function toSpan({ otlpSpan, tracer, parentSpan }: ToSpanParams): api.Span {
+  /* istanbul ignore next */
+  const traceStateParams = otlpSpan.traceState ?? undefined;
   return new SpanImpl(
     tracer,
     api.context.active(),
@@ -103,7 +106,7 @@ function toSpan({ otlpSpan, tracer, parentSpan }: ToSpanParams): api.Span {
       traceId: parentSpan.spanContext().traceId,
       spanId: otlpSpan.spanId,
       traceFlags: parentSpan.spanContext().traceFlags,
-      traceState: new TraceState(otlpSpan.traceState ?? undefined),
+      traceState: new TraceState(traceStateParams),
     },
     toSpanKind(otlpSpan.kind),
     otlpSpan.parentSpanId || parentSpan.spanContext().spanId,
@@ -138,13 +141,18 @@ export async function traceOTLPFile({
       const serviceRequest: IExportTraceServiceRequest = JSON.parse(
         line
       ) as IExportTraceServiceRequest;
-      for (const resourceSpans of serviceRequest.resourceSpans || []) {
+      /* istanbul ignore next */
+      const serviceRequestSpans = serviceRequest.resourceSpans || [];
+      for (const resourceSpans of serviceRequestSpans) {
+        // TODO add tests for otlp scopeSpans
         const legacyResourceScopeSpans =
           resourceSpans.scopeSpans ??
           (resourceSpans as LegacyResourceSpans).instrumentationLibrarySpans;
 
         for (const scopeSpans of legacyResourceScopeSpans) {
-          for (const otlpSpan of scopeSpans.spans || []) {
+          /* istanbul ignore next */
+          const otlpSpans = scopeSpans.spans || [];
+          for (const otlpSpan of otlpSpans) {
             core.debug(
               `Trace Test ParentSpan<${
                 otlpSpan.parentSpanId || parentSpan.spanContext().spanId
