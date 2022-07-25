@@ -702,6 +702,7 @@ function toSpan({ otlpSpan, tracer, parentSpan }) {
     }, toSpanKind(otlpSpan.kind), otlpSpan.parentSpanId || parentSpan.spanContext().spanId, toLinks(otlpSpan.links), new Date(otlpSpan.startTimeUnixNano / 1000000));
 }
 async function traceOTLPFile({ tracer, parentSpan, path, }) {
+    var _a;
     const fileStream = fs.createReadStream(path);
     const rl = readline.createInterface({
         input: fileStream,
@@ -711,27 +712,26 @@ async function traceOTLPFile({ tracer, parentSpan, path, }) {
         if (line) {
             const serviceRequest = JSON.parse(line);
             for (const resourceSpans of serviceRequest.resourceSpans || []) {
-                for (const scopeSpans of resourceSpans.scopeSpans) {
-                    if (scopeSpans.scope) {
-                        for (const otlpSpan of scopeSpans.spans || []) {
-                            core.debug(`Trace Test ParentSpan<${otlpSpan.parentSpanId || parentSpan.spanContext().spanId}> -> Span<${otlpSpan.spanId}> `);
-                            const span = toSpan({
-                                otlpSpan,
-                                tracer,
-                                parentSpan,
-                            });
-                            const attributes = toAttributes(otlpSpan.attributes);
-                            if (attributes) {
-                                span.setAttributes(attributes);
-                            }
-                            if (otlpSpan.status) {
-                                span.setStatus({
-                                    code: otlpSpan.status.code,
-                                    message: otlpSpan.status.message,
-                                });
-                            }
-                            span.end(new Date(otlpSpan.endTimeUnixNano / 1000000));
+                const legacyResourceScopeSpans = (_a = resourceSpans.scopeSpans) !== null && _a !== void 0 ? _a : resourceSpans.instrumentationLibrarySpans;
+                for (const scopeSpans of legacyResourceScopeSpans) {
+                    for (const otlpSpan of scopeSpans.spans || []) {
+                        core.debug(`Trace Test ParentSpan<${otlpSpan.parentSpanId || parentSpan.spanContext().spanId}> -> Span<${otlpSpan.spanId}> `);
+                        const span = toSpan({
+                            otlpSpan,
+                            tracer,
+                            parentSpan,
+                        });
+                        const attributes = toAttributes(otlpSpan.attributes);
+                        if (attributes) {
+                            span.setAttributes(attributes);
                         }
+                        if (otlpSpan.status) {
+                            span.setStatus({
+                                code: otlpSpan.status.code,
+                                message: otlpSpan.status.message,
+                            });
+                        }
+                        span.end(new Date(otlpSpan.endTimeUnixNano / 1000000));
                     }
                 }
             }

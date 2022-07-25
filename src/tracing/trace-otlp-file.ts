@@ -7,6 +7,8 @@ import {
   IKeyValue,
   IAnyValue,
   ISpan,
+  IResourceSpans,
+  IScopeSpans,
 } from "@opentelemetry/otlp-transformer";
 import * as core from "@actions/core";
 import * as fs from "fs";
@@ -110,6 +112,10 @@ function toSpan({ otlpSpan, tracer, parentSpan }: ToSpanParams): api.Span {
   );
 }
 
+type LegacyResourceSpans = IResourceSpans & {
+  instrumentationLibrarySpans: IScopeSpans[];
+};
+
 export type TraceOTLPFileParams = {
   tracer: Tracer;
   parentSpan: api.Span;
@@ -133,32 +139,34 @@ export async function traceOTLPFile({
         line
       ) as IExportTraceServiceRequest;
       for (const resourceSpans of serviceRequest.resourceSpans || []) {
-        for (const scopeSpans of resourceSpans.scopeSpans) {
-          if (scopeSpans.scope) {
-            for (const otlpSpan of scopeSpans.spans || []) {
-              core.debug(
-                `Trace Test ParentSpan<${
-                  otlpSpan.parentSpanId || parentSpan.spanContext().spanId
-                }> -> Span<${otlpSpan.spanId}> `
-              );
-              const span = toSpan({
-                otlpSpan,
-                tracer,
-                parentSpan,
-              });
+        const legacyResourceScopeSpans =
+          resourceSpans.scopeSpans ??
+          (resourceSpans as LegacyResourceSpans).instrumentationLibrarySpans;
 
-              const attributes = toAttributes(otlpSpan.attributes);
-              if (attributes) {
-                span.setAttributes(attributes);
-              }
-              if (otlpSpan.status) {
-                span.setStatus({
-                  code: otlpSpan.status.code as unknown as SpanStatusCode,
-                  message: otlpSpan.status.message,
-                });
-              }
-              span.end(new Date(otlpSpan.endTimeUnixNano / 1000000));
+        for (const scopeSpans of legacyResourceScopeSpans) {
+          for (const otlpSpan of scopeSpans.spans || []) {
+            core.debug(
+              `Trace Test ParentSpan<${
+                otlpSpan.parentSpanId || parentSpan.spanContext().spanId
+              }> -> Span<${otlpSpan.spanId}> `
+            );
+            const span = toSpan({
+              otlpSpan,
+              tracer,
+              parentSpan,
+            });
+
+            const attributes = toAttributes(otlpSpan.attributes);
+            if (attributes) {
+              span.setAttributes(attributes);
             }
+            if (otlpSpan.status) {
+              span.setStatus({
+                code: otlpSpan.status.code as unknown as SpanStatusCode,
+                message: otlpSpan.status.message,
+              });
+            }
+            span.end(new Date(otlpSpan.endTimeUnixNano / 1000000));
           }
         }
       }
