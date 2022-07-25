@@ -62,13 +62,3 @@ jobs:
           token: "${{ secrets.BUILD_PATH }}"
           release-type: node
           package-name: otel-export-trace
-      - if: ${{ steps.release.outputs.release_created }}
-        uses: actions/checkout@v2
-      - if: ${{ steps.release.outputs.release_created }}
-        name: autotag
-        uses: butlerlogic/action-autotag@stable
-        env:
-          GITHUB_TOKEN: "${{ secrets.BUILD_PAT }}"
-        with:
-          strategy: package
-          tag_prefix: "v"
