@@ -53,12 +53,19 @@ jobs:
         with:
           commit_message: Add dist artifacts
           file_pattern: dist
-  tag:
+  release-please:
     runs-on: ubuntu-latest
-    needs: [lint-and-test, update-dist]
     steps:
-      - uses: actions/checkout@v2
-      - name: autotag
+      - id: release
+        uses: GoogleCloudPlatform/release-please-action@v2
+        with:
+          token: "${{ secrets.BUILD_PATH }}"
+          release-type: node
+          package-name: otel-export-trace
+      - if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v2
+      - if: ${{ steps.release.outputs.release_created }}
+        name: autotag
         uses: butlerlogic/action-autotag@stable
         env:
           GITHUB_TOKEN: "${{ secrets.BUILD_PAT }}"
