@@ -8,6 +8,8 @@ export async function run() {
   const ghContext = github.context;
   const otlpEndpoint = core.getInput("otlpEndpoint");
   const otlpHeaders = core.getInput("otlpHeaders");
+  const otelServiceName =
+    core.getInput("otelServiceName") || process.env.OTEL_SERVICE_NAME || "";
   const runId = parseInt(core.getInput("runId") || `${ghContext.runId}`);
   const ghToken =
     core.getInput("githubToken") || process.env.GITHUB_TOKEN || "";
@@ -21,7 +23,8 @@ export async function run() {
   const provider = createTracerProvider(
     otlpEndpoint,
     otlpHeaders,
-    workflowRunJobs
+    workflowRunJobs,
+    otelServiceName
   );
 
   try {
