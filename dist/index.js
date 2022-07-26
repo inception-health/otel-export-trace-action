@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 8160:
+/***/ 68160:
 /***/ ((module) => {
 
 "use strict";
@@ -9,7 +9,7 @@ module.exports = {"i8":"1.5.3"};
 
 /***/ }),
 
-/***/ 5928:
+/***/ 85928:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -38,12 +38,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getWorkflowRunJobs = exports.listWorkflowRunArtifacts = void 0;
-const core = __importStar(__nccwpck_require__(2186));
-const axios_1 = __importDefault(__nccwpck_require__(6545));
-const JSZip = __importStar(__nccwpck_require__(3592));
-const fs = __importStar(__nccwpck_require__(5747));
-const artifact = __importStar(__nccwpck_require__(2605));
-const path = __importStar(__nccwpck_require__(5622));
+const core = __importStar(__nccwpck_require__(42186));
+const axios_1 = __importDefault(__nccwpck_require__(96545));
+const JSZip = __importStar(__nccwpck_require__(83592));
+const fs = __importStar(__nccwpck_require__(35747));
+const artifact = __importStar(__nccwpck_require__(52605));
+const path = __importStar(__nccwpck_require__(85622));
 async function listWorkflowRunArtifacts(context, octokit, runId) {
     let artifactsLookup = {};
     /* istanbul ignore if */
@@ -186,7 +186,7 @@ exports.getWorkflowRunJobs = getWorkflowRunJobs;
 
 /***/ }),
 
-/***/ 4822:
+/***/ 94822:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -211,8 +211,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const runner_1 = __nccwpck_require__(8209);
-const core = __importStar(__nccwpck_require__(2186));
+const runner_1 = __nccwpck_require__(28209);
+const core = __importStar(__nccwpck_require__(42186));
 (0, runner_1.run)().catch((error) => {
     core.setFailed(error.message);
 });
@@ -220,7 +220,7 @@ const core = __importStar(__nccwpck_require__(2186));
 
 /***/ }),
 
-/***/ 8209:
+/***/ 28209:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -246,10 +246,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
-const github = __importStar(__nccwpck_require__(5438));
-const core = __importStar(__nccwpck_require__(2186));
-const github_1 = __nccwpck_require__(5928);
-const tracing_1 = __nccwpck_require__(6590);
+const github = __importStar(__nccwpck_require__(95438));
+const core = __importStar(__nccwpck_require__(42186));
+const github_1 = __nccwpck_require__(85928);
+const tracing_1 = __nccwpck_require__(36590);
 async function run() {
     const ghContext = github.context;
     const otlpEndpoint = core.getInput("otlpEndpoint");
@@ -289,14 +289,14 @@ exports.run = run;
 
 /***/ }),
 
-/***/ 6590:
+/***/ 36590:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createTracerProvider = exports.traceWorkflowRunJobs = void 0;
-var job_1 = __nccwpck_require__(6314);
+var job_1 = __nccwpck_require__(26314);
 Object.defineProperty(exports, "traceWorkflowRunJobs", ({ enumerable: true, get: function () { return job_1.traceWorkflowRunJobs; } }));
 var trace_1 = __nccwpck_require__(7390);
 Object.defineProperty(exports, "createTracerProvider", ({ enumerable: true, get: function () { return trace_1.createTracerProvider; } }));
@@ -304,7 +304,7 @@ Object.defineProperty(exports, "createTracerProvider", ({ enumerable: true, get:
 
 /***/ }),
 
-/***/ 6314:
+/***/ 26314:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -330,9 +330,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.traceWorkflowRunJobs = void 0;
-const api_1 = __nccwpck_require__(5163);
-const core = __importStar(__nccwpck_require__(2186));
-const step_1 = __nccwpck_require__(9431);
+const api_1 = __nccwpck_require__(65163);
+const core = __importStar(__nccwpck_require__(42186));
+const step_1 = __nccwpck_require__(59431);
 async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
     var _a, _b, _c, _d, _e, _f, _g;
     const tracer = provider.getTracer("otel-export-trace");
@@ -469,7 +469,7 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
 
 /***/ }),
 
-/***/ 9431:
+/***/ 59431:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -495,9 +495,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.traceWorkflowRunStep = void 0;
-const core = __importStar(__nccwpck_require__(2186));
-const api_1 = __nccwpck_require__(5163);
-const trace_otlp_file_1 = __nccwpck_require__(535);
+const core = __importStar(__nccwpck_require__(42186));
+const api_1 = __nccwpck_require__(65163);
+const trace_otlp_file_1 = __nccwpck_require__(40535);
 async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tracer, workflowArtifacts, step, }) {
     if (!step || !step.completed_at || !step.started_at) {
         const stepName = (step === null || step === void 0 ? void 0 : step.name) || "UNDEFINED";
@@ -563,7 +563,7 @@ async function traceArtifact({ tracer, parentSpan, job, step, startTime, workflo
 
 /***/ }),
 
-/***/ 535:
+/***/ 40535:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -589,13 +589,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.traceOTLPFile = void 0;
-const sdk_trace_base_1 = __nccwpck_require__(9253);
-const core_1 = __nccwpck_require__(9736);
-const exporter_trace_otlp_http_1 = __nccwpck_require__(5401);
-const core = __importStar(__nccwpck_require__(2186));
-const fs = __importStar(__nccwpck_require__(5747));
-const readline = __importStar(__nccwpck_require__(1058));
-const api = __importStar(__nccwpck_require__(5163));
+const sdk_trace_base_1 = __nccwpck_require__(29253);
+const core_1 = __nccwpck_require__(89736);
+const exporter_trace_otlp_http_1 = __nccwpck_require__(35401);
+const core = __importStar(__nccwpck_require__(42186));
+const fs = __importStar(__nccwpck_require__(35747));
+const readline = __importStar(__nccwpck_require__(51058));
+const api = __importStar(__nccwpck_require__(65163));
 /* istanbul ignore next */
 function toSpanKind(spanKind) {
     switch (spanKind) {
@@ -735,9 +735,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createTracerProvider = void 0;
 const grpc = __importStar(__nccwpck_require__(7025));
-const sdk_trace_base_1 = __nccwpck_require__(9253);
-const exporter_trace_otlp_grpc_1 = __nccwpck_require__(160);
-const semantic_conventions_1 = __nccwpck_require__(7275);
+const sdk_trace_base_1 = __nccwpck_require__(29253);
+const exporter_trace_otlp_grpc_1 = __nccwpck_require__(60160);
+const semantic_conventions_1 = __nccwpck_require__(67275);
 const resources_1 = __nccwpck_require__(3871);
 const OTEL_CONSOLE_ONLY = process.env.OTEL_CONSOLE_ONLY === "true";
 function stringToHeader(value) {
@@ -791,13 +791,13 @@ exports.createTracerProvider = createTracerProvider;
 
 /***/ }),
 
-/***/ 2605:
+/***/ 52605:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const artifact_client_1 = __nccwpck_require__(8802);
+const artifact_client_1 = __nccwpck_require__(48802);
 /**
  * Constructs an ArtifactClient
  */
@@ -809,7 +809,7 @@ exports.create = create;
 
 /***/ }),
 
-/***/ 8802:
+/***/ 48802:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -831,15 +831,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(2186));
-const upload_specification_1 = __nccwpck_require__(183);
-const upload_http_client_1 = __nccwpck_require__(4354);
-const utils_1 = __nccwpck_require__(6327);
-const path_and_artifact_name_validation_1 = __nccwpck_require__(7398);
+const core = __importStar(__nccwpck_require__(42186));
+const upload_specification_1 = __nccwpck_require__(10183);
+const upload_http_client_1 = __nccwpck_require__(74354);
+const utils_1 = __nccwpck_require__(36327);
+const path_and_artifact_name_validation_1 = __nccwpck_require__(87398);
 const download_http_client_1 = __nccwpck_require__(8538);
-const download_specification_1 = __nccwpck_require__(5686);
-const config_variables_1 = __nccwpck_require__(2222);
-const path_1 = __nccwpck_require__(5622);
+const download_specification_1 = __nccwpck_require__(95686);
+const config_variables_1 = __nccwpck_require__(42222);
+const path_1 = __nccwpck_require__(85622);
 class DefaultArtifactClient {
     /**
      * Constructs a DefaultArtifactClient
@@ -981,7 +981,7 @@ exports.DefaultArtifactClient = DefaultArtifactClient;
 
 /***/ }),
 
-/***/ 2222:
+/***/ 42222:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -1081,16 +1081,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const fs = __importStar(__nccwpck_require__(5747));
-const core = __importStar(__nccwpck_require__(2186));
-const zlib = __importStar(__nccwpck_require__(8761));
-const utils_1 = __nccwpck_require__(6327);
-const url_1 = __nccwpck_require__(8835);
-const status_reporter_1 = __nccwpck_require__(9081);
-const perf_hooks_1 = __nccwpck_require__(630);
-const http_manager_1 = __nccwpck_require__(6527);
-const config_variables_1 = __nccwpck_require__(2222);
-const requestUtils_1 = __nccwpck_require__(755);
+const fs = __importStar(__nccwpck_require__(35747));
+const core = __importStar(__nccwpck_require__(42186));
+const zlib = __importStar(__nccwpck_require__(78761));
+const utils_1 = __nccwpck_require__(36327);
+const url_1 = __nccwpck_require__(78835);
+const status_reporter_1 = __nccwpck_require__(39081);
+const perf_hooks_1 = __nccwpck_require__(70630);
+const http_manager_1 = __nccwpck_require__(16527);
+const config_variables_1 = __nccwpck_require__(42222);
+const requestUtils_1 = __nccwpck_require__(90755);
 class DownloadHttpClient {
     constructor() {
         this.downloadHttpManager = new http_manager_1.HttpManager(config_variables_1.getDownloadFileConcurrency(), '@actions/artifact-download');
@@ -1338,7 +1338,7 @@ exports.DownloadHttpClient = DownloadHttpClient;
 
 /***/ }),
 
-/***/ 5686:
+/***/ 95686:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -1351,7 +1351,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const path = __importStar(__nccwpck_require__(5622));
+const path = __importStar(__nccwpck_require__(85622));
 /**
  * Creates a specification for a set of files that will be downloaded
  * @param artifactName the name of the artifact
@@ -1406,13 +1406,13 @@ exports.getDownloadSpecification = getDownloadSpecification;
 
 /***/ }),
 
-/***/ 6527:
+/***/ 16527:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const utils_1 = __nccwpck_require__(6327);
+const utils_1 = __nccwpck_require__(36327);
 /**
  * Used for managing http clients during either upload or download
  */
@@ -1444,13 +1444,13 @@ exports.HttpManager = HttpManager;
 
 /***/ }),
 
-/***/ 7398:
+/***/ 87398:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __nccwpck_require__(2186);
+const core_1 = __nccwpck_require__(42186);
 /**
  * Invalid characters that cannot be in the artifact name or an uploaded file. Will be rejected
  * from the server if attempted to be sent over. These characters are not allowed due to limitations with certain
@@ -1517,7 +1517,7 @@ exports.checkArtifactFilePath = checkArtifactFilePath;
 
 /***/ }),
 
-/***/ 755:
+/***/ 90755:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -1539,9 +1539,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const utils_1 = __nccwpck_require__(6327);
-const core = __importStar(__nccwpck_require__(2186));
-const config_variables_1 = __nccwpck_require__(2222);
+const utils_1 = __nccwpck_require__(36327);
+const core = __importStar(__nccwpck_require__(42186));
+const config_variables_1 = __nccwpck_require__(42222);
 function retry(name, operation, customErrorMessages, maxAttempts) {
     return __awaiter(this, void 0, void 0, function* () {
         let response = undefined;
@@ -1599,13 +1599,13 @@ exports.retryHttpClientRequest = retryHttpClientRequest;
 
 /***/ }),
 
-/***/ 9081:
+/***/ 39081:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __nccwpck_require__(2186);
+const core_1 = __nccwpck_require__(42186);
 /**
  * Status Reporter that displays information about the progress/status of an artifact that is being uploaded or downloaded
  *
@@ -1657,7 +1657,7 @@ exports.StatusReporter = StatusReporter;
 
 /***/ }),
 
-/***/ 606:
+/***/ 40606:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -1686,9 +1686,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const fs = __importStar(__nccwpck_require__(5747));
-const zlib = __importStar(__nccwpck_require__(8761));
-const util_1 = __nccwpck_require__(1669);
+const fs = __importStar(__nccwpck_require__(35747));
+const zlib = __importStar(__nccwpck_require__(78761));
+const util_1 = __nccwpck_require__(31669);
 const stat = util_1.promisify(fs.stat);
 /**
  * GZipping certain files that are already compressed will likely not yield further size reductions. Creating large temporary gzip
@@ -1772,7 +1772,7 @@ exports.createGZipFileInBuffer = createGZipFileInBuffer;
 
 /***/ }),
 
-/***/ 4354:
+/***/ 74354:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -1794,20 +1794,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const fs = __importStar(__nccwpck_require__(5747));
-const core = __importStar(__nccwpck_require__(2186));
-const tmp = __importStar(__nccwpck_require__(8065));
-const stream = __importStar(__nccwpck_require__(2413));
-const utils_1 = __nccwpck_require__(6327);
-const config_variables_1 = __nccwpck_require__(2222);
-const util_1 = __nccwpck_require__(1669);
-const url_1 = __nccwpck_require__(8835);
-const perf_hooks_1 = __nccwpck_require__(630);
-const status_reporter_1 = __nccwpck_require__(9081);
-const http_client_1 = __nccwpck_require__(9925);
-const http_manager_1 = __nccwpck_require__(6527);
-const upload_gzip_1 = __nccwpck_require__(606);
-const requestUtils_1 = __nccwpck_require__(755);
+const fs = __importStar(__nccwpck_require__(35747));
+const core = __importStar(__nccwpck_require__(42186));
+const tmp = __importStar(__nccwpck_require__(68065));
+const stream = __importStar(__nccwpck_require__(92413));
+const utils_1 = __nccwpck_require__(36327);
+const config_variables_1 = __nccwpck_require__(42222);
+const util_1 = __nccwpck_require__(31669);
+const url_1 = __nccwpck_require__(78835);
+const perf_hooks_1 = __nccwpck_require__(70630);
+const status_reporter_1 = __nccwpck_require__(39081);
+const http_client_1 = __nccwpck_require__(39925);
+const http_manager_1 = __nccwpck_require__(16527);
+const upload_gzip_1 = __nccwpck_require__(40606);
+const requestUtils_1 = __nccwpck_require__(90755);
 const stat = util_1.promisify(fs.stat);
 class UploadHttpClient {
     constructor() {
@@ -2173,7 +2173,7 @@ exports.UploadHttpClient = UploadHttpClient;
 
 /***/ }),
 
-/***/ 183:
+/***/ 10183:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -2186,10 +2186,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const fs = __importStar(__nccwpck_require__(5747));
-const core_1 = __nccwpck_require__(2186);
-const path_1 = __nccwpck_require__(5622);
-const path_and_artifact_name_validation_1 = __nccwpck_require__(7398);
+const fs = __importStar(__nccwpck_require__(35747));
+const core_1 = __nccwpck_require__(42186);
+const path_1 = __nccwpck_require__(85622);
+const path_and_artifact_name_validation_1 = __nccwpck_require__(87398);
 /**
  * Creates a specification that describes how each file that is part of the artifact will be uploaded
  * @param artifactName the name of the artifact being uploaded. Used during upload to denote where the artifact is stored on the server
@@ -2268,7 +2268,7 @@ exports.getUploadSpecification = getUploadSpecification;
 
 /***/ }),
 
-/***/ 6327:
+/***/ 36327:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -2283,11 +2283,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __nccwpck_require__(2186);
-const fs_1 = __nccwpck_require__(5747);
-const http_client_1 = __nccwpck_require__(9925);
-const auth_1 = __nccwpck_require__(3702);
-const config_variables_1 = __nccwpck_require__(2222);
+const core_1 = __nccwpck_require__(42186);
+const fs_1 = __nccwpck_require__(35747);
+const http_client_1 = __nccwpck_require__(39925);
+const auth_1 = __nccwpck_require__(23702);
+const config_variables_1 = __nccwpck_require__(42222);
 /**
  * Returns a retry time in milliseconds that exponentially gets larger
  * depending on the amount of retries that have been attempted
@@ -2538,7 +2538,7 @@ exports.sleep = sleep;
 
 /***/ }),
 
-/***/ 7351:
+/***/ 87351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -2564,7 +2564,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.issue = exports.issueCommand = void 0;
-const os = __importStar(__nccwpck_require__(2087));
+const os = __importStar(__nccwpck_require__(12087));
 const utils_1 = __nccwpck_require__(5278);
 /**
  * Commands
@@ -2637,7 +2637,7 @@ function escapeProperty(s) {
 
 /***/ }),
 
-/***/ 2186:
+/***/ 42186:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -2672,12 +2672,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getIDToken = exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.notice = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
-const command_1 = __nccwpck_require__(7351);
+const command_1 = __nccwpck_require__(87351);
 const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(5278);
-const os = __importStar(__nccwpck_require__(2087));
-const path = __importStar(__nccwpck_require__(5622));
-const oidc_utils_1 = __nccwpck_require__(8041);
+const os = __importStar(__nccwpck_require__(12087));
+const path = __importStar(__nccwpck_require__(85622));
+const oidc_utils_1 = __nccwpck_require__(98041);
 /**
  * The code to exit an action
  */
@@ -2985,8 +2985,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.issueCommand = void 0;
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const fs = __importStar(__nccwpck_require__(5747));
-const os = __importStar(__nccwpck_require__(2087));
+const fs = __importStar(__nccwpck_require__(35747));
+const os = __importStar(__nccwpck_require__(12087));
 const utils_1 = __nccwpck_require__(5278);
 function issueCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
@@ -3005,7 +3005,7 @@ exports.issueCommand = issueCommand;
 
 /***/ }),
 
-/***/ 8041:
+/***/ 98041:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -3021,9 +3021,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.OidcClient = void 0;
-const http_client_1 = __nccwpck_require__(9925);
-const auth_1 = __nccwpck_require__(3702);
-const core_1 = __nccwpck_require__(2186);
+const http_client_1 = __nccwpck_require__(39925);
+const auth_1 = __nccwpck_require__(23702);
+const core_1 = __nccwpck_require__(42186);
 class OidcClient {
     static createHttpClient(allowRetry = true, maxRetry = 10) {
         const requestOptions = {
@@ -3136,15 +3136,15 @@ exports.toCommandProperties = toCommandProperties;
 
 /***/ }),
 
-/***/ 4087:
+/***/ 74087:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Context = void 0;
-const fs_1 = __nccwpck_require__(5747);
-const os_1 = __nccwpck_require__(2087);
+const fs_1 = __nccwpck_require__(35747);
+const os_1 = __nccwpck_require__(12087);
 class Context {
     /**
      * Hydrate the context from the environment
@@ -3197,7 +3197,7 @@ exports.Context = Context;
 
 /***/ }),
 
-/***/ 5438:
+/***/ 95438:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -3223,8 +3223,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokit = exports.context = void 0;
-const Context = __importStar(__nccwpck_require__(4087));
-const utils_1 = __nccwpck_require__(3030);
+const Context = __importStar(__nccwpck_require__(74087));
+const utils_1 = __nccwpck_require__(73030);
 exports.context = new Context.Context();
 /**
  * Returns a hydrated octokit ready to use for GitHub Actions
@@ -3240,7 +3240,7 @@ exports.getOctokit = getOctokit;
 
 /***/ }),
 
-/***/ 7914:
+/***/ 47914:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -3266,7 +3266,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getApiBaseUrl = exports.getProxyAgent = exports.getAuthString = void 0;
-const httpClient = __importStar(__nccwpck_require__(9925));
+const httpClient = __importStar(__nccwpck_require__(39925));
 function getAuthString(token, options) {
     if (!token && !options.auth) {
         throw new Error('Parameter token or opts.auth is required');
@@ -3290,7 +3290,7 @@ exports.getApiBaseUrl = getApiBaseUrl;
 
 /***/ }),
 
-/***/ 3030:
+/***/ 73030:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -3316,12 +3316,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokitOptions = exports.GitHub = exports.context = void 0;
-const Context = __importStar(__nccwpck_require__(4087));
-const Utils = __importStar(__nccwpck_require__(7914));
+const Context = __importStar(__nccwpck_require__(74087));
+const Utils = __importStar(__nccwpck_require__(47914));
 // octokit + plugins
-const core_1 = __nccwpck_require__(6762);
-const plugin_rest_endpoint_methods_1 = __nccwpck_require__(3044);
-const plugin_paginate_rest_1 = __nccwpck_require__(4193);
+const core_1 = __nccwpck_require__(76762);
+const plugin_rest_endpoint_methods_1 = __nccwpck_require__(83044);
+const plugin_paginate_rest_1 = __nccwpck_require__(64193);
 exports.context = new Context.Context();
 const baseUrl = Utils.getApiBaseUrl();
 const defaults = {
@@ -3351,7 +3351,7 @@ exports.getOctokitOptions = getOctokitOptions;
 
 /***/ }),
 
-/***/ 3702:
+/***/ 23702:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -3417,15 +3417,15 @@ exports.PersonalAccessTokenCredentialHandler = PersonalAccessTokenCredentialHand
 
 /***/ }),
 
-/***/ 9925:
+/***/ 39925:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const http = __nccwpck_require__(8605);
-const https = __nccwpck_require__(7211);
-const pm = __nccwpck_require__(6443);
+const http = __nccwpck_require__(98605);
+const https = __nccwpck_require__(57211);
+const pm = __nccwpck_require__(16443);
 let tunnel;
 var HttpCodes;
 (function (HttpCodes) {
@@ -3844,7 +3844,7 @@ class HttpClient {
         if (useProxy) {
             // If using proxy, need tunnel
             if (!tunnel) {
-                tunnel = __nccwpck_require__(4294);
+                tunnel = __nccwpck_require__(74294);
             }
             const agentOptions = {
                 maxSockets: maxSockets,
@@ -3962,7 +3962,7 @@ exports.HttpClient = HttpClient;
 
 /***/ }),
 
-/***/ 6443:
+/***/ 16443:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -4065,7 +4065,7 @@ exports.addAdminServicesToServer = addAdminServicesToServer;
 
 /***/ }),
 
-/***/ 4186:
+/***/ 34186:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -4178,7 +4178,7 @@ exports.BackoffTimeout = BackoffTimeout;
 
 /***/ }),
 
-/***/ 6380:
+/***/ 86380:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -4201,9 +4201,9 @@ exports.BackoffTimeout = BackoffTimeout;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CallCredentialsFilterFactory = exports.CallCredentialsFilter = void 0;
-const filter_1 = __nccwpck_require__(3392);
-const constants_1 = __nccwpck_require__(634);
-const uri_parser_1 = __nccwpck_require__(5974);
+const filter_1 = __nccwpck_require__(43392);
+const constants_1 = __nccwpck_require__(90634);
+const uri_parser_1 = __nccwpck_require__(65974);
 class CallCredentialsFilter extends filter_1.BaseFilter {
     constructor(channel, stream) {
         var _a, _b;
@@ -4260,7 +4260,7 @@ exports.CallCredentialsFilterFactory = CallCredentialsFilterFactory;
 
 /***/ }),
 
-/***/ 1426:
+/***/ 21426:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -4283,7 +4283,7 @@ exports.CallCredentialsFilterFactory = CallCredentialsFilterFactory;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CallCredentials = void 0;
-const metadata_1 = __nccwpck_require__(3665);
+const metadata_1 = __nccwpck_require__(83665);
 function isCurrentOauth2Client(client) {
     return ('getRequestHeaders' in client &&
         typeof client.getRequestHeaders === 'function');
@@ -4416,7 +4416,7 @@ class EmptyCallCredentials extends CallCredentials {
 
 /***/ }),
 
-/***/ 8988:
+/***/ 78988:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -4439,13 +4439,13 @@ class EmptyCallCredentials extends CallCredentials {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Http2CallStream = exports.InterceptingListenerImpl = exports.isInterceptingListener = void 0;
-const http2 = __nccwpck_require__(7565);
-const os = __nccwpck_require__(2087);
-const constants_1 = __nccwpck_require__(634);
-const metadata_1 = __nccwpck_require__(3665);
-const stream_decoder_1 = __nccwpck_require__(6575);
-const logging = __nccwpck_require__(5993);
-const constants_2 = __nccwpck_require__(634);
+const http2 = __nccwpck_require__(97565);
+const os = __nccwpck_require__(12087);
+const constants_1 = __nccwpck_require__(90634);
+const metadata_1 = __nccwpck_require__(83665);
+const stream_decoder_1 = __nccwpck_require__(16575);
+const logging = __nccwpck_require__(35993);
+const constants_2 = __nccwpck_require__(90634);
 const TRACER_NAME = 'call_stream';
 const { HTTP2_HEADER_STATUS, HTTP2_HEADER_CONTENT_TYPE, NGHTTP2_CANCEL, } = http2.constants;
 /**
@@ -5105,7 +5105,7 @@ exports.Http2CallStream = Http2CallStream;
 
 /***/ }),
 
-/***/ 7453:
+/***/ 97453:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -5128,9 +5128,9 @@ exports.Http2CallStream = Http2CallStream;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ClientDuplexStreamImpl = exports.ClientWritableStreamImpl = exports.ClientReadableStreamImpl = exports.ClientUnaryCallImpl = exports.callErrorFromStatus = void 0;
-const events_1 = __nccwpck_require__(8614);
-const stream_1 = __nccwpck_require__(2413);
-const constants_1 = __nccwpck_require__(634);
+const events_1 = __nccwpck_require__(28614);
+const stream_1 = __nccwpck_require__(92413);
+const constants_1 = __nccwpck_require__(90634);
 /**
  * Construct a ServiceError from a StatusObject. This function exists primarily
  * as an attempt to make the error stack trace clearly communicate that the
@@ -5246,7 +5246,7 @@ exports.ClientDuplexStreamImpl = ClientDuplexStreamImpl;
 
 /***/ }),
 
-/***/ 4030:
+/***/ 44030:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -5270,8 +5270,8 @@ exports.ClientDuplexStreamImpl = ClientDuplexStreamImpl;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ChannelCredentials = void 0;
 const tls_1 = __nccwpck_require__(4016);
-const call_credentials_1 = __nccwpck_require__(1426);
-const tls_helpers_1 = __nccwpck_require__(6581);
+const call_credentials_1 = __nccwpck_require__(21426);
+const tls_helpers_1 = __nccwpck_require__(86581);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function verifyIsBufferOrNull(obj, friendlyName) {
     if (obj && !(obj instanceof Buffer)) {
@@ -5432,7 +5432,7 @@ class ComposedChannelCredentialsImpl extends ChannelCredentials {
 
 /***/ }),
 
-/***/ 9810:
+/***/ 99810:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -5499,7 +5499,7 @@ exports.channelOptionsEqual = channelOptionsEqual;
 
 /***/ }),
 
-/***/ 3860:
+/***/ 13860:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -5522,23 +5522,23 @@ exports.channelOptionsEqual = channelOptionsEqual;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ChannelImplementation = void 0;
-const call_stream_1 = __nccwpck_require__(8988);
-const channel_credentials_1 = __nccwpck_require__(4030);
-const resolving_load_balancer_1 = __nccwpck_require__(9192);
-const subchannel_pool_1 = __nccwpck_require__(9780);
-const picker_1 = __nccwpck_require__(1611);
-const constants_1 = __nccwpck_require__(634);
-const filter_stack_1 = __nccwpck_require__(6450);
-const call_credentials_filter_1 = __nccwpck_require__(6380);
-const deadline_filter_1 = __nccwpck_require__(1217);
-const compression_filter_1 = __nccwpck_require__(7616);
-const resolver_1 = __nccwpck_require__(1594);
-const logging_1 = __nccwpck_require__(5993);
-const max_message_size_filter_1 = __nccwpck_require__(659);
-const http_proxy_1 = __nccwpck_require__(4000);
-const uri_parser_1 = __nccwpck_require__(5974);
-const connectivity_state_1 = __nccwpck_require__(878);
-const channelz_1 = __nccwpck_require__(9975);
+const call_stream_1 = __nccwpck_require__(78988);
+const channel_credentials_1 = __nccwpck_require__(44030);
+const resolving_load_balancer_1 = __nccwpck_require__(19192);
+const subchannel_pool_1 = __nccwpck_require__(39780);
+const picker_1 = __nccwpck_require__(81611);
+const constants_1 = __nccwpck_require__(90634);
+const filter_stack_1 = __nccwpck_require__(66450);
+const call_credentials_filter_1 = __nccwpck_require__(86380);
+const deadline_filter_1 = __nccwpck_require__(81217);
+const compression_filter_1 = __nccwpck_require__(47616);
+const resolver_1 = __nccwpck_require__(31594);
+const logging_1 = __nccwpck_require__(35993);
+const max_message_size_filter_1 = __nccwpck_require__(30659);
+const http_proxy_1 = __nccwpck_require__(24000);
+const uri_parser_1 = __nccwpck_require__(65974);
+const connectivity_state_1 = __nccwpck_require__(80878);
+const channelz_1 = __nccwpck_require__(79975);
 /**
  * See https://nodejs.org/api/timers.html#timers_setinterval_callback_delay_args
  */
@@ -6042,7 +6042,7 @@ exports.ChannelImplementation = ChannelImplementation;
 
 /***/ }),
 
-/***/ 9975:
+/***/ 79975:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -6065,12 +6065,12 @@ exports.ChannelImplementation = ChannelImplementation;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.setup = exports.getChannelzServiceDefinition = exports.getChannelzHandlers = exports.unregisterChannelzRef = exports.registerChannelzSocket = exports.registerChannelzServer = exports.registerChannelzSubchannel = exports.registerChannelzChannel = exports.ChannelzCallTracker = exports.ChannelzChildrenTracker = exports.ChannelzTrace = void 0;
-const net_1 = __nccwpck_require__(1631);
-const connectivity_state_1 = __nccwpck_require__(878);
-const constants_1 = __nccwpck_require__(634);
-const subchannel_address_1 = __nccwpck_require__(9905);
+const net_1 = __nccwpck_require__(11631);
+const connectivity_state_1 = __nccwpck_require__(80878);
+const constants_1 = __nccwpck_require__(90634);
+const subchannel_address_1 = __nccwpck_require__(99905);
 const admin_1 = __nccwpck_require__(8258);
-const make_client_1 = __nccwpck_require__(8541);
+const make_client_1 = __nccwpck_require__(38541);
 function channelRefToMessage(ref) {
     return {
         channel_id: ref.id,
@@ -6627,7 +6627,7 @@ function getChannelzServiceDefinition() {
     }
     /* The purpose of this complexity is to avoid loading @grpc/proto-loader at
      * runtime for users who will not use/enable channelz. */
-    const loaderLoadSync = __nccwpck_require__(8171).loadSync;
+    const loaderLoadSync = __nccwpck_require__(98171).loadSync;
     const loadedProto = loaderLoadSync('channelz.proto', {
         keepCase: true,
         longs: String,
@@ -6651,7 +6651,7 @@ exports.setup = setup;
 
 /***/ }),
 
-/***/ 2127:
+/***/ 82127:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -6674,9 +6674,9 @@ exports.setup = setup;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getInterceptingCall = exports.InterceptingCall = exports.RequesterBuilder = exports.ListenerBuilder = exports.InterceptorConfigurationError = void 0;
-const metadata_1 = __nccwpck_require__(3665);
-const call_stream_1 = __nccwpck_require__(8988);
-const constants_1 = __nccwpck_require__(634);
+const metadata_1 = __nccwpck_require__(83665);
+const call_stream_1 = __nccwpck_require__(78988);
+const constants_1 = __nccwpck_require__(90634);
 /**
  * Error class associated with passing both interceptors and interceptor
  * providers to a client constructor or as call options.
@@ -7091,7 +7091,7 @@ exports.getInterceptingCall = getInterceptingCall;
 
 /***/ }),
 
-/***/ 7172:
+/***/ 87172:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -7114,12 +7114,12 @@ exports.getInterceptingCall = getInterceptingCall;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Client = void 0;
-const call_1 = __nccwpck_require__(7453);
-const channel_1 = __nccwpck_require__(3860);
-const connectivity_state_1 = __nccwpck_require__(878);
-const constants_1 = __nccwpck_require__(634);
-const metadata_1 = __nccwpck_require__(3665);
-const client_interceptors_1 = __nccwpck_require__(2127);
+const call_1 = __nccwpck_require__(97453);
+const channel_1 = __nccwpck_require__(13860);
+const connectivity_state_1 = __nccwpck_require__(80878);
+const constants_1 = __nccwpck_require__(90634);
+const metadata_1 = __nccwpck_require__(83665);
+const client_interceptors_1 = __nccwpck_require__(82127);
 const CHANNEL_SYMBOL = Symbol();
 const INTERCEPTOR_SYMBOL = Symbol();
 const INTERCEPTOR_PROVIDER_SYMBOL = Symbol();
@@ -7498,7 +7498,7 @@ exports.Client = Client;
 
 /***/ }),
 
-/***/ 4789:
+/***/ 54789:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -7532,7 +7532,7 @@ var CompressionAlgorithms;
 
 /***/ }),
 
-/***/ 7616:
+/***/ 47616:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -7555,11 +7555,11 @@ var CompressionAlgorithms;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CompressionFilterFactory = exports.CompressionFilter = void 0;
-const zlib = __nccwpck_require__(8761);
-const compression_algorithms_1 = __nccwpck_require__(4789);
-const constants_1 = __nccwpck_require__(634);
-const filter_1 = __nccwpck_require__(3392);
-const logging = __nccwpck_require__(5993);
+const zlib = __nccwpck_require__(78761);
+const compression_algorithms_1 = __nccwpck_require__(54789);
+const constants_1 = __nccwpck_require__(90634);
+const filter_1 = __nccwpck_require__(43392);
+const logging = __nccwpck_require__(35993);
 const isCompressionAlgorithmKey = (key) => {
     return typeof key === 'number' && typeof compression_algorithms_1.CompressionAlgorithms[key] === 'string';
 };
@@ -7795,7 +7795,7 @@ exports.CompressionFilterFactory = CompressionFilterFactory;
 
 /***/ }),
 
-/***/ 878:
+/***/ 80878:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -7830,7 +7830,7 @@ var ConnectivityState;
 
 /***/ }),
 
-/***/ 634:
+/***/ 90634:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -7901,7 +7901,7 @@ exports.DEFAULT_MAX_RECEIVE_MESSAGE_LENGTH = 4 * 1024 * 1024;
 
 /***/ }),
 
-/***/ 1217:
+/***/ 81217:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -7924,8 +7924,8 @@ exports.DEFAULT_MAX_RECEIVE_MESSAGE_LENGTH = 4 * 1024 * 1024;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DeadlineFilterFactory = exports.DeadlineFilter = void 0;
-const constants_1 = __nccwpck_require__(634);
-const filter_1 = __nccwpck_require__(3392);
+const constants_1 = __nccwpck_require__(90634);
+const filter_1 = __nccwpck_require__(43392);
 const units = [
     ['m', 1],
     ['S', 1000],
@@ -8018,36 +8018,36 @@ exports.DeadlineFilterFactory = DeadlineFilterFactory;
 
 /***/ }),
 
-/***/ 7626:
+/***/ 37626:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var logging_1 = __nccwpck_require__(5993);
+var logging_1 = __nccwpck_require__(35993);
 Object.defineProperty(exports, "trace", ({ enumerable: true, get: function () { return logging_1.trace; } }));
-var resolver_1 = __nccwpck_require__(1594);
+var resolver_1 = __nccwpck_require__(31594);
 Object.defineProperty(exports, "registerResolver", ({ enumerable: true, get: function () { return resolver_1.registerResolver; } }));
-var uri_parser_1 = __nccwpck_require__(5974);
+var uri_parser_1 = __nccwpck_require__(65974);
 Object.defineProperty(exports, "uriToString", ({ enumerable: true, get: function () { return uri_parser_1.uriToString; } }));
-var backoff_timeout_1 = __nccwpck_require__(4186);
+var backoff_timeout_1 = __nccwpck_require__(34186);
 Object.defineProperty(exports, "BackoffTimeout", ({ enumerable: true, get: function () { return backoff_timeout_1.BackoffTimeout; } }));
-var load_balancer_1 = __nccwpck_require__(2680);
+var load_balancer_1 = __nccwpck_require__(52680);
 Object.defineProperty(exports, "createChildChannelControlHelper", ({ enumerable: true, get: function () { return load_balancer_1.createChildChannelControlHelper; } }));
 Object.defineProperty(exports, "registerLoadBalancerType", ({ enumerable: true, get: function () { return load_balancer_1.registerLoadBalancerType; } }));
 Object.defineProperty(exports, "getFirstUsableConfig", ({ enumerable: true, get: function () { return load_balancer_1.getFirstUsableConfig; } }));
 Object.defineProperty(exports, "validateLoadBalancingConfig", ({ enumerable: true, get: function () { return load_balancer_1.validateLoadBalancingConfig; } }));
-var subchannel_address_1 = __nccwpck_require__(9905);
+var subchannel_address_1 = __nccwpck_require__(99905);
 Object.defineProperty(exports, "subchannelAddressToString", ({ enumerable: true, get: function () { return subchannel_address_1.subchannelAddressToString; } }));
-var load_balancer_child_handler_1 = __nccwpck_require__(7559);
+var load_balancer_child_handler_1 = __nccwpck_require__(17559);
 Object.defineProperty(exports, "ChildLoadBalancerHandler", ({ enumerable: true, get: function () { return load_balancer_child_handler_1.ChildLoadBalancerHandler; } }));
-var picker_1 = __nccwpck_require__(1611);
+var picker_1 = __nccwpck_require__(81611);
 Object.defineProperty(exports, "UnavailablePicker", ({ enumerable: true, get: function () { return picker_1.UnavailablePicker; } }));
 Object.defineProperty(exports, "QueuePicker", ({ enumerable: true, get: function () { return picker_1.QueuePicker; } }));
 Object.defineProperty(exports, "PickResultType", ({ enumerable: true, get: function () { return picker_1.PickResultType; } }));
-var filter_1 = __nccwpck_require__(3392);
+var filter_1 = __nccwpck_require__(43392);
 Object.defineProperty(exports, "BaseFilter", ({ enumerable: true, get: function () { return filter_1.BaseFilter; } }));
-var filter_stack_1 = __nccwpck_require__(6450);
+var filter_stack_1 = __nccwpck_require__(66450);
 Object.defineProperty(exports, "FilterStackFactory", ({ enumerable: true, get: function () { return filter_stack_1.FilterStackFactory; } }));
 var admin_1 = __nccwpck_require__(8258);
 Object.defineProperty(exports, "registerAdminService", ({ enumerable: true, get: function () { return admin_1.registerAdminService; } }));
@@ -8055,7 +8055,7 @@ Object.defineProperty(exports, "registerAdminService", ({ enumerable: true, get:
 
 /***/ }),
 
-/***/ 6450:
+/***/ 66450:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -8146,7 +8146,7 @@ exports.FilterStackFactory = FilterStackFactory;
 
 /***/ }),
 
-/***/ 3392:
+/***/ 43392:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -8192,7 +8192,7 @@ exports.BaseFilter = BaseFilter;
 
 /***/ }),
 
-/***/ 4000:
+/***/ 24000:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -8215,15 +8215,15 @@ exports.BaseFilter = BaseFilter;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getProxiedConnection = exports.mapProxyName = void 0;
-const logging_1 = __nccwpck_require__(5993);
-const constants_1 = __nccwpck_require__(634);
-const resolver_1 = __nccwpck_require__(1594);
-const http = __nccwpck_require__(8605);
+const logging_1 = __nccwpck_require__(35993);
+const constants_1 = __nccwpck_require__(90634);
+const resolver_1 = __nccwpck_require__(31594);
+const http = __nccwpck_require__(98605);
 const tls = __nccwpck_require__(4016);
-const logging = __nccwpck_require__(5993);
-const subchannel_address_1 = __nccwpck_require__(9905);
-const uri_parser_1 = __nccwpck_require__(5974);
-const url_1 = __nccwpck_require__(8835);
+const logging = __nccwpck_require__(35993);
+const subchannel_address_1 = __nccwpck_require__(99905);
+const uri_parser_1 = __nccwpck_require__(65974);
+const url_1 = __nccwpck_require__(78835);
 const TRACER_NAME = 'proxy';
 function trace(text) {
     logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, text);
@@ -8475,34 +8475,34 @@ exports.getProxiedConnection = getProxiedConnection;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.experimental = exports.StatusBuilder = exports.getClientChannel = exports.ServerCredentials = exports.Server = exports.setLogVerbosity = exports.setLogger = exports.load = exports.loadObject = exports.CallCredentials = exports.ChannelCredentials = exports.waitForClientReady = exports.closeClient = exports.Channel = exports.makeGenericClientConstructor = exports.makeClientConstructor = exports.loadPackageDefinition = exports.Client = exports.compressionAlgorithms = exports.propagate = exports.connectivityState = exports.status = exports.logVerbosity = exports.Metadata = exports.credentials = void 0;
-const call_credentials_1 = __nccwpck_require__(1426);
+const call_credentials_1 = __nccwpck_require__(21426);
 Object.defineProperty(exports, "CallCredentials", ({ enumerable: true, get: function () { return call_credentials_1.CallCredentials; } }));
-const channel_1 = __nccwpck_require__(3860);
+const channel_1 = __nccwpck_require__(13860);
 Object.defineProperty(exports, "Channel", ({ enumerable: true, get: function () { return channel_1.ChannelImplementation; } }));
-const compression_algorithms_1 = __nccwpck_require__(4789);
+const compression_algorithms_1 = __nccwpck_require__(54789);
 Object.defineProperty(exports, "compressionAlgorithms", ({ enumerable: true, get: function () { return compression_algorithms_1.CompressionAlgorithms; } }));
-const connectivity_state_1 = __nccwpck_require__(878);
+const connectivity_state_1 = __nccwpck_require__(80878);
 Object.defineProperty(exports, "connectivityState", ({ enumerable: true, get: function () { return connectivity_state_1.ConnectivityState; } }));
-const channel_credentials_1 = __nccwpck_require__(4030);
+const channel_credentials_1 = __nccwpck_require__(44030);
 Object.defineProperty(exports, "ChannelCredentials", ({ enumerable: true, get: function () { return channel_credentials_1.ChannelCredentials; } }));
-const client_1 = __nccwpck_require__(7172);
+const client_1 = __nccwpck_require__(87172);
 Object.defineProperty(exports, "Client", ({ enumerable: true, get: function () { return client_1.Client; } }));
-const constants_1 = __nccwpck_require__(634);
+const constants_1 = __nccwpck_require__(90634);
 Object.defineProperty(exports, "logVerbosity", ({ enumerable: true, get: function () { return constants_1.LogVerbosity; } }));
 Object.defineProperty(exports, "status", ({ enumerable: true, get: function () { return constants_1.Status; } }));
 Object.defineProperty(exports, "propagate", ({ enumerable: true, get: function () { return constants_1.Propagate; } }));
-const logging = __nccwpck_require__(5993);
-const make_client_1 = __nccwpck_require__(8541);
+const logging = __nccwpck_require__(35993);
+const make_client_1 = __nccwpck_require__(38541);
 Object.defineProperty(exports, "loadPackageDefinition", ({ enumerable: true, get: function () { return make_client_1.loadPackageDefinition; } }));
 Object.defineProperty(exports, "makeClientConstructor", ({ enumerable: true, get: function () { return make_client_1.makeClientConstructor; } }));
 Object.defineProperty(exports, "makeGenericClientConstructor", ({ enumerable: true, get: function () { return make_client_1.makeClientConstructor; } }));
-const metadata_1 = __nccwpck_require__(3665);
+const metadata_1 = __nccwpck_require__(83665);
 Object.defineProperty(exports, "Metadata", ({ enumerable: true, get: function () { return metadata_1.Metadata; } }));
-const server_1 = __nccwpck_require__(3389);
+const server_1 = __nccwpck_require__(33389);
 Object.defineProperty(exports, "Server", ({ enumerable: true, get: function () { return server_1.Server; } }));
-const server_credentials_1 = __nccwpck_require__(3828);
+const server_credentials_1 = __nccwpck_require__(63828);
 Object.defineProperty(exports, "ServerCredentials", ({ enumerable: true, get: function () { return server_credentials_1.ServerCredentials; } }));
-const status_builder_1 = __nccwpck_require__(3155);
+const status_builder_1 = __nccwpck_require__(73155);
 Object.defineProperty(exports, "StatusBuilder", ({ enumerable: true, get: function () { return status_builder_1.StatusBuilder; } }));
 /**** Client Credentials ****/
 // Using assign only copies enumerable properties, which is what we want
@@ -8559,25 +8559,25 @@ exports.setLogVerbosity = (verbosity) => {
 exports.getClientChannel = (client) => {
     return client_1.Client.prototype.getChannel.call(client);
 };
-var client_interceptors_1 = __nccwpck_require__(2127);
+var client_interceptors_1 = __nccwpck_require__(82127);
 Object.defineProperty(exports, "ListenerBuilder", ({ enumerable: true, get: function () { return client_interceptors_1.ListenerBuilder; } }));
 Object.defineProperty(exports, "RequesterBuilder", ({ enumerable: true, get: function () { return client_interceptors_1.RequesterBuilder; } }));
 Object.defineProperty(exports, "InterceptingCall", ({ enumerable: true, get: function () { return client_interceptors_1.InterceptingCall; } }));
 Object.defineProperty(exports, "InterceptorConfigurationError", ({ enumerable: true, get: function () { return client_interceptors_1.InterceptorConfigurationError; } }));
-var channelz_1 = __nccwpck_require__(9975);
+var channelz_1 = __nccwpck_require__(79975);
 Object.defineProperty(exports, "getChannelzServiceDefinition", ({ enumerable: true, get: function () { return channelz_1.getChannelzServiceDefinition; } }));
 Object.defineProperty(exports, "getChannelzHandlers", ({ enumerable: true, get: function () { return channelz_1.getChannelzHandlers; } }));
 var admin_1 = __nccwpck_require__(8258);
 Object.defineProperty(exports, "addAdminServicesToServer", ({ enumerable: true, get: function () { return admin_1.addAdminServicesToServer; } }));
-const experimental = __nccwpck_require__(7626);
+const experimental = __nccwpck_require__(37626);
 exports.experimental = experimental;
-const resolver_dns = __nccwpck_require__(9421);
+const resolver_dns = __nccwpck_require__(49421);
 const resolver_uds = __nccwpck_require__(5252);
-const resolver_ip = __nccwpck_require__(7902);
-const load_balancer_pick_first = __nccwpck_require__(8977);
-const load_balancer_round_robin = __nccwpck_require__(2787);
-const channelz = __nccwpck_require__(9975);
-const clientVersion = __nccwpck_require__(8160)/* .version */ .i8;
+const resolver_ip = __nccwpck_require__(97902);
+const load_balancer_pick_first = __nccwpck_require__(38977);
+const load_balancer_round_robin = __nccwpck_require__(92787);
+const channelz = __nccwpck_require__(79975);
+const clientVersion = __nccwpck_require__(68160)/* .version */ .i8;
 (() => {
     logging.trace(constants_1.LogVerbosity.DEBUG, 'index', 'Loading @grpc/grpc-js version ' + clientVersion);
     resolver_dns.setup();
@@ -8591,7 +8591,7 @@ const clientVersion = __nccwpck_require__(8160)/* .version */ .i8;
 
 /***/ }),
 
-/***/ 7559:
+/***/ 17559:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -8614,8 +8614,8 @@ const clientVersion = __nccwpck_require__(8160)/* .version */ .i8;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ChildLoadBalancerHandler = void 0;
-const load_balancer_1 = __nccwpck_require__(2680);
-const connectivity_state_1 = __nccwpck_require__(878);
+const load_balancer_1 = __nccwpck_require__(52680);
+const connectivity_state_1 = __nccwpck_require__(80878);
 const TYPE_NAME = 'child_load_balancer_helper';
 class ChildLoadBalancerHandler {
     constructor(channelControlHelper) {
@@ -8739,7 +8739,7 @@ exports.ChildLoadBalancerHandler = ChildLoadBalancerHandler;
 
 /***/ }),
 
-/***/ 8977:
+/***/ 38977:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -8762,12 +8762,12 @@ exports.ChildLoadBalancerHandler = ChildLoadBalancerHandler;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.setup = exports.PickFirstLoadBalancer = exports.PickFirstLoadBalancingConfig = void 0;
-const load_balancer_1 = __nccwpck_require__(2680);
-const connectivity_state_1 = __nccwpck_require__(878);
-const picker_1 = __nccwpck_require__(1611);
-const subchannel_address_1 = __nccwpck_require__(9905);
-const logging = __nccwpck_require__(5993);
-const constants_1 = __nccwpck_require__(634);
+const load_balancer_1 = __nccwpck_require__(52680);
+const connectivity_state_1 = __nccwpck_require__(80878);
+const picker_1 = __nccwpck_require__(81611);
+const subchannel_address_1 = __nccwpck_require__(99905);
+const logging = __nccwpck_require__(35993);
+const constants_1 = __nccwpck_require__(90634);
 const TRACER_NAME = 'pick_first';
 function trace(text) {
     logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, text);
@@ -9116,7 +9116,7 @@ exports.setup = setup;
 
 /***/ }),
 
-/***/ 2787:
+/***/ 92787:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -9139,12 +9139,12 @@ exports.setup = setup;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.setup = exports.RoundRobinLoadBalancer = void 0;
-const load_balancer_1 = __nccwpck_require__(2680);
-const connectivity_state_1 = __nccwpck_require__(878);
-const picker_1 = __nccwpck_require__(1611);
-const subchannel_address_1 = __nccwpck_require__(9905);
-const logging = __nccwpck_require__(5993);
-const constants_1 = __nccwpck_require__(634);
+const load_balancer_1 = __nccwpck_require__(52680);
+const connectivity_state_1 = __nccwpck_require__(80878);
+const picker_1 = __nccwpck_require__(81611);
+const subchannel_address_1 = __nccwpck_require__(99905);
+const logging = __nccwpck_require__(35993);
+const constants_1 = __nccwpck_require__(90634);
 const TRACER_NAME = 'round_robin';
 function trace(text) {
     logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, text);
@@ -9307,7 +9307,7 @@ exports.setup = setup;
 
 /***/ }),
 
-/***/ 2680:
+/***/ 52680:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -9417,7 +9417,7 @@ exports.validateLoadBalancingConfig = validateLoadBalancingConfig;
 
 /***/ }),
 
-/***/ 5993:
+/***/ 35993:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -9441,7 +9441,7 @@ exports.validateLoadBalancingConfig = validateLoadBalancingConfig;
 var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.trace = exports.log = exports.setLoggerVerbosity = exports.setLogger = exports.getLogger = void 0;
-const constants_1 = __nccwpck_require__(634);
+const constants_1 = __nccwpck_require__(90634);
 const DEFAULT_LOGGER = {
     error: (message, ...optionalParams) => {
         console.error('E ' + message, ...optionalParams);
@@ -9529,7 +9529,7 @@ exports.trace = trace;
 
 /***/ }),
 
-/***/ 8541:
+/***/ 38541:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -9552,7 +9552,7 @@ exports.trace = trace;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.loadPackageDefinition = exports.makeClientConstructor = void 0;
-const client_1 = __nccwpck_require__(7172);
+const client_1 = __nccwpck_require__(87172);
 /**
  * Map with short names for each of the requester maker functions. Used in
  * makeClientConstructor
@@ -9679,7 +9679,7 @@ exports.loadPackageDefinition = loadPackageDefinition;
 
 /***/ }),
 
-/***/ 659:
+/***/ 30659:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -9702,8 +9702,8 @@ exports.loadPackageDefinition = loadPackageDefinition;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.MaxMessageSizeFilterFactory = exports.MaxMessageSizeFilter = void 0;
-const filter_1 = __nccwpck_require__(3392);
-const constants_1 = __nccwpck_require__(634);
+const filter_1 = __nccwpck_require__(43392);
+const constants_1 = __nccwpck_require__(90634);
 class MaxMessageSizeFilter extends filter_1.BaseFilter {
     constructor(options, callStream) {
         super();
@@ -9767,7 +9767,7 @@ exports.MaxMessageSizeFilterFactory = MaxMessageSizeFilterFactory;
 
 /***/ }),
 
-/***/ 3665:
+/***/ 83665:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -9790,8 +9790,8 @@ exports.MaxMessageSizeFilterFactory = MaxMessageSizeFilterFactory;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Metadata = void 0;
-const logging_1 = __nccwpck_require__(5993);
-const constants_1 = __nccwpck_require__(634);
+const logging_1 = __nccwpck_require__(35993);
+const constants_1 = __nccwpck_require__(90634);
 const LEGAL_KEY_REGEX = /^[0-9a-z_.-]+$/;
 const LEGAL_NON_BINARY_VALUE_REGEX = /^[ -~]*$/;
 function isLegalKey(key) {
@@ -10035,7 +10035,7 @@ exports.Metadata = Metadata;
 
 /***/ }),
 
-/***/ 1611:
+/***/ 81611:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -10058,8 +10058,8 @@ exports.Metadata = Metadata;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.QueuePicker = exports.UnavailablePicker = exports.PickResultType = void 0;
-const metadata_1 = __nccwpck_require__(3665);
-const constants_1 = __nccwpck_require__(634);
+const metadata_1 = __nccwpck_require__(83665);
+const constants_1 = __nccwpck_require__(90634);
 var PickResultType;
 (function (PickResultType) {
     PickResultType[PickResultType["COMPLETE"] = 0] = "COMPLETE";
@@ -10129,7 +10129,7 @@ exports.QueuePicker = QueuePicker;
 
 /***/ }),
 
-/***/ 9421:
+/***/ 49421:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -10151,17 +10151,17 @@ exports.QueuePicker = QueuePicker;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.setup = void 0;
-const resolver_1 = __nccwpck_require__(1594);
-const dns = __nccwpck_require__(881);
-const util = __nccwpck_require__(1669);
-const service_config_1 = __nccwpck_require__(1761);
-const constants_1 = __nccwpck_require__(634);
-const metadata_1 = __nccwpck_require__(3665);
-const logging = __nccwpck_require__(5993);
-const constants_2 = __nccwpck_require__(634);
-const uri_parser_1 = __nccwpck_require__(5974);
-const net_1 = __nccwpck_require__(1631);
-const backoff_timeout_1 = __nccwpck_require__(4186);
+const resolver_1 = __nccwpck_require__(31594);
+const dns = __nccwpck_require__(40881);
+const util = __nccwpck_require__(31669);
+const service_config_1 = __nccwpck_require__(21761);
+const constants_1 = __nccwpck_require__(90634);
+const metadata_1 = __nccwpck_require__(83665);
+const logging = __nccwpck_require__(35993);
+const constants_2 = __nccwpck_require__(90634);
+const uri_parser_1 = __nccwpck_require__(65974);
+const net_1 = __nccwpck_require__(11631);
+const backoff_timeout_1 = __nccwpck_require__(34186);
 const TRACER_NAME = 'dns_resolver';
 function trace(text) {
     logging.trace(constants_2.LogVerbosity.DEBUG, TRACER_NAME, text);
@@ -10394,7 +10394,7 @@ exports.setup = setup;
 
 /***/ }),
 
-/***/ 7902:
+/***/ 97902:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -10416,12 +10416,12 @@ exports.setup = setup;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.setup = void 0;
-const net_1 = __nccwpck_require__(1631);
-const constants_1 = __nccwpck_require__(634);
-const metadata_1 = __nccwpck_require__(3665);
-const resolver_1 = __nccwpck_require__(1594);
-const uri_parser_1 = __nccwpck_require__(5974);
-const logging = __nccwpck_require__(5993);
+const net_1 = __nccwpck_require__(11631);
+const constants_1 = __nccwpck_require__(90634);
+const metadata_1 = __nccwpck_require__(83665);
+const resolver_1 = __nccwpck_require__(31594);
+const uri_parser_1 = __nccwpck_require__(65974);
+const logging = __nccwpck_require__(35993);
 const TRACER_NAME = 'ip_resolver';
 function trace(text) {
     logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, text);
@@ -10525,7 +10525,7 @@ exports.setup = setup;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.setup = void 0;
-const resolver_1 = __nccwpck_require__(1594);
+const resolver_1 = __nccwpck_require__(31594);
 class UdsResolver {
     constructor(target, listener, channelOptions) {
         this.listener = listener;
@@ -10557,7 +10557,7 @@ exports.setup = setup;
 
 /***/ }),
 
-/***/ 1594:
+/***/ 31594:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -10580,7 +10580,7 @@ exports.setup = setup;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.mapUriDefaultScheme = exports.getDefaultAuthority = exports.createResolver = exports.registerDefaultScheme = exports.registerResolver = void 0;
-const uri_parser_1 = __nccwpck_require__(5974);
+const uri_parser_1 = __nccwpck_require__(65974);
 const registeredResolvers = {};
 let defaultScheme = null;
 /**
@@ -10652,7 +10652,7 @@ exports.mapUriDefaultScheme = mapUriDefaultScheme;
 
 /***/ }),
 
-/***/ 9192:
+/***/ 19192:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -10675,18 +10675,18 @@ exports.mapUriDefaultScheme = mapUriDefaultScheme;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ResolvingLoadBalancer = void 0;
-const load_balancer_1 = __nccwpck_require__(2680);
-const service_config_1 = __nccwpck_require__(1761);
-const connectivity_state_1 = __nccwpck_require__(878);
-const resolver_1 = __nccwpck_require__(1594);
-const picker_1 = __nccwpck_require__(1611);
-const backoff_timeout_1 = __nccwpck_require__(4186);
-const constants_1 = __nccwpck_require__(634);
-const metadata_1 = __nccwpck_require__(3665);
-const logging = __nccwpck_require__(5993);
-const constants_2 = __nccwpck_require__(634);
-const uri_parser_1 = __nccwpck_require__(5974);
-const load_balancer_child_handler_1 = __nccwpck_require__(7559);
+const load_balancer_1 = __nccwpck_require__(52680);
+const service_config_1 = __nccwpck_require__(21761);
+const connectivity_state_1 = __nccwpck_require__(80878);
+const resolver_1 = __nccwpck_require__(31594);
+const picker_1 = __nccwpck_require__(81611);
+const backoff_timeout_1 = __nccwpck_require__(34186);
+const constants_1 = __nccwpck_require__(90634);
+const metadata_1 = __nccwpck_require__(83665);
+const logging = __nccwpck_require__(35993);
+const constants_2 = __nccwpck_require__(90634);
+const uri_parser_1 = __nccwpck_require__(65974);
+const load_balancer_child_handler_1 = __nccwpck_require__(17559);
 const TRACER_NAME = 'resolving_load_balancer';
 function trace(text) {
     logging.trace(constants_2.LogVerbosity.DEBUG, TRACER_NAME, text);
@@ -10914,7 +10914,7 @@ exports.ResolvingLoadBalancer = ResolvingLoadBalancer;
 
 /***/ }),
 
-/***/ 2533:
+/***/ 62533:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -10937,14 +10937,14 @@ exports.ResolvingLoadBalancer = ResolvingLoadBalancer;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Http2ServerCallStream = exports.ServerDuplexStreamImpl = exports.ServerWritableStreamImpl = exports.ServerReadableStreamImpl = exports.ServerUnaryCallImpl = void 0;
-const events_1 = __nccwpck_require__(8614);
-const http2 = __nccwpck_require__(7565);
-const stream_1 = __nccwpck_require__(2413);
-const zlib = __nccwpck_require__(8761);
-const constants_1 = __nccwpck_require__(634);
-const metadata_1 = __nccwpck_require__(3665);
-const stream_decoder_1 = __nccwpck_require__(6575);
-const logging = __nccwpck_require__(5993);
+const events_1 = __nccwpck_require__(28614);
+const http2 = __nccwpck_require__(97565);
+const stream_1 = __nccwpck_require__(92413);
+const zlib = __nccwpck_require__(78761);
+const constants_1 = __nccwpck_require__(90634);
+const metadata_1 = __nccwpck_require__(83665);
+const stream_decoder_1 = __nccwpck_require__(16575);
+const logging = __nccwpck_require__(35993);
 const TRACER_NAME = 'server_call';
 function trace(text) {
     logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, text);
@@ -11540,7 +11540,7 @@ function handleExpiredDeadline(call) {
 
 /***/ }),
 
-/***/ 3828:
+/***/ 63828:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -11563,7 +11563,7 @@ function handleExpiredDeadline(call) {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ServerCredentials = void 0;
-const tls_helpers_1 = __nccwpck_require__(6581);
+const tls_helpers_1 = __nccwpck_require__(86581);
 class ServerCredentials {
     static createInsecure() {
         return new InsecureServerCredentials();
@@ -11628,7 +11628,7 @@ class SecureServerCredentials extends ServerCredentials {
 
 /***/ }),
 
-/***/ 3389:
+/***/ 33389:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -11651,16 +11651,16 @@ class SecureServerCredentials extends ServerCredentials {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Server = void 0;
-const http2 = __nccwpck_require__(7565);
-const constants_1 = __nccwpck_require__(634);
-const metadata_1 = __nccwpck_require__(3665);
-const server_call_1 = __nccwpck_require__(2533);
-const server_credentials_1 = __nccwpck_require__(3828);
-const resolver_1 = __nccwpck_require__(1594);
-const logging = __nccwpck_require__(5993);
-const subchannel_address_1 = __nccwpck_require__(9905);
-const uri_parser_1 = __nccwpck_require__(5974);
-const channelz_1 = __nccwpck_require__(9975);
+const http2 = __nccwpck_require__(97565);
+const constants_1 = __nccwpck_require__(90634);
+const metadata_1 = __nccwpck_require__(83665);
+const server_call_1 = __nccwpck_require__(62533);
+const server_credentials_1 = __nccwpck_require__(63828);
+const resolver_1 = __nccwpck_require__(31594);
+const logging = __nccwpck_require__(35993);
+const subchannel_address_1 = __nccwpck_require__(99905);
+const uri_parser_1 = __nccwpck_require__(65974);
+const channelz_1 = __nccwpck_require__(79975);
 const TRACER_NAME = 'server';
 function noop() { }
 function getUnimplementedStatusResponse(methodName) {
@@ -12340,7 +12340,7 @@ function handleBidiStreaming(call, handler, metadata, encoding) {
 
 /***/ }),
 
-/***/ 1761:
+/***/ 21761:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -12372,8 +12372,8 @@ exports.extractAndSelectServiceConfig = exports.validateServiceConfig = void 0;
 /* The any type is purposely used here. All functions validate their input at
  * runtime */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const os = __nccwpck_require__(2087);
-const load_balancer_1 = __nccwpck_require__(2680);
+const os = __nccwpck_require__(12087);
+const load_balancer_1 = __nccwpck_require__(52680);
 /**
  * Recognizes a number with up to 9 digits after the decimal point, followed by
  * an "s", representing a number of seconds.
@@ -12631,7 +12631,7 @@ exports.extractAndSelectServiceConfig = extractAndSelectServiceConfig;
 
 /***/ }),
 
-/***/ 3155:
+/***/ 73155:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -12706,7 +12706,7 @@ exports.StatusBuilder = StatusBuilder;
 
 /***/ }),
 
-/***/ 6575:
+/***/ 16575:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -12809,7 +12809,7 @@ exports.StreamDecoder = StreamDecoder;
 
 /***/ }),
 
-/***/ 9905:
+/***/ 99905:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -12832,7 +12832,7 @@ exports.StreamDecoder = StreamDecoder;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.stringToSubchannelAddress = exports.subchannelAddressToString = exports.subchannelAddressEqual = exports.isTcpSubchannelAddress = void 0;
-const net_1 = __nccwpck_require__(1631);
+const net_1 = __nccwpck_require__(11631);
 function isTcpSubchannelAddress(address) {
     return 'port' in address;
 }
@@ -12876,7 +12876,7 @@ exports.stringToSubchannelAddress = stringToSubchannelAddress;
 
 /***/ }),
 
-/***/ 9780:
+/***/ 39780:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -12899,10 +12899,10 @@ exports.stringToSubchannelAddress = stringToSubchannelAddress;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getSubchannelPool = exports.SubchannelPool = void 0;
-const channel_options_1 = __nccwpck_require__(9810);
-const subchannel_1 = __nccwpck_require__(4764);
-const subchannel_address_1 = __nccwpck_require__(9905);
-const uri_parser_1 = __nccwpck_require__(5974);
+const channel_options_1 = __nccwpck_require__(99810);
+const subchannel_1 = __nccwpck_require__(84764);
+const subchannel_address_1 = __nccwpck_require__(99905);
+const uri_parser_1 = __nccwpck_require__(65974);
 // 10 seconds in milliseconds. This value is arbitrary.
 /**
  * The amount of time in between checks for dropping subchannels that have no
@@ -13024,7 +13024,7 @@ exports.getSubchannelPool = getSubchannelPool;
 
 /***/ }),
 
-/***/ 4764:
+/***/ 84764:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -13047,19 +13047,19 @@ exports.getSubchannelPool = getSubchannelPool;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Subchannel = void 0;
-const http2 = __nccwpck_require__(7565);
+const http2 = __nccwpck_require__(97565);
 const tls_1 = __nccwpck_require__(4016);
-const connectivity_state_1 = __nccwpck_require__(878);
-const backoff_timeout_1 = __nccwpck_require__(4186);
-const resolver_1 = __nccwpck_require__(1594);
-const logging = __nccwpck_require__(5993);
-const constants_1 = __nccwpck_require__(634);
-const http_proxy_1 = __nccwpck_require__(4000);
-const net = __nccwpck_require__(1631);
-const uri_parser_1 = __nccwpck_require__(5974);
-const subchannel_address_1 = __nccwpck_require__(9905);
-const channelz_1 = __nccwpck_require__(9975);
-const clientVersion = __nccwpck_require__(8160)/* .version */ .i8;
+const connectivity_state_1 = __nccwpck_require__(80878);
+const backoff_timeout_1 = __nccwpck_require__(34186);
+const resolver_1 = __nccwpck_require__(31594);
+const logging = __nccwpck_require__(35993);
+const constants_1 = __nccwpck_require__(90634);
+const http_proxy_1 = __nccwpck_require__(24000);
+const net = __nccwpck_require__(11631);
+const uri_parser_1 = __nccwpck_require__(65974);
+const subchannel_address_1 = __nccwpck_require__(99905);
+const channelz_1 = __nccwpck_require__(79975);
+const clientVersion = __nccwpck_require__(68160)/* .version */ .i8;
 const TRACER_NAME = 'subchannel';
 const MIN_CONNECT_TIMEOUT_MS = 20000;
 const INITIAL_BACKOFF_MS = 1000;
@@ -13791,7 +13791,7 @@ exports.Subchannel = Subchannel;
 
 /***/ }),
 
-/***/ 6581:
+/***/ 86581:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -13814,7 +13814,7 @@ exports.Subchannel = Subchannel;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getDefaultRootsData = exports.CIPHER_SUITES = void 0;
-const fs = __nccwpck_require__(5747);
+const fs = __nccwpck_require__(35747);
 exports.CIPHER_SUITES = process.env.GRPC_SSL_CIPHER_SUITES;
 const DEFAULT_ROOTS_FILE_PATH = process.env.GRPC_DEFAULT_SSL_ROOTS_FILE_PATH;
 let defaultRootsData = null;
@@ -13832,7 +13832,7 @@ exports.getDefaultRootsData = getDefaultRootsData;
 
 /***/ }),
 
-/***/ 5974:
+/***/ 65974:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -13950,7 +13950,7 @@ exports.uriToString = uriToString;
 
 /***/ }),
 
-/***/ 8171:
+/***/ 98171:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -13974,9 +13974,9 @@ exports.uriToString = uriToString;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const camelCase = __nccwpck_require__(7994);
-const Protobuf = __nccwpck_require__(5881);
-const descriptor = __nccwpck_require__(1629);
-const util_1 = __nccwpck_require__(3245);
+const Protobuf = __nccwpck_require__(85881);
+const descriptor = __nccwpck_require__(21629);
+const util_1 = __nccwpck_require__(13245);
 function isAnyExtension(obj) {
     return ('@type' in obj) && (typeof obj['@type'] === 'string');
 }
@@ -14173,7 +14173,7 @@ util_1.addCommonProtos();
 
 /***/ }),
 
-/***/ 3245:
+/***/ 13245:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -14196,9 +14196,9 @@ util_1.addCommonProtos();
  *
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const fs = __nccwpck_require__(5747);
-const path = __nccwpck_require__(5622);
-const Protobuf = __nccwpck_require__(5881);
+const fs = __nccwpck_require__(35747);
+const path = __nccwpck_require__(85622);
+const Protobuf = __nccwpck_require__(85881);
 function addIncludePathResolver(root, includePaths) {
     const originalResolvePath = root.resolvePath;
     root.resolvePath = (origin, target) => {
@@ -14254,10 +14254,10 @@ function addCommonProtos() {
     // Protobuf.js exposes: any, duration, empty, field_mask, struct, timestamp,
     // and wrappers. compiler/plugin is excluded in Protobuf.js and here.
     // Using constant strings for compatibility with tools like Webpack
-    const apiDescriptor = __nccwpck_require__(8155);
-    const descriptorDescriptor = __nccwpck_require__(333);
-    const sourceContextDescriptor = __nccwpck_require__(6663);
-    const typeDescriptor = __nccwpck_require__(5715);
+    const apiDescriptor = __nccwpck_require__(78155);
+    const descriptorDescriptor = __nccwpck_require__(40333);
+    const sourceContextDescriptor = __nccwpck_require__(56663);
+    const typeDescriptor = __nccwpck_require__(75715);
     Protobuf.common('api', apiDescriptor.nested.google.nested.protobuf.nested);
     Protobuf.common('descriptor', descriptorDescriptor.nested.google.nested.protobuf.nested);
     Protobuf.common('source_context', sourceContextDescriptor.nested.google.nested.protobuf.nested);
@@ -14268,7 +14268,7 @@ exports.addCommonProtos = addCommonProtos;
 
 /***/ }),
 
-/***/ 334:
+/***/ 40334:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -14331,7 +14331,7 @@ exports.createTokenAuth = createTokenAuth;
 
 /***/ }),
 
-/***/ 6762:
+/***/ 76762:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -14339,11 +14339,11 @@ exports.createTokenAuth = createTokenAuth;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var universalUserAgent = __nccwpck_require__(5030);
-var beforeAfterHook = __nccwpck_require__(3682);
-var request = __nccwpck_require__(6234);
-var graphql = __nccwpck_require__(8467);
-var authToken = __nccwpck_require__(334);
+var universalUserAgent = __nccwpck_require__(45030);
+var beforeAfterHook = __nccwpck_require__(83682);
+var request = __nccwpck_require__(36234);
+var graphql = __nccwpck_require__(88467);
+var authToken = __nccwpck_require__(40334);
 
 function _objectWithoutPropertiesLoose(source, excluded) {
   if (source == null) return {};
@@ -14515,7 +14515,7 @@ exports.Octokit = Octokit;
 
 /***/ }),
 
-/***/ 9440:
+/***/ 59440:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -14523,8 +14523,8 @@ exports.Octokit = Octokit;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var isPlainObject = __nccwpck_require__(3287);
-var universalUserAgent = __nccwpck_require__(5030);
+var isPlainObject = __nccwpck_require__(63287);
+var universalUserAgent = __nccwpck_require__(45030);
 
 function lowercaseKeys(object) {
   if (!object) {
@@ -14913,7 +14913,7 @@ exports.endpoint = endpoint;
 
 /***/ }),
 
-/***/ 8467:
+/***/ 88467:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -14921,8 +14921,8 @@ exports.endpoint = endpoint;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var request = __nccwpck_require__(6234);
-var universalUserAgent = __nccwpck_require__(5030);
+var request = __nccwpck_require__(36234);
+var universalUserAgent = __nccwpck_require__(45030);
 
 const VERSION = "4.8.0";
 
@@ -15039,7 +15039,7 @@ exports.withCustomRequest = withCustomRequest;
 
 /***/ }),
 
-/***/ 4193:
+/***/ 64193:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -15264,7 +15264,7 @@ exports.paginatingEndpoints = paginatingEndpoints;
 
 /***/ }),
 
-/***/ 3044:
+/***/ 83044:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -16297,7 +16297,7 @@ exports.restEndpointMethods = restEndpointMethods;
 
 /***/ }),
 
-/***/ 537:
+/***/ 10537:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -16307,7 +16307,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var deprecation = __nccwpck_require__(8932);
+var deprecation = __nccwpck_require__(58932);
 var once = _interopDefault(__nccwpck_require__(1223));
 
 const logOnceCode = once(deprecation => console.warn(deprecation));
@@ -16379,7 +16379,7 @@ exports.RequestError = RequestError;
 
 /***/ }),
 
-/***/ 6234:
+/***/ 36234:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -16389,11 +16389,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var endpoint = __nccwpck_require__(9440);
-var universalUserAgent = __nccwpck_require__(5030);
-var isPlainObject = __nccwpck_require__(3287);
-var nodeFetch = _interopDefault(__nccwpck_require__(467));
-var requestError = __nccwpck_require__(537);
+var endpoint = __nccwpck_require__(59440);
+var universalUserAgent = __nccwpck_require__(45030);
+var isPlainObject = __nccwpck_require__(63287);
+var nodeFetch = _interopDefault(__nccwpck_require__(80467));
+var requestError = __nccwpck_require__(10537);
 
 const VERSION = "5.6.3";
 
@@ -16564,7 +16564,7 @@ exports.request = request;
 
 /***/ }),
 
-/***/ 7171:
+/***/ 57171:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -16591,9 +16591,9 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ContextAPI = void 0;
-var NoopContextManager_1 = __nccwpck_require__(4118);
-var global_utils_1 = __nccwpck_require__(5135);
-var diag_1 = __nccwpck_require__(1877);
+var NoopContextManager_1 = __nccwpck_require__(54118);
+var global_utils_1 = __nccwpck_require__(85135);
+var diag_1 = __nccwpck_require__(11877);
 var API_NAME = 'context';
 var NOOP_CONTEXT_MANAGER = new NoopContextManager_1.NoopContextManager();
 /**
@@ -16664,7 +16664,7 @@ exports.ContextAPI = ContextAPI;
 
 /***/ }),
 
-/***/ 1877:
+/***/ 11877:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -16686,10 +16686,10 @@ exports.ContextAPI = ContextAPI;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DiagAPI = void 0;
-var ComponentLogger_1 = __nccwpck_require__(7978);
-var logLevelLogger_1 = __nccwpck_require__(9639);
-var types_1 = __nccwpck_require__(8077);
-var global_utils_1 = __nccwpck_require__(5135);
+var ComponentLogger_1 = __nccwpck_require__(17978);
+var logLevelLogger_1 = __nccwpck_require__(99639);
+var types_1 = __nccwpck_require__(78077);
+var global_utils_1 = __nccwpck_require__(85135);
 var API_NAME = 'diag';
 /**
  * Singleton object which represents the entry point to the OpenTelemetry internal
@@ -16764,7 +16764,7 @@ exports.DiagAPI = DiagAPI;
 
 /***/ }),
 
-/***/ 9909:
+/***/ 89909:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -16786,12 +16786,12 @@ exports.DiagAPI = DiagAPI;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PropagationAPI = void 0;
-var global_utils_1 = __nccwpck_require__(5135);
-var NoopTextMapPropagator_1 = __nccwpck_require__(2368);
-var TextMapPropagator_1 = __nccwpck_require__(865);
-var context_helpers_1 = __nccwpck_require__(7682);
-var utils_1 = __nccwpck_require__(8136);
-var diag_1 = __nccwpck_require__(1877);
+var global_utils_1 = __nccwpck_require__(85135);
+var NoopTextMapPropagator_1 = __nccwpck_require__(72368);
+var TextMapPropagator_1 = __nccwpck_require__(80865);
+var context_helpers_1 = __nccwpck_require__(37682);
+var utils_1 = __nccwpck_require__(28136);
+var diag_1 = __nccwpck_require__(11877);
 var API_NAME = 'propagation';
 var NOOP_TEXT_MAP_PROPAGATOR = new NoopTextMapPropagator_1.NoopTextMapPropagator();
 /**
@@ -16862,7 +16862,7 @@ exports.PropagationAPI = PropagationAPI;
 
 /***/ }),
 
-/***/ 1539:
+/***/ 81539:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -16884,11 +16884,11 @@ exports.PropagationAPI = PropagationAPI;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TraceAPI = void 0;
-var global_utils_1 = __nccwpck_require__(5135);
+var global_utils_1 = __nccwpck_require__(85135);
 var ProxyTracerProvider_1 = __nccwpck_require__(2285);
-var spancontext_utils_1 = __nccwpck_require__(9745);
-var context_utils_1 = __nccwpck_require__(3326);
-var diag_1 = __nccwpck_require__(1877);
+var spancontext_utils_1 = __nccwpck_require__(49745);
+var context_utils_1 = __nccwpck_require__(23326);
+var diag_1 = __nccwpck_require__(11877);
 var API_NAME = 'trace';
 /**
  * Singleton object which represents the entry point to the OpenTelemetry Tracing API
@@ -16948,7 +16948,7 @@ exports.TraceAPI = TraceAPI;
 
 /***/ }),
 
-/***/ 7682:
+/***/ 37682:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -16970,7 +16970,7 @@ exports.TraceAPI = TraceAPI;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.deleteBaggage = exports.setBaggage = exports.getBaggage = void 0;
-var context_1 = __nccwpck_require__(8242);
+var context_1 = __nccwpck_require__(78242);
 /**
  * Baggage key
  */
@@ -17008,7 +17008,7 @@ exports.deleteBaggage = deleteBaggage;
 
 /***/ }),
 
-/***/ 4811:
+/***/ 84811:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -17079,7 +17079,7 @@ exports.BaggageImpl = BaggageImpl;
 
 /***/ }),
 
-/***/ 3542:
+/***/ 23542:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -17109,7 +17109,7 @@ exports.baggageEntryMetadataSymbol = Symbol('BaggageEntryMetadata');
 
 /***/ }),
 
-/***/ 1508:
+/***/ 91508:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -17134,7 +17134,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 8136:
+/***/ 28136:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -17156,9 +17156,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.baggageEntryMetadataFromString = exports.createBaggage = void 0;
-var diag_1 = __nccwpck_require__(1877);
-var baggage_impl_1 = __nccwpck_require__(4811);
-var symbol_1 = __nccwpck_require__(3542);
+var diag_1 = __nccwpck_require__(11877);
+var baggage_impl_1 = __nccwpck_require__(84811);
+var symbol_1 = __nccwpck_require__(23542);
 var diag = diag_1.DiagAPI.instance();
 /**
  * Create a new Baggage with optional entries
@@ -17218,7 +17218,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 4447:
+/***/ 14447:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -17243,7 +17243,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 2358:
+/***/ 92358:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -17253,7 +17253,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 4118:
+/***/ 54118:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -17280,7 +17280,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NoopContextManager = void 0;
-var context_1 = __nccwpck_require__(8242);
+var context_1 = __nccwpck_require__(78242);
 var NoopContextManager = /** @class */ (function () {
     function NoopContextManager() {
     }
@@ -17310,7 +17310,7 @@ exports.NoopContextManager = NoopContextManager;
 
 /***/ }),
 
-/***/ 8242:
+/***/ 78242:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -17373,7 +17373,7 @@ exports.ROOT_CONTEXT = new BaseContext();
 
 /***/ }),
 
-/***/ 6504:
+/***/ 36504:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -17398,7 +17398,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 7978:
+/***/ 17978:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -17420,7 +17420,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DiagComponentLogger = void 0;
-var global_utils_1 = __nccwpck_require__(5135);
+var global_utils_1 = __nccwpck_require__(85135);
 /**
  * Component Logger which is meant to be used as part of any component which
  * will add automatically additional namespace in front of the log message.
@@ -17554,7 +17554,7 @@ exports.DiagConsoleLogger = DiagConsoleLogger;
 
 /***/ }),
 
-/***/ 1634:
+/***/ 31634:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -17586,12 +17586,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__nccwpck_require__(3041), exports);
-__exportStar(__nccwpck_require__(8077), exports);
+__exportStar(__nccwpck_require__(78077), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 9639:
+/***/ 99639:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -17613,7 +17613,7 @@ __exportStar(__nccwpck_require__(8077), exports);
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createLogLevelDiagLogger = void 0;
-var types_1 = __nccwpck_require__(8077);
+var types_1 = __nccwpck_require__(78077);
 function createLogLevelDiagLogger(maxLevel, logger) {
     if (maxLevel < types_1.DiagLogLevel.NONE) {
         maxLevel = types_1.DiagLogLevel.NONE;
@@ -17643,7 +17643,7 @@ exports.createLogLevelDiagLogger = createLogLevelDiagLogger;
 
 /***/ }),
 
-/***/ 8077:
+/***/ 78077:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -17694,7 +17694,7 @@ var DiagLogLevel;
 
 /***/ }),
 
-/***/ 5163:
+/***/ 65163:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -17726,52 +17726,52 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.diag = exports.propagation = exports.trace = exports.context = exports.INVALID_SPAN_CONTEXT = exports.INVALID_TRACEID = exports.INVALID_SPANID = exports.isValidSpanId = exports.isValidTraceId = exports.isSpanContextValid = exports.createTraceState = exports.baggageEntryMetadataFromString = void 0;
-__exportStar(__nccwpck_require__(1508), exports);
-var utils_1 = __nccwpck_require__(8136);
+__exportStar(__nccwpck_require__(91508), exports);
+var utils_1 = __nccwpck_require__(28136);
 Object.defineProperty(exports, "baggageEntryMetadataFromString", ({ enumerable: true, get: function () { return utils_1.baggageEntryMetadataFromString; } }));
-__exportStar(__nccwpck_require__(4447), exports);
-__exportStar(__nccwpck_require__(2358), exports);
+__exportStar(__nccwpck_require__(14447), exports);
+__exportStar(__nccwpck_require__(92358), exports);
 __exportStar(__nccwpck_require__(1109), exports);
-__exportStar(__nccwpck_require__(1634), exports);
-__exportStar(__nccwpck_require__(865), exports);
-__exportStar(__nccwpck_require__(7492), exports);
-__exportStar(__nccwpck_require__(4023), exports);
-__exportStar(__nccwpck_require__(3503), exports);
+__exportStar(__nccwpck_require__(31634), exports);
+__exportStar(__nccwpck_require__(80865), exports);
+__exportStar(__nccwpck_require__(57492), exports);
+__exportStar(__nccwpck_require__(44023), exports);
+__exportStar(__nccwpck_require__(43503), exports);
 __exportStar(__nccwpck_require__(2285), exports);
-__exportStar(__nccwpck_require__(9671), exports);
-__exportStar(__nccwpck_require__(3209), exports);
-__exportStar(__nccwpck_require__(5769), exports);
-__exportStar(__nccwpck_require__(1424), exports);
+__exportStar(__nccwpck_require__(19671), exports);
+__exportStar(__nccwpck_require__(33209), exports);
+__exportStar(__nccwpck_require__(15769), exports);
+__exportStar(__nccwpck_require__(31424), exports);
 __exportStar(__nccwpck_require__(4416), exports);
-__exportStar(__nccwpck_require__(955), exports);
-__exportStar(__nccwpck_require__(8845), exports);
-__exportStar(__nccwpck_require__(6905), exports);
-__exportStar(__nccwpck_require__(8384), exports);
-var utils_2 = __nccwpck_require__(2615);
+__exportStar(__nccwpck_require__(20955), exports);
+__exportStar(__nccwpck_require__(48845), exports);
+__exportStar(__nccwpck_require__(26905), exports);
+__exportStar(__nccwpck_require__(88384), exports);
+var utils_2 = __nccwpck_require__(32615);
 Object.defineProperty(exports, "createTraceState", ({ enumerable: true, get: function () { return utils_2.createTraceState; } }));
-__exportStar(__nccwpck_require__(891), exports);
-__exportStar(__nccwpck_require__(3168), exports);
-__exportStar(__nccwpck_require__(1823), exports);
-var spancontext_utils_1 = __nccwpck_require__(9745);
+__exportStar(__nccwpck_require__(30891), exports);
+__exportStar(__nccwpck_require__(33168), exports);
+__exportStar(__nccwpck_require__(91823), exports);
+var spancontext_utils_1 = __nccwpck_require__(49745);
 Object.defineProperty(exports, "isSpanContextValid", ({ enumerable: true, get: function () { return spancontext_utils_1.isSpanContextValid; } }));
 Object.defineProperty(exports, "isValidTraceId", ({ enumerable: true, get: function () { return spancontext_utils_1.isValidTraceId; } }));
 Object.defineProperty(exports, "isValidSpanId", ({ enumerable: true, get: function () { return spancontext_utils_1.isValidSpanId; } }));
-var invalid_span_constants_1 = __nccwpck_require__(1760);
+var invalid_span_constants_1 = __nccwpck_require__(91760);
 Object.defineProperty(exports, "INVALID_SPANID", ({ enumerable: true, get: function () { return invalid_span_constants_1.INVALID_SPANID; } }));
 Object.defineProperty(exports, "INVALID_TRACEID", ({ enumerable: true, get: function () { return invalid_span_constants_1.INVALID_TRACEID; } }));
 Object.defineProperty(exports, "INVALID_SPAN_CONTEXT", ({ enumerable: true, get: function () { return invalid_span_constants_1.INVALID_SPAN_CONTEXT; } }));
-__exportStar(__nccwpck_require__(8242), exports);
-__exportStar(__nccwpck_require__(6504), exports);
-var context_1 = __nccwpck_require__(7171);
+__exportStar(__nccwpck_require__(78242), exports);
+__exportStar(__nccwpck_require__(36504), exports);
+var context_1 = __nccwpck_require__(57171);
 /** Entrypoint for context API */
 exports.context = context_1.ContextAPI.getInstance();
-var trace_1 = __nccwpck_require__(1539);
+var trace_1 = __nccwpck_require__(81539);
 /** Entrypoint for trace API */
 exports.trace = trace_1.TraceAPI.getInstance();
-var propagation_1 = __nccwpck_require__(9909);
+var propagation_1 = __nccwpck_require__(89909);
 /** Entrypoint for propagation API */
 exports.propagation = propagation_1.PropagationAPI.getInstance();
-var diag_1 = __nccwpck_require__(1877);
+var diag_1 = __nccwpck_require__(11877);
 /**
  * Entrypoint for Diag API.
  * Defines Diagnostic handler used for internal diagnostic logging operations.
@@ -17789,7 +17789,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 5135:
+/***/ 85135:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -17811,9 +17811,9 @@ exports.default = {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.unregisterGlobal = exports.getGlobal = exports.registerGlobal = void 0;
-var platform_1 = __nccwpck_require__(9957);
-var version_1 = __nccwpck_require__(8996);
-var semver_1 = __nccwpck_require__(1522);
+var platform_1 = __nccwpck_require__(99957);
+var version_1 = __nccwpck_require__(98996);
+var semver_1 = __nccwpck_require__(81522);
 var major = version_1.VERSION.split('.')[0];
 var GLOBAL_OPENTELEMETRY_API_KEY = Symbol.for("opentelemetry.js.api." + major);
 var _global = platform_1._globalThis;
@@ -17861,7 +17861,7 @@ exports.unregisterGlobal = unregisterGlobal;
 
 /***/ }),
 
-/***/ 1522:
+/***/ 81522:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -17883,7 +17883,7 @@ exports.unregisterGlobal = unregisterGlobal;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.isCompatible = exports._makeCompatibilityCheck = void 0;
-var version_1 = __nccwpck_require__(8996);
+var version_1 = __nccwpck_require__(98996);
 var re = /^(\d+)\.(\d+)\.(\d+)(-(.+))?$/;
 /**
  * Create a function to test an API version to see if it is compatible with the provided ownVersion.
@@ -17990,7 +17990,7 @@ exports.isCompatible = _makeCompatibilityCheck(version_1.VERSION);
 
 /***/ }),
 
-/***/ 9957:
+/***/ 99957:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -18021,12 +18021,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(7200), exports);
+__exportStar(__nccwpck_require__(87200), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 9406:
+/***/ 89406:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -18055,7 +18055,7 @@ exports._globalThis = typeof globalThis === 'object' ? globalThis : global;
 
 /***/ }),
 
-/***/ 7200:
+/***/ 87200:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -18086,12 +18086,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(9406), exports);
+__exportStar(__nccwpck_require__(89406), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 2368:
+/***/ 72368:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -18135,7 +18135,7 @@ exports.NoopTextMapPropagator = NoopTextMapPropagator;
 
 /***/ }),
 
-/***/ 865:
+/***/ 80865:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -18183,7 +18183,7 @@ exports.defaultTextMapSetter = {
 
 /***/ }),
 
-/***/ 1462:
+/***/ 81462:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -18205,7 +18205,7 @@ exports.defaultTextMapSetter = {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NonRecordingSpan = void 0;
-var invalid_span_constants_1 = __nccwpck_require__(1760);
+var invalid_span_constants_1 = __nccwpck_require__(91760);
 /**
  * The NonRecordingSpan is the default {@link Span} that is used when no Span
  * implementation is available. All operations are no-op including context
@@ -18255,7 +18255,7 @@ exports.NonRecordingSpan = NonRecordingSpan;
 
 /***/ }),
 
-/***/ 7606:
+/***/ 17606:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -18277,10 +18277,10 @@ exports.NonRecordingSpan = NonRecordingSpan;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NoopTracer = void 0;
-var context_1 = __nccwpck_require__(7171);
-var context_utils_1 = __nccwpck_require__(3326);
-var NonRecordingSpan_1 = __nccwpck_require__(1462);
-var spancontext_utils_1 = __nccwpck_require__(9745);
+var context_1 = __nccwpck_require__(57171);
+var context_utils_1 = __nccwpck_require__(23326);
+var NonRecordingSpan_1 = __nccwpck_require__(81462);
+var spancontext_utils_1 = __nccwpck_require__(49745);
 var context = context_1.ContextAPI.getInstance();
 /**
  * No-op implementations of {@link Tracer}.
@@ -18340,7 +18340,7 @@ function isSpanContext(spanContext) {
 
 /***/ }),
 
-/***/ 3259:
+/***/ 23259:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -18362,7 +18362,7 @@ function isSpanContext(spanContext) {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NoopTracerProvider = void 0;
-var NoopTracer_1 = __nccwpck_require__(7606);
+var NoopTracer_1 = __nccwpck_require__(17606);
 /**
  * An implementation of the {@link TracerProvider} which returns an impotent
  * Tracer for all calls to `getTracer`.
@@ -18382,7 +18382,7 @@ exports.NoopTracerProvider = NoopTracerProvider;
 
 /***/ }),
 
-/***/ 3503:
+/***/ 43503:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -18404,7 +18404,7 @@ exports.NoopTracerProvider = NoopTracerProvider;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ProxyTracer = void 0;
-var NoopTracer_1 = __nccwpck_require__(7606);
+var NoopTracer_1 = __nccwpck_require__(17606);
 var NOOP_TRACER = new NoopTracer_1.NoopTracer();
 /**
  * Proxy tracer provided by the proxy tracer provider
@@ -18467,8 +18467,8 @@ exports.ProxyTracer = ProxyTracer;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ProxyTracerProvider = void 0;
-var ProxyTracer_1 = __nccwpck_require__(3503);
-var NoopTracerProvider_1 = __nccwpck_require__(3259);
+var ProxyTracer_1 = __nccwpck_require__(43503);
+var NoopTracerProvider_1 = __nccwpck_require__(23259);
 var NOOP_TRACER_PROVIDER = new NoopTracerProvider_1.NoopTracerProvider();
 /**
  * Tracer provider which provides {@link ProxyTracer}s.
@@ -18509,7 +18509,7 @@ exports.ProxyTracerProvider = ProxyTracerProvider;
 
 /***/ }),
 
-/***/ 9671:
+/***/ 19671:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -18534,7 +18534,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 3209:
+/***/ 33209:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -18582,7 +18582,7 @@ var SamplingDecision;
 
 /***/ }),
 
-/***/ 955:
+/***/ 20955:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -18607,7 +18607,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 7492:
+/***/ 57492:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -18632,7 +18632,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 3326:
+/***/ 23326:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -18654,8 +18654,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getSpanContext = exports.setSpanContext = exports.deleteSpan = exports.setSpan = exports.getSpan = void 0;
-var context_1 = __nccwpck_require__(8242);
-var NonRecordingSpan_1 = __nccwpck_require__(1462);
+var context_1 = __nccwpck_require__(78242);
+var NonRecordingSpan_1 = __nccwpck_require__(81462);
 /**
  * span key
  */
@@ -18713,7 +18713,7 @@ exports.getSpanContext = getSpanContext;
 
 /***/ }),
 
-/***/ 2110:
+/***/ 62110:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -18735,7 +18735,7 @@ exports.getSpanContext = getSpanContext;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TraceStateImpl = void 0;
-var tracestate_validators_1 = __nccwpck_require__(4864);
+var tracestate_validators_1 = __nccwpck_require__(54864);
 var MAX_TRACE_STATE_ITEMS = 32;
 var MAX_TRACE_STATE_LEN = 512;
 var LIST_MEMBERS_SEPARATOR = ',';
@@ -18825,7 +18825,7 @@ exports.TraceStateImpl = TraceStateImpl;
 
 /***/ }),
 
-/***/ 4864:
+/***/ 54864:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -18878,7 +18878,7 @@ exports.validateValue = validateValue;
 
 /***/ }),
 
-/***/ 2615:
+/***/ 32615:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -18900,7 +18900,7 @@ exports.validateValue = validateValue;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createTraceState = void 0;
-var tracestate_impl_1 = __nccwpck_require__(2110);
+var tracestate_impl_1 = __nccwpck_require__(62110);
 function createTraceState(rawTraceState) {
     return new tracestate_impl_1.TraceStateImpl(rawTraceState);
 }
@@ -18909,7 +18909,7 @@ exports.createTraceState = createTraceState;
 
 /***/ }),
 
-/***/ 1760:
+/***/ 91760:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -18931,7 +18931,7 @@ exports.createTraceState = createTraceState;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.INVALID_SPAN_CONTEXT = exports.INVALID_TRACEID = exports.INVALID_SPANID = void 0;
-var trace_flags_1 = __nccwpck_require__(6905);
+var trace_flags_1 = __nccwpck_require__(26905);
 exports.INVALID_SPANID = '0000000000000000';
 exports.INVALID_TRACEID = '00000000000000000000000000000000';
 exports.INVALID_SPAN_CONTEXT = {
@@ -18943,7 +18943,7 @@ exports.INVALID_SPAN_CONTEXT = {
 
 /***/ }),
 
-/***/ 4023:
+/***/ 44023:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -18993,7 +18993,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 5769:
+/***/ 15769:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19018,7 +19018,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 1424:
+/***/ 31424:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19071,7 +19071,7 @@ var SpanKind;
 
 /***/ }),
 
-/***/ 9745:
+/***/ 49745:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -19093,8 +19093,8 @@ exports.wrapSpanContext = exports.isSpanContextValid = exports.isValidSpanId = e
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var invalid_span_constants_1 = __nccwpck_require__(1760);
-var NonRecordingSpan_1 = __nccwpck_require__(1462);
+var invalid_span_constants_1 = __nccwpck_require__(91760);
+var NonRecordingSpan_1 = __nccwpck_require__(81462);
 var VALID_TRACEID_REGEX = /^([0-9a-f]{32})$/i;
 var VALID_SPANID_REGEX = /^[0-9a-f]{16}$/i;
 function isValidTraceId(traceId) {
@@ -19127,7 +19127,7 @@ exports.wrapSpanContext = wrapSpanContext;
 
 /***/ }),
 
-/***/ 8845:
+/***/ 48845:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19157,7 +19157,7 @@ var SpanStatusCode;
 
 /***/ }),
 
-/***/ 6905:
+/***/ 26905:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19190,7 +19190,7 @@ var TraceFlags;
 
 /***/ }),
 
-/***/ 8384:
+/***/ 88384:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19215,7 +19215,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 3168:
+/***/ 33168:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19240,7 +19240,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 1823:
+/***/ 91823:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19265,7 +19265,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 891:
+/***/ 30891:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19290,7 +19290,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 8996:
+/***/ 98996:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19318,7 +19318,7 @@ exports.VERSION = '1.1.0';
 
 /***/ }),
 
-/***/ 7959:
+/***/ 67959:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19349,7 +19349,7 @@ var ExportResultCode;
 
 /***/ }),
 
-/***/ 6178:
+/***/ 36178:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19386,7 +19386,7 @@ exports.BAGGAGE_MAX_TOTAL_LENGTH = 8192;
 
 /***/ }),
 
-/***/ 1476:
+/***/ 61476:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -19408,10 +19408,10 @@ exports.BAGGAGE_MAX_TOTAL_LENGTH = 8192;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.W3CBaggagePropagator = void 0;
-const api_1 = __nccwpck_require__(5163);
-const suppress_tracing_1 = __nccwpck_require__(4463);
-const constants_1 = __nccwpck_require__(6178);
-const utils_1 = __nccwpck_require__(9884);
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(54463);
+const constants_1 = __nccwpck_require__(36178);
+const utils_1 = __nccwpck_require__(49884);
 /**
  * Propagates {@link Baggage} through Context format propagation.
  *
@@ -19421,29 +19421,30 @@ const utils_1 = __nccwpck_require__(9884);
 class W3CBaggagePropagator {
     inject(context, carrier, setter) {
         const baggage = api_1.propagation.getBaggage(context);
-        if (!baggage || suppress_tracing_1.isTracingSuppressed(context))
+        if (!baggage || (0, suppress_tracing_1.isTracingSuppressed)(context))
             return;
-        const keyPairs = utils_1.getKeyPairs(baggage)
+        const keyPairs = (0, utils_1.getKeyPairs)(baggage)
             .filter((pair) => {
             return pair.length <= constants_1.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS;
         })
             .slice(0, constants_1.BAGGAGE_MAX_NAME_VALUE_PAIRS);
-        const headerValue = utils_1.serializeKeyPairs(keyPairs);
+        const headerValue = (0, utils_1.serializeKeyPairs)(keyPairs);
         if (headerValue.length > 0) {
             setter.set(carrier, constants_1.BAGGAGE_HEADER, headerValue);
         }
     }
     extract(context, carrier, getter) {
         const headerValue = getter.get(carrier, constants_1.BAGGAGE_HEADER);
-        if (!headerValue)
+        const baggageString = Array.isArray(headerValue) ? headerValue.join(constants_1.BAGGAGE_ITEMS_SEPARATOR) : headerValue;
+        if (!baggageString)
             return context;
         const baggage = {};
-        if (headerValue.length === 0) {
+        if (baggageString.length === 0) {
             return context;
         }
-        const pairs = headerValue.split(constants_1.BAGGAGE_ITEMS_SEPARATOR);
+        const pairs = baggageString.split(constants_1.BAGGAGE_ITEMS_SEPARATOR);
         pairs.forEach(entry => {
-            const keyPair = utils_1.parsePairKeyValue(entry);
+            const keyPair = (0, utils_1.parsePairKeyValue)(entry);
             if (keyPair) {
                 const baggageEntry = { value: keyPair.value };
                 if (keyPair.metadata) {
@@ -19466,7 +19467,7 @@ exports.W3CBaggagePropagator = W3CBaggagePropagator;
 
 /***/ }),
 
-/***/ 9884:
+/***/ 49884:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -19488,8 +19489,8 @@ exports.parseKeyPairsIntoRecord = exports.parsePairKeyValue = exports.getKeyPair
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const api_1 = __nccwpck_require__(5163);
-const constants_1 = __nccwpck_require__(6178);
+const api_1 = __nccwpck_require__(65163);
+const constants_1 = __nccwpck_require__(36178);
 function serializeKeyPairs(keyPairs) {
     return keyPairs.reduce((hValue, current) => {
         const value = `${hValue}${hValue !== '' ? constants_1.BAGGAGE_ITEMS_SEPARATOR : ''}${current}`;
@@ -19498,9 +19499,15 @@ function serializeKeyPairs(keyPairs) {
 }
 exports.serializeKeyPairs = serializeKeyPairs;
 function getKeyPairs(baggage) {
-    return baggage
-        .getAllEntries()
-        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value.value)}`);
+    return baggage.getAllEntries().map(([key, value]) => {
+        let entry = `${encodeURIComponent(key)}=${encodeURIComponent(value.value)}`;
+        // include opaque metadata if provided
+        // NOTE: we intentionally don't URI-encode the metadata - that responsibility falls on the metadata implementation
+        if (value.metadata !== undefined) {
+            entry += constants_1.BAGGAGE_PROPERTIES_SEPARATOR + value.metadata.toString();
+        }
+        return entry;
+    });
 }
 exports.getKeyPairs = getKeyPairs;
 function parsePairKeyValue(entry) {
@@ -19517,7 +19524,7 @@ function parsePairKeyValue(entry) {
     const value = decodeURIComponent(keyPair[1].trim());
     let metadata;
     if (valueProps.length > 0) {
-        metadata = api_1.baggageEntryMetadataFromString(valueProps.join(constants_1.BAGGAGE_PROPERTIES_SEPARATOR));
+        metadata = (0, api_1.baggageEntryMetadataFromString)(valueProps.join(constants_1.BAGGAGE_PROPERTIES_SEPARATOR));
     }
     return { key, value, metadata };
 }
@@ -19546,32 +19553,57 @@ exports.parseKeyPairsIntoRecord = parseKeyPairsIntoRecord;
 
 /***/ }),
 
-/***/ 2807:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ 82807:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isAttributeValue = exports.sanitizeAttributes = void 0;
+exports.isAttributeValue = exports.isAttributeKey = exports.sanitizeAttributes = void 0;
+const api_1 = __nccwpck_require__(65163);
 function sanitizeAttributes(attributes) {
     const out = {};
-    if (attributes == null || typeof attributes !== 'object') {
+    if (typeof attributes !== 'object' || attributes == null) {
         return out;
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    for (const [k, v] of Object.entries(attributes)) {
-        if (isAttributeValue(v)) {
-            if (Array.isArray(v)) {
-                out[k] = v.slice();
-            }
-            else {
-                out[k] = v;
-            }
+    for (const [key, val] of Object.entries(attributes)) {
+        if (!isAttributeKey(key)) {
+            api_1.diag.warn(`Invalid attribute key: ${key}`);
+            continue;
+        }
+        if (!isAttributeValue(val)) {
+            api_1.diag.warn(`Invalid attribute value set for key: ${key}`);
+            continue;
+        }
+        if (Array.isArray(val)) {
+            out[key] = val.slice();
+        }
+        else {
+            out[key] = val;
         }
     }
     return out;
 }
 exports.sanitizeAttributes = sanitizeAttributes;
+function isAttributeKey(key) {
+    return typeof key === 'string' && key.length > 0;
+}
+exports.isAttributeKey = isAttributeKey;
 function isAttributeValue(val) {
     if (val == null) {
         return true;
@@ -19606,9 +19638,7 @@ function isHomogeneousAttributeValueArray(arr) {
 function isValidPrimitiveAttributeValue(val) {
     switch (typeof val) {
         case 'number':
-            return true;
         case 'boolean':
-            return true;
         case 'string':
             return true;
     }
@@ -19618,7 +19648,7 @@ function isValidPrimitiveAttributeValue(val) {
 
 /***/ }),
 
-/***/ 9246:
+/***/ 69246:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -19640,9 +19670,9 @@ function isValidPrimitiveAttributeValue(val) {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.globalErrorHandler = exports.setGlobalErrorHandler = void 0;
-const logging_error_handler_1 = __nccwpck_require__(2882);
+const logging_error_handler_1 = __nccwpck_require__(32882);
 /** The global error handler delegate */
-let delegateHandler = logging_error_handler_1.loggingErrorHandler();
+let delegateHandler = (0, logging_error_handler_1.loggingErrorHandler)();
 /**
  * Set the global error handler
  * @param {ErrorHandler} handler
@@ -19666,7 +19696,7 @@ exports.globalErrorHandler = globalErrorHandler;
 
 /***/ }),
 
-/***/ 2882:
+/***/ 32882:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -19688,7 +19718,7 @@ exports.globalErrorHandler = globalErrorHandler;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.loggingErrorHandler = void 0;
-const api_1 = __nccwpck_require__(5163);
+const api_1 = __nccwpck_require__(65163);
 /**
  * Returns a function that logs an error using the provided logger, or a
  * console logger if one was not provided.
@@ -19736,7 +19766,7 @@ function flattenException(ex) {
 
 /***/ }),
 
-/***/ 6161:
+/***/ 86161:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -19913,7 +19943,7 @@ exports.isTimeInput = isTimeInput;
 
 /***/ }),
 
-/***/ 7342:
+/***/ 27342:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -19938,7 +19968,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 9736:
+/***/ 89736:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -19970,37 +20000,38 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.baggageUtils = void 0;
-__exportStar(__nccwpck_require__(1476), exports);
-__exportStar(__nccwpck_require__(2807), exports);
-__exportStar(__nccwpck_require__(9246), exports);
-__exportStar(__nccwpck_require__(2882), exports);
-__exportStar(__nccwpck_require__(6161), exports);
-__exportStar(__nccwpck_require__(7342), exports);
-__exportStar(__nccwpck_require__(7959), exports);
-__exportStar(__nccwpck_require__(5687), exports);
-exports.baggageUtils = __nccwpck_require__(9884);
+__exportStar(__nccwpck_require__(61476), exports);
+__exportStar(__nccwpck_require__(82807), exports);
+__exportStar(__nccwpck_require__(69246), exports);
+__exportStar(__nccwpck_require__(32882), exports);
+__exportStar(__nccwpck_require__(86161), exports);
+__exportStar(__nccwpck_require__(27342), exports);
+__exportStar(__nccwpck_require__(67959), exports);
+__exportStar(__nccwpck_require__(55687), exports);
+exports.baggageUtils = __nccwpck_require__(49884);
 __exportStar(__nccwpck_require__(6730), exports);
-__exportStar(__nccwpck_require__(7785), exports);
-__exportStar(__nccwpck_require__(1463), exports);
+__exportStar(__nccwpck_require__(57785), exports);
+__exportStar(__nccwpck_require__(61463), exports);
 __exportStar(__nccwpck_require__(231), exports);
-__exportStar(__nccwpck_require__(2992), exports);
-__exportStar(__nccwpck_require__(6478), exports);
-__exportStar(__nccwpck_require__(8317), exports);
-__exportStar(__nccwpck_require__(5136), exports);
-__exportStar(__nccwpck_require__(9326), exports);
-__exportStar(__nccwpck_require__(4463), exports);
+__exportStar(__nccwpck_require__(52992), exports);
+__exportStar(__nccwpck_require__(16478), exports);
+__exportStar(__nccwpck_require__(88317), exports);
+__exportStar(__nccwpck_require__(15136), exports);
+__exportStar(__nccwpck_require__(69326), exports);
+__exportStar(__nccwpck_require__(54463), exports);
 __exportStar(__nccwpck_require__(1914), exports);
 __exportStar(__nccwpck_require__(7238), exports);
-__exportStar(__nccwpck_require__(5387), exports);
-__exportStar(__nccwpck_require__(8289), exports);
-__exportStar(__nccwpck_require__(839), exports);
-__exportStar(__nccwpck_require__(7226), exports);
-__exportStar(__nccwpck_require__(5687), exports);
+__exportStar(__nccwpck_require__(65387), exports);
+__exportStar(__nccwpck_require__(28289), exports);
+__exportStar(__nccwpck_require__(90839), exports);
+__exportStar(__nccwpck_require__(67226), exports);
+__exportStar(__nccwpck_require__(12408), exports);
+__exportStar(__nccwpck_require__(55687), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 6242:
+/***/ 96242:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -20089,7 +20120,7 @@ __exportStar(__nccwpck_require__(9340), exports);
 
 /***/ }),
 
-/***/ 5476:
+/***/ 25476:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -20152,7 +20183,7 @@ function getIdGenerator(bytes) {
 
 /***/ }),
 
-/***/ 6494:
+/***/ 76494:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20174,13 +20205,13 @@ function getIdGenerator(bytes) {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getEnv = void 0;
-const os = __nccwpck_require__(2087);
+const os = __nccwpck_require__(12087);
 const environment_1 = __nccwpck_require__(7238);
 /**
  * Gets the environment variables
  */
 function getEnv() {
-    const processEnv = environment_1.parseEnvironment(process.env);
+    const processEnv = (0, environment_1.parseEnvironment)(process.env);
     return Object.assign({
         HOSTNAME: os.hostname(),
     }, environment_1.DEFAULT_ENVIRONMENT, processEnv);
@@ -20190,7 +20221,7 @@ exports.getEnv = getEnv;
 
 /***/ }),
 
-/***/ 7196:
+/***/ 57196:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -20219,7 +20250,7 @@ exports._globalThis = typeof globalThis === 'object' ? globalThis : global;
 
 /***/ }),
 
-/***/ 5004:
+/***/ 75004:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -20287,18 +20318,18 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(6494), exports);
-__exportStar(__nccwpck_require__(7196), exports);
-__exportStar(__nccwpck_require__(5004), exports);
-__exportStar(__nccwpck_require__(5476), exports);
-__exportStar(__nccwpck_require__(9338), exports);
-__exportStar(__nccwpck_require__(265), exports);
-__exportStar(__nccwpck_require__(1027), exports);
+__exportStar(__nccwpck_require__(76494), exports);
+__exportStar(__nccwpck_require__(57196), exports);
+__exportStar(__nccwpck_require__(75004), exports);
+__exportStar(__nccwpck_require__(25476), exports);
+__exportStar(__nccwpck_require__(39338), exports);
+__exportStar(__nccwpck_require__(10265), exports);
+__exportStar(__nccwpck_require__(51027), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 9338:
+/***/ 39338:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20320,13 +20351,13 @@ __exportStar(__nccwpck_require__(1027), exports);
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.otperformance = void 0;
-const perf_hooks_1 = __nccwpck_require__(630);
+const perf_hooks_1 = __nccwpck_require__(70630);
 exports.otperformance = perf_hooks_1.performance;
 //# sourceMappingURL=performance.js.map
 
 /***/ }),
 
-/***/ 265:
+/***/ 10265:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20348,8 +20379,8 @@ exports.otperformance = perf_hooks_1.performance;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SDK_INFO = void 0;
-const version_1 = __nccwpck_require__(5687);
-const semantic_conventions_1 = __nccwpck_require__(7275);
+const version_1 = __nccwpck_require__(55687);
+const semantic_conventions_1 = __nccwpck_require__(67275);
 /** Constants describing the SDK in use */
 exports.SDK_INFO = {
     [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME]: 'opentelemetry',
@@ -20361,7 +20392,7 @@ exports.SDK_INFO = {
 
 /***/ }),
 
-/***/ 1027:
+/***/ 51027:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -20391,7 +20422,7 @@ exports.unrefTimer = unrefTimer;
 
 /***/ }),
 
-/***/ 7785:
+/***/ 57785:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20413,7 +20444,7 @@ exports.unrefTimer = unrefTimer;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CompositePropagator = void 0;
-const api_1 = __nccwpck_require__(5163);
+const api_1 = __nccwpck_require__(65163);
 /** Combines multiple propagators into a single propagator. */
 class CompositePropagator {
     /**
@@ -20525,7 +20556,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TraceState = void 0;
-const validators_1 = __nccwpck_require__(6242);
+const validators_1 = __nccwpck_require__(96242);
 const MAX_TRACE_STATE_ITEMS = 32;
 const MAX_TRACE_STATE_LEN = 512;
 const LIST_MEMBERS_SEPARATOR = ',';
@@ -20583,7 +20614,7 @@ class TraceState {
             if (i !== -1) {
                 const key = listMember.slice(0, i);
                 const value = listMember.slice(i + 1, part.length);
-                if (validators_1.validateKey(key) && validators_1.validateValue(value)) {
+                if ((0, validators_1.validateKey)(key) && (0, validators_1.validateValue)(value)) {
                     agg.set(key, value);
                 }
                 else {
@@ -20613,7 +20644,7 @@ exports.TraceState = TraceState;
 
 /***/ }),
 
-/***/ 1463:
+/***/ 61463:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20635,8 +20666,8 @@ exports.TraceState = TraceState;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.W3CTraceContextPropagator = exports.parseTraceParent = exports.TRACE_STATE_HEADER = exports.TRACE_PARENT_HEADER = void 0;
-const api_1 = __nccwpck_require__(5163);
-const suppress_tracing_1 = __nccwpck_require__(4463);
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(54463);
 const TraceState_1 = __nccwpck_require__(1914);
 exports.TRACE_PARENT_HEADER = 'traceparent';
 exports.TRACE_STATE_HEADER = 'tracestate';
@@ -20682,8 +20713,8 @@ class W3CTraceContextPropagator {
     inject(context, carrier, setter) {
         const spanContext = api_1.trace.getSpanContext(context);
         if (!spanContext ||
-            suppress_tracing_1.isTracingSuppressed(context) ||
-            !api_1.isSpanContextValid(spanContext))
+            (0, suppress_tracing_1.isTracingSuppressed)(context) ||
+            !(0, api_1.isSpanContextValid)(spanContext))
             return;
         const traceParent = `${VERSION}-${spanContext.traceId}-${spanContext.spanId}-0${Number(spanContext.traceFlags || api_1.TraceFlags.NONE).toString(16)}`;
         setter.set(carrier, exports.TRACE_PARENT_HEADER, traceParent);
@@ -20724,7 +20755,7 @@ exports.W3CTraceContextPropagator = W3CTraceContextPropagator;
 
 /***/ }),
 
-/***/ 2992:
+/***/ 52992:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20746,8 +20777,8 @@ exports.W3CTraceContextPropagator = W3CTraceContextPropagator;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRPCMetadata = exports.deleteRPCMetadata = exports.setRPCMetadata = exports.RPCType = void 0;
-const api_1 = __nccwpck_require__(5163);
-const RPC_METADATA_KEY = api_1.createContextKey('OpenTelemetry SDK Context Key RPC_METADATA');
+const api_1 = __nccwpck_require__(65163);
+const RPC_METADATA_KEY = (0, api_1.createContextKey)('OpenTelemetry SDK Context Key RPC_METADATA');
 var RPCType;
 (function (RPCType) {
     RPCType["HTTP"] = "http";
@@ -20768,7 +20799,7 @@ exports.getRPCMetadata = getRPCMetadata;
 
 /***/ }),
 
-/***/ 6478:
+/***/ 16478:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20790,7 +20821,7 @@ exports.getRPCMetadata = getRPCMetadata;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AlwaysOffSampler = void 0;
-const api_1 = __nccwpck_require__(5163);
+const api_1 = __nccwpck_require__(65163);
 /** Sampler that samples no traces. */
 class AlwaysOffSampler {
     shouldSample() {
@@ -20807,7 +20838,7 @@ exports.AlwaysOffSampler = AlwaysOffSampler;
 
 /***/ }),
 
-/***/ 8317:
+/***/ 88317:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20829,7 +20860,7 @@ exports.AlwaysOffSampler = AlwaysOffSampler;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AlwaysOnSampler = void 0;
-const api_1 = __nccwpck_require__(5163);
+const api_1 = __nccwpck_require__(65163);
 /** Sampler that samples all traces. */
 class AlwaysOnSampler {
     shouldSample() {
@@ -20846,7 +20877,7 @@ exports.AlwaysOnSampler = AlwaysOnSampler;
 
 /***/ }),
 
-/***/ 5136:
+/***/ 15136:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20868,10 +20899,10 @@ exports.AlwaysOnSampler = AlwaysOnSampler;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ParentBasedSampler = void 0;
-const api_1 = __nccwpck_require__(5163);
-const global_error_handler_1 = __nccwpck_require__(9246);
-const AlwaysOffSampler_1 = __nccwpck_require__(6478);
-const AlwaysOnSampler_1 = __nccwpck_require__(8317);
+const api_1 = __nccwpck_require__(65163);
+const global_error_handler_1 = __nccwpck_require__(69246);
+const AlwaysOffSampler_1 = __nccwpck_require__(16478);
+const AlwaysOnSampler_1 = __nccwpck_require__(88317);
 /**
  * A composite sampler that either respects the parent span's sampling decision
  * or delegates to `delegateSampler` for root spans.
@@ -20881,7 +20912,7 @@ class ParentBasedSampler {
         var _a, _b, _c, _d;
         this._root = config.root;
         if (!this._root) {
-            global_error_handler_1.globalErrorHandler(new Error('ParentBasedSampler must have a root sampler configured'));
+            (0, global_error_handler_1.globalErrorHandler)(new Error('ParentBasedSampler must have a root sampler configured'));
             this._root = new AlwaysOnSampler_1.AlwaysOnSampler();
         }
         this._remoteParentSampled =
@@ -20895,7 +20926,7 @@ class ParentBasedSampler {
     }
     shouldSample(context, traceId, spanName, spanKind, attributes, links) {
         const parentContext = api_1.trace.getSpanContext(context);
-        if (!parentContext || !api_1.isSpanContextValid(parentContext)) {
+        if (!parentContext || !(0, api_1.isSpanContextValid)(parentContext)) {
             return this._root.shouldSample(context, traceId, spanName, spanKind, attributes, links);
         }
         if (parentContext.isRemote) {
@@ -20918,7 +20949,7 @@ exports.ParentBasedSampler = ParentBasedSampler;
 
 /***/ }),
 
-/***/ 9326:
+/***/ 69326:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -20940,7 +20971,7 @@ exports.ParentBasedSampler = ParentBasedSampler;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TraceIdRatioBasedSampler = void 0;
-const api_1 = __nccwpck_require__(5163);
+const api_1 = __nccwpck_require__(65163);
 /** Sampler that samples a given fraction of traces based of trace id deterministically. */
 class TraceIdRatioBasedSampler {
     constructor(_ratio = 0) {
@@ -20950,7 +20981,7 @@ class TraceIdRatioBasedSampler {
     }
     shouldSample(context, traceId) {
         return {
-            decision: api_1.isValidTraceId(traceId) && this._accumulate(traceId) < this._upperBound
+            decision: (0, api_1.isValidTraceId)(traceId) && this._accumulate(traceId) < this._upperBound
                 ? api_1.SamplingDecision.RECORD_AND_SAMPLED
                 : api_1.SamplingDecision.NOT_RECORD,
         };
@@ -20978,7 +21009,7 @@ exports.TraceIdRatioBasedSampler = TraceIdRatioBasedSampler;
 
 /***/ }),
 
-/***/ 4463:
+/***/ 54463:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -21000,8 +21031,8 @@ exports.TraceIdRatioBasedSampler = TraceIdRatioBasedSampler;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.isTracingSuppressed = exports.unsuppressTracing = exports.suppressTracing = void 0;
-const api_1 = __nccwpck_require__(5163);
-const SUPPRESS_TRACING_KEY = api_1.createContextKey('OpenTelemetry SDK Context Key SUPPRESS_TRACING');
+const api_1 = __nccwpck_require__(65163);
+const SUPPRESS_TRACING_KEY = (0, api_1.createContextKey)('OpenTelemetry SDK Context Key SUPPRESS_TRACING');
 function suppressTracing(context) {
     return context.setValue(SUPPRESS_TRACING_KEY, true);
 }
@@ -21015,6 +21046,64 @@ function isTracingSuppressed(context) {
 }
 exports.isTracingSuppressed = isTracingSuppressed;
 //# sourceMappingURL=suppress-tracing.js.map
+
+/***/ }),
+
+/***/ 12408:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BindOnceFuture = void 0;
+const promise_1 = __nccwpck_require__(28329);
+/**
+ * Bind the callback and only invoke the callback once regardless how many times `BindOnceFuture.call` is invoked.
+ */
+class BindOnceFuture {
+    constructor(_callback, _that) {
+        this._callback = _callback;
+        this._that = _that;
+        this._isCalled = false;
+        this._deferred = new promise_1.Deferred();
+    }
+    get isCalled() {
+        return this._isCalled;
+    }
+    get promise() {
+        return this._deferred.promise;
+    }
+    call(...args) {
+        if (!this._isCalled) {
+            this._isCalled = true;
+            try {
+                Promise.resolve(this._callback.call(this._that, ...args))
+                    .then(val => this._deferred.resolve(val), err => this._deferred.reject(err));
+            }
+            catch (err) {
+                this._deferred.reject(err);
+            }
+        }
+        return this._deferred.promise;
+    }
+}
+exports.BindOnceFuture = BindOnceFuture;
+//# sourceMappingURL=callback.js.map
 
 /***/ }),
 
@@ -21040,8 +21129,8 @@ exports.isTracingSuppressed = isTracingSuppressed;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.parseEnvironment = exports.DEFAULT_ENVIRONMENT = exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = void 0;
-const api_1 = __nccwpck_require__(5163);
-const sampling_1 = __nccwpck_require__(8289);
+const api_1 = __nccwpck_require__(65163);
+const sampling_1 = __nccwpck_require__(28289);
 const DEFAULT_LIST_SEPARATOR = ',';
 /**
  * Environment interface to define all names
@@ -21057,6 +21146,10 @@ const ENVIRONMENT_NUMBERS_KEYS = [
     'OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT',
     'OTEL_SPAN_EVENT_COUNT_LIMIT',
     'OTEL_SPAN_LINK_COUNT_LIMIT',
+    'OTEL_EXPORTER_OTLP_TIMEOUT',
+    'OTEL_EXPORTER_OTLP_TRACES_TIMEOUT',
+    'OTEL_EXPORTER_OTLP_METRICS_TIMEOUT',
+    'OTEL_EXPORTER_JAEGER_AGENT_PORT',
 ];
 function isEnvVarANumber(key) {
     return (ENVIRONMENT_NUMBERS_KEYS.indexOf(key) > -1);
@@ -21085,6 +21178,7 @@ exports.DEFAULT_ENVIRONMENT = {
     OTEL_BSP_MAX_QUEUE_SIZE: 2048,
     OTEL_BSP_SCHEDULE_DELAY: 5000,
     OTEL_EXPORTER_JAEGER_AGENT_HOST: '',
+    OTEL_EXPORTER_JAEGER_AGENT_PORT: 6832,
     OTEL_EXPORTER_JAEGER_ENDPOINT: '',
     OTEL_EXPORTER_JAEGER_PASSWORD: '',
     OTEL_EXPORTER_JAEGER_USER: '',
@@ -21094,6 +21188,9 @@ exports.DEFAULT_ENVIRONMENT = {
     OTEL_EXPORTER_OTLP_HEADERS: '',
     OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',
     OTEL_EXPORTER_OTLP_METRICS_HEADERS: '',
+    OTEL_EXPORTER_OTLP_TIMEOUT: 10000,
+    OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: 10000,
+    OTEL_EXPORTER_OTLP_METRICS_TIMEOUT: 10000,
     OTEL_EXPORTER_ZIPKIN_ENDPOINT: 'http://localhost:9411/api/v2/spans',
     OTEL_LOG_LEVEL: api_1.DiagLogLevel.INFO,
     OTEL_NO_PATCH_MODULES: [],
@@ -21109,6 +21206,21 @@ exports.DEFAULT_ENVIRONMENT = {
     OTEL_TRACES_EXPORTER: 'none',
     OTEL_TRACES_SAMPLER: sampling_1.TracesSamplerValues.ParentBasedAlwaysOn,
     OTEL_TRACES_SAMPLER_ARG: '',
+    OTEL_EXPORTER_OTLP_INSECURE: '',
+    OTEL_EXPORTER_OTLP_TRACES_INSECURE: '',
+    OTEL_EXPORTER_OTLP_METRICS_INSECURE: '',
+    OTEL_EXPORTER_OTLP_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_METRICS_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_METRICS_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_TRACES_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_METRICS_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_TRACES_CLIENT_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_METRICS_CLIENT_CERTIFICATE: ''
 };
 /**
  * Parses a variable as number with number validation
@@ -21206,7 +21318,7 @@ exports.parseEnvironment = parseEnvironment;
 
 /***/ }),
 
-/***/ 1780:
+/***/ 71780:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -21382,7 +21494,7 @@ function objectToString(value) {
 
 /***/ }),
 
-/***/ 5387:
+/***/ 65387:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -21405,7 +21517,2774 @@ function objectToString(value) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.merge = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const lodash_merge_1 = __nccwpck_require__(1780);
+const lodash_merge_1 = __nccwpck_require__(71780);
+const MAX_LEVEL = 20;
+/**
+ * Merges objects together
+ * @param args - objects / values to be merged
+ */
+function merge(...args) {
+    let result = args.shift();
+    const objects = new WeakMap();
+    while (args.length > 0) {
+        result = mergeTwoObjects(result, args.shift(), 0, objects);
+    }
+    return result;
+}
+exports.merge = merge;
+function takeValue(value) {
+    if (isArray(value)) {
+        return value.slice();
+    }
+    return value;
+}
+/**
+ * Merges two objects
+ * @param one - first object
+ * @param two - second object
+ * @param level - current deep level
+ * @param objects - objects holder that has been already referenced - to prevent
+ * cyclic dependency
+ */
+function mergeTwoObjects(one, two, level = 0, objects) {
+    let result;
+    if (level > MAX_LEVEL) {
+        return undefined;
+    }
+    level++;
+    if (isPrimitive(one) || isPrimitive(two) || isFunction(two)) {
+        result = takeValue(two);
+    }
+    else if (isArray(one)) {
+        result = one.slice();
+        if (isArray(two)) {
+            for (let i = 0, j = two.length; i < j; i++) {
+                result.push(takeValue(two[i]));
+            }
+        }
+        else if (isObject(two)) {
+            const keys = Object.keys(two);
+            for (let i = 0, j = keys.length; i < j; i++) {
+                const key = keys[i];
+                result[key] = takeValue(two[key]);
+            }
+        }
+    }
+    else if (isObject(one)) {
+        if (isObject(two)) {
+            if (!shouldMerge(one, two)) {
+                return two;
+            }
+            result = Object.assign({}, one);
+            const keys = Object.keys(two);
+            for (let i = 0, j = keys.length; i < j; i++) {
+                const key = keys[i];
+                const twoValue = two[key];
+                if (isPrimitive(twoValue)) {
+                    if (typeof twoValue === 'undefined') {
+                        delete result[key];
+                    }
+                    else {
+                        // result[key] = takeValue(twoValue);
+                        result[key] = twoValue;
+                    }
+                }
+                else {
+                    const obj1 = result[key];
+                    const obj2 = twoValue;
+                    if (wasObjectReferenced(one, key, objects) ||
+                        wasObjectReferenced(two, key, objects)) {
+                        delete result[key];
+                    }
+                    else {
+                        if (isObject(obj1) && isObject(obj2)) {
+                            const arr1 = objects.get(obj1) || [];
+                            const arr2 = objects.get(obj2) || [];
+                            arr1.push({ obj: one, key });
+                            arr2.push({ obj: two, key });
+                            objects.set(obj1, arr1);
+                            objects.set(obj2, arr2);
+                        }
+                        result[key] = mergeTwoObjects(result[key], twoValue, level, objects);
+                    }
+                }
+            }
+        }
+        else {
+            result = two;
+        }
+    }
+    return result;
+}
+/**
+ * Function to check if object has been already reference
+ * @param obj
+ * @param key
+ * @param objects
+ */
+function wasObjectReferenced(obj, key, objects) {
+    const arr = objects.get(obj[key]) || [];
+    for (let i = 0, j = arr.length; i < j; i++) {
+        const info = arr[i];
+        if (info.key === key && info.obj === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+function isArray(value) {
+    return Array.isArray(value);
+}
+function isFunction(value) {
+    return typeof value === 'function';
+}
+function isObject(value) {
+    return !isPrimitive(value) && !isArray(value) && !isFunction(value) && typeof value === 'object';
+}
+function isPrimitive(value) {
+    return typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean' ||
+        typeof value === 'undefined' ||
+        value instanceof Date ||
+        value instanceof RegExp ||
+        value === null;
+}
+function shouldMerge(one, two) {
+    if (!(0, lodash_merge_1.isPlainObject)(one) || !(0, lodash_merge_1.isPlainObject)(two)) {
+        return false;
+    }
+    return true;
+}
+//# sourceMappingURL=merge.js.map
+
+/***/ }),
+
+/***/ 28329:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Deferred = void 0;
+class Deferred {
+    constructor() {
+        this._promise = new Promise((resolve, reject) => {
+            this._resolve = resolve;
+            this._reject = reject;
+        });
+    }
+    get promise() {
+        return this._promise;
+    }
+    resolve(val) {
+        this._resolve(val);
+    }
+    reject(err) {
+        this._reject(err);
+    }
+}
+exports.Deferred = Deferred;
+//# sourceMappingURL=promise.js.map
+
+/***/ }),
+
+/***/ 28289:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TracesSamplerValues = void 0;
+var TracesSamplerValues;
+(function (TracesSamplerValues) {
+    TracesSamplerValues["AlwaysOff"] = "always_off";
+    TracesSamplerValues["AlwaysOn"] = "always_on";
+    TracesSamplerValues["ParentBasedAlwaysOff"] = "parentbased_always_off";
+    TracesSamplerValues["ParentBasedAlwaysOn"] = "parentbased_always_on";
+    TracesSamplerValues["ParentBasedTraceIdRatio"] = "parentbased_traceidratio";
+    TracesSamplerValues["TraceIdRatio"] = "traceidratio";
+})(TracesSamplerValues = exports.TracesSamplerValues || (exports.TracesSamplerValues = {}));
+//# sourceMappingURL=sampling.js.map
+
+/***/ }),
+
+/***/ 90839:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isUrlIgnored = exports.urlMatches = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function urlMatches(url, urlToMatch) {
+    if (typeof urlToMatch === 'string') {
+        return url === urlToMatch;
+    }
+    else {
+        return !!url.match(urlToMatch);
+    }
+}
+exports.urlMatches = urlMatches;
+/**
+ * Check if {@param url} should be ignored when comparing against {@param ignoredUrls}
+ * @param url
+ * @param ignoredUrls
+ */
+function isUrlIgnored(url, ignoredUrls) {
+    if (!ignoredUrls) {
+        return false;
+    }
+    for (const ignoreUrl of ignoredUrls) {
+        if (urlMatches(url, ignoreUrl)) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isUrlIgnored = isUrlIgnored;
+//# sourceMappingURL=url.js.map
+
+/***/ }),
+
+/***/ 67226:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isWrapped = void 0;
+/**
+ * Checks if certain function has been already wrapped
+ * @param func
+ */
+function isWrapped(func) {
+    return (typeof func === 'function' &&
+        typeof func.__original === 'function' &&
+        typeof func.__unwrap === 'function' &&
+        func.__wrapped === true);
+}
+exports.isWrapped = isWrapped;
+//# sourceMappingURL=wrap.js.map
+
+/***/ }),
+
+/***/ 55687:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.VERSION = void 0;
+// this is autogenerated file, see scripts/version-update.js
+exports.VERSION = '1.4.0';
+//# sourceMappingURL=version.js.map
+
+/***/ }),
+
+/***/ 40392:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OTLPExporterNodeBase = void 0;
+const api_1 = __nccwpck_require__(65163);
+const exporter_trace_otlp_http_1 = __nccwpck_require__(35401);
+const grpc_js_1 = __nccwpck_require__(7025);
+const core_1 = __nccwpck_require__(44823);
+/**
+ * OTLP Metric Exporter abstract base class
+ */
+class OTLPExporterNodeBase extends exporter_trace_otlp_http_1.OTLPExporterBase {
+    constructor(config = {}) {
+        super(config);
+        this.grpcQueue = [];
+        this.serviceClient = undefined;
+        if (config.headers) {
+            api_1.diag.warn('Headers cannot be set when using grpc');
+        }
+        const headers = core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_HEADERS);
+        this.metadata = config.metadata || new grpc_js_1.Metadata();
+        for (const [k, v] of Object.entries(headers)) {
+            this.metadata.set(k, v);
+        }
+    }
+    _sendPromise(objects, onSuccess, onError) {
+        const promise = new Promise((resolve, reject) => {
+            this._send(this, objects, resolve, reject);
+        })
+            .then(onSuccess, onError);
+        this._sendingPromises.push(promise);
+        const popPromise = () => {
+            const index = this._sendingPromises.indexOf(promise);
+            this._sendingPromises.splice(index, 1);
+        };
+        promise.then(popPromise, popPromise);
+    }
+    onInit(config) {
+        this._isShutdown = false;
+        // defer to next tick and lazy load to avoid loading grpc too early
+        // and making this impossible to be instrumented
+        setImmediate(() => {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const { onInit } = __nccwpck_require__(31451);
+            onInit(this, config);
+        });
+    }
+    send(objects, onSuccess, onError) {
+        if (this._isShutdown) {
+            api_1.diag.debug('Shutdown already started. Cannot send objects');
+            return;
+        }
+        if (!this._send) {
+            // defer to next tick and lazy load to avoid loading grpc too early
+            // and making this impossible to be instrumented
+            setImmediate(() => {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const { send } = __nccwpck_require__(31451);
+                this._send = send;
+                this._sendPromise(objects, onSuccess, onError);
+            });
+        }
+        else {
+            this._sendPromise(objects, onSuccess, onError);
+        }
+    }
+    onShutdown() {
+        this._isShutdown = true;
+        if (this.serviceClient) {
+            this.serviceClient.close();
+        }
+    }
+}
+exports.OTLPExporterNodeBase = OTLPExporterNodeBase;
+//# sourceMappingURL=OTLPExporterNodeBase.js.map
+
+/***/ }),
+
+/***/ 6633:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OTLPTraceExporter = void 0;
+const OTLPExporterNodeBase_1 = __nccwpck_require__(40392);
+const exporter_trace_otlp_http_1 = __nccwpck_require__(35401);
+const types_1 = __nccwpck_require__(51268);
+const core_1 = __nccwpck_require__(44823);
+const util_1 = __nccwpck_require__(31451);
+const grpc_js_1 = __nccwpck_require__(7025);
+const DEFAULT_COLLECTOR_URL = 'localhost:4317';
+/**
+ * OTLP Trace Exporter for Node
+ */
+class OTLPTraceExporter extends OTLPExporterNodeBase_1.OTLPExporterNodeBase {
+    constructor(config = {}) {
+        super(config);
+        const headers = core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_HEADERS);
+        this.metadata || (this.metadata = new grpc_js_1.Metadata());
+        for (const [k, v] of Object.entries(headers)) {
+            this.metadata.set(k, v);
+        }
+    }
+    convert(spans) {
+        return exporter_trace_otlp_http_1.toOTLPExportTraceServiceRequest(spans, this);
+    }
+    getDefaultUrl(config) {
+        return typeof config.url === 'string'
+            ? util_1.validateAndNormalizeUrl(config.url)
+            : core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT.length > 0
+                ? util_1.validateAndNormalizeUrl(core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT)
+                : core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0
+                    ? util_1.validateAndNormalizeUrl(core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT)
+                    : DEFAULT_COLLECTOR_URL;
+    }
+    getServiceClientType() {
+        return types_1.ServiceClientType.SPANS;
+    }
+    getServiceProtoPath() {
+        return 'opentelemetry/proto/collector/trace/v1/trace_service.proto';
+    }
+}
+exports.OTLPTraceExporter = OTLPTraceExporter;
+//# sourceMappingURL=OTLPTraceExporter.js.map
+
+/***/ }),
+
+/***/ 60160:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.validateAndNormalizeUrl = exports.ServiceClientType = void 0;
+__exportStar(__nccwpck_require__(40392), exports);
+__exportStar(__nccwpck_require__(6633), exports);
+var types_1 = __nccwpck_require__(51268);
+Object.defineProperty(exports, "ServiceClientType", ({ enumerable: true, get: function () { return types_1.ServiceClientType; } }));
+var util_1 = __nccwpck_require__(31451);
+Object.defineProperty(exports, "validateAndNormalizeUrl", ({ enumerable: true, get: function () { return util_1.validateAndNormalizeUrl; } }));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 51268:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ServiceClientType = void 0;
+var ServiceClientType;
+(function (ServiceClientType) {
+    ServiceClientType[ServiceClientType["SPANS"] = 0] = "SPANS";
+    ServiceClientType[ServiceClientType["METRICS"] = 1] = "METRICS";
+})(ServiceClientType = exports.ServiceClientType || (exports.ServiceClientType = {}));
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
+/***/ 31451:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.validateAndNormalizeUrl = exports.send = exports.onInit = void 0;
+const grpc = __nccwpck_require__(7025);
+const protoLoader = __nccwpck_require__(98171);
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(44823);
+const path = __nccwpck_require__(85622);
+const url_1 = __nccwpck_require__(78835);
+const types_1 = __nccwpck_require__(51268);
+function onInit(collector, config) {
+    collector.grpcQueue = [];
+    const credentials = config.credentials || grpc.credentials.createInsecure();
+    const includeDirs = [__nccwpck_require__.ab + "protos"];
+    protoLoader
+        .load(collector.getServiceProtoPath(), {
+        keepCase: false,
+        longs: String,
+        enums: String,
+        defaults: true,
+        oneofs: true,
+        includeDirs,
+    })
+        .then(packageDefinition => {
+        const packageObject = grpc.loadPackageDefinition(packageDefinition);
+        if (collector.getServiceClientType() === types_1.ServiceClientType.SPANS) {
+            collector.serviceClient =
+                new packageObject.opentelemetry.proto.collector.trace.v1.TraceService(collector.url, credentials);
+        }
+        else {
+            collector.serviceClient =
+                new packageObject.opentelemetry.proto.collector.metrics.v1.MetricsService(collector.url, credentials);
+        }
+        if (collector.grpcQueue.length > 0) {
+            const queue = collector.grpcQueue.splice(0);
+            queue.forEach((item) => {
+                collector.send(item.objects, item.onSuccess, item.onError);
+            });
+        }
+    })
+        .catch(err => {
+        core_1.globalErrorHandler(err);
+    });
+}
+exports.onInit = onInit;
+function send(collector, objects, onSuccess, onError) {
+    if (collector.serviceClient) {
+        const serviceRequest = collector.convert(objects);
+        collector.serviceClient.export(serviceRequest, collector.metadata || new grpc.Metadata(), (err) => {
+            if (err) {
+                api_1.diag.error('Service request', serviceRequest);
+                onError(err);
+            }
+            else {
+                api_1.diag.debug('Objects sent');
+                onSuccess();
+            }
+        });
+    }
+    else {
+        collector.grpcQueue.push({
+            objects,
+            onSuccess,
+            onError,
+        });
+    }
+}
+exports.send = send;
+function validateAndNormalizeUrl(url) {
+    var _a;
+    const hasProtocol = url.match(/^([\w]{1,8}):\/\//);
+    if (!hasProtocol) {
+        url = `https://${url}`;
+    }
+    const target = new url_1.URL(url);
+    if (target.pathname && target.pathname !== '/') {
+        api_1.diag.warn('URL path should not be set when using grpc, the path part of the URL will be ignored.');
+    }
+    if (target.protocol !== '' && !((_a = target.protocol) === null || _a === void 0 ? void 0 : _a.match(/(http|grpc)s?/))) {
+        api_1.diag.warn('URL protocol should be http(s):// or grpc(s)://. Using grpc://.');
+    }
+    return target.host;
+}
+exports.validateAndNormalizeUrl = validateAndNormalizeUrl;
+//# sourceMappingURL=util.js.map
+
+/***/ }),
+
+/***/ 80734:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExportResultCode = void 0;
+var ExportResultCode;
+(function (ExportResultCode) {
+    ExportResultCode[ExportResultCode["SUCCESS"] = 0] = "SUCCESS";
+    ExportResultCode[ExportResultCode["FAILED"] = 1] = "FAILED";
+})(ExportResultCode = exports.ExportResultCode || (exports.ExportResultCode = {}));
+//# sourceMappingURL=ExportResult.js.map
+
+/***/ }),
+
+/***/ 85952:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BAGGAGE_MAX_TOTAL_LENGTH = exports.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS = exports.BAGGAGE_MAX_NAME_VALUE_PAIRS = exports.BAGGAGE_HEADER = exports.BAGGAGE_ITEMS_SEPARATOR = exports.BAGGAGE_PROPERTIES_SEPARATOR = exports.BAGGAGE_KEY_PAIR_SEPARATOR = void 0;
+exports.BAGGAGE_KEY_PAIR_SEPARATOR = '=';
+exports.BAGGAGE_PROPERTIES_SEPARATOR = ';';
+exports.BAGGAGE_ITEMS_SEPARATOR = ',';
+// Name of the http header used to propagate the baggage
+exports.BAGGAGE_HEADER = 'baggage';
+// Maximum number of name-value pairs allowed by w3c spec
+exports.BAGGAGE_MAX_NAME_VALUE_PAIRS = 180;
+// Maximum number of bytes per a single name-value pair allowed by w3c spec
+exports.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS = 4096;
+// Maximum total length of all name-value pairs allowed by w3c spec
+exports.BAGGAGE_MAX_TOTAL_LENGTH = 8192;
+//# sourceMappingURL=constants.js.map
+
+/***/ }),
+
+/***/ 15159:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.W3CBaggagePropagator = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(9008);
+const constants_1 = __nccwpck_require__(85952);
+const utils_1 = __nccwpck_require__(83114);
+/**
+ * Propagates {@link Baggage} through Context format propagation.
+ *
+ * Based on the Baggage specification:
+ * https://w3c.github.io/baggage/
+ */
+class W3CBaggagePropagator {
+    inject(context, carrier, setter) {
+        const baggage = api_1.propagation.getBaggage(context);
+        if (!baggage || suppress_tracing_1.isTracingSuppressed(context))
+            return;
+        const keyPairs = utils_1.getKeyPairs(baggage)
+            .filter((pair) => {
+            return pair.length <= constants_1.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS;
+        })
+            .slice(0, constants_1.BAGGAGE_MAX_NAME_VALUE_PAIRS);
+        const headerValue = utils_1.serializeKeyPairs(keyPairs);
+        if (headerValue.length > 0) {
+            setter.set(carrier, constants_1.BAGGAGE_HEADER, headerValue);
+        }
+    }
+    extract(context, carrier, getter) {
+        const headerValue = getter.get(carrier, constants_1.BAGGAGE_HEADER);
+        if (!headerValue)
+            return context;
+        const baggage = {};
+        if (headerValue.length === 0) {
+            return context;
+        }
+        const pairs = headerValue.split(constants_1.BAGGAGE_ITEMS_SEPARATOR);
+        pairs.forEach(entry => {
+            const keyPair = utils_1.parsePairKeyValue(entry);
+            if (keyPair) {
+                const baggageEntry = { value: keyPair.value };
+                if (keyPair.metadata) {
+                    baggageEntry.metadata = keyPair.metadata;
+                }
+                baggage[keyPair.key] = baggageEntry;
+            }
+        });
+        if (Object.entries(baggage).length === 0) {
+            return context;
+        }
+        return api_1.propagation.setBaggage(context, api_1.propagation.createBaggage(baggage));
+    }
+    fields() {
+        return [constants_1.BAGGAGE_HEADER];
+    }
+}
+exports.W3CBaggagePropagator = W3CBaggagePropagator;
+//# sourceMappingURL=W3CBaggagePropagator.js.map
+
+/***/ }),
+
+/***/ 83114:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseKeyPairsIntoRecord = exports.parsePairKeyValue = exports.getKeyPairs = exports.serializeKeyPairs = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+const api_1 = __nccwpck_require__(65163);
+const constants_1 = __nccwpck_require__(85952);
+function serializeKeyPairs(keyPairs) {
+    return keyPairs.reduce((hValue, current) => {
+        const value = `${hValue}${hValue !== '' ? constants_1.BAGGAGE_ITEMS_SEPARATOR : ''}${current}`;
+        return value.length > constants_1.BAGGAGE_MAX_TOTAL_LENGTH ? hValue : value;
+    }, '');
+}
+exports.serializeKeyPairs = serializeKeyPairs;
+function getKeyPairs(baggage) {
+    return baggage
+        .getAllEntries()
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value.value)}`);
+}
+exports.getKeyPairs = getKeyPairs;
+function parsePairKeyValue(entry) {
+    const valueProps = entry.split(constants_1.BAGGAGE_PROPERTIES_SEPARATOR);
+    if (valueProps.length <= 0)
+        return;
+    const keyPairPart = valueProps.shift();
+    if (!keyPairPart)
+        return;
+    const keyPair = keyPairPart.split(constants_1.BAGGAGE_KEY_PAIR_SEPARATOR);
+    if (keyPair.length !== 2)
+        return;
+    const key = decodeURIComponent(keyPair[0].trim());
+    const value = decodeURIComponent(keyPair[1].trim());
+    let metadata;
+    if (valueProps.length > 0) {
+        metadata = api_1.baggageEntryMetadataFromString(valueProps.join(constants_1.BAGGAGE_PROPERTIES_SEPARATOR));
+    }
+    return { key, value, metadata };
+}
+exports.parsePairKeyValue = parsePairKeyValue;
+/**
+ * Parse a string serialized in the baggage HTTP Format (without metadata):
+ * https://github.com/w3c/baggage/blob/master/baggage/HTTP_HEADER_FORMAT.md
+ */
+function parseKeyPairsIntoRecord(value) {
+    if (typeof value !== 'string' || value.length === 0)
+        return {};
+    return value
+        .split(constants_1.BAGGAGE_ITEMS_SEPARATOR)
+        .map(entry => {
+        return parsePairKeyValue(entry);
+    })
+        .filter(keyPair => keyPair !== undefined && keyPair.value.length > 0)
+        .reduce((headers, keyPair) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        headers[keyPair.key] = keyPair.value;
+        return headers;
+    }, {});
+}
+exports.parseKeyPairsIntoRecord = parseKeyPairsIntoRecord;
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 71082:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isAttributeValue = exports.sanitizeAttributes = void 0;
+function sanitizeAttributes(attributes) {
+    const out = {};
+    if (attributes == null || typeof attributes !== 'object') {
+        return out;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    for (const [k, v] of Object.entries(attributes)) {
+        if (isAttributeValue(v)) {
+            if (Array.isArray(v)) {
+                out[k] = v.slice();
+            }
+            else {
+                out[k] = v;
+            }
+        }
+    }
+    return out;
+}
+exports.sanitizeAttributes = sanitizeAttributes;
+function isAttributeValue(val) {
+    if (val == null) {
+        return true;
+    }
+    if (Array.isArray(val)) {
+        return isHomogeneousAttributeValueArray(val);
+    }
+    return isValidPrimitiveAttributeValue(val);
+}
+exports.isAttributeValue = isAttributeValue;
+function isHomogeneousAttributeValueArray(arr) {
+    let type;
+    for (const element of arr) {
+        // null/undefined elements are allowed
+        if (element == null)
+            continue;
+        if (!type) {
+            if (isValidPrimitiveAttributeValue(element)) {
+                type = typeof element;
+                continue;
+            }
+            // encountered an invalid primitive
+            return false;
+        }
+        if (typeof element === type) {
+            continue;
+        }
+        return false;
+    }
+    return true;
+}
+function isValidPrimitiveAttributeValue(val) {
+    switch (typeof val) {
+        case 'number':
+            return true;
+        case 'boolean':
+            return true;
+        case 'string':
+            return true;
+    }
+    return false;
+}
+//# sourceMappingURL=attributes.js.map
+
+/***/ }),
+
+/***/ 25503:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.globalErrorHandler = exports.setGlobalErrorHandler = void 0;
+const logging_error_handler_1 = __nccwpck_require__(43414);
+/** The global error handler delegate */
+let delegateHandler = logging_error_handler_1.loggingErrorHandler();
+/**
+ * Set the global error handler
+ * @param {ErrorHandler} handler
+ */
+function setGlobalErrorHandler(handler) {
+    delegateHandler = handler;
+}
+exports.setGlobalErrorHandler = setGlobalErrorHandler;
+/**
+ * Return the global error handler
+ * @param {Exception} ex
+ */
+function globalErrorHandler(ex) {
+    try {
+        delegateHandler(ex);
+    }
+    catch (_a) { } // eslint-disable-line no-empty
+}
+exports.globalErrorHandler = globalErrorHandler;
+//# sourceMappingURL=global-error-handler.js.map
+
+/***/ }),
+
+/***/ 43414:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loggingErrorHandler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/**
+ * Returns a function that logs an error using the provided logger, or a
+ * console logger if one was not provided.
+ */
+function loggingErrorHandler() {
+    return (ex) => {
+        api_1.diag.error(stringifyException(ex));
+    };
+}
+exports.loggingErrorHandler = loggingErrorHandler;
+/**
+ * Converts an exception into a string representation
+ * @param {Exception} ex
+ */
+function stringifyException(ex) {
+    if (typeof ex === 'string') {
+        return ex;
+    }
+    else {
+        return JSON.stringify(flattenException(ex));
+    }
+}
+/**
+ * Flattens an exception into key-value pairs by traversing the prototype chain
+ * and coercing values to strings. Duplicate properties will not be overwritten;
+ * the first insert wins.
+ */
+function flattenException(ex) {
+    const result = {};
+    let current = ex;
+    while (current !== null) {
+        Object.getOwnPropertyNames(current).forEach(propertyName => {
+            if (result[propertyName])
+                return;
+            const value = current[propertyName];
+            if (value) {
+                result[propertyName] = String(value);
+            }
+        });
+        current = Object.getPrototypeOf(current);
+    }
+    return result;
+}
+//# sourceMappingURL=logging-error-handler.js.map
+
+/***/ }),
+
+/***/ 89512:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isTimeInput = exports.isTimeInputHrTime = exports.hrTimeToMicroseconds = exports.hrTimeToMilliseconds = exports.hrTimeToNanoseconds = exports.hrTimeToTimeStamp = exports.hrTimeDuration = exports.timeInputToHrTime = exports.hrTime = void 0;
+const platform_1 = __nccwpck_require__(92851);
+const NANOSECOND_DIGITS = 9;
+const SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS);
+/**
+ * Converts a number to HrTime, HrTime = [number, number].
+ * The first number is UNIX Epoch time in seconds since 00:00:00 UTC on 1 January 1970.
+ * The second number represents the partial second elapsed since Unix Epoch time represented by first number in nanoseconds.
+ * For example, 2021-01-01T12:30:10.150Z in UNIX Epoch time in milliseconds is represented as 1609504210150.
+ * numberToHrtime calculates the first number by converting and truncating the Epoch time in milliseconds to seconds:
+ * HrTime[0] = Math.trunc(1609504210150 / 1000) = 1609504210.
+ * numberToHrtime calculates the second number by converting the digits after the decimal point of the subtraction, (1609504210150 / 1000) - HrTime[0], to nanoseconds:
+ * HrTime[1] = Number((1609504210.150 - HrTime[0]).toFixed(9)) * SECOND_TO_NANOSECONDS = 150000000.
+ * This is represented in HrTime format as [1609504210, 150000000].
+ * @param epochMillis
+ */
+function numberToHrtime(epochMillis) {
+    const epochSeconds = epochMillis / 1000;
+    // Decimals only.
+    const seconds = Math.trunc(epochSeconds);
+    // Round sub-nanosecond accuracy to nanosecond.
+    const nanos = Number((epochSeconds - seconds).toFixed(NANOSECOND_DIGITS)) *
+        SECOND_TO_NANOSECONDS;
+    return [seconds, nanos];
+}
+function getTimeOrigin() {
+    let timeOrigin = platform_1.otperformance.timeOrigin;
+    if (typeof timeOrigin !== 'number') {
+        const perf = platform_1.otperformance;
+        timeOrigin = perf.timing && perf.timing.fetchStart;
+    }
+    return timeOrigin;
+}
+/**
+ * Returns an hrtime calculated via performance component.
+ * @param performanceNow
+ */
+function hrTime(performanceNow) {
+    const timeOrigin = numberToHrtime(getTimeOrigin());
+    const now = numberToHrtime(typeof performanceNow === 'number' ? performanceNow : platform_1.otperformance.now());
+    let seconds = timeOrigin[0] + now[0];
+    let nanos = timeOrigin[1] + now[1];
+    // Nanoseconds
+    if (nanos > SECOND_TO_NANOSECONDS) {
+        nanos -= SECOND_TO_NANOSECONDS;
+        seconds += 1;
+    }
+    return [seconds, nanos];
+}
+exports.hrTime = hrTime;
+/**
+ *
+ * Converts a TimeInput to an HrTime, defaults to _hrtime().
+ * @param time
+ */
+function timeInputToHrTime(time) {
+    // process.hrtime
+    if (isTimeInputHrTime(time)) {
+        return time;
+    }
+    else if (typeof time === 'number') {
+        // Must be a performance.now() if it's smaller than process start time.
+        if (time < getTimeOrigin()) {
+            return hrTime(time);
+        }
+        else {
+            // epoch milliseconds or performance.timeOrigin
+            return numberToHrtime(time);
+        }
+    }
+    else if (time instanceof Date) {
+        return numberToHrtime(time.getTime());
+    }
+    else {
+        throw TypeError('Invalid input type');
+    }
+}
+exports.timeInputToHrTime = timeInputToHrTime;
+/**
+ * Returns a duration of two hrTime.
+ * @param startTime
+ * @param endTime
+ */
+function hrTimeDuration(startTime, endTime) {
+    let seconds = endTime[0] - startTime[0];
+    let nanos = endTime[1] - startTime[1];
+    // overflow
+    if (nanos < 0) {
+        seconds -= 1;
+        // negate
+        nanos += SECOND_TO_NANOSECONDS;
+    }
+    return [seconds, nanos];
+}
+exports.hrTimeDuration = hrTimeDuration;
+/**
+ * Convert hrTime to timestamp, for example "2019-05-14T17:00:00.000123456Z"
+ * @param time
+ */
+function hrTimeToTimeStamp(time) {
+    const precision = NANOSECOND_DIGITS;
+    const tmp = `${'0'.repeat(precision)}${time[1]}Z`;
+    const nanoString = tmp.substr(tmp.length - precision - 1);
+    const date = new Date(time[0] * 1000).toISOString();
+    return date.replace('000Z', nanoString);
+}
+exports.hrTimeToTimeStamp = hrTimeToTimeStamp;
+/**
+ * Convert hrTime to nanoseconds.
+ * @param time
+ */
+function hrTimeToNanoseconds(time) {
+    return time[0] * SECOND_TO_NANOSECONDS + time[1];
+}
+exports.hrTimeToNanoseconds = hrTimeToNanoseconds;
+/**
+ * Convert hrTime to milliseconds.
+ * @param time
+ */
+function hrTimeToMilliseconds(time) {
+    return Math.round(time[0] * 1e3 + time[1] / 1e6);
+}
+exports.hrTimeToMilliseconds = hrTimeToMilliseconds;
+/**
+ * Convert hrTime to microseconds.
+ * @param time
+ */
+function hrTimeToMicroseconds(time) {
+    return Math.round(time[0] * 1e6 + time[1] / 1e3);
+}
+exports.hrTimeToMicroseconds = hrTimeToMicroseconds;
+/**
+ * check if time is HrTime
+ * @param value
+ */
+function isTimeInputHrTime(value) {
+    return (Array.isArray(value) &&
+        value.length === 2 &&
+        typeof value[0] === 'number' &&
+        typeof value[1] === 'number');
+}
+exports.isTimeInputHrTime = isTimeInputHrTime;
+/**
+ * check if input value is a correct types.TimeInput
+ * @param value
+ */
+function isTimeInput(value) {
+    return (isTimeInputHrTime(value) ||
+        typeof value === 'number' ||
+        value instanceof Date);
+}
+exports.isTimeInput = isTimeInput;
+//# sourceMappingURL=time.js.map
+
+/***/ }),
+
+/***/ 42935:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
+/***/ 44823:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.baggageUtils = void 0;
+__exportStar(__nccwpck_require__(15159), exports);
+__exportStar(__nccwpck_require__(71082), exports);
+__exportStar(__nccwpck_require__(25503), exports);
+__exportStar(__nccwpck_require__(43414), exports);
+__exportStar(__nccwpck_require__(89512), exports);
+__exportStar(__nccwpck_require__(42935), exports);
+__exportStar(__nccwpck_require__(80734), exports);
+__exportStar(__nccwpck_require__(80380), exports);
+exports.baggageUtils = __nccwpck_require__(83114);
+__exportStar(__nccwpck_require__(92851), exports);
+__exportStar(__nccwpck_require__(13639), exports);
+__exportStar(__nccwpck_require__(31856), exports);
+__exportStar(__nccwpck_require__(45454), exports);
+__exportStar(__nccwpck_require__(66405), exports);
+__exportStar(__nccwpck_require__(87750), exports);
+__exportStar(__nccwpck_require__(22747), exports);
+__exportStar(__nccwpck_require__(20642), exports);
+__exportStar(__nccwpck_require__(19932), exports);
+__exportStar(__nccwpck_require__(9008), exports);
+__exportStar(__nccwpck_require__(37929), exports);
+__exportStar(__nccwpck_require__(89712), exports);
+__exportStar(__nccwpck_require__(3482), exports);
+__exportStar(__nccwpck_require__(12631), exports);
+__exportStar(__nccwpck_require__(50369), exports);
+__exportStar(__nccwpck_require__(37356), exports);
+__exportStar(__nccwpck_require__(80380), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 66898:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.validateValue = exports.validateKey = void 0;
+const VALID_KEY_CHAR_RANGE = '[_0-9a-z-*/]';
+const VALID_KEY = `[a-z]${VALID_KEY_CHAR_RANGE}{0,255}`;
+const VALID_VENDOR_KEY = `[a-z0-9]${VALID_KEY_CHAR_RANGE}{0,240}@[a-z]${VALID_KEY_CHAR_RANGE}{0,13}`;
+const VALID_KEY_REGEX = new RegExp(`^(?:${VALID_KEY}|${VALID_VENDOR_KEY})$`);
+const VALID_VALUE_BASE_REGEX = /^[ -~]{0,255}[!-~]$/;
+const INVALID_VALUE_COMMA_EQUAL_REGEX = /,|=/;
+/**
+ * Key is opaque string up to 256 characters printable. It MUST begin with a
+ * lowercase letter, and can only contain lowercase letters a-z, digits 0-9,
+ * underscores _, dashes -, asterisks *, and forward slashes /.
+ * For multi-tenant vendor scenarios, an at sign (@) can be used to prefix the
+ * vendor name. Vendors SHOULD set the tenant ID at the beginning of the key.
+ * see https://www.w3.org/TR/trace-context/#key
+ */
+function validateKey(key) {
+    return VALID_KEY_REGEX.test(key);
+}
+exports.validateKey = validateKey;
+/**
+ * Value is opaque string up to 256 characters printable ASCII RFC0020
+ * characters (i.e., the range 0x20 to 0x7E) except comma , and =.
+ */
+function validateValue(value) {
+    return (VALID_VALUE_BASE_REGEX.test(value) &&
+        !INVALID_VALUE_COMMA_EQUAL_REGEX.test(value));
+}
+exports.validateValue = validateValue;
+//# sourceMappingURL=validators.js.map
+
+/***/ }),
+
+/***/ 92851:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(7706), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 10524:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RandomIdGenerator = void 0;
+const SPAN_ID_BYTES = 8;
+const TRACE_ID_BYTES = 16;
+class RandomIdGenerator {
+    constructor() {
+        /**
+         * Returns a random 16-byte trace ID formatted/encoded as a 32 lowercase hex
+         * characters corresponding to 128 bits.
+         */
+        this.generateTraceId = getIdGenerator(TRACE_ID_BYTES);
+        /**
+         * Returns a random 8-byte span ID formatted/encoded as a 16 lowercase hex
+         * characters corresponding to 64 bits.
+         */
+        this.generateSpanId = getIdGenerator(SPAN_ID_BYTES);
+    }
+}
+exports.RandomIdGenerator = RandomIdGenerator;
+const SHARED_BUFFER = Buffer.allocUnsafe(TRACE_ID_BYTES);
+function getIdGenerator(bytes) {
+    return function generateId() {
+        for (let i = 0; i < bytes / 4; i++) {
+            // unsigned right shift drops decimal part of the number
+            // it is required because if a number between 2**32 and 2**32 - 1 is generated, an out of range error is thrown by writeUInt32BE
+            SHARED_BUFFER.writeUInt32BE((Math.random() * 2 ** 32) >>> 0, i * 4);
+        }
+        // If buffer is all 0, set the last byte to 1 to guarantee a valid w3c id is generated
+        for (let i = 0; i < bytes; i++) {
+            if (SHARED_BUFFER[i] > 0) {
+                break;
+            }
+            else if (i === bytes - 1) {
+                SHARED_BUFFER[bytes - 1] = 1;
+            }
+        }
+        return SHARED_BUFFER.toString('hex', 0, bytes);
+    };
+}
+//# sourceMappingURL=RandomIdGenerator.js.map
+
+/***/ }),
+
+/***/ 22246:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getEnv = void 0;
+const os = __nccwpck_require__(12087);
+const environment_1 = __nccwpck_require__(89712);
+/**
+ * Gets the environment variables
+ */
+function getEnv() {
+    const processEnv = environment_1.parseEnvironment(process.env);
+    return Object.assign({
+        HOSTNAME: os.hostname(),
+    }, environment_1.DEFAULT_ENVIRONMENT, processEnv);
+}
+exports.getEnv = getEnv;
+//# sourceMappingURL=environment.js.map
+
+/***/ }),
+
+/***/ 10239:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._globalThis = void 0;
+/** only globals that common to node and browsers are allowed */
+// eslint-disable-next-line node/no-unsupported-features/es-builtins
+exports._globalThis = typeof globalThis === 'object' ? globalThis : global;
+//# sourceMappingURL=globalThis.js.map
+
+/***/ }),
+
+/***/ 12528:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.hexToBase64 = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function hexToBase64(hexStr) {
+    const hexStrLen = hexStr.length;
+    let hexAsciiCharsStr = '';
+    for (let i = 0; i < hexStrLen; i += 2) {
+        const hexPair = hexStr.substring(i, i + 2);
+        const hexVal = parseInt(hexPair, 16);
+        hexAsciiCharsStr += String.fromCharCode(hexVal);
+    }
+    return Buffer.from(hexAsciiCharsStr, 'ascii').toString('base64');
+}
+exports.hexToBase64 = hexToBase64;
+//# sourceMappingURL=hex-to-base64.js.map
+
+/***/ }),
+
+/***/ 7706:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(22246), exports);
+__exportStar(__nccwpck_require__(10239), exports);
+__exportStar(__nccwpck_require__(12528), exports);
+__exportStar(__nccwpck_require__(10524), exports);
+__exportStar(__nccwpck_require__(16175), exports);
+__exportStar(__nccwpck_require__(53926), exports);
+__exportStar(__nccwpck_require__(78579), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 16175:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.otperformance = void 0;
+const perf_hooks_1 = __nccwpck_require__(70630);
+exports.otperformance = perf_hooks_1.performance;
+//# sourceMappingURL=performance.js.map
+
+/***/ }),
+
+/***/ 53926:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SDK_INFO = void 0;
+const version_1 = __nccwpck_require__(80380);
+const semantic_conventions_1 = __nccwpck_require__(59757);
+/** Constants describing the SDK in use */
+exports.SDK_INFO = {
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME]: 'opentelemetry',
+    [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_NAME]: 'node',
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE]: semantic_conventions_1.TelemetrySdkLanguageValues.NODEJS,
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_VERSION]: version_1.VERSION,
+};
+//# sourceMappingURL=sdk-info.js.map
+
+/***/ }),
+
+/***/ 78579:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.unrefTimer = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function unrefTimer(timer) {
+    timer.unref();
+}
+exports.unrefTimer = unrefTimer;
+//# sourceMappingURL=timer-util.js.map
+
+/***/ }),
+
+/***/ 13639:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CompositePropagator = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Combines multiple propagators into a single propagator. */
+class CompositePropagator {
+    /**
+     * Construct a composite propagator from a list of propagators.
+     *
+     * @param [config] Configuration object for composite propagator
+     */
+    constructor(config = {}) {
+        var _a;
+        this._propagators = (_a = config.propagators) !== null && _a !== void 0 ? _a : [];
+        this._fields = Array.from(new Set(this._propagators
+            // older propagators may not have fields function, null check to be sure
+            .map(p => (typeof p.fields === 'function' ? p.fields() : []))
+            .reduce((x, y) => x.concat(y), [])));
+    }
+    /**
+     * Run each of the configured propagators with the given context and carrier.
+     * Propagators are run in the order they are configured, so if multiple
+     * propagators write the same carrier key, the propagator later in the list
+     * will "win".
+     *
+     * @param context Context to inject
+     * @param carrier Carrier into which context will be injected
+     */
+    inject(context, carrier, setter) {
+        for (const propagator of this._propagators) {
+            try {
+                propagator.inject(context, carrier, setter);
+            }
+            catch (err) {
+                api_1.diag.warn(`Failed to inject with ${propagator.constructor.name}. Err: ${err.message}`);
+            }
+        }
+    }
+    /**
+     * Run each of the configured propagators with the given context and carrier.
+     * Propagators are run in the order they are configured, so if multiple
+     * propagators write the same context key, the propagator later in the list
+     * will "win".
+     *
+     * @param context Context to add values to
+     * @param carrier Carrier from which to extract context
+     */
+    extract(context, carrier, getter) {
+        return this._propagators.reduce((ctx, propagator) => {
+            try {
+                return propagator.extract(ctx, carrier, getter);
+            }
+            catch (err) {
+                api_1.diag.warn(`Failed to inject with ${propagator.constructor.name}. Err: ${err.message}`);
+            }
+            return ctx;
+        }, context);
+    }
+    fields() {
+        // return a new array so our fields cannot be modified
+        return this._fields.slice();
+    }
+}
+exports.CompositePropagator = CompositePropagator;
+//# sourceMappingURL=composite.js.map
+
+/***/ }),
+
+/***/ 45454:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=IdGenerator.js.map
+
+/***/ }),
+
+/***/ 37929:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceState = void 0;
+const validators_1 = __nccwpck_require__(66898);
+const MAX_TRACE_STATE_ITEMS = 32;
+const MAX_TRACE_STATE_LEN = 512;
+const LIST_MEMBERS_SEPARATOR = ',';
+const LIST_MEMBER_KEY_VALUE_SPLITTER = '=';
+/**
+ * TraceState must be a class and not a simple object type because of the spec
+ * requirement (https://www.w3.org/TR/trace-context/#tracestate-field).
+ *
+ * Here is the list of allowed mutations:
+ * - New key-value pair should be added into the beginning of the list
+ * - The value of any key can be updated. Modified keys MUST be moved to the
+ * beginning of the list.
+ */
+class TraceState {
+    constructor(rawTraceState) {
+        this._internalState = new Map();
+        if (rawTraceState)
+            this._parse(rawTraceState);
+    }
+    set(key, value) {
+        // TODO: Benchmark the different approaches(map vs list) and
+        // use the faster one.
+        const traceState = this._clone();
+        if (traceState._internalState.has(key)) {
+            traceState._internalState.delete(key);
+        }
+        traceState._internalState.set(key, value);
+        return traceState;
+    }
+    unset(key) {
+        const traceState = this._clone();
+        traceState._internalState.delete(key);
+        return traceState;
+    }
+    get(key) {
+        return this._internalState.get(key);
+    }
+    serialize() {
+        return this._keys()
+            .reduce((agg, key) => {
+            agg.push(key + LIST_MEMBER_KEY_VALUE_SPLITTER + this.get(key));
+            return agg;
+        }, [])
+            .join(LIST_MEMBERS_SEPARATOR);
+    }
+    _parse(rawTraceState) {
+        if (rawTraceState.length > MAX_TRACE_STATE_LEN)
+            return;
+        this._internalState = rawTraceState
+            .split(LIST_MEMBERS_SEPARATOR)
+            .reverse() // Store in reverse so new keys (.set(...)) will be placed at the beginning
+            .reduce((agg, part) => {
+            const listMember = part.trim(); // Optional Whitespace (OWS) handling
+            const i = listMember.indexOf(LIST_MEMBER_KEY_VALUE_SPLITTER);
+            if (i !== -1) {
+                const key = listMember.slice(0, i);
+                const value = listMember.slice(i + 1, part.length);
+                if (validators_1.validateKey(key) && validators_1.validateValue(value)) {
+                    agg.set(key, value);
+                }
+                else {
+                    // TODO: Consider to add warning log
+                }
+            }
+            return agg;
+        }, new Map());
+        // Because of the reverse() requirement, trunc must be done after map is created
+        if (this._internalState.size > MAX_TRACE_STATE_ITEMS) {
+            this._internalState = new Map(Array.from(this._internalState.entries())
+                .reverse() // Use reverse same as original tracestate parse chain
+                .slice(0, MAX_TRACE_STATE_ITEMS));
+        }
+    }
+    _keys() {
+        return Array.from(this._internalState.keys()).reverse();
+    }
+    _clone() {
+        const traceState = new TraceState();
+        traceState._internalState = new Map(this._internalState);
+        return traceState;
+    }
+}
+exports.TraceState = TraceState;
+//# sourceMappingURL=TraceState.js.map
+
+/***/ }),
+
+/***/ 31856:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.W3CTraceContextPropagator = exports.parseTraceParent = exports.TRACE_STATE_HEADER = exports.TRACE_PARENT_HEADER = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(9008);
+const TraceState_1 = __nccwpck_require__(37929);
+exports.TRACE_PARENT_HEADER = 'traceparent';
+exports.TRACE_STATE_HEADER = 'tracestate';
+const VERSION = '00';
+const VERSION_PART = '(?!ff)[\\da-f]{2}';
+const TRACE_ID_PART = '(?![0]{32})[\\da-f]{32}';
+const PARENT_ID_PART = '(?![0]{16})[\\da-f]{16}';
+const FLAGS_PART = '[\\da-f]{2}';
+const TRACE_PARENT_REGEX = new RegExp(`^\\s?(${VERSION_PART})-(${TRACE_ID_PART})-(${PARENT_ID_PART})-(${FLAGS_PART})(-.*)?\\s?$`);
+/**
+ * Parses information from the [traceparent] span tag and converts it into {@link SpanContext}
+ * @param traceParent - A meta property that comes from server.
+ *     It should be dynamically generated server side to have the server's request trace Id,
+ *     a parent span Id that was set on the server's request span,
+ *     and the trace flags to indicate the server's sampling decision
+ *     (01 = sampled, 00 = not sampled).
+ *     for example: '{version}-{traceId}-{spanId}-{sampleDecision}'
+ *     For more information see {@link https://www.w3.org/TR/trace-context/}
+ */
+function parseTraceParent(traceParent) {
+    const match = TRACE_PARENT_REGEX.exec(traceParent);
+    if (!match)
+        return null;
+    // According to the specification the implementation should be compatible
+    // with future versions. If there are more parts, we only reject it if it's using version 00
+    // See https://www.w3.org/TR/trace-context/#versioning-of-traceparent
+    if (match[1] === '00' && match[5])
+        return null;
+    return {
+        traceId: match[2],
+        spanId: match[3],
+        traceFlags: parseInt(match[4], 16),
+    };
+}
+exports.parseTraceParent = parseTraceParent;
+/**
+ * Propagates {@link SpanContext} through Trace Context format propagation.
+ *
+ * Based on the Trace Context specification:
+ * https://www.w3.org/TR/trace-context/
+ */
+class W3CTraceContextPropagator {
+    inject(context, carrier, setter) {
+        const spanContext = api_1.trace.getSpanContext(context);
+        if (!spanContext ||
+            suppress_tracing_1.isTracingSuppressed(context) ||
+            !api_1.isSpanContextValid(spanContext))
+            return;
+        const traceParent = `${VERSION}-${spanContext.traceId}-${spanContext.spanId}-0${Number(spanContext.traceFlags || api_1.TraceFlags.NONE).toString(16)}`;
+        setter.set(carrier, exports.TRACE_PARENT_HEADER, traceParent);
+        if (spanContext.traceState) {
+            setter.set(carrier, exports.TRACE_STATE_HEADER, spanContext.traceState.serialize());
+        }
+    }
+    extract(context, carrier, getter) {
+        const traceParentHeader = getter.get(carrier, exports.TRACE_PARENT_HEADER);
+        if (!traceParentHeader)
+            return context;
+        const traceParent = Array.isArray(traceParentHeader)
+            ? traceParentHeader[0]
+            : traceParentHeader;
+        if (typeof traceParent !== 'string')
+            return context;
+        const spanContext = parseTraceParent(traceParent);
+        if (!spanContext)
+            return context;
+        spanContext.isRemote = true;
+        const traceStateHeader = getter.get(carrier, exports.TRACE_STATE_HEADER);
+        if (traceStateHeader) {
+            // If more than one `tracestate` header is found, we merge them into a
+            // single header.
+            const state = Array.isArray(traceStateHeader)
+                ? traceStateHeader.join(',')
+                : traceStateHeader;
+            spanContext.traceState = new TraceState_1.TraceState(typeof state === 'string' ? state : undefined);
+        }
+        return api_1.trace.setSpanContext(context, spanContext);
+    }
+    fields() {
+        return [exports.TRACE_PARENT_HEADER, exports.TRACE_STATE_HEADER];
+    }
+}
+exports.W3CTraceContextPropagator = W3CTraceContextPropagator;
+//# sourceMappingURL=W3CTraceContextPropagator.js.map
+
+/***/ }),
+
+/***/ 66405:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getRPCMetadata = exports.deleteRPCMetadata = exports.setRPCMetadata = exports.RPCType = void 0;
+const api_1 = __nccwpck_require__(65163);
+const RPC_METADATA_KEY = api_1.createContextKey('OpenTelemetry SDK Context Key RPC_METADATA');
+var RPCType;
+(function (RPCType) {
+    RPCType["HTTP"] = "http";
+})(RPCType = exports.RPCType || (exports.RPCType = {}));
+function setRPCMetadata(context, meta) {
+    return context.setValue(RPC_METADATA_KEY, meta);
+}
+exports.setRPCMetadata = setRPCMetadata;
+function deleteRPCMetadata(context) {
+    return context.deleteValue(RPC_METADATA_KEY);
+}
+exports.deleteRPCMetadata = deleteRPCMetadata;
+function getRPCMetadata(context) {
+    return context.getValue(RPC_METADATA_KEY);
+}
+exports.getRPCMetadata = getRPCMetadata;
+//# sourceMappingURL=rpc-metadata.js.map
+
+/***/ }),
+
+/***/ 87750:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOffSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples no traces. */
+class AlwaysOffSampler {
+    shouldSample() {
+        return {
+            decision: api_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return 'AlwaysOffSampler';
+    }
+}
+exports.AlwaysOffSampler = AlwaysOffSampler;
+//# sourceMappingURL=AlwaysOffSampler.js.map
+
+/***/ }),
+
+/***/ 22747:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOnSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples all traces. */
+class AlwaysOnSampler {
+    shouldSample() {
+        return {
+            decision: api_1.SamplingDecision.RECORD_AND_SAMPLED,
+        };
+    }
+    toString() {
+        return 'AlwaysOnSampler';
+    }
+}
+exports.AlwaysOnSampler = AlwaysOnSampler;
+//# sourceMappingURL=AlwaysOnSampler.js.map
+
+/***/ }),
+
+/***/ 20642:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ParentBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+const global_error_handler_1 = __nccwpck_require__(25503);
+const AlwaysOffSampler_1 = __nccwpck_require__(87750);
+const AlwaysOnSampler_1 = __nccwpck_require__(22747);
+/**
+ * A composite sampler that either respects the parent span's sampling decision
+ * or delegates to `delegateSampler` for root spans.
+ */
+class ParentBasedSampler {
+    constructor(config) {
+        var _a, _b, _c, _d;
+        this._root = config.root;
+        if (!this._root) {
+            global_error_handler_1.globalErrorHandler(new Error('ParentBasedSampler must have a root sampler configured'));
+            this._root = new AlwaysOnSampler_1.AlwaysOnSampler();
+        }
+        this._remoteParentSampled =
+            (_a = config.remoteParentSampled) !== null && _a !== void 0 ? _a : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._remoteParentNotSampled =
+            (_b = config.remoteParentNotSampled) !== null && _b !== void 0 ? _b : new AlwaysOffSampler_1.AlwaysOffSampler();
+        this._localParentSampled =
+            (_c = config.localParentSampled) !== null && _c !== void 0 ? _c : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._localParentNotSampled =
+            (_d = config.localParentNotSampled) !== null && _d !== void 0 ? _d : new AlwaysOffSampler_1.AlwaysOffSampler();
+    }
+    shouldSample(context, traceId, spanName, spanKind, attributes, links) {
+        const parentContext = api_1.trace.getSpanContext(context);
+        if (!parentContext || !api_1.isSpanContextValid(parentContext)) {
+            return this._root.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.isRemote) {
+            if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+                return this._remoteParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+            }
+            return this._remoteParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+            return this._localParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        return this._localParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+    }
+    toString() {
+        return `ParentBased{root=${this._root.toString()}, remoteParentSampled=${this._remoteParentSampled.toString()}, remoteParentNotSampled=${this._remoteParentNotSampled.toString()}, localParentSampled=${this._localParentSampled.toString()}, localParentNotSampled=${this._localParentNotSampled.toString()}}`;
+    }
+}
+exports.ParentBasedSampler = ParentBasedSampler;
+//# sourceMappingURL=ParentBasedSampler.js.map
+
+/***/ }),
+
+/***/ 19932:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceIdRatioBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples a given fraction of traces based of trace id deterministically. */
+class TraceIdRatioBasedSampler {
+    constructor(_ratio = 0) {
+        this._ratio = _ratio;
+        this._ratio = this._normalize(_ratio);
+        this._upperBound = Math.floor(this._ratio * 0xffffffff);
+    }
+    shouldSample(context, traceId) {
+        return {
+            decision: api_1.isValidTraceId(traceId) && this._accumulate(traceId) < this._upperBound
+                ? api_1.SamplingDecision.RECORD_AND_SAMPLED
+                : api_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return `TraceIdRatioBased{${this._ratio}}`;
+    }
+    _normalize(ratio) {
+        if (typeof ratio !== 'number' || isNaN(ratio))
+            return 0;
+        return ratio >= 1 ? 1 : ratio <= 0 ? 0 : ratio;
+    }
+    _accumulate(traceId) {
+        let accumulation = 0;
+        for (let i = 0; i < traceId.length / 8; i++) {
+            const pos = i * 8;
+            const part = parseInt(traceId.slice(pos, pos + 8), 16);
+            accumulation = (accumulation ^ part) >>> 0;
+        }
+        return accumulation;
+    }
+}
+exports.TraceIdRatioBasedSampler = TraceIdRatioBasedSampler;
+//# sourceMappingURL=TraceIdRatioBasedSampler.js.map
+
+/***/ }),
+
+/***/ 9008:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isTracingSuppressed = exports.unsuppressTracing = exports.suppressTracing = void 0;
+const api_1 = __nccwpck_require__(65163);
+const SUPPRESS_TRACING_KEY = api_1.createContextKey('OpenTelemetry SDK Context Key SUPPRESS_TRACING');
+function suppressTracing(context) {
+    return context.setValue(SUPPRESS_TRACING_KEY, true);
+}
+exports.suppressTracing = suppressTracing;
+function unsuppressTracing(context) {
+    return context.deleteValue(SUPPRESS_TRACING_KEY);
+}
+exports.unsuppressTracing = unsuppressTracing;
+function isTracingSuppressed(context) {
+    return context.getValue(SUPPRESS_TRACING_KEY) === true;
+}
+exports.isTracingSuppressed = isTracingSuppressed;
+//# sourceMappingURL=suppress-tracing.js.map
+
+/***/ }),
+
+/***/ 89712:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseEnvironment = exports.DEFAULT_ENVIRONMENT = exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = void 0;
+const api_1 = __nccwpck_require__(65163);
+const sampling_1 = __nccwpck_require__(12631);
+const DEFAULT_LIST_SEPARATOR = ',';
+/**
+ * Environment interface to define all names
+ */
+const ENVIRONMENT_NUMBERS_KEYS = [
+    'OTEL_BSP_EXPORT_TIMEOUT',
+    'OTEL_BSP_MAX_EXPORT_BATCH_SIZE',
+    'OTEL_BSP_MAX_QUEUE_SIZE',
+    'OTEL_BSP_SCHEDULE_DELAY',
+    'OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT',
+    'OTEL_ATTRIBUTE_COUNT_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT',
+    'OTEL_SPAN_EVENT_COUNT_LIMIT',
+    'OTEL_SPAN_LINK_COUNT_LIMIT',
+];
+function isEnvVarANumber(key) {
+    return (ENVIRONMENT_NUMBERS_KEYS.indexOf(key) > -1);
+}
+const ENVIRONMENT_LISTS_KEYS = [
+    'OTEL_NO_PATCH_MODULES',
+    'OTEL_PROPAGATORS',
+];
+function isEnvVarAList(key) {
+    return ENVIRONMENT_LISTS_KEYS.indexOf(key) > -1;
+}
+exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = Infinity;
+exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = 128;
+/**
+ * Default environment variables
+ */
+exports.DEFAULT_ENVIRONMENT = {
+    CONTAINER_NAME: '',
+    ECS_CONTAINER_METADATA_URI_V4: '',
+    ECS_CONTAINER_METADATA_URI: '',
+    HOSTNAME: '',
+    KUBERNETES_SERVICE_HOST: '',
+    NAMESPACE: '',
+    OTEL_BSP_EXPORT_TIMEOUT: 30000,
+    OTEL_BSP_MAX_EXPORT_BATCH_SIZE: 512,
+    OTEL_BSP_MAX_QUEUE_SIZE: 2048,
+    OTEL_BSP_SCHEDULE_DELAY: 5000,
+    OTEL_EXPORTER_JAEGER_AGENT_HOST: '',
+    OTEL_EXPORTER_JAEGER_ENDPOINT: '',
+    OTEL_EXPORTER_JAEGER_PASSWORD: '',
+    OTEL_EXPORTER_JAEGER_USER: '',
+    OTEL_EXPORTER_OTLP_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_HEADERS: '',
+    OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',
+    OTEL_EXPORTER_OTLP_METRICS_HEADERS: '',
+    OTEL_EXPORTER_ZIPKIN_ENDPOINT: 'http://localhost:9411/api/v2/spans',
+    OTEL_LOG_LEVEL: api_1.DiagLogLevel.INFO,
+    OTEL_NO_PATCH_MODULES: [],
+    OTEL_PROPAGATORS: ['tracecontext', 'baggage'],
+    OTEL_RESOURCE_ATTRIBUTES: '',
+    OTEL_SERVICE_NAME: '',
+    OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+    OTEL_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
+    OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+    OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
+    OTEL_SPAN_EVENT_COUNT_LIMIT: 128,
+    OTEL_SPAN_LINK_COUNT_LIMIT: 128,
+    OTEL_TRACES_EXPORTER: 'none',
+    OTEL_TRACES_SAMPLER: sampling_1.TracesSamplerValues.ParentBasedAlwaysOn,
+    OTEL_TRACES_SAMPLER_ARG: '',
+};
+/**
+ * Parses a variable as number with number validation
+ * @param name
+ * @param environment
+ * @param values
+ * @param min
+ * @param max
+ */
+function parseNumber(name, environment, values, min = -Infinity, max = Infinity) {
+    if (typeof values[name] !== 'undefined') {
+        const value = Number(values[name]);
+        if (!isNaN(value)) {
+            if (value < min) {
+                environment[name] = min;
+            }
+            else if (value > max) {
+                environment[name] = max;
+            }
+            else {
+                environment[name] = value;
+            }
+        }
+    }
+}
+/**
+ * Parses list-like strings from input into output.
+ * @param name
+ * @param environment
+ * @param values
+ * @param separator
+ */
+function parseStringList(name, output, input, separator = DEFAULT_LIST_SEPARATOR) {
+    const givenValue = input[name];
+    if (typeof givenValue === 'string') {
+        output[name] = givenValue.split(separator).map(v => v.trim());
+    }
+}
+// The support string -> DiagLogLevel mappings
+const logLevelMap = {
+    ALL: api_1.DiagLogLevel.ALL,
+    VERBOSE: api_1.DiagLogLevel.VERBOSE,
+    DEBUG: api_1.DiagLogLevel.DEBUG,
+    INFO: api_1.DiagLogLevel.INFO,
+    WARN: api_1.DiagLogLevel.WARN,
+    ERROR: api_1.DiagLogLevel.ERROR,
+    NONE: api_1.DiagLogLevel.NONE,
+};
+/**
+ * Environmentally sets log level if valid log level string is provided
+ * @param key
+ * @param environment
+ * @param values
+ */
+function setLogLevelFromEnv(key, environment, values) {
+    const value = values[key];
+    if (typeof value === 'string') {
+        const theLevel = logLevelMap[value.toUpperCase()];
+        if (theLevel != null) {
+            environment[key] = theLevel;
+        }
+    }
+}
+/**
+ * Parses environment values
+ * @param values
+ */
+function parseEnvironment(values) {
+    const environment = {};
+    for (const env in exports.DEFAULT_ENVIRONMENT) {
+        const key = env;
+        switch (key) {
+            case 'OTEL_LOG_LEVEL':
+                setLogLevelFromEnv(key, environment, values);
+                break;
+            default:
+                if (isEnvVarANumber(key)) {
+                    parseNumber(key, environment, values);
+                }
+                else if (isEnvVarAList(key)) {
+                    parseStringList(key, environment, values);
+                }
+                else {
+                    const value = values[key];
+                    if (typeof value !== 'undefined' && value !== null) {
+                        environment[key] = String(value);
+                    }
+                }
+        }
+    }
+    return environment;
+}
+exports.parseEnvironment = parseEnvironment;
+//# sourceMappingURL=environment.js.map
+
+/***/ }),
+
+/***/ 98873:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isPlainObject = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * based on lodash in order to support esm builds without esModuleInterop.
+ * lodash is using MIT License.
+ **/
+const objectTag = '[object Object]';
+const nullTag = '[object Null]';
+const undefinedTag = '[object Undefined]';
+const funcProto = Function.prototype;
+const funcToString = funcProto.toString;
+const objectCtorString = funcToString.call(Object);
+const getPrototype = overArg(Object.getPrototypeOf, Object);
+const objectProto = Object.prototype;
+const hasOwnProperty = objectProto.hasOwnProperty;
+const symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+const nativeObjectToString = objectProto.toString;
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+    return function (arg) {
+        return func(transform(arg));
+    };
+}
+/**
+ * Checks if `value` is a plain object, that is, an object created by the
+ * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.8.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * _.isPlainObject(new Foo);
+ * // => false
+ *
+ * _.isPlainObject([1, 2, 3]);
+ * // => false
+ *
+ * _.isPlainObject({ 'x': 0, 'y': 0 });
+ * // => true
+ *
+ * _.isPlainObject(Object.create(null));
+ * // => true
+ */
+function isPlainObject(value) {
+    if (!isObjectLike(value) || baseGetTag(value) !== objectTag) {
+        return false;
+    }
+    const proto = getPrototype(value);
+    if (proto === null) {
+        return true;
+    }
+    const Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+    return typeof Ctor == 'function' && Ctor instanceof Ctor &&
+        funcToString.call(Ctor) === objectCtorString;
+}
+exports.isPlainObject = isPlainObject;
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+}
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+    if (value == null) {
+        return value === undefined ? undefinedTag : nullTag;
+    }
+    return (symToStringTag && symToStringTag in Object(value))
+        ? getRawTag(value)
+        : objectToString(value);
+}
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+    const isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
+    let unmasked = false;
+    try {
+        value[symToStringTag] = undefined;
+        unmasked = true;
+    }
+    catch (e) {
+        // silence
+    }
+    const result = nativeObjectToString.call(value);
+    if (unmasked) {
+        if (isOwn) {
+            value[symToStringTag] = tag;
+        }
+        else {
+            delete value[symToStringTag];
+        }
+    }
+    return result;
+}
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+    return nativeObjectToString.call(value);
+}
+//# sourceMappingURL=lodash.merge.js.map
+
+/***/ }),
+
+/***/ 3482:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.merge = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const lodash_merge_1 = __nccwpck_require__(98873);
 const MAX_LEVEL = 20;
 /**
  * Merges objects together
@@ -21548,7 +24427,7 @@ function shouldMerge(one, two) {
 
 /***/ }),
 
-/***/ 8289:
+/***/ 12631:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -21583,7 +24462,7 @@ var TracesSamplerValues;
 
 /***/ }),
 
-/***/ 839:
+/***/ 50369:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -21635,7 +24514,7 @@ exports.isUrlIgnored = isUrlIgnored;
 
 /***/ }),
 
-/***/ 7226:
+/***/ 37356:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -21672,7 +24551,7 @@ exports.isWrapped = isWrapped;
 
 /***/ }),
 
-/***/ 5687:
+/***/ 80380:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -21700,168 +24579,7 @@ exports.VERSION = '1.0.1';
 
 /***/ }),
 
-/***/ 392:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OTLPExporterNodeBase = void 0;
-const api_1 = __nccwpck_require__(5163);
-const exporter_trace_otlp_http_1 = __nccwpck_require__(5401);
-const grpc_js_1 = __nccwpck_require__(7025);
-const core_1 = __nccwpck_require__(9736);
-/**
- * OTLP Metric Exporter abstract base class
- */
-class OTLPExporterNodeBase extends exporter_trace_otlp_http_1.OTLPExporterBase {
-    constructor(config = {}) {
-        super(config);
-        this.grpcQueue = [];
-        this.serviceClient = undefined;
-        if (config.headers) {
-            api_1.diag.warn('Headers cannot be set when using grpc');
-        }
-        const headers = core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_HEADERS);
-        this.metadata = config.metadata || new grpc_js_1.Metadata();
-        for (const [k, v] of Object.entries(headers)) {
-            this.metadata.set(k, v);
-        }
-    }
-    _sendPromise(objects, onSuccess, onError) {
-        const promise = new Promise((resolve, reject) => {
-            this._send(this, objects, resolve, reject);
-        })
-            .then(onSuccess, onError);
-        this._sendingPromises.push(promise);
-        const popPromise = () => {
-            const index = this._sendingPromises.indexOf(promise);
-            this._sendingPromises.splice(index, 1);
-        };
-        promise.then(popPromise, popPromise);
-    }
-    onInit(config) {
-        this._isShutdown = false;
-        // defer to next tick and lazy load to avoid loading grpc too early
-        // and making this impossible to be instrumented
-        setImmediate(() => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const { onInit } = __nccwpck_require__(1451);
-            onInit(this, config);
-        });
-    }
-    send(objects, onSuccess, onError) {
-        if (this._isShutdown) {
-            api_1.diag.debug('Shutdown already started. Cannot send objects');
-            return;
-        }
-        if (!this._send) {
-            // defer to next tick and lazy load to avoid loading grpc too early
-            // and making this impossible to be instrumented
-            setImmediate(() => {
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
-                const { send } = __nccwpck_require__(1451);
-                this._send = send;
-                this._sendPromise(objects, onSuccess, onError);
-            });
-        }
-        else {
-            this._sendPromise(objects, onSuccess, onError);
-        }
-    }
-    onShutdown() {
-        this._isShutdown = true;
-        if (this.serviceClient) {
-            this.serviceClient.close();
-        }
-    }
-}
-exports.OTLPExporterNodeBase = OTLPExporterNodeBase;
-//# sourceMappingURL=OTLPExporterNodeBase.js.map
-
-/***/ }),
-
-/***/ 6633:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OTLPTraceExporter = void 0;
-const OTLPExporterNodeBase_1 = __nccwpck_require__(392);
-const exporter_trace_otlp_http_1 = __nccwpck_require__(5401);
-const types_1 = __nccwpck_require__(1268);
-const core_1 = __nccwpck_require__(9736);
-const util_1 = __nccwpck_require__(1451);
-const grpc_js_1 = __nccwpck_require__(7025);
-const DEFAULT_COLLECTOR_URL = 'localhost:4317';
-/**
- * OTLP Trace Exporter for Node
- */
-class OTLPTraceExporter extends OTLPExporterNodeBase_1.OTLPExporterNodeBase {
-    constructor(config = {}) {
-        super(config);
-        const headers = core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_HEADERS);
-        this.metadata || (this.metadata = new grpc_js_1.Metadata());
-        for (const [k, v] of Object.entries(headers)) {
-            this.metadata.set(k, v);
-        }
-    }
-    convert(spans) {
-        return exporter_trace_otlp_http_1.toOTLPExportTraceServiceRequest(spans, this);
-    }
-    getDefaultUrl(config) {
-        return typeof config.url === 'string'
-            ? util_1.validateAndNormalizeUrl(config.url)
-            : core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT.length > 0
-                ? util_1.validateAndNormalizeUrl(core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT)
-                : core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0
-                    ? util_1.validateAndNormalizeUrl(core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT)
-                    : DEFAULT_COLLECTOR_URL;
-    }
-    getServiceClientType() {
-        return types_1.ServiceClientType.SPANS;
-    }
-    getServiceProtoPath() {
-        return 'opentelemetry/proto/collector/trace/v1/trace_service.proto';
-    }
-}
-exports.OTLPTraceExporter = OTLPTraceExporter;
-//# sourceMappingURL=OTLPTraceExporter.js.map
-
-/***/ }),
-
-/***/ 160:
+/***/ 59757:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -21892,3581 +24610,13 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.validateAndNormalizeUrl = exports.ServiceClientType = void 0;
-__exportStar(__nccwpck_require__(392), exports);
-__exportStar(__nccwpck_require__(6633), exports);
-var types_1 = __nccwpck_require__(1268);
-Object.defineProperty(exports, "ServiceClientType", ({ enumerable: true, get: function () { return types_1.ServiceClientType; } }));
-var util_1 = __nccwpck_require__(1451);
-Object.defineProperty(exports, "validateAndNormalizeUrl", ({ enumerable: true, get: function () { return util_1.validateAndNormalizeUrl; } }));
+__exportStar(__nccwpck_require__(26013), exports);
+__exportStar(__nccwpck_require__(43898), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 1268:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ServiceClientType = void 0;
-var ServiceClientType;
-(function (ServiceClientType) {
-    ServiceClientType[ServiceClientType["SPANS"] = 0] = "SPANS";
-    ServiceClientType[ServiceClientType["METRICS"] = 1] = "METRICS";
-})(ServiceClientType = exports.ServiceClientType || (exports.ServiceClientType = {}));
-//# sourceMappingURL=types.js.map
-
-/***/ }),
-
-/***/ 1451:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.validateAndNormalizeUrl = exports.send = exports.onInit = void 0;
-const grpc = __nccwpck_require__(7025);
-const protoLoader = __nccwpck_require__(8171);
-const api_1 = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-const path = __nccwpck_require__(5622);
-const url_1 = __nccwpck_require__(8835);
-const types_1 = __nccwpck_require__(1268);
-function onInit(collector, config) {
-    collector.grpcQueue = [];
-    const credentials = config.credentials || grpc.credentials.createInsecure();
-    const includeDirs = [__nccwpck_require__.ab + "protos"];
-    protoLoader
-        .load(collector.getServiceProtoPath(), {
-        keepCase: false,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true,
-        includeDirs,
-    })
-        .then(packageDefinition => {
-        const packageObject = grpc.loadPackageDefinition(packageDefinition);
-        if (collector.getServiceClientType() === types_1.ServiceClientType.SPANS) {
-            collector.serviceClient =
-                new packageObject.opentelemetry.proto.collector.trace.v1.TraceService(collector.url, credentials);
-        }
-        else {
-            collector.serviceClient =
-                new packageObject.opentelemetry.proto.collector.metrics.v1.MetricsService(collector.url, credentials);
-        }
-        if (collector.grpcQueue.length > 0) {
-            const queue = collector.grpcQueue.splice(0);
-            queue.forEach((item) => {
-                collector.send(item.objects, item.onSuccess, item.onError);
-            });
-        }
-    })
-        .catch(err => {
-        core_1.globalErrorHandler(err);
-    });
-}
-exports.onInit = onInit;
-function send(collector, objects, onSuccess, onError) {
-    if (collector.serviceClient) {
-        const serviceRequest = collector.convert(objects);
-        collector.serviceClient.export(serviceRequest, collector.metadata || new grpc.Metadata(), (err) => {
-            if (err) {
-                api_1.diag.error('Service request', serviceRequest);
-                onError(err);
-            }
-            else {
-                api_1.diag.debug('Objects sent');
-                onSuccess();
-            }
-        });
-    }
-    else {
-        collector.grpcQueue.push({
-            objects,
-            onSuccess,
-            onError,
-        });
-    }
-}
-exports.send = send;
-function validateAndNormalizeUrl(url) {
-    var _a;
-    const hasProtocol = url.match(/^([\w]{1,8}):\/\//);
-    if (!hasProtocol) {
-        url = `https://${url}`;
-    }
-    const target = new url_1.URL(url);
-    if (target.pathname && target.pathname !== '/') {
-        api_1.diag.warn('URL path should not be set when using grpc, the path part of the URL will be ignored.');
-    }
-    if (target.protocol !== '' && !((_a = target.protocol) === null || _a === void 0 ? void 0 : _a.match(/(http|grpc)s?/))) {
-        api_1.diag.warn('URL protocol should be http(s):// or grpc(s)://. Using grpc://.');
-    }
-    return target.host;
-}
-exports.validateAndNormalizeUrl = validateAndNormalizeUrl;
-//# sourceMappingURL=util.js.map
-
-/***/ }),
-
-/***/ 4020:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OTLPExporterBase = void 0;
-const api_1 = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-/**
- * Collector Exporter abstract base class
- */
-class OTLPExporterBase {
-    /**
-     * @param config
-     */
-    constructor(config = {}) {
-        this._isShutdown = false;
-        this._shuttingDownPromise = Promise.resolve();
-        this._sendingPromises = [];
-        this.url = this.getDefaultUrl(config);
-        if (typeof config.hostname === 'string') {
-            this.hostname = config.hostname;
-        }
-        this.attributes = config.attributes;
-        this.shutdown = this.shutdown.bind(this);
-        this._concurrencyLimit =
-            typeof config.concurrencyLimit === 'number'
-                ? config.concurrencyLimit
-                : Infinity;
-        // platform dependent
-        this.onInit(config);
-    }
-    /**
-     * Export items.
-     * @param items
-     * @param resultCallback
-     */
-    export(items, resultCallback) {
-        if (this._isShutdown) {
-            resultCallback({
-                code: core_1.ExportResultCode.FAILED,
-                error: new Error('Exporter has been shutdown'),
-            });
-            return;
-        }
-        if (this._sendingPromises.length >= this._concurrencyLimit) {
-            resultCallback({
-                code: core_1.ExportResultCode.FAILED,
-                error: new Error('Concurrent export limit reached'),
-            });
-            return;
-        }
-        this._export(items)
-            .then(() => {
-            resultCallback({ code: core_1.ExportResultCode.SUCCESS });
-        })
-            .catch((error) => {
-            resultCallback({ code: core_1.ExportResultCode.FAILED, error });
-        });
-    }
-    _export(items) {
-        return new Promise((resolve, reject) => {
-            try {
-                api_1.diag.debug('items to be sent', items);
-                this.send(items, resolve, reject);
-            }
-            catch (e) {
-                reject(e);
-            }
-        });
-    }
-    /**
-     * Shutdown the exporter.
-     */
-    shutdown() {
-        if (this._isShutdown) {
-            api_1.diag.debug('shutdown already started');
-            return this._shuttingDownPromise;
-        }
-        this._isShutdown = true;
-        api_1.diag.debug('shutdown started');
-        this._shuttingDownPromise = new Promise((resolve, reject) => {
-            Promise.resolve()
-                .then(() => {
-                return this.onShutdown();
-            })
-                .then(() => {
-                return Promise.all(this._sendingPromises);
-            })
-                .then(() => {
-                resolve();
-            })
-                .catch(e => {
-                reject(e);
-            });
-        });
-        return this._shuttingDownPromise;
-    }
-}
-exports.OTLPExporterBase = OTLPExporterBase;
-//# sourceMappingURL=OTLPExporterBase.js.map
-
-/***/ }),
-
-/***/ 5401:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.appendResourcePathToUrlIfNotPresent = exports.toOTLPExportTraceServiceRequest = exports.toCollectorResource = exports.otlpTypes = void 0;
-__exportStar(__nccwpck_require__(4020), exports);
-__exportStar(__nccwpck_require__(6437), exports);
-exports.otlpTypes = __nccwpck_require__(9981);
-var transform_1 = __nccwpck_require__(3128);
-Object.defineProperty(exports, "toCollectorResource", ({ enumerable: true, get: function () { return transform_1.toCollectorResource; } }));
-Object.defineProperty(exports, "toOTLPExportTraceServiceRequest", ({ enumerable: true, get: function () { return transform_1.toOTLPExportTraceServiceRequest; } }));
-var util_1 = __nccwpck_require__(6109);
-Object.defineProperty(exports, "appendResourcePathToUrlIfNotPresent", ({ enumerable: true, get: function () { return util_1.appendResourcePathToUrlIfNotPresent; } }));
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 4221:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OTLPExporterBrowserBase = void 0;
-const OTLPExporterBase_1 = __nccwpck_require__(4020);
-const util_1 = __nccwpck_require__(6109);
-const util_2 = __nccwpck_require__(8690);
-const api_1 = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-/**
- * Collector Metric Exporter abstract base class
- */
-class OTLPExporterBrowserBase extends OTLPExporterBase_1.OTLPExporterBase {
-    /**
-     * @param config
-     */
-    constructor(config = {}) {
-        super(config);
-        this._useXHR = false;
-        this._useXHR =
-            !!config.headers || typeof navigator.sendBeacon !== 'function';
-        if (this._useXHR) {
-            this._headers = Object.assign({}, util_1.parseHeaders(config.headers), core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_HEADERS));
-        }
-        else {
-            this._headers = {};
-        }
-    }
-    onInit() {
-        window.addEventListener('unload', this.shutdown);
-    }
-    onShutdown() {
-        window.removeEventListener('unload', this.shutdown);
-    }
-    send(items, onSuccess, onError) {
-        if (this._isShutdown) {
-            api_1.diag.debug('Shutdown already started. Cannot send objects');
-            return;
-        }
-        const serviceRequest = this.convert(items);
-        const body = JSON.stringify(serviceRequest);
-        const promise = new Promise((resolve, reject) => {
-            if (this._useXHR) {
-                util_2.sendWithXhr(body, this.url, this._headers, resolve, reject);
-            }
-            else {
-                util_2.sendWithBeacon(body, this.url, { type: 'application/json' }, resolve, reject);
-            }
-        })
-            .then(onSuccess, onError);
-        this._sendingPromises.push(promise);
-        const popPromise = () => {
-            const index = this._sendingPromises.indexOf(promise);
-            this._sendingPromises.splice(index, 1);
-        };
-        promise.then(popPromise, popPromise);
-    }
-}
-exports.OTLPExporterBrowserBase = OTLPExporterBrowserBase;
-//# sourceMappingURL=OTLPExporterBrowserBase.js.map
-
-/***/ }),
-
-/***/ 1467:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OTLPTraceExporter = void 0;
-const OTLPExporterBrowserBase_1 = __nccwpck_require__(4221);
-const transform_1 = __nccwpck_require__(3128);
-const core_1 = __nccwpck_require__(9736);
-const util_1 = __nccwpck_require__(6109);
-const DEFAULT_COLLECTOR_RESOURCE_PATH = '/v1/traces';
-const DEFAULT_COLLECTOR_URL = `http://localhost:55681${DEFAULT_COLLECTOR_RESOURCE_PATH}`;
-/**
- * Collector Trace Exporter for Web
- */
-class OTLPTraceExporter extends OTLPExporterBrowserBase_1.OTLPExporterBrowserBase {
-    constructor(config = {}) {
-        super(config);
-        this._headers = Object.assign(this._headers, core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_HEADERS));
-    }
-    convert(spans) {
-        return transform_1.toOTLPExportTraceServiceRequest(spans, this, true);
-    }
-    getDefaultUrl(config) {
-        return typeof config.url === 'string'
-            ? config.url
-            : core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT.length > 0
-                ? core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
-                : core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0
-                    ? util_1.appendResourcePathToUrlIfNotPresent(core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT, DEFAULT_COLLECTOR_RESOURCE_PATH)
-                    : DEFAULT_COLLECTOR_URL;
-    }
-}
-exports.OTLPTraceExporter = OTLPTraceExporter;
-//# sourceMappingURL=OTLPTraceExporter.js.map
-
-/***/ }),
-
-/***/ 6155:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(1467), exports);
-__exportStar(__nccwpck_require__(4221), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 8690:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sendWithXhr = exports.sendWithBeacon = void 0;
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-const api_1 = __nccwpck_require__(5163);
-const otlpTypes = __nccwpck_require__(9981);
-/**
- * Send metrics/spans using browser navigator.sendBeacon
- * @param body
- * @param onSuccess
- * @param onError
- */
-function sendWithBeacon(body, url, blobPropertyBag, onSuccess, onError) {
-    if (navigator.sendBeacon(url, new Blob([body], blobPropertyBag))) {
-        api_1.diag.debug('sendBeacon - can send', body);
-        onSuccess();
-    }
-    else {
-        const error = new otlpTypes.OTLPExporterError(`sendBeacon - cannot send ${body}`);
-        onError(error);
-    }
-}
-exports.sendWithBeacon = sendWithBeacon;
-/**
- * function to send metrics/spans using browser XMLHttpRequest
- *     used when navigator.sendBeacon is not available
- * @param body
- * @param onSuccess
- * @param onError
- */
-function sendWithXhr(body, url, headers, onSuccess, onError) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-    const defaultHeaders = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-    };
-    Object.entries(Object.assign(Object.assign({}, defaultHeaders), headers)).forEach(([k, v]) => {
-        xhr.setRequestHeader(k, v);
-    });
-    xhr.send(body);
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status >= 200 && xhr.status <= 299) {
-                api_1.diag.debug('xhr success', body);
-                onSuccess();
-            }
-            else {
-                const error = new otlpTypes.OTLPExporterError(`Failed to export with XHR (status: ${xhr.status})`, xhr.status);
-                onError(error);
-            }
-        }
-    };
-}
-exports.sendWithXhr = sendWithXhr;
-//# sourceMappingURL=util.js.map
-
-/***/ }),
-
-/***/ 6437:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OTLPExporterBrowserBase = void 0;
-__exportStar(__nccwpck_require__(81), exports);
-var browser_1 = __nccwpck_require__(6155);
-Object.defineProperty(exports, "OTLPExporterBrowserBase", ({ enumerable: true, get: function () { return browser_1.OTLPExporterBrowserBase; } }));
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 4574:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OTLPExporterNodeBase = void 0;
-const OTLPExporterBase_1 = __nccwpck_require__(4020);
-const types_1 = __nccwpck_require__(5726);
-const util_1 = __nccwpck_require__(6109);
-const util_2 = __nccwpck_require__(2847);
-const api_1 = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-/**
- * Collector Metric Exporter abstract base class
- */
-class OTLPExporterNodeBase extends OTLPExporterBase_1.OTLPExporterBase {
-    constructor(config = {}) {
-        super(config);
-        this.DEFAULT_HEADERS = {};
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (config.metadata) {
-            api_1.diag.warn('Metadata cannot be set when using http');
-        }
-        this.headers = Object.assign(this.DEFAULT_HEADERS, util_1.parseHeaders(config.headers), core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_HEADERS));
-        this.agent = util_2.createHttpAgent(config);
-        this.compression = config.compression || types_1.CompressionAlgorithm.NONE;
-    }
-    onInit(_config) {
-        this._isShutdown = false;
-    }
-    send(objects, onSuccess, onError) {
-        if (this._isShutdown) {
-            api_1.diag.debug('Shutdown already started. Cannot send objects');
-            return;
-        }
-        const serviceRequest = this.convert(objects);
-        const promise = new Promise((resolve, reject) => {
-            util_2.sendWithHttp(this, JSON.stringify(serviceRequest), 'application/json', resolve, reject);
-        })
-            .then(onSuccess, onError);
-        this._sendingPromises.push(promise);
-        const popPromise = () => {
-            const index = this._sendingPromises.indexOf(promise);
-            this._sendingPromises.splice(index, 1);
-        };
-        promise.then(popPromise, popPromise);
-    }
-    // TODO: end gzip stream from util.ts if not undefined
-    // It should perhaps be a class member here instead of a variable in util.ts
-    onShutdown() { }
-}
-exports.OTLPExporterNodeBase = OTLPExporterNodeBase;
-//# sourceMappingURL=OTLPExporterNodeBase.js.map
-
-/***/ }),
-
-/***/ 9377:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OTLPTraceExporter = void 0;
-const OTLPExporterNodeBase_1 = __nccwpck_require__(4574);
-const transform_1 = __nccwpck_require__(3128);
-const core_1 = __nccwpck_require__(9736);
-const util_1 = __nccwpck_require__(6109);
-const DEFAULT_COLLECTOR_RESOURCE_PATH = '/v1/traces';
-const DEFAULT_COLLECTOR_URL = `http://localhost:55681${DEFAULT_COLLECTOR_RESOURCE_PATH}`;
-/**
- * Collector Trace Exporter for Node
- */
-class OTLPTraceExporter extends OTLPExporterNodeBase_1.OTLPExporterNodeBase {
-    constructor(config = {}) {
-        super(config);
-        this.headers = Object.assign(this.headers, core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_HEADERS));
-    }
-    convert(spans) {
-        return transform_1.toOTLPExportTraceServiceRequest(spans, this, true);
-    }
-    getDefaultUrl(config) {
-        return typeof config.url === 'string'
-            ? config.url
-            : core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT.length > 0
-                ? core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
-                : core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0
-                    ? util_1.appendResourcePathToUrlIfNotPresent(core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT, DEFAULT_COLLECTOR_RESOURCE_PATH)
-                    : DEFAULT_COLLECTOR_URL;
-    }
-}
-exports.OTLPTraceExporter = OTLPTraceExporter;
-//# sourceMappingURL=OTLPTraceExporter.js.map
-
-/***/ }),
-
-/***/ 81:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(9377), exports);
-__exportStar(__nccwpck_require__(4574), exports);
-__exportStar(__nccwpck_require__(2847), exports);
-__exportStar(__nccwpck_require__(5726), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 5726:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CompressionAlgorithm = void 0;
-var CompressionAlgorithm;
-(function (CompressionAlgorithm) {
-    CompressionAlgorithm["NONE"] = "none";
-    CompressionAlgorithm["GZIP"] = "gzip";
-})(CompressionAlgorithm = exports.CompressionAlgorithm || (exports.CompressionAlgorithm = {}));
-//# sourceMappingURL=types.js.map
-
-/***/ }),
-
-/***/ 2847:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createHttpAgent = exports.sendWithHttp = void 0;
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-const url = __nccwpck_require__(8835);
-const http = __nccwpck_require__(8605);
-const https = __nccwpck_require__(7211);
-const zlib = __nccwpck_require__(8761);
-const stream_1 = __nccwpck_require__(2413);
-const otlpTypes = __nccwpck_require__(9981);
-const api_1 = __nccwpck_require__(5163);
-const types_1 = __nccwpck_require__(5726);
-let gzip;
-/**
- * Sends data using http
- * @param collector
- * @param data
- * @param contentType
- * @param onSuccess
- * @param onError
- */
-function sendWithHttp(collector, data, contentType, onSuccess, onError) {
-    const parsedUrl = new url.URL(collector.url);
-    const options = {
-        hostname: parsedUrl.hostname,
-        port: parsedUrl.port,
-        path: parsedUrl.pathname,
-        method: 'POST',
-        headers: Object.assign({ 'Content-Length': Buffer.byteLength(data), 'Content-Type': contentType }, collector.headers),
-        agent: collector.agent,
-    };
-    const request = parsedUrl.protocol === 'http:' ? http.request : https.request;
-    const req = request(options, (res) => {
-        let responseData = '';
-        res.on('data', chunk => (responseData += chunk));
-        res.on('end', () => {
-            if (res.statusCode && res.statusCode < 299) {
-                api_1.diag.debug(`statusCode: ${res.statusCode}`, responseData);
-                onSuccess();
-            }
-            else {
-                const error = new otlpTypes.OTLPExporterError(res.statusMessage, res.statusCode, responseData);
-                onError(error);
-            }
-        });
-    });
-    req.on('error', (error) => {
-        onError(error);
-    });
-    switch (collector.compression) {
-        case types_1.CompressionAlgorithm.GZIP: {
-            if (!gzip) {
-                gzip = zlib.createGzip();
-            }
-            req.setHeader('Content-Encoding', 'gzip');
-            const dataStream = readableFromBuffer(data);
-            dataStream.on('error', onError)
-                .pipe(gzip).on('error', onError)
-                .pipe(req);
-            break;
-        }
-        default:
-            req.write(data);
-            req.end();
-            break;
-    }
-}
-exports.sendWithHttp = sendWithHttp;
-function readableFromBuffer(buff) {
-    const readable = new stream_1.Readable();
-    readable.push(buff);
-    readable.push(null);
-    return readable;
-}
-function createHttpAgent(config) {
-    if (config.httpAgentOptions && config.keepAlive === false) {
-        api_1.diag.warn('httpAgentOptions is used only when keepAlive is true');
-        return undefined;
-    }
-    if (config.keepAlive === false || !config.url)
-        return undefined;
-    try {
-        const parsedUrl = new url.URL(config.url);
-        const Agent = parsedUrl.protocol === 'http:' ? http.Agent : https.Agent;
-        return new Agent(Object.assign({ keepAlive: true }, config.httpAgentOptions));
-    }
-    catch (err) {
-        api_1.diag.error(`collector exporter failed to create http agent. err: ${err.message}`);
-        return undefined;
-    }
-}
-exports.createHttpAgent = createHttpAgent;
-//# sourceMappingURL=util.js.map
-
-/***/ }),
-
-/***/ 3128:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.groupSpansByResourceAndLibrary = exports.toOTLPExportTraceServiceRequest = exports.toCollectorTraceState = exports.toCollectorKind = exports.toCollectorResource = exports.toCollectorStatus = exports.toCollectorSpan = exports.toCollectorEvents = exports.toCollectorAnyValue = exports.toCollectorAttributeKeyValue = exports.toCollectorKeyValueList = exports.toCollectorArrayValue = exports.toCollectorAttributes = void 0;
-const core = __nccwpck_require__(9736);
-const types_1 = __nccwpck_require__(9981);
-const MAX_INTEGER_VALUE = 2147483647;
-const MIN_INTEGER_VALUE = -2147483648;
-/**
- * Converts attributes to KeyValue array
- * @param attributes
- */
-function toCollectorAttributes(attributes) {
-    return Object.keys(attributes).map(key => {
-        return toCollectorAttributeKeyValue(key, attributes[key]);
-    });
-}
-exports.toCollectorAttributes = toCollectorAttributes;
-/**
- * Converts array of unknown value to ArrayValue
- * @param values
- */
-function toCollectorArrayValue(values) {
-    return {
-        values: values.map(value => toCollectorAnyValue(value)),
-    };
-}
-exports.toCollectorArrayValue = toCollectorArrayValue;
-/**
- * Converts attributes to KeyValueList
- * @param attributes
- */
-function toCollectorKeyValueList(attributes) {
-    return {
-        values: toCollectorAttributes(attributes),
-    };
-}
-exports.toCollectorKeyValueList = toCollectorKeyValueList;
-/**
- * Converts key and unknown value to KeyValue
- * @param value event value
- */
-function toCollectorAttributeKeyValue(key, value) {
-    const anyValue = toCollectorAnyValue(value);
-    return {
-        key,
-        value: anyValue,
-    };
-}
-exports.toCollectorAttributeKeyValue = toCollectorAttributeKeyValue;
-/**
- * Converts unknown value to AnyValue
- * @param value
- */
-function toCollectorAnyValue(value) {
-    const anyValue = {};
-    if (typeof value === 'string') {
-        anyValue.stringValue = value;
-    }
-    else if (typeof value === 'boolean') {
-        anyValue.boolValue = value;
-    }
-    else if (typeof value === 'number' &&
-        value <= MAX_INTEGER_VALUE &&
-        value >= MIN_INTEGER_VALUE &&
-        Number.isInteger(value)) {
-        anyValue.intValue = value;
-    }
-    else if (typeof value === 'number') {
-        anyValue.doubleValue = value;
-    }
-    else if (Array.isArray(value)) {
-        anyValue.arrayValue = toCollectorArrayValue(value);
-    }
-    else if (value) {
-        anyValue.kvlistValue = toCollectorKeyValueList(value);
-    }
-    return anyValue;
-}
-exports.toCollectorAnyValue = toCollectorAnyValue;
-/**
- *
- * Converts events
- * @param events array of events
- */
-function toCollectorEvents(timedEvents) {
-    return timedEvents.map(timedEvent => {
-        const timeUnixNano = core.hrTimeToNanoseconds(timedEvent.time);
-        const name = timedEvent.name;
-        const attributes = toCollectorAttributes(timedEvent.attributes || {});
-        const droppedAttributesCount = 0;
-        const protoEvent = {
-            timeUnixNano,
-            name,
-            attributes,
-            droppedAttributesCount,
-        };
-        return protoEvent;
-    });
-}
-exports.toCollectorEvents = toCollectorEvents;
-/**
- * Converts links
- * @param span
- * @param useHex - if ids should be kept as hex without converting to base64
- */
-function toCollectorLinks(span, useHex) {
-    return span.links.map((link) => {
-        const protoLink = {
-            traceId: useHex
-                ? link.context.traceId
-                : core.hexToBase64(link.context.traceId),
-            spanId: useHex
-                ? link.context.spanId
-                : core.hexToBase64(link.context.spanId),
-            attributes: toCollectorAttributes(link.attributes || {}),
-            droppedAttributesCount: 0,
-        };
-        return protoLink;
-    });
-}
-/**
- * Converts span
- * @param span
- * @param useHex - if ids should be kept as hex without converting to base64
- */
-function toCollectorSpan(span, useHex) {
-    return {
-        traceId: useHex
-            ? span.spanContext().traceId
-            : core.hexToBase64(span.spanContext().traceId),
-        spanId: useHex
-            ? span.spanContext().spanId
-            : core.hexToBase64(span.spanContext().spanId),
-        parentSpanId: span.parentSpanId
-            ? useHex
-                ? span.parentSpanId
-                : core.hexToBase64(span.parentSpanId)
-            : undefined,
-        traceState: toCollectorTraceState(span.spanContext().traceState),
-        name: span.name,
-        kind: toCollectorKind(span.kind),
-        startTimeUnixNano: core.hrTimeToNanoseconds(span.startTime),
-        endTimeUnixNano: core.hrTimeToNanoseconds(span.endTime),
-        attributes: toCollectorAttributes(span.attributes),
-        droppedAttributesCount: 0,
-        events: toCollectorEvents(span.events),
-        droppedEventsCount: 0,
-        status: toCollectorStatus(span.status),
-        links: toCollectorLinks(span, useHex),
-        droppedLinksCount: 0,
-    };
-}
-exports.toCollectorSpan = toCollectorSpan;
-/**
- * Converts status
- * @param status
- */
-function toCollectorStatus(status) {
-    const spanStatus = {
-        code: status.code,
-    };
-    if (typeof status.message !== 'undefined') {
-        spanStatus.message = status.message;
-    }
-    return spanStatus;
-}
-exports.toCollectorStatus = toCollectorStatus;
-/**
- * Converts resource
- * @param resource
- * @param additionalAttributes
- */
-function toCollectorResource(resource, additionalAttributes = {}) {
-    const attr = Object.assign({}, additionalAttributes, resource ? resource.attributes : {});
-    const resourceProto = {
-        attributes: toCollectorAttributes(attr),
-        droppedAttributesCount: 0,
-    };
-    return resourceProto;
-}
-exports.toCollectorResource = toCollectorResource;
-/**
- * Converts span kind
- * @param kind
- */
-function toCollectorKind(kind) {
-    const collectorKind = types_1.OTLP_SPAN_KIND_MAPPING[kind];
-    return typeof collectorKind === 'number'
-        ? collectorKind
-        : types_1.opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_UNSPECIFIED;
-}
-exports.toCollectorKind = toCollectorKind;
-/**
- * Converts traceState
- * @param traceState
- */
-function toCollectorTraceState(traceState) {
-    if (!traceState)
-        return undefined;
-    return traceState.serialize();
-}
-exports.toCollectorTraceState = toCollectorTraceState;
-/**
- * Prepares trace service request to be sent to collector
- * @param spans spans
- * @param collectorExporterBase
- * @param useHex - if ids should be kept as hex without converting to base64
- */
-function toOTLPExportTraceServiceRequest(spans, collectorTraceExporterBase, useHex) {
-    const groupedSpans = groupSpansByResourceAndLibrary(spans);
-    const additionalAttributes = Object.assign({}, collectorTraceExporterBase.attributes);
-    return {
-        resourceSpans: toCollectorResourceSpans(groupedSpans, additionalAttributes, useHex),
-    };
-}
-exports.toOTLPExportTraceServiceRequest = toOTLPExportTraceServiceRequest;
-/**
- * Takes an array of spans and groups them by resource and instrumentation
- * library
- * @param spans spans
- */
-function groupSpansByResourceAndLibrary(spans) {
-    return spans.reduce((spanMap, span) => {
-        //group by resource
-        let resourceSpans = spanMap.get(span.resource);
-        if (!resourceSpans) {
-            resourceSpans = new Map();
-            spanMap.set(span.resource, resourceSpans);
-        }
-        //group by instrumentation library
-        let libSpans = resourceSpans.get(span.instrumentationLibrary);
-        if (!libSpans) {
-            libSpans = new Array();
-            resourceSpans.set(span.instrumentationLibrary, libSpans);
-        }
-        libSpans.push(span);
-        return spanMap;
-    }, new Map());
-}
-exports.groupSpansByResourceAndLibrary = groupSpansByResourceAndLibrary;
-/**
- * Convert to InstrumentationLibrarySpans
- * @param instrumentationLibrary
- * @param spans
- * @param useHex - if ids should be kept as hex without converting to base64
- */
-function toCollectorInstrumentationLibrarySpans(instrumentationLibrary, spans, useHex) {
-    return {
-        spans: spans.map(span => toCollectorSpan(span, useHex)),
-        instrumentationLibrary,
-    };
-}
-/**
- * Returns a list of resource spans which will be exported to the collector
- * @param groupedSpans
- * @param baseAttributes
- * @param useHex - if ids should be kept as hex without converting to base64
- */
-function toCollectorResourceSpans(groupedSpans, baseAttributes, useHex) {
-    return Array.from(groupedSpans, ([resource, libSpans]) => {
-        return {
-            resource: toCollectorResource(resource, baseAttributes),
-            instrumentationLibrarySpans: Array.from(libSpans, ([instrumentationLibrary, spans]) => toCollectorInstrumentationLibrarySpans(instrumentationLibrary, spans, useHex)),
-        };
-    });
-}
-//# sourceMappingURL=transform.js.map
-
-/***/ }),
-
-/***/ 9981:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OTLP_SPAN_KIND_MAPPING = exports.OTLPExporterError = exports.opentelemetryProto = void 0;
-const api_1 = __nccwpck_require__(5163);
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-var opentelemetryProto;
-(function (opentelemetryProto) {
-    let metrics;
-    (function (metrics) {
-        let v1;
-        (function (v1) {
-            let AggregationTemporality;
-            (function (AggregationTemporality) {
-                // UNSPECIFIED is the default AggregationTemporality, it MUST not be used.
-                AggregationTemporality[AggregationTemporality["AGGREGATION_TEMPORALITY_UNSPECIFIED"] = 0] = "AGGREGATION_TEMPORALITY_UNSPECIFIED";
-                // DELTA is an AggregationTemporality for a metric aggregator which reports
-                // changes since last report time. Successive metrics contain aggregation of
-                // values from continuous and non-overlapping intervals.
-                //
-                // The values for a DELTA metric are based only on the time interval
-                // associated with one measurement cycle. There is no dependency on
-                // previous measurements like is the case for CUMULATIVE metrics.
-                //
-                // For example, consider a system measuring the number of requests that
-                // it receives and reports the sum of these requests every second as a
-                // DELTA metric:
-                //
-                //   1. The system starts receiving at time=t_0.
-                //   2. A request is received, the system measures 1 request.
-                //   3. A request is received, the system measures 1 request.
-                //   4. A request is received, the system measures 1 request.
-                //   5. The 1 second collection cycle ends. A metric is exported for the
-                //      number of requests received over the interval of time t_0 to
-                //      t_0+1 with a value of 3.
-                //   6. A request is received, the system measures 1 request.
-                //   7. A request is received, the system measures 1 request.
-                //   8. The 1 second collection cycle ends. A metric is exported for the
-                //      number of requests received over the interval of time t_0+1 to
-                //      t_0+2 with a value of 2.
-                AggregationTemporality[AggregationTemporality["AGGREGATION_TEMPORALITY_DELTA"] = 1] = "AGGREGATION_TEMPORALITY_DELTA";
-                // CUMULATIVE is an AggregationTemporality for a metric aggregator which
-                // reports changes since a fixed start time. This means that current values
-                // of a CUMULATIVE metric depend on all previous measurements since the
-                // start time. Because of this, the sender is required to retain this state
-                // in some form. If this state is lost or invalidated, the CUMULATIVE metric
-                // values MUST be reset and a new fixed start time following the last
-                // reported measurement time sent MUST be used.
-                //
-                // For example, consider a system measuring the number of requests that
-                // it receives and reports the sum of these requests every second as a
-                // CUMULATIVE metric:
-                //
-                //   1. The system starts receiving at time=t_0.
-                //   2. A request is received, the system measures 1 request.
-                //   3. A request is received, the system measures 1 request.
-                //   4. A request is received, the system measures 1 request.
-                //   5. The 1 second collection cycle ends. A metric is exported for the
-                //      number of requests received over the interval of time t_0 to
-                //      t_0+1 with a value of 3.
-                //   6. A request is received, the system measures 1 request.
-                //   7. A request is received, the system measures 1 request.
-                //   8. The 1 second collection cycle ends. A metric is exported for the
-                //      number of requests received over the interval of time t_0 to
-                //      t_0+2 with a value of 5.
-                //   9. The system experiences a fault and loses state.
-                //   10. The system recovers and resumes receiving at time=t_1.
-                //   11. A request is received, the system measures 1 request.
-                //   12. The 1 second collection cycle ends. A metric is exported for the
-                //      number of requests received over the interval of time t_1 to
-                //      t_0+1 with a value of 1.
-                //
-                // Note: Even though, when reporting changes since last report time, using
-                // CUMULATIVE is valid, it is not recommended. This may cause problems for
-                // systems that do not use start_time to determine when the aggregation
-                // value was reset (e.g. Prometheus).
-                AggregationTemporality[AggregationTemporality["AGGREGATION_TEMPORALITY_CUMULATIVE"] = 2] = "AGGREGATION_TEMPORALITY_CUMULATIVE";
-            })(AggregationTemporality = v1.AggregationTemporality || (v1.AggregationTemporality = {}));
-        })(v1 = metrics.v1 || (metrics.v1 = {}));
-    })(metrics = opentelemetryProto.metrics || (opentelemetryProto.metrics = {}));
-    let trace;
-    (function (trace) {
-        let v1;
-        (function (v1) {
-            let ConstantSampler;
-            (function (ConstantSampler) {
-                let ConstantDecision;
-                (function (ConstantDecision) {
-                    ConstantDecision[ConstantDecision["ALWAYS_OFF"] = 0] = "ALWAYS_OFF";
-                    ConstantDecision[ConstantDecision["ALWAYS_ON"] = 1] = "ALWAYS_ON";
-                    ConstantDecision[ConstantDecision["ALWAYS_PARENT"] = 2] = "ALWAYS_PARENT";
-                })(ConstantDecision = ConstantSampler.ConstantDecision || (ConstantSampler.ConstantDecision = {}));
-            })(ConstantSampler = v1.ConstantSampler || (v1.ConstantSampler = {}));
-            let Span;
-            (function (Span) {
-                // eslint-disable-next-line @typescript-eslint/no-shadow
-                let SpanKind;
-                (function (SpanKind) {
-                    SpanKind[SpanKind["SPAN_KIND_UNSPECIFIED"] = 0] = "SPAN_KIND_UNSPECIFIED";
-                    SpanKind[SpanKind["SPAN_KIND_INTERNAL"] = 1] = "SPAN_KIND_INTERNAL";
-                    SpanKind[SpanKind["SPAN_KIND_SERVER"] = 2] = "SPAN_KIND_SERVER";
-                    SpanKind[SpanKind["SPAN_KIND_CLIENT"] = 3] = "SPAN_KIND_CLIENT";
-                    SpanKind[SpanKind["SPAN_KIND_PRODUCER"] = 4] = "SPAN_KIND_PRODUCER";
-                    SpanKind[SpanKind["SPAN_KIND_CONSUMER"] = 5] = "SPAN_KIND_CONSUMER";
-                })(SpanKind = Span.SpanKind || (Span.SpanKind = {}));
-            })(Span = v1.Span || (v1.Span = {}));
-        })(v1 = trace.v1 || (trace.v1 = {}));
-    })(trace = opentelemetryProto.trace || (opentelemetryProto.trace = {}));
-    let common;
-    (function (common) {
-        let v1;
-        (function (v1) {
-            let ValueType;
-            (function (ValueType) {
-                ValueType[ValueType["STRING"] = 0] = "STRING";
-                ValueType[ValueType["INT"] = 1] = "INT";
-                ValueType[ValueType["DOUBLE"] = 2] = "DOUBLE";
-                ValueType[ValueType["BOOL"] = 3] = "BOOL";
-            })(ValueType = v1.ValueType || (v1.ValueType = {}));
-        })(v1 = common.v1 || (common.v1 = {}));
-    })(common = opentelemetryProto.common || (opentelemetryProto.common = {}));
-})(opentelemetryProto = exports.opentelemetryProto || (exports.opentelemetryProto = {}));
-/**
- * Interface for handling error
- */
-class OTLPExporterError extends Error {
-    constructor(message, code, data) {
-        super(message);
-        this.name = 'OTLPExporterError';
-        this.data = data;
-        this.code = code;
-    }
-}
-exports.OTLPExporterError = OTLPExporterError;
-/**
- * Mapping between api SpanKind and proto SpanKind
- */
-exports.OTLP_SPAN_KIND_MAPPING = {
-    [api_1.SpanKind.INTERNAL]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_INTERNAL,
-    [api_1.SpanKind.SERVER]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_SERVER,
-    [api_1.SpanKind.CLIENT]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_CLIENT,
-    [api_1.SpanKind.PRODUCER]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_PRODUCER,
-    [api_1.SpanKind.CONSUMER]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_CONSUMER,
-};
-//# sourceMappingURL=types.js.map
-
-/***/ }),
-
-/***/ 6109:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.appendResourcePathToUrlIfNotPresent = exports.parseHeaders = void 0;
-const api_1 = __nccwpck_require__(5163);
-/**
- * Parses headers from config leaving only those that have defined values
- * @param partialHeaders
- */
-function parseHeaders(partialHeaders = {}) {
-    const headers = {};
-    Object.entries(partialHeaders).forEach(([key, value]) => {
-        if (typeof value !== 'undefined') {
-            headers[key] = String(value);
-        }
-        else {
-            api_1.diag.warn(`Header "${key}" has wrong value and will be ignored`);
-        }
-    });
-    return headers;
-}
-exports.parseHeaders = parseHeaders;
-function appendResourcePathToUrlIfNotPresent(url, path) {
-    if (url.match(/v\d\/(traces|metrics)$/))
-        return url;
-    return url + path;
-}
-exports.appendResourcePathToUrlIfNotPresent = appendResourcePathToUrlIfNotPresent;
-//# sourceMappingURL=util.js.map
-
-/***/ }),
-
-/***/ 2723:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Resource = void 0;
-const semantic_conventions_1 = __nccwpck_require__(7275);
-const core_1 = __nccwpck_require__(9736);
-const platform_1 = __nccwpck_require__(7784);
-/**
- * A Resource describes the entity for which a signals (metrics or trace) are
- * collected.
- */
-class Resource {
-    constructor(
-    /**
-     * A dictionary of attributes with string keys and values that provide
-     * information about the entity as numbers, strings or booleans
-     * TODO: Consider to add check/validation on attributes.
-     */
-    attributes) {
-        this.attributes = attributes;
-    }
-    /**
-     * Returns an empty Resource
-     */
-    static empty() {
-        return Resource.EMPTY;
-    }
-    /**
-     * Returns a Resource that indentifies the SDK in use.
-     */
-    static default() {
-        return new Resource({
-            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_NAME]: platform_1.defaultServiceName(),
-            [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE]: core_1.SDK_INFO[semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE],
-            [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME]: core_1.SDK_INFO[semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME],
-            [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_VERSION]: core_1.SDK_INFO[semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_VERSION],
-        });
-    }
-    /**
-     * Returns a new, merged {@link Resource} by merging the current Resource
-     * with the other Resource. In case of a collision, other Resource takes
-     * precedence.
-     *
-     * @param other the Resource that will be merged with this.
-     * @returns the newly merged Resource.
-     */
-    merge(other) {
-        if (!other || !Object.keys(other.attributes).length)
-            return this;
-        // SpanAttributes from resource overwrite attributes from other resource.
-        const mergedAttributes = Object.assign({}, this.attributes, other.attributes);
-        return new Resource(mergedAttributes);
-    }
-}
-exports.Resource = Resource;
-Resource.EMPTY = new Resource({});
-//# sourceMappingURL=Resource.js.map
-
-/***/ }),
-
-/***/ 1565:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-//# sourceMappingURL=config.js.map
-
-/***/ }),
-
-/***/ 3871:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(2723), exports);
-__exportStar(__nccwpck_require__(7784), exports);
-__exportStar(__nccwpck_require__(9566), exports);
-__exportStar(__nccwpck_require__(1565), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 7784:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(342), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 5671:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.defaultServiceName = void 0;
-function defaultServiceName() {
-    return `unknown_service:${process.argv0}`;
-}
-exports.defaultServiceName = defaultServiceName;
-//# sourceMappingURL=default-service-name.js.map
-
-/***/ }),
-
-/***/ 6018:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.detectResources = void 0;
-const Resource_1 = __nccwpck_require__(2723);
-const api_1 = __nccwpck_require__(5163);
-const util = __nccwpck_require__(1669);
-/**
- * Runs all resource detectors and returns the results merged into a single
- * Resource.
- *
- * @param config Configuration for resource detection
- */
-const detectResources = async (config = {}) => {
-    const internalConfig = Object.assign(config);
-    const resources = await Promise.all((internalConfig.detectors || []).map(async (d) => {
-        try {
-            const resource = await d.detect(internalConfig);
-            api_1.diag.debug(`${d.constructor.name} found resource.`, resource);
-            return resource;
-        }
-        catch (e) {
-            api_1.diag.debug(`${d.constructor.name} failed: ${e.message}`);
-            return Resource_1.Resource.empty();
-        }
-    }));
-    // Future check if verbose logging is enabled issue #1903
-    logResources(resources);
-    return resources.reduce((acc, resource) => acc.merge(resource), Resource_1.Resource.empty());
-};
-exports.detectResources = detectResources;
-/**
- * Writes debug information about the detected resources to the logger defined in the resource detection config, if one is provided.
- *
- * @param resources The array of {@link Resource} that should be logged. Empty entried will be ignored.
- */
-const logResources = (resources) => {
-    resources.forEach(resource => {
-        // Print only populated resources
-        if (Object.keys(resource.attributes).length > 0) {
-            const resourceDebugString = util.inspect(resource.attributes, {
-                depth: 2,
-                breakLength: Infinity,
-                sorted: true,
-                compact: false,
-            });
-            api_1.diag.verbose(resourceDebugString);
-        }
-    });
-};
-//# sourceMappingURL=detect-resources.js.map
-
-/***/ }),
-
-/***/ 2636:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.envDetector = void 0;
-const api_1 = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-const semantic_conventions_1 = __nccwpck_require__(7275);
-const __1 = __nccwpck_require__(3871);
-/**
- * EnvDetector can be used to detect the presence of and create a Resource
- * from the OTEL_RESOURCE_ATTRIBUTES environment variable.
- */
-class EnvDetector {
-    constructor() {
-        // Type, attribute keys, and attribute values should not exceed 256 characters.
-        this._MAX_LENGTH = 255;
-        // OTEL_RESOURCE_ATTRIBUTES is a comma-separated list of attributes.
-        this._COMMA_SEPARATOR = ',';
-        // OTEL_RESOURCE_ATTRIBUTES contains key value pair separated by '='.
-        this._LABEL_KEY_VALUE_SPLITTER = '=';
-        this._ERROR_MESSAGE_INVALID_CHARS = 'should be a ASCII string with a length greater than 0 and not exceed ' +
-            this._MAX_LENGTH +
-            ' characters.';
-        this._ERROR_MESSAGE_INVALID_VALUE = 'should be a ASCII string with a length not exceed ' +
-            this._MAX_LENGTH +
-            ' characters.';
-    }
-    /**
-     * Returns a {@link Resource} populated with attributes from the
-     * OTEL_RESOURCE_ATTRIBUTES environment variable. Note this is an async
-     * function to conform to the Detector interface.
-     *
-     * @param config The resource detection config
-     */
-    async detect(_config) {
-        const attributes = {};
-        const env = core_1.getEnv();
-        const rawAttributes = env.OTEL_RESOURCE_ATTRIBUTES;
-        const serviceName = env.OTEL_SERVICE_NAME;
-        if (rawAttributes) {
-            try {
-                const parsedAttributes = this._parseResourceAttributes(rawAttributes);
-                Object.assign(attributes, parsedAttributes);
-            }
-            catch (e) {
-                api_1.diag.debug(`EnvDetector failed: ${e.message}`);
-            }
-        }
-        if (serviceName) {
-            attributes[semantic_conventions_1.SemanticResourceAttributes.SERVICE_NAME] = serviceName;
-        }
-        return new __1.Resource(attributes);
-    }
-    /**
-     * Creates an attribute map from the OTEL_RESOURCE_ATTRIBUTES environment
-     * variable.
-     *
-     * OTEL_RESOURCE_ATTRIBUTES: A comma-separated list of attributes describing
-     * the source in more detail, e.g. “key1=val1,key2=val2”. Domain names and
-     * paths are accepted as attribute keys. Values may be quoted or unquoted in
-     * general. If a value contains whitespaces, =, or " characters, it must
-     * always be quoted.
-     *
-     * @param rawEnvAttributes The resource attributes as a comma-seperated list
-     * of key/value pairs.
-     * @returns The sanitized resource attributes.
-     */
-    _parseResourceAttributes(rawEnvAttributes) {
-        if (!rawEnvAttributes)
-            return {};
-        const attributes = {};
-        const rawAttributes = rawEnvAttributes.split(this._COMMA_SEPARATOR, -1);
-        for (const rawAttribute of rawAttributes) {
-            const keyValuePair = rawAttribute.split(this._LABEL_KEY_VALUE_SPLITTER, -1);
-            if (keyValuePair.length !== 2) {
-                continue;
-            }
-            let [key, value] = keyValuePair;
-            // Leading and trailing whitespaces are trimmed.
-            key = key.trim();
-            value = value.trim().split('^"|"$').join('');
-            if (!this._isValidAndNotEmpty(key)) {
-                throw new Error(`Attribute key ${this._ERROR_MESSAGE_INVALID_CHARS}`);
-            }
-            if (!this._isValid(value)) {
-                throw new Error(`Attribute value ${this._ERROR_MESSAGE_INVALID_VALUE}`);
-            }
-            attributes[key] = value;
-        }
-        return attributes;
-    }
-    /**
-     * Determines whether the given String is a valid printable ASCII string with
-     * a length not exceed _MAX_LENGTH characters.
-     *
-     * @param str The String to be validated.
-     * @returns Whether the String is valid.
-     */
-    _isValid(name) {
-        return name.length <= this._MAX_LENGTH && this._isPrintableString(name);
-    }
-    _isPrintableString(str) {
-        for (let i = 0; i < str.length; i++) {
-            const ch = str.charAt(i);
-            if (ch <= ' ' || ch >= '~') {
-                return false;
-            }
-        }
-        return true;
-    }
-    /**
-     * Determines whether the given String is a valid printable ASCII string with
-     * a length greater than 0 and not exceed _MAX_LENGTH characters.
-     *
-     * @param str The String to be validated.
-     * @returns Whether the String is valid and not empty.
-     */
-    _isValidAndNotEmpty(str) {
-        return str.length > 0 && this._isValid(str);
-    }
-}
-exports.envDetector = new EnvDetector();
-//# sourceMappingURL=EnvDetector.js.map
-
-/***/ }),
-
-/***/ 6648:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.processDetector = void 0;
-const api_1 = __nccwpck_require__(5163);
-const semantic_conventions_1 = __nccwpck_require__(7275);
-const __1 = __nccwpck_require__(3871);
-/**
- * ProcessDetector will be used to detect the resources related current process running
- * and being instrumented from the NodeJS Process module.
- */
-class ProcessDetector {
-    async detect(config) {
-        const processResource = {
-            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_PID]: process.pid,
-            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_EXECUTABLE_NAME]: process.title || '',
-            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_COMMAND]: process.argv[1] || '',
-            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_COMMAND_LINE]: process.argv.join(' ') || '',
-        };
-        return this._getResourceAttributes(processResource, config);
-    }
-    /**
-     * Validates process resource attribute map from process varaibls
-     *
-     * @param processResource The unsantized resource attributes from process as key/value pairs.
-     * @param config: Config
-     * @returns The sanitized resource attributes.
-     */
-    _getResourceAttributes(processResource, _config) {
-        if (processResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_EXECUTABLE_NAME] ===
-            '' ||
-            processResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_EXECUTABLE_PATH] ===
-                '' ||
-            processResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_COMMAND] === '' ||
-            processResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_COMMAND_LINE] === '') {
-            api_1.diag.debug('ProcessDetector failed: Unable to find required process resources. ');
-            return __1.Resource.empty();
-        }
-        else {
-            return new __1.Resource(Object.assign({}, processResource));
-        }
-    }
-}
-exports.processDetector = new ProcessDetector();
-//# sourceMappingURL=ProcessDetector.js.map
-
-/***/ }),
-
-/***/ 4297:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(2636), exports);
-__exportStar(__nccwpck_require__(6648), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 342:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(5671), exports);
-__exportStar(__nccwpck_require__(6018), exports);
-__exportStar(__nccwpck_require__(4297), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 9566:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-//# sourceMappingURL=types.js.map
-
-/***/ }),
-
-/***/ 8920:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BasicTracerProvider = exports.ForceFlushState = void 0;
-const api_1 = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-const resources_1 = __nccwpck_require__(3871);
-const _1 = __nccwpck_require__(9253);
-const config_1 = __nccwpck_require__(91);
-const MultiSpanProcessor_1 = __nccwpck_require__(2352);
-const NoopSpanProcessor_1 = __nccwpck_require__(9252);
-const platform_1 = __nccwpck_require__(262);
-var ForceFlushState;
-(function (ForceFlushState) {
-    ForceFlushState[ForceFlushState["resolved"] = 0] = "resolved";
-    ForceFlushState[ForceFlushState["timeout"] = 1] = "timeout";
-    ForceFlushState[ForceFlushState["error"] = 2] = "error";
-    ForceFlushState[ForceFlushState["unresolved"] = 3] = "unresolved";
-})(ForceFlushState = exports.ForceFlushState || (exports.ForceFlushState = {}));
-/**
- * This class represents a basic tracer provider which platform libraries can extend
- */
-class BasicTracerProvider {
-    constructor(config = {}) {
-        var _a;
-        this._registeredSpanProcessors = [];
-        this._tracers = new Map();
-        const mergedConfig = core_1.merge({}, config_1.DEFAULT_CONFIG, config);
-        this.resource = (_a = mergedConfig.resource) !== null && _a !== void 0 ? _a : resources_1.Resource.empty();
-        this.resource = resources_1.Resource.default().merge(this.resource);
-        this._config = Object.assign({}, mergedConfig, {
-            resource: this.resource,
-        });
-        const defaultExporter = this._buildExporterFromEnv();
-        if (defaultExporter !== undefined) {
-            const batchProcessor = new platform_1.BatchSpanProcessor(defaultExporter);
-            this.activeSpanProcessor = batchProcessor;
-        }
-        else {
-            this.activeSpanProcessor = new NoopSpanProcessor_1.NoopSpanProcessor();
-        }
-    }
-    getTracer(name, version) {
-        const key = `${name}@${version || ''}`;
-        if (!this._tracers.has(key)) {
-            this._tracers.set(key, new _1.Tracer({ name, version }, this._config, this));
-        }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return this._tracers.get(key);
-    }
-    /**
-     * Adds a new {@link SpanProcessor} to this tracer.
-     * @param spanProcessor the new SpanProcessor to be added.
-     */
-    addSpanProcessor(spanProcessor) {
-        if (this._registeredSpanProcessors.length === 0) {
-            // since we might have enabled by default a batchProcessor, we disable it
-            // before adding the new one
-            this.activeSpanProcessor
-                .shutdown()
-                .catch(err => api_1.diag.error('Error while trying to shutdown current span processor', err));
-        }
-        this._registeredSpanProcessors.push(spanProcessor);
-        this.activeSpanProcessor = new MultiSpanProcessor_1.MultiSpanProcessor(this._registeredSpanProcessors);
-    }
-    getActiveSpanProcessor() {
-        return this.activeSpanProcessor;
-    }
-    /**
-     * Register this TracerProvider for use with the OpenTelemetry API.
-     * Undefined values may be replaced with defaults, and
-     * null values will be skipped.
-     *
-     * @param config Configuration object for SDK registration
-     */
-    register(config = {}) {
-        api_1.trace.setGlobalTracerProvider(this);
-        if (config.propagator === undefined) {
-            config.propagator = this._buildPropagatorFromEnv();
-        }
-        if (config.contextManager) {
-            api_1.context.setGlobalContextManager(config.contextManager);
-        }
-        if (config.propagator) {
-            api_1.propagation.setGlobalPropagator(config.propagator);
-        }
-    }
-    forceFlush() {
-        const timeout = this._config.forceFlushTimeoutMillis;
-        const promises = this._registeredSpanProcessors.map((spanProcessor) => {
-            return new Promise(resolve => {
-                let state;
-                const timeoutInterval = setTimeout(() => {
-                    resolve(new Error(`Span processor did not completed within timeout period of ${timeout} ms`));
-                    state = ForceFlushState.timeout;
-                }, timeout);
-                spanProcessor
-                    .forceFlush()
-                    .then(() => {
-                    clearTimeout(timeoutInterval);
-                    if (state !== ForceFlushState.timeout) {
-                        state = ForceFlushState.resolved;
-                        resolve(state);
-                    }
-                })
-                    .catch(error => {
-                    clearTimeout(timeoutInterval);
-                    state = ForceFlushState.error;
-                    resolve(error);
-                });
-            });
-        });
-        return new Promise((resolve, reject) => {
-            Promise.all(promises)
-                .then(results => {
-                const errors = results.filter(result => result !== ForceFlushState.resolved);
-                if (errors.length > 0) {
-                    reject(errors);
-                }
-                else {
-                    resolve();
-                }
-            })
-                .catch(error => reject([error]));
-        });
-    }
-    shutdown() {
-        return this.activeSpanProcessor.shutdown();
-    }
-    _getPropagator(name) {
-        var _a;
-        return (_a = BasicTracerProvider._registeredPropagators.get(name)) === null || _a === void 0 ? void 0 : _a();
-    }
-    _getSpanExporter(name) {
-        var _a;
-        return (_a = BasicTracerProvider._registeredExporters.get(name)) === null || _a === void 0 ? void 0 : _a();
-    }
-    _buildPropagatorFromEnv() {
-        // per spec, propagators from env must be deduplicated
-        const uniquePropagatorNames = Array.from(new Set(core_1.getEnv().OTEL_PROPAGATORS));
-        const propagators = uniquePropagatorNames.map(name => {
-            const propagator = this._getPropagator(name);
-            if (!propagator) {
-                api_1.diag.warn(`Propagator "${name}" requested through environment variable is unavailable.`);
-            }
-            return propagator;
-        });
-        const validPropagators = propagators.reduce((list, item) => {
-            if (item) {
-                list.push(item);
-            }
-            return list;
-        }, []);
-        if (validPropagators.length === 0) {
-            return;
-        }
-        else if (uniquePropagatorNames.length === 1) {
-            return validPropagators[0];
-        }
-        else {
-            return new core_1.CompositePropagator({
-                propagators: validPropagators,
-            });
-        }
-    }
-    _buildExporterFromEnv() {
-        const exporterName = core_1.getEnv().OTEL_TRACES_EXPORTER;
-        if (exporterName === 'none')
-            return;
-        const exporter = this._getSpanExporter(exporterName);
-        if (!exporter) {
-            api_1.diag.error(`Exporter "${exporterName}" requested through environment variable is unavailable.`);
-        }
-        return exporter;
-    }
-}
-exports.BasicTracerProvider = BasicTracerProvider;
-BasicTracerProvider._registeredPropagators = new Map([
-    ['tracecontext', () => new core_1.W3CTraceContextPropagator()],
-    ['baggage', () => new core_1.W3CBaggagePropagator()],
-]);
-BasicTracerProvider._registeredExporters = new Map();
-//# sourceMappingURL=BasicTracerProvider.js.map
-
-/***/ }),
-
-/***/ 2352:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.MultiSpanProcessor = void 0;
-const core_1 = __nccwpck_require__(9736);
-/**
- * Implementation of the {@link SpanProcessor} that simply forwards all
- * received events to a list of {@link SpanProcessor}s.
- */
-class MultiSpanProcessor {
-    constructor(_spanProcessors) {
-        this._spanProcessors = _spanProcessors;
-    }
-    forceFlush() {
-        const promises = [];
-        for (const spanProcessor of this._spanProcessors) {
-            promises.push(spanProcessor.forceFlush());
-        }
-        return new Promise(resolve => {
-            Promise.all(promises)
-                .then(() => {
-                resolve();
-            })
-                .catch(error => {
-                core_1.globalErrorHandler(error || new Error('MultiSpanProcessor: forceFlush failed'));
-                resolve();
-            });
-        });
-    }
-    onStart(span, context) {
-        for (const spanProcessor of this._spanProcessors) {
-            spanProcessor.onStart(span, context);
-        }
-    }
-    onEnd(span) {
-        for (const spanProcessor of this._spanProcessors) {
-            spanProcessor.onEnd(span);
-        }
-    }
-    shutdown() {
-        const promises = [];
-        for (const spanProcessor of this._spanProcessors) {
-            promises.push(spanProcessor.shutdown());
-        }
-        return new Promise((resolve, reject) => {
-            Promise.all(promises).then(() => {
-                resolve();
-            }, reject);
-        });
-    }
-}
-exports.MultiSpanProcessor = MultiSpanProcessor;
-//# sourceMappingURL=MultiSpanProcessor.js.map
-
-/***/ }),
-
-/***/ 9798:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Span = void 0;
-const api = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-const semantic_conventions_1 = __nccwpck_require__(7275);
-const enums_1 = __nccwpck_require__(5092);
-/**
- * This class represents a span.
- */
-class Span {
-    /** Constructs a new Span instance. */
-    constructor(parentTracer, context, spanName, spanContext, kind, parentSpanId, links = [], startTime = core_1.hrTime()) {
-        this.attributes = {};
-        this.links = [];
-        this.events = [];
-        this.status = {
-            code: api.SpanStatusCode.UNSET,
-        };
-        this.endTime = [0, 0];
-        this._ended = false;
-        this._duration = [-1, -1];
-        this.name = spanName;
-        this._spanContext = spanContext;
-        this.parentSpanId = parentSpanId;
-        this.kind = kind;
-        this.links = links;
-        this.startTime = core_1.timeInputToHrTime(startTime);
-        this.resource = parentTracer.resource;
-        this.instrumentationLibrary = parentTracer.instrumentationLibrary;
-        this._spanLimits = parentTracer.getSpanLimits();
-        this._spanProcessor = parentTracer.getActiveSpanProcessor();
-        this._spanProcessor.onStart(this, context);
-        this._attributeValueLengthLimit = this._spanLimits.attributeValueLengthLimit || 0;
-    }
-    spanContext() {
-        return this._spanContext;
-    }
-    setAttribute(key, value) {
-        if (value == null || this._isSpanEnded())
-            return this;
-        if (key.length === 0) {
-            api.diag.warn(`Invalid attribute key: ${key}`);
-            return this;
-        }
-        if (!core_1.isAttributeValue(value)) {
-            api.diag.warn(`Invalid attribute value set for key: ${key}`);
-            return this;
-        }
-        if (Object.keys(this.attributes).length >=
-            this._spanLimits.attributeCountLimit &&
-            !Object.prototype.hasOwnProperty.call(this.attributes, key)) {
-            return this;
-        }
-        this.attributes[key] = this._truncateToSize(value);
-        return this;
-    }
-    setAttributes(attributes) {
-        for (const [k, v] of Object.entries(attributes)) {
-            this.setAttribute(k, v);
-        }
-        return this;
-    }
-    /**
-     *
-     * @param name Span Name
-     * @param [attributesOrStartTime] Span attributes or start time
-     *     if type is {@type TimeInput} and 3rd param is undefined
-     * @param [startTime] Specified start time for the event
-     */
-    addEvent(name, attributesOrStartTime, startTime) {
-        if (this._isSpanEnded())
-            return this;
-        if (this.events.length >= this._spanLimits.eventCountLimit) {
-            api.diag.warn('Dropping extra events.');
-            this.events.shift();
-        }
-        if (core_1.isTimeInput(attributesOrStartTime)) {
-            if (typeof startTime === 'undefined') {
-                startTime = attributesOrStartTime;
-            }
-            attributesOrStartTime = undefined;
-        }
-        if (typeof startTime === 'undefined') {
-            startTime = core_1.hrTime();
-        }
-        this.events.push({
-            name,
-            attributes: attributesOrStartTime,
-            time: core_1.timeInputToHrTime(startTime),
-        });
-        return this;
-    }
-    setStatus(status) {
-        if (this._isSpanEnded())
-            return this;
-        this.status = status;
-        return this;
-    }
-    updateName(name) {
-        if (this._isSpanEnded())
-            return this;
-        this.name = name;
-        return this;
-    }
-    end(endTime = core_1.hrTime()) {
-        if (this._isSpanEnded()) {
-            api.diag.error('You can only call end() on a span once.');
-            return;
-        }
-        this._ended = true;
-        this.endTime = core_1.timeInputToHrTime(endTime);
-        this._duration = core_1.hrTimeDuration(this.startTime, this.endTime);
-        if (this._duration[0] < 0) {
-            api.diag.warn('Inconsistent start and end time, startTime > endTime', this.startTime, this.endTime);
-        }
-        this._spanProcessor.onEnd(this);
-    }
-    isRecording() {
-        return this._ended === false;
-    }
-    recordException(exception, time = core_1.hrTime()) {
-        const attributes = {};
-        if (typeof exception === 'string') {
-            attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_MESSAGE] = exception;
-        }
-        else if (exception) {
-            if (exception.code) {
-                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_TYPE] = exception.code.toString();
-            }
-            else if (exception.name) {
-                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_TYPE] = exception.name;
-            }
-            if (exception.message) {
-                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_MESSAGE] = exception.message;
-            }
-            if (exception.stack) {
-                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_STACKTRACE] = exception.stack;
-            }
-        }
-        // these are minimum requirements from spec
-        if (attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_TYPE] ||
-            attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_MESSAGE]) {
-            this.addEvent(enums_1.ExceptionEventName, attributes, time);
-        }
-        else {
-            api.diag.warn(`Failed to record an exception ${exception}`);
-        }
-    }
-    get duration() {
-        return this._duration;
-    }
-    get ended() {
-        return this._ended;
-    }
-    _isSpanEnded() {
-        if (this._ended) {
-            api.diag.warn(`Can not execute the operation on ended Span {traceId: ${this._spanContext.traceId}, spanId: ${this._spanContext.spanId}}`);
-        }
-        return this._ended;
-    }
-    // Utility function to truncate given value within size
-    // for value type of string, will truncate to given limit
-    // for type of non-string, will return same value
-    _truncateToLimitUtil(value, limit) {
-        if (value.length <= limit) {
-            return value;
-        }
-        return value.substr(0, limit);
-    }
-    /**
-     * If the given attribute value is of type string and has more characters than given {@code attributeValueLengthLimit} then
-     * return string with trucated to {@code attributeValueLengthLimit} characters
-     *
-     * If the given attribute value is array of strings then
-     * return new array of strings with each element truncated to {@code attributeValueLengthLimit} characters
-     *
-     * Otherwise return same Attribute {@code value}
-     *
-     * @param value Attribute value
-     * @returns truncated attribute value if required, otherwise same value
-     */
-    _truncateToSize(value) {
-        const limit = this._attributeValueLengthLimit;
-        // Check limit
-        if (limit <= 0) {
-            // Negative values are invalid, so do not truncate
-            api.diag.warn(`Attribute value limit must be positive, got ${limit}`);
-            return value;
-        }
-        // String
-        if (typeof value === 'string') {
-            return this._truncateToLimitUtil(value, limit);
-        }
-        // Array of strings
-        if (Array.isArray(value)) {
-            return value.map(val => typeof val === 'string' ? this._truncateToLimitUtil(val, limit) : val);
-        }
-        // Other types, no need to apply value length limit
-        return value;
-    }
-}
-exports.Span = Span;
-//# sourceMappingURL=Span.js.map
-
-/***/ }),
-
-/***/ 3502:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-//# sourceMappingURL=SpanProcessor.js.map
-
-/***/ }),
-
-/***/ 6598:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-//# sourceMappingURL=TimedEvent.js.map
-
-/***/ }),
-
-/***/ 3806:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Tracer = void 0;
-const api = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-const Span_1 = __nccwpck_require__(9798);
-const utility_1 = __nccwpck_require__(4324);
-/**
- * This class represents a basic tracer.
- */
-class Tracer {
-    /**
-     * Constructs a new Tracer instance.
-     */
-    constructor(instrumentationLibrary, config, _tracerProvider) {
-        this._tracerProvider = _tracerProvider;
-        const localConfig = utility_1.mergeConfig(config);
-        this._sampler = localConfig.sampler;
-        this._generalLimits = localConfig.generalLimits;
-        this._spanLimits = localConfig.spanLimits;
-        this._idGenerator = config.idGenerator || new core_1.RandomIdGenerator();
-        this.resource = _tracerProvider.resource;
-        this.instrumentationLibrary = instrumentationLibrary;
-    }
-    /**
-     * Starts a new Span or returns the default NoopSpan based on the sampling
-     * decision.
-     */
-    startSpan(name, options = {}, context = api.context.active()) {
-        var _a, _b;
-        if (core_1.isTracingSuppressed(context)) {
-            api.diag.debug('Instrumentation suppressed, returning Noop Span');
-            return api.trace.wrapSpanContext(api.INVALID_SPAN_CONTEXT);
-        }
-        const parentContext = getParent(options, context);
-        const spanId = this._idGenerator.generateSpanId();
-        let traceId;
-        let traceState;
-        let parentSpanId;
-        if (!parentContext || !api.trace.isSpanContextValid(parentContext)) {
-            // New root span.
-            traceId = this._idGenerator.generateTraceId();
-        }
-        else {
-            // New child span.
-            traceId = parentContext.traceId;
-            traceState = parentContext.traceState;
-            parentSpanId = parentContext.spanId;
-        }
-        const spanKind = (_a = options.kind) !== null && _a !== void 0 ? _a : api.SpanKind.INTERNAL;
-        const links = (_b = options.links) !== null && _b !== void 0 ? _b : [];
-        const attributes = core_1.sanitizeAttributes(options.attributes);
-        // make sampling decision
-        const samplingResult = this._sampler.shouldSample(options.root
-            ? api.trace.setSpanContext(context, api.INVALID_SPAN_CONTEXT)
-            : context, traceId, name, spanKind, attributes, links);
-        const traceFlags = samplingResult.decision === api.SamplingDecision.RECORD_AND_SAMPLED
-            ? api.TraceFlags.SAMPLED
-            : api.TraceFlags.NONE;
-        const spanContext = { traceId, spanId, traceFlags, traceState };
-        if (samplingResult.decision === api.SamplingDecision.NOT_RECORD) {
-            api.diag.debug('Recording is off, propagating context in a non-recording span');
-            return api.trace.wrapSpanContext(spanContext);
-        }
-        const span = new Span_1.Span(this, context, name, spanContext, spanKind, parentSpanId, links, options.startTime);
-        // Set default attributes
-        span.setAttributes(Object.assign(attributes, samplingResult.attributes));
-        return span;
-    }
-    startActiveSpan(name, arg2, arg3, arg4) {
-        let opts;
-        let ctx;
-        let fn;
-        if (arguments.length < 2) {
-            return;
-        }
-        else if (arguments.length === 2) {
-            fn = arg2;
-        }
-        else if (arguments.length === 3) {
-            opts = arg2;
-            fn = arg3;
-        }
-        else {
-            opts = arg2;
-            ctx = arg3;
-            fn = arg4;
-        }
-        const parentContext = ctx !== null && ctx !== void 0 ? ctx : api.context.active();
-        const span = this.startSpan(name, opts, parentContext);
-        const contextWithSpanSet = api.trace.setSpan(parentContext, span);
-        return api.context.with(contextWithSpanSet, fn, undefined, span);
-    }
-    /** Returns the active {@link GeneralLimits}. */
-    getGeneralLimits() {
-        return this._generalLimits;
-    }
-    /** Returns the active {@link SpanLimits}. */
-    getSpanLimits() {
-        return this._spanLimits;
-    }
-    getActiveSpanProcessor() {
-        return this._tracerProvider.getActiveSpanProcessor();
-    }
-}
-exports.Tracer = Tracer;
-/**
- * Get the parent to assign to a started span. If options.parent is null,
- * do not assign a parent.
- *
- * @param options span options
- * @param context context to check for parent
- */
-function getParent(options, context) {
-    if (options.root)
-        return undefined;
-    return api.trace.getSpanContext(context);
-}
-//# sourceMappingURL=Tracer.js.map
-
-/***/ }),
-
-/***/ 91:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.buildSamplerFromEnv = exports.DEFAULT_CONFIG = void 0;
-const api_1 = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-const env = core_1.getEnv();
-const FALLBACK_OTEL_TRACES_SAMPLER = core_1.TracesSamplerValues.AlwaysOn;
-const DEFAULT_RATIO = 1;
-/**
- * Default configuration. For fields with primitive values, any user-provided
- * value will override the corresponding default value. For fields with
- * non-primitive values (like `spanLimits`), the user-provided value will be
- * used to extend the default value.
- */
-exports.DEFAULT_CONFIG = {
-    sampler: buildSamplerFromEnv(env),
-    forceFlushTimeoutMillis: 30000,
-    generalLimits: {
-        attributeValueLengthLimit: core_1.getEnv().OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT,
-        attributeCountLimit: core_1.getEnv().OTEL_ATTRIBUTE_COUNT_LIMIT,
-    },
-    spanLimits: {
-        attributeValueLengthLimit: core_1.getEnv().OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT,
-        attributeCountLimit: core_1.getEnv().OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT,
-        linkCountLimit: core_1.getEnv().OTEL_SPAN_LINK_COUNT_LIMIT,
-        eventCountLimit: core_1.getEnv().OTEL_SPAN_EVENT_COUNT_LIMIT,
-    },
-};
-/**
- * Based on environment, builds a sampler, complies with specification.
- * @param environment optional, by default uses getEnv(), but allows passing a value to reuse parsed environment
- */
-function buildSamplerFromEnv(environment = core_1.getEnv()) {
-    switch (environment.OTEL_TRACES_SAMPLER) {
-        case core_1.TracesSamplerValues.AlwaysOn:
-            return new core_1.AlwaysOnSampler();
-        case core_1.TracesSamplerValues.AlwaysOff:
-            return new core_1.AlwaysOffSampler();
-        case core_1.TracesSamplerValues.ParentBasedAlwaysOn:
-            return new core_1.ParentBasedSampler({
-                root: new core_1.AlwaysOnSampler(),
-            });
-        case core_1.TracesSamplerValues.ParentBasedAlwaysOff:
-            return new core_1.ParentBasedSampler({
-                root: new core_1.AlwaysOffSampler(),
-            });
-        case core_1.TracesSamplerValues.TraceIdRatio:
-            return new core_1.TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment));
-        case core_1.TracesSamplerValues.ParentBasedTraceIdRatio:
-            return new core_1.ParentBasedSampler({
-                root: new core_1.TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment)),
-            });
-        default:
-            api_1.diag.error(`OTEL_TRACES_SAMPLER value "${environment.OTEL_TRACES_SAMPLER} invalid, defaulting to ${FALLBACK_OTEL_TRACES_SAMPLER}".`);
-            return new core_1.AlwaysOnSampler();
-    }
-}
-exports.buildSamplerFromEnv = buildSamplerFromEnv;
-function getSamplerProbabilityFromEnv(environment) {
-    if (environment.OTEL_TRACES_SAMPLER_ARG === undefined ||
-        environment.OTEL_TRACES_SAMPLER_ARG === '') {
-        api_1.diag.error(`OTEL_TRACES_SAMPLER_ARG is blank, defaulting to ${DEFAULT_RATIO}.`);
-        return DEFAULT_RATIO;
-    }
-    const probability = Number(environment.OTEL_TRACES_SAMPLER_ARG);
-    if (isNaN(probability)) {
-        api_1.diag.error(`OTEL_TRACES_SAMPLER_ARG=${environment.OTEL_TRACES_SAMPLER_ARG} was given, but it is invalid, defaulting to ${DEFAULT_RATIO}.`);
-        return DEFAULT_RATIO;
-    }
-    if (probability < 0 || probability > 1) {
-        api_1.diag.error(`OTEL_TRACES_SAMPLER_ARG=${environment.OTEL_TRACES_SAMPLER_ARG} was given, but it is out of range ([0..1]), defaulting to ${DEFAULT_RATIO}.`);
-        return DEFAULT_RATIO;
-    }
-    return probability;
-}
-//# sourceMappingURL=config.js.map
-
-/***/ }),
-
-/***/ 5092:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ExceptionEventName = void 0;
-// Event name definitions
-exports.ExceptionEventName = 'exception';
-//# sourceMappingURL=enums.js.map
-
-/***/ }),
-
-/***/ 9727:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BatchSpanProcessorBase = void 0;
-const api_1 = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-/**
- * Implementation of the {@link SpanProcessor} that batches spans exported by
- * the SDK then pushes them to the exporter pipeline.
- */
-class BatchSpanProcessorBase {
-    constructor(_exporter, config) {
-        this._exporter = _exporter;
-        this._finishedSpans = [];
-        this._isShutdown = false;
-        this._shuttingDownPromise = Promise.resolve();
-        const env = core_1.getEnv();
-        this._maxExportBatchSize =
-            typeof (config === null || config === void 0 ? void 0 : config.maxExportBatchSize) === 'number'
-                ? config.maxExportBatchSize
-                : env.OTEL_BSP_MAX_EXPORT_BATCH_SIZE;
-        this._maxQueueSize =
-            typeof (config === null || config === void 0 ? void 0 : config.maxQueueSize) === 'number'
-                ? config.maxQueueSize
-                : env.OTEL_BSP_MAX_QUEUE_SIZE;
-        this._scheduledDelayMillis =
-            typeof (config === null || config === void 0 ? void 0 : config.scheduledDelayMillis) === 'number'
-                ? config.scheduledDelayMillis
-                : env.OTEL_BSP_SCHEDULE_DELAY;
-        this._exportTimeoutMillis =
-            typeof (config === null || config === void 0 ? void 0 : config.exportTimeoutMillis) === 'number'
-                ? config.exportTimeoutMillis
-                : env.OTEL_BSP_EXPORT_TIMEOUT;
-    }
-    forceFlush() {
-        if (this._isShutdown) {
-            return this._shuttingDownPromise;
-        }
-        return this._flushAll();
-    }
-    // does nothing.
-    onStart(_span) { }
-    onEnd(span) {
-        if (this._isShutdown) {
-            return;
-        }
-        if ((span.spanContext().traceFlags & api_1.TraceFlags.SAMPLED) === 0) {
-            return;
-        }
-        this._addToBuffer(span);
-    }
-    shutdown() {
-        if (this._isShutdown) {
-            return this._shuttingDownPromise;
-        }
-        this._isShutdown = true;
-        this._shuttingDownPromise = new Promise((resolve, reject) => {
-            Promise.resolve()
-                .then(() => {
-                return this.onShutdown();
-            })
-                .then(() => {
-                return this._flushAll();
-            })
-                .then(() => {
-                return this._exporter.shutdown();
-            })
-                .then(resolve)
-                .catch(e => {
-                reject(e);
-            });
-        });
-        return this._shuttingDownPromise;
-    }
-    /** Add a span in the buffer. */
-    _addToBuffer(span) {
-        if (this._finishedSpans.length >= this._maxQueueSize) {
-            // limit reached, drop span
-            return;
-        }
-        this._finishedSpans.push(span);
-        this._maybeStartTimer();
-    }
-    /**
-     * Send all spans to the exporter respecting the batch size limit
-     * This function is used only on forceFlush or shutdown,
-     * for all other cases _flush should be used
-     * */
-    _flushAll() {
-        return new Promise((resolve, reject) => {
-            const promises = [];
-            // calculate number of batches
-            const count = Math.ceil(this._finishedSpans.length / this._maxExportBatchSize);
-            for (let i = 0, j = count; i < j; i++) {
-                promises.push(this._flushOneBatch());
-            }
-            Promise.all(promises)
-                .then(() => {
-                resolve();
-            })
-                .catch(reject);
-        });
-    }
-    _flushOneBatch() {
-        this._clearTimer();
-        if (this._finishedSpans.length === 0) {
-            return Promise.resolve();
-        }
-        return new Promise((resolve, reject) => {
-            const timer = setTimeout(() => {
-                // don't wait anymore for export, this way the next batch can start
-                reject(new Error('Timeout'));
-            }, this._exportTimeoutMillis);
-            // prevent downstream exporter calls from generating spans
-            api_1.context.with(core_1.suppressTracing(api_1.context.active()), () => {
-                // Reset the finished spans buffer here because the next invocations of the _flush method
-                // could pass the same finished spans to the exporter if the buffer is cleared
-                // outside of the execution of this callback.
-                this._exporter.export(this._finishedSpans.splice(0, this._maxExportBatchSize), result => {
-                    var _a;
-                    clearTimeout(timer);
-                    if (result.code === core_1.ExportResultCode.SUCCESS) {
-                        resolve();
-                    }
-                    else {
-                        reject((_a = result.error) !== null && _a !== void 0 ? _a : new Error('BatchSpanProcessor: span export failed'));
-                    }
-                });
-            });
-        });
-    }
-    _maybeStartTimer() {
-        if (this._timer !== undefined)
-            return;
-        this._timer = setTimeout(() => {
-            this._flushOneBatch()
-                .then(() => {
-                if (this._finishedSpans.length > 0) {
-                    this._clearTimer();
-                    this._maybeStartTimer();
-                }
-            })
-                .catch(e => {
-                core_1.globalErrorHandler(e);
-            });
-        }, this._scheduledDelayMillis);
-        core_1.unrefTimer(this._timer);
-    }
-    _clearTimer() {
-        if (this._timer !== undefined) {
-            clearTimeout(this._timer);
-            this._timer = undefined;
-        }
-    }
-}
-exports.BatchSpanProcessorBase = BatchSpanProcessorBase;
-//# sourceMappingURL=BatchSpanProcessorBase.js.map
-
-/***/ }),
-
-/***/ 6784:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ConsoleSpanExporter = void 0;
-const core_1 = __nccwpck_require__(9736);
-/**
- * This is implementation of {@link SpanExporter} that prints spans to the
- * console. This class can be used for diagnostic purposes.
- */
-/* eslint-disable no-console */
-class ConsoleSpanExporter {
-    /**
-     * Export spans.
-     * @param spans
-     * @param resultCallback
-     */
-    export(spans, resultCallback) {
-        return this._sendSpans(spans, resultCallback);
-    }
-    /**
-     * Shutdown the exporter.
-     */
-    shutdown() {
-        this._sendSpans([]);
-        return Promise.resolve();
-    }
-    /**
-     * converts span info into more readable format
-     * @param span
-     */
-    _exportInfo(span) {
-        return {
-            traceId: span.spanContext().traceId,
-            parentId: span.parentSpanId,
-            name: span.name,
-            id: span.spanContext().spanId,
-            kind: span.kind,
-            timestamp: core_1.hrTimeToMicroseconds(span.startTime),
-            duration: core_1.hrTimeToMicroseconds(span.duration),
-            attributes: span.attributes,
-            status: span.status,
-            events: span.events,
-        };
-    }
-    /**
-     * Showing spans in console
-     * @param spans
-     * @param done
-     */
-    _sendSpans(spans, done) {
-        for (const span of spans) {
-            console.log(this._exportInfo(span));
-        }
-        if (done) {
-            return done({ code: core_1.ExportResultCode.SUCCESS });
-        }
-    }
-}
-exports.ConsoleSpanExporter = ConsoleSpanExporter;
-//# sourceMappingURL=ConsoleSpanExporter.js.map
-
-/***/ }),
-
-/***/ 4093:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.InMemorySpanExporter = void 0;
-const core_1 = __nccwpck_require__(9736);
-/**
- * This class can be used for testing purposes. It stores the exported spans
- * in a list in memory that can be retrieved using the `getFinishedSpans()`
- * method.
- */
-class InMemorySpanExporter {
-    constructor() {
-        this._finishedSpans = [];
-        /**
-         * Indicates if the exporter has been "shutdown."
-         * When false, exported spans will not be stored in-memory.
-         */
-        this._stopped = false;
-    }
-    export(spans, resultCallback) {
-        if (this._stopped)
-            return resultCallback({
-                code: core_1.ExportResultCode.FAILED,
-                error: new Error('Exporter has been stopped'),
-            });
-        this._finishedSpans.push(...spans);
-        setTimeout(() => resultCallback({ code: core_1.ExportResultCode.SUCCESS }), 0);
-    }
-    shutdown() {
-        this._stopped = true;
-        this._finishedSpans = [];
-        return Promise.resolve();
-    }
-    reset() {
-        this._finishedSpans = [];
-    }
-    getFinishedSpans() {
-        return this._finishedSpans;
-    }
-}
-exports.InMemorySpanExporter = InMemorySpanExporter;
-//# sourceMappingURL=InMemorySpanExporter.js.map
-
-/***/ }),
-
-/***/ 9252:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NoopSpanProcessor = void 0;
-/** No-op implementation of SpanProcessor */
-class NoopSpanProcessor {
-    onStart(_span, _context) { }
-    onEnd(_span) { }
-    shutdown() {
-        return Promise.resolve();
-    }
-    forceFlush() {
-        return Promise.resolve();
-    }
-}
-exports.NoopSpanProcessor = NoopSpanProcessor;
-//# sourceMappingURL=NoopSpanProcessor.js.map
-
-/***/ }),
-
-/***/ 5561:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-//# sourceMappingURL=ReadableSpan.js.map
-
-/***/ }),
-
-/***/ 9802:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SimpleSpanProcessor = void 0;
-const api_1 = __nccwpck_require__(5163);
-const core_1 = __nccwpck_require__(9736);
-/**
- * An implementation of the {@link SpanProcessor} that converts the {@link Span}
- * to {@link ReadableSpan} and passes it to the configured exporter.
- *
- * Only spans that are sampled are converted.
- */
-class SimpleSpanProcessor {
-    constructor(_exporter) {
-        this._exporter = _exporter;
-        this._isShutdown = false;
-        this._shuttingDownPromise = Promise.resolve();
-    }
-    forceFlush() {
-        // do nothing as all spans are being exported without waiting
-        return Promise.resolve();
-    }
-    // does nothing.
-    onStart(_span) { }
-    onEnd(span) {
-        if (this._isShutdown) {
-            return;
-        }
-        if ((span.spanContext().traceFlags & api_1.TraceFlags.SAMPLED) === 0) {
-            return;
-        }
-        // prevent downstream exporter calls from generating spans
-        api_1.context.with(core_1.suppressTracing(api_1.context.active()), () => {
-            this._exporter.export([span], result => {
-                var _a;
-                if (result.code !== core_1.ExportResultCode.SUCCESS) {
-                    core_1.globalErrorHandler((_a = result.error) !== null && _a !== void 0 ? _a : new Error(`SimpleSpanProcessor: span export failed (status ${result})`));
-                }
-            });
-        });
-    }
-    shutdown() {
-        if (this._isShutdown) {
-            return this._shuttingDownPromise;
-        }
-        this._isShutdown = true;
-        this._shuttingDownPromise = new Promise((resolve, reject) => {
-            Promise.resolve()
-                .then(() => {
-                return this._exporter.shutdown();
-            })
-                .then(resolve)
-                .catch(e => {
-                reject(e);
-            });
-        });
-        return this._shuttingDownPromise;
-    }
-}
-exports.SimpleSpanProcessor = SimpleSpanProcessor;
-//# sourceMappingURL=SimpleSpanProcessor.js.map
-
-/***/ }),
-
-/***/ 4570:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-//# sourceMappingURL=SpanExporter.js.map
-
-/***/ }),
-
-/***/ 9253:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(3806), exports);
-__exportStar(__nccwpck_require__(8920), exports);
-__exportStar(__nccwpck_require__(262), exports);
-__exportStar(__nccwpck_require__(6784), exports);
-__exportStar(__nccwpck_require__(4093), exports);
-__exportStar(__nccwpck_require__(5561), exports);
-__exportStar(__nccwpck_require__(9802), exports);
-__exportStar(__nccwpck_require__(4570), exports);
-__exportStar(__nccwpck_require__(9252), exports);
-__exportStar(__nccwpck_require__(9798), exports);
-__exportStar(__nccwpck_require__(3502), exports);
-__exportStar(__nccwpck_require__(6598), exports);
-__exportStar(__nccwpck_require__(9068), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 262:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(6573), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 7913:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BatchSpanProcessor = void 0;
-const BatchSpanProcessorBase_1 = __nccwpck_require__(9727);
-class BatchSpanProcessor extends BatchSpanProcessorBase_1.BatchSpanProcessorBase {
-    onShutdown() { }
-}
-exports.BatchSpanProcessor = BatchSpanProcessor;
-//# sourceMappingURL=BatchSpanProcessor.js.map
-
-/***/ }),
-
-/***/ 6573:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(7913), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 9068:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-//# sourceMappingURL=types.js.map
-
-/***/ }),
-
-/***/ 4324:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mergeConfig = void 0;
-const core_1 = __nccwpck_require__(9736);
-const config_1 = __nccwpck_require__(91);
-/**
- * Function to merge Default configuration (as specified in './config') with
- * user provided configurations.
- */
-function mergeConfig(userConfig) {
-    const perInstanceDefaults = {
-        sampler: config_1.buildSamplerFromEnv(),
-    };
-    const target = Object.assign({}, config_1.DEFAULT_CONFIG, perInstanceDefaults, userConfig);
-    target.generalLimits = Object.assign({}, config_1.DEFAULT_CONFIG.generalLimits, userConfig.generalLimits || {});
-    target.spanLimits = Object.assign({}, config_1.DEFAULT_CONFIG.spanLimits, userConfig.spanLimits || {});
-    /**
-     * When span attribute count limit is not defined, but general attribute count limit is defined
-     * Then, span attribute count limit will be same as general one
-     */
-    if (target.spanLimits.attributeCountLimit === core_1.DEFAULT_ATTRIBUTE_COUNT_LIMIT && target.generalLimits.attributeCountLimit !== core_1.DEFAULT_ATTRIBUTE_COUNT_LIMIT) {
-        target.spanLimits.attributeCountLimit = target.generalLimits.attributeCountLimit;
-    }
-    /**
-     * When span attribute value length limit is not defined, but general attribute value length limit is defined
-     * Then, span attribute value length limit will be same as general one
-     */
-    if (target.spanLimits.attributeValueLengthLimit === core_1.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT && target.generalLimits.attributeValueLengthLimit !== core_1.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT) {
-        target.spanLimits.attributeValueLengthLimit = target.generalLimits.attributeValueLengthLimit;
-    }
-    return target;
-}
-exports.mergeConfig = mergeConfig;
-//# sourceMappingURL=utility.js.map
-
-/***/ }),
-
-/***/ 7275:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-/*
- * Copyright The OpenTelemetry Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(5836), exports);
-__exportStar(__nccwpck_require__(2834), exports);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 5003:
+/***/ 37276:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -25986,7 +25136,7 @@ exports.TelemetrySdkLanguageValues = {
 
 /***/ }),
 
-/***/ 2834:
+/***/ 43898:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -26017,12 +25167,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-__exportStar(__nccwpck_require__(5003), exports);
+__exportStar(__nccwpck_require__(37276), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 9943:
+/***/ 37732:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -26916,7 +26066,7 @@ exports.MessageTypeValues = {
 
 /***/ }),
 
-/***/ 5836:
+/***/ 26013:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -26947,7 +26097,9002 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-__exportStar(__nccwpck_require__(9943), exports);
+__exportStar(__nccwpck_require__(37732), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 74020:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OTLPExporterBase = void 0;
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(85797);
+/**
+ * Collector Exporter abstract base class
+ */
+class OTLPExporterBase {
+    /**
+     * @param config
+     */
+    constructor(config = {}) {
+        this._isShutdown = false;
+        this._shuttingDownPromise = Promise.resolve();
+        this._sendingPromises = [];
+        this.url = this.getDefaultUrl(config);
+        if (typeof config.hostname === 'string') {
+            this.hostname = config.hostname;
+        }
+        this.attributes = config.attributes;
+        this.shutdown = this.shutdown.bind(this);
+        this._concurrencyLimit =
+            typeof config.concurrencyLimit === 'number'
+                ? config.concurrencyLimit
+                : Infinity;
+        // platform dependent
+        this.onInit(config);
+    }
+    /**
+     * Export items.
+     * @param items
+     * @param resultCallback
+     */
+    export(items, resultCallback) {
+        if (this._isShutdown) {
+            resultCallback({
+                code: core_1.ExportResultCode.FAILED,
+                error: new Error('Exporter has been shutdown'),
+            });
+            return;
+        }
+        if (this._sendingPromises.length >= this._concurrencyLimit) {
+            resultCallback({
+                code: core_1.ExportResultCode.FAILED,
+                error: new Error('Concurrent export limit reached'),
+            });
+            return;
+        }
+        this._export(items)
+            .then(() => {
+            resultCallback({ code: core_1.ExportResultCode.SUCCESS });
+        })
+            .catch((error) => {
+            resultCallback({ code: core_1.ExportResultCode.FAILED, error });
+        });
+    }
+    _export(items) {
+        return new Promise((resolve, reject) => {
+            try {
+                api_1.diag.debug('items to be sent', items);
+                this.send(items, resolve, reject);
+            }
+            catch (e) {
+                reject(e);
+            }
+        });
+    }
+    /**
+     * Shutdown the exporter.
+     */
+    shutdown() {
+        if (this._isShutdown) {
+            api_1.diag.debug('shutdown already started');
+            return this._shuttingDownPromise;
+        }
+        this._isShutdown = true;
+        api_1.diag.debug('shutdown started');
+        this._shuttingDownPromise = new Promise((resolve, reject) => {
+            Promise.resolve()
+                .then(() => {
+                return this.onShutdown();
+            })
+                .then(() => {
+                return Promise.all(this._sendingPromises);
+            })
+                .then(() => {
+                resolve();
+            })
+                .catch(e => {
+                reject(e);
+            });
+        });
+        return this._shuttingDownPromise;
+    }
+}
+exports.OTLPExporterBase = OTLPExporterBase;
+//# sourceMappingURL=OTLPExporterBase.js.map
+
+/***/ }),
+
+/***/ 35401:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.appendResourcePathToUrlIfNotPresent = exports.toOTLPExportTraceServiceRequest = exports.toCollectorResource = exports.otlpTypes = void 0;
+__exportStar(__nccwpck_require__(74020), exports);
+__exportStar(__nccwpck_require__(96437), exports);
+exports.otlpTypes = __nccwpck_require__(29981);
+var transform_1 = __nccwpck_require__(73128);
+Object.defineProperty(exports, "toCollectorResource", ({ enumerable: true, get: function () { return transform_1.toCollectorResource; } }));
+Object.defineProperty(exports, "toOTLPExportTraceServiceRequest", ({ enumerable: true, get: function () { return transform_1.toOTLPExportTraceServiceRequest; } }));
+var util_1 = __nccwpck_require__(66109);
+Object.defineProperty(exports, "appendResourcePathToUrlIfNotPresent", ({ enumerable: true, get: function () { return util_1.appendResourcePathToUrlIfNotPresent; } }));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 64221:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OTLPExporterBrowserBase = void 0;
+const OTLPExporterBase_1 = __nccwpck_require__(74020);
+const util_1 = __nccwpck_require__(66109);
+const util_2 = __nccwpck_require__(18690);
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(85797);
+/**
+ * Collector Metric Exporter abstract base class
+ */
+class OTLPExporterBrowserBase extends OTLPExporterBase_1.OTLPExporterBase {
+    /**
+     * @param config
+     */
+    constructor(config = {}) {
+        super(config);
+        this._useXHR = false;
+        this._useXHR =
+            !!config.headers || typeof navigator.sendBeacon !== 'function';
+        if (this._useXHR) {
+            this._headers = Object.assign({}, util_1.parseHeaders(config.headers), core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_HEADERS));
+        }
+        else {
+            this._headers = {};
+        }
+    }
+    onInit() {
+        window.addEventListener('unload', this.shutdown);
+    }
+    onShutdown() {
+        window.removeEventListener('unload', this.shutdown);
+    }
+    send(items, onSuccess, onError) {
+        if (this._isShutdown) {
+            api_1.diag.debug('Shutdown already started. Cannot send objects');
+            return;
+        }
+        const serviceRequest = this.convert(items);
+        const body = JSON.stringify(serviceRequest);
+        const promise = new Promise((resolve, reject) => {
+            if (this._useXHR) {
+                util_2.sendWithXhr(body, this.url, this._headers, resolve, reject);
+            }
+            else {
+                util_2.sendWithBeacon(body, this.url, { type: 'application/json' }, resolve, reject);
+            }
+        })
+            .then(onSuccess, onError);
+        this._sendingPromises.push(promise);
+        const popPromise = () => {
+            const index = this._sendingPromises.indexOf(promise);
+            this._sendingPromises.splice(index, 1);
+        };
+        promise.then(popPromise, popPromise);
+    }
+}
+exports.OTLPExporterBrowserBase = OTLPExporterBrowserBase;
+//# sourceMappingURL=OTLPExporterBrowserBase.js.map
+
+/***/ }),
+
+/***/ 91467:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OTLPTraceExporter = void 0;
+const OTLPExporterBrowserBase_1 = __nccwpck_require__(64221);
+const transform_1 = __nccwpck_require__(73128);
+const core_1 = __nccwpck_require__(85797);
+const util_1 = __nccwpck_require__(66109);
+const DEFAULT_COLLECTOR_RESOURCE_PATH = '/v1/traces';
+const DEFAULT_COLLECTOR_URL = `http://localhost:55681${DEFAULT_COLLECTOR_RESOURCE_PATH}`;
+/**
+ * Collector Trace Exporter for Web
+ */
+class OTLPTraceExporter extends OTLPExporterBrowserBase_1.OTLPExporterBrowserBase {
+    constructor(config = {}) {
+        super(config);
+        this._headers = Object.assign(this._headers, core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_HEADERS));
+    }
+    convert(spans) {
+        return transform_1.toOTLPExportTraceServiceRequest(spans, this, true);
+    }
+    getDefaultUrl(config) {
+        return typeof config.url === 'string'
+            ? config.url
+            : core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT.length > 0
+                ? core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+                : core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0
+                    ? util_1.appendResourcePathToUrlIfNotPresent(core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT, DEFAULT_COLLECTOR_RESOURCE_PATH)
+                    : DEFAULT_COLLECTOR_URL;
+    }
+}
+exports.OTLPTraceExporter = OTLPTraceExporter;
+//# sourceMappingURL=OTLPTraceExporter.js.map
+
+/***/ }),
+
+/***/ 66155:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(91467), exports);
+__exportStar(__nccwpck_require__(64221), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 18690:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.sendWithXhr = exports.sendWithBeacon = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+const api_1 = __nccwpck_require__(65163);
+const otlpTypes = __nccwpck_require__(29981);
+/**
+ * Send metrics/spans using browser navigator.sendBeacon
+ * @param body
+ * @param onSuccess
+ * @param onError
+ */
+function sendWithBeacon(body, url, blobPropertyBag, onSuccess, onError) {
+    if (navigator.sendBeacon(url, new Blob([body], blobPropertyBag))) {
+        api_1.diag.debug('sendBeacon - can send', body);
+        onSuccess();
+    }
+    else {
+        const error = new otlpTypes.OTLPExporterError(`sendBeacon - cannot send ${body}`);
+        onError(error);
+    }
+}
+exports.sendWithBeacon = sendWithBeacon;
+/**
+ * function to send metrics/spans using browser XMLHttpRequest
+ *     used when navigator.sendBeacon is not available
+ * @param body
+ * @param onSuccess
+ * @param onError
+ */
+function sendWithXhr(body, url, headers, onSuccess, onError) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    const defaultHeaders = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    };
+    Object.entries(Object.assign(Object.assign({}, defaultHeaders), headers)).forEach(([k, v]) => {
+        xhr.setRequestHeader(k, v);
+    });
+    xhr.send(body);
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status >= 200 && xhr.status <= 299) {
+                api_1.diag.debug('xhr success', body);
+                onSuccess();
+            }
+            else {
+                const error = new otlpTypes.OTLPExporterError(`Failed to export with XHR (status: ${xhr.status})`, xhr.status);
+                onError(error);
+            }
+        }
+    };
+}
+exports.sendWithXhr = sendWithXhr;
+//# sourceMappingURL=util.js.map
+
+/***/ }),
+
+/***/ 96437:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OTLPExporterBrowserBase = void 0;
+__exportStar(__nccwpck_require__(90081), exports);
+var browser_1 = __nccwpck_require__(66155);
+Object.defineProperty(exports, "OTLPExporterBrowserBase", ({ enumerable: true, get: function () { return browser_1.OTLPExporterBrowserBase; } }));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 54574:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OTLPExporterNodeBase = void 0;
+const OTLPExporterBase_1 = __nccwpck_require__(74020);
+const types_1 = __nccwpck_require__(5726);
+const util_1 = __nccwpck_require__(66109);
+const util_2 = __nccwpck_require__(52847);
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(85797);
+/**
+ * Collector Metric Exporter abstract base class
+ */
+class OTLPExporterNodeBase extends OTLPExporterBase_1.OTLPExporterBase {
+    constructor(config = {}) {
+        super(config);
+        this.DEFAULT_HEADERS = {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (config.metadata) {
+            api_1.diag.warn('Metadata cannot be set when using http');
+        }
+        this.headers = Object.assign(this.DEFAULT_HEADERS, util_1.parseHeaders(config.headers), core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_HEADERS));
+        this.agent = util_2.createHttpAgent(config);
+        this.compression = config.compression || types_1.CompressionAlgorithm.NONE;
+    }
+    onInit(_config) {
+        this._isShutdown = false;
+    }
+    send(objects, onSuccess, onError) {
+        if (this._isShutdown) {
+            api_1.diag.debug('Shutdown already started. Cannot send objects');
+            return;
+        }
+        const serviceRequest = this.convert(objects);
+        const promise = new Promise((resolve, reject) => {
+            util_2.sendWithHttp(this, JSON.stringify(serviceRequest), 'application/json', resolve, reject);
+        })
+            .then(onSuccess, onError);
+        this._sendingPromises.push(promise);
+        const popPromise = () => {
+            const index = this._sendingPromises.indexOf(promise);
+            this._sendingPromises.splice(index, 1);
+        };
+        promise.then(popPromise, popPromise);
+    }
+    // TODO: end gzip stream from util.ts if not undefined
+    // It should perhaps be a class member here instead of a variable in util.ts
+    onShutdown() { }
+}
+exports.OTLPExporterNodeBase = OTLPExporterNodeBase;
+//# sourceMappingURL=OTLPExporterNodeBase.js.map
+
+/***/ }),
+
+/***/ 19377:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OTLPTraceExporter = void 0;
+const OTLPExporterNodeBase_1 = __nccwpck_require__(54574);
+const transform_1 = __nccwpck_require__(73128);
+const core_1 = __nccwpck_require__(85797);
+const util_1 = __nccwpck_require__(66109);
+const DEFAULT_COLLECTOR_RESOURCE_PATH = '/v1/traces';
+const DEFAULT_COLLECTOR_URL = `http://localhost:55681${DEFAULT_COLLECTOR_RESOURCE_PATH}`;
+/**
+ * Collector Trace Exporter for Node
+ */
+class OTLPTraceExporter extends OTLPExporterNodeBase_1.OTLPExporterNodeBase {
+    constructor(config = {}) {
+        super(config);
+        this.headers = Object.assign(this.headers, core_1.baggageUtils.parseKeyPairsIntoRecord(core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_HEADERS));
+    }
+    convert(spans) {
+        return transform_1.toOTLPExportTraceServiceRequest(spans, this, true);
+    }
+    getDefaultUrl(config) {
+        return typeof config.url === 'string'
+            ? config.url
+            : core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT.length > 0
+                ? core_1.getEnv().OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+                : core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0
+                    ? util_1.appendResourcePathToUrlIfNotPresent(core_1.getEnv().OTEL_EXPORTER_OTLP_ENDPOINT, DEFAULT_COLLECTOR_RESOURCE_PATH)
+                    : DEFAULT_COLLECTOR_URL;
+    }
+}
+exports.OTLPTraceExporter = OTLPTraceExporter;
+//# sourceMappingURL=OTLPTraceExporter.js.map
+
+/***/ }),
+
+/***/ 90081:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(19377), exports);
+__exportStar(__nccwpck_require__(54574), exports);
+__exportStar(__nccwpck_require__(52847), exports);
+__exportStar(__nccwpck_require__(5726), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 5726:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CompressionAlgorithm = void 0;
+var CompressionAlgorithm;
+(function (CompressionAlgorithm) {
+    CompressionAlgorithm["NONE"] = "none";
+    CompressionAlgorithm["GZIP"] = "gzip";
+})(CompressionAlgorithm = exports.CompressionAlgorithm || (exports.CompressionAlgorithm = {}));
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
+/***/ 52847:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createHttpAgent = exports.sendWithHttp = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+const url = __nccwpck_require__(78835);
+const http = __nccwpck_require__(98605);
+const https = __nccwpck_require__(57211);
+const zlib = __nccwpck_require__(78761);
+const stream_1 = __nccwpck_require__(92413);
+const otlpTypes = __nccwpck_require__(29981);
+const api_1 = __nccwpck_require__(65163);
+const types_1 = __nccwpck_require__(5726);
+let gzip;
+/**
+ * Sends data using http
+ * @param collector
+ * @param data
+ * @param contentType
+ * @param onSuccess
+ * @param onError
+ */
+function sendWithHttp(collector, data, contentType, onSuccess, onError) {
+    const parsedUrl = new url.URL(collector.url);
+    const options = {
+        hostname: parsedUrl.hostname,
+        port: parsedUrl.port,
+        path: parsedUrl.pathname,
+        method: 'POST',
+        headers: Object.assign({ 'Content-Length': Buffer.byteLength(data), 'Content-Type': contentType }, collector.headers),
+        agent: collector.agent,
+    };
+    const request = parsedUrl.protocol === 'http:' ? http.request : https.request;
+    const req = request(options, (res) => {
+        let responseData = '';
+        res.on('data', chunk => (responseData += chunk));
+        res.on('end', () => {
+            if (res.statusCode && res.statusCode < 299) {
+                api_1.diag.debug(`statusCode: ${res.statusCode}`, responseData);
+                onSuccess();
+            }
+            else {
+                const error = new otlpTypes.OTLPExporterError(res.statusMessage, res.statusCode, responseData);
+                onError(error);
+            }
+        });
+    });
+    req.on('error', (error) => {
+        onError(error);
+    });
+    switch (collector.compression) {
+        case types_1.CompressionAlgorithm.GZIP: {
+            if (!gzip) {
+                gzip = zlib.createGzip();
+            }
+            req.setHeader('Content-Encoding', 'gzip');
+            const dataStream = readableFromBuffer(data);
+            dataStream.on('error', onError)
+                .pipe(gzip).on('error', onError)
+                .pipe(req);
+            break;
+        }
+        default:
+            req.write(data);
+            req.end();
+            break;
+    }
+}
+exports.sendWithHttp = sendWithHttp;
+function readableFromBuffer(buff) {
+    const readable = new stream_1.Readable();
+    readable.push(buff);
+    readable.push(null);
+    return readable;
+}
+function createHttpAgent(config) {
+    if (config.httpAgentOptions && config.keepAlive === false) {
+        api_1.diag.warn('httpAgentOptions is used only when keepAlive is true');
+        return undefined;
+    }
+    if (config.keepAlive === false || !config.url)
+        return undefined;
+    try {
+        const parsedUrl = new url.URL(config.url);
+        const Agent = parsedUrl.protocol === 'http:' ? http.Agent : https.Agent;
+        return new Agent(Object.assign({ keepAlive: true }, config.httpAgentOptions));
+    }
+    catch (err) {
+        api_1.diag.error(`collector exporter failed to create http agent. err: ${err.message}`);
+        return undefined;
+    }
+}
+exports.createHttpAgent = createHttpAgent;
+//# sourceMappingURL=util.js.map
+
+/***/ }),
+
+/***/ 73128:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.groupSpansByResourceAndLibrary = exports.toOTLPExportTraceServiceRequest = exports.toCollectorTraceState = exports.toCollectorKind = exports.toCollectorResource = exports.toCollectorStatus = exports.toCollectorSpan = exports.toCollectorEvents = exports.toCollectorAnyValue = exports.toCollectorAttributeKeyValue = exports.toCollectorKeyValueList = exports.toCollectorArrayValue = exports.toCollectorAttributes = void 0;
+const core = __nccwpck_require__(85797);
+const types_1 = __nccwpck_require__(29981);
+const MAX_INTEGER_VALUE = 2147483647;
+const MIN_INTEGER_VALUE = -2147483648;
+/**
+ * Converts attributes to KeyValue array
+ * @param attributes
+ */
+function toCollectorAttributes(attributes) {
+    return Object.keys(attributes).map(key => {
+        return toCollectorAttributeKeyValue(key, attributes[key]);
+    });
+}
+exports.toCollectorAttributes = toCollectorAttributes;
+/**
+ * Converts array of unknown value to ArrayValue
+ * @param values
+ */
+function toCollectorArrayValue(values) {
+    return {
+        values: values.map(value => toCollectorAnyValue(value)),
+    };
+}
+exports.toCollectorArrayValue = toCollectorArrayValue;
+/**
+ * Converts attributes to KeyValueList
+ * @param attributes
+ */
+function toCollectorKeyValueList(attributes) {
+    return {
+        values: toCollectorAttributes(attributes),
+    };
+}
+exports.toCollectorKeyValueList = toCollectorKeyValueList;
+/**
+ * Converts key and unknown value to KeyValue
+ * @param value event value
+ */
+function toCollectorAttributeKeyValue(key, value) {
+    const anyValue = toCollectorAnyValue(value);
+    return {
+        key,
+        value: anyValue,
+    };
+}
+exports.toCollectorAttributeKeyValue = toCollectorAttributeKeyValue;
+/**
+ * Converts unknown value to AnyValue
+ * @param value
+ */
+function toCollectorAnyValue(value) {
+    const anyValue = {};
+    if (typeof value === 'string') {
+        anyValue.stringValue = value;
+    }
+    else if (typeof value === 'boolean') {
+        anyValue.boolValue = value;
+    }
+    else if (typeof value === 'number' &&
+        value <= MAX_INTEGER_VALUE &&
+        value >= MIN_INTEGER_VALUE &&
+        Number.isInteger(value)) {
+        anyValue.intValue = value;
+    }
+    else if (typeof value === 'number') {
+        anyValue.doubleValue = value;
+    }
+    else if (Array.isArray(value)) {
+        anyValue.arrayValue = toCollectorArrayValue(value);
+    }
+    else if (value) {
+        anyValue.kvlistValue = toCollectorKeyValueList(value);
+    }
+    return anyValue;
+}
+exports.toCollectorAnyValue = toCollectorAnyValue;
+/**
+ *
+ * Converts events
+ * @param events array of events
+ */
+function toCollectorEvents(timedEvents) {
+    return timedEvents.map(timedEvent => {
+        const timeUnixNano = core.hrTimeToNanoseconds(timedEvent.time);
+        const name = timedEvent.name;
+        const attributes = toCollectorAttributes(timedEvent.attributes || {});
+        const droppedAttributesCount = 0;
+        const protoEvent = {
+            timeUnixNano,
+            name,
+            attributes,
+            droppedAttributesCount,
+        };
+        return protoEvent;
+    });
+}
+exports.toCollectorEvents = toCollectorEvents;
+/**
+ * Converts links
+ * @param span
+ * @param useHex - if ids should be kept as hex without converting to base64
+ */
+function toCollectorLinks(span, useHex) {
+    return span.links.map((link) => {
+        const protoLink = {
+            traceId: useHex
+                ? link.context.traceId
+                : core.hexToBase64(link.context.traceId),
+            spanId: useHex
+                ? link.context.spanId
+                : core.hexToBase64(link.context.spanId),
+            attributes: toCollectorAttributes(link.attributes || {}),
+            droppedAttributesCount: 0,
+        };
+        return protoLink;
+    });
+}
+/**
+ * Converts span
+ * @param span
+ * @param useHex - if ids should be kept as hex without converting to base64
+ */
+function toCollectorSpan(span, useHex) {
+    return {
+        traceId: useHex
+            ? span.spanContext().traceId
+            : core.hexToBase64(span.spanContext().traceId),
+        spanId: useHex
+            ? span.spanContext().spanId
+            : core.hexToBase64(span.spanContext().spanId),
+        parentSpanId: span.parentSpanId
+            ? useHex
+                ? span.parentSpanId
+                : core.hexToBase64(span.parentSpanId)
+            : undefined,
+        traceState: toCollectorTraceState(span.spanContext().traceState),
+        name: span.name,
+        kind: toCollectorKind(span.kind),
+        startTimeUnixNano: core.hrTimeToNanoseconds(span.startTime),
+        endTimeUnixNano: core.hrTimeToNanoseconds(span.endTime),
+        attributes: toCollectorAttributes(span.attributes),
+        droppedAttributesCount: 0,
+        events: toCollectorEvents(span.events),
+        droppedEventsCount: 0,
+        status: toCollectorStatus(span.status),
+        links: toCollectorLinks(span, useHex),
+        droppedLinksCount: 0,
+    };
+}
+exports.toCollectorSpan = toCollectorSpan;
+/**
+ * Converts status
+ * @param status
+ */
+function toCollectorStatus(status) {
+    const spanStatus = {
+        code: status.code,
+    };
+    if (typeof status.message !== 'undefined') {
+        spanStatus.message = status.message;
+    }
+    return spanStatus;
+}
+exports.toCollectorStatus = toCollectorStatus;
+/**
+ * Converts resource
+ * @param resource
+ * @param additionalAttributes
+ */
+function toCollectorResource(resource, additionalAttributes = {}) {
+    const attr = Object.assign({}, additionalAttributes, resource ? resource.attributes : {});
+    const resourceProto = {
+        attributes: toCollectorAttributes(attr),
+        droppedAttributesCount: 0,
+    };
+    return resourceProto;
+}
+exports.toCollectorResource = toCollectorResource;
+/**
+ * Converts span kind
+ * @param kind
+ */
+function toCollectorKind(kind) {
+    const collectorKind = types_1.OTLP_SPAN_KIND_MAPPING[kind];
+    return typeof collectorKind === 'number'
+        ? collectorKind
+        : types_1.opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_UNSPECIFIED;
+}
+exports.toCollectorKind = toCollectorKind;
+/**
+ * Converts traceState
+ * @param traceState
+ */
+function toCollectorTraceState(traceState) {
+    if (!traceState)
+        return undefined;
+    return traceState.serialize();
+}
+exports.toCollectorTraceState = toCollectorTraceState;
+/**
+ * Prepares trace service request to be sent to collector
+ * @param spans spans
+ * @param collectorExporterBase
+ * @param useHex - if ids should be kept as hex without converting to base64
+ */
+function toOTLPExportTraceServiceRequest(spans, collectorTraceExporterBase, useHex) {
+    const groupedSpans = groupSpansByResourceAndLibrary(spans);
+    const additionalAttributes = Object.assign({}, collectorTraceExporterBase.attributes);
+    return {
+        resourceSpans: toCollectorResourceSpans(groupedSpans, additionalAttributes, useHex),
+    };
+}
+exports.toOTLPExportTraceServiceRequest = toOTLPExportTraceServiceRequest;
+/**
+ * Takes an array of spans and groups them by resource and instrumentation
+ * library
+ * @param spans spans
+ */
+function groupSpansByResourceAndLibrary(spans) {
+    return spans.reduce((spanMap, span) => {
+        //group by resource
+        let resourceSpans = spanMap.get(span.resource);
+        if (!resourceSpans) {
+            resourceSpans = new Map();
+            spanMap.set(span.resource, resourceSpans);
+        }
+        //group by instrumentation library
+        let libSpans = resourceSpans.get(span.instrumentationLibrary);
+        if (!libSpans) {
+            libSpans = new Array();
+            resourceSpans.set(span.instrumentationLibrary, libSpans);
+        }
+        libSpans.push(span);
+        return spanMap;
+    }, new Map());
+}
+exports.groupSpansByResourceAndLibrary = groupSpansByResourceAndLibrary;
+/**
+ * Convert to InstrumentationLibrarySpans
+ * @param instrumentationLibrary
+ * @param spans
+ * @param useHex - if ids should be kept as hex without converting to base64
+ */
+function toCollectorInstrumentationLibrarySpans(instrumentationLibrary, spans, useHex) {
+    return {
+        spans: spans.map(span => toCollectorSpan(span, useHex)),
+        instrumentationLibrary,
+    };
+}
+/**
+ * Returns a list of resource spans which will be exported to the collector
+ * @param groupedSpans
+ * @param baseAttributes
+ * @param useHex - if ids should be kept as hex without converting to base64
+ */
+function toCollectorResourceSpans(groupedSpans, baseAttributes, useHex) {
+    return Array.from(groupedSpans, ([resource, libSpans]) => {
+        return {
+            resource: toCollectorResource(resource, baseAttributes),
+            instrumentationLibrarySpans: Array.from(libSpans, ([instrumentationLibrary, spans]) => toCollectorInstrumentationLibrarySpans(instrumentationLibrary, spans, useHex)),
+        };
+    });
+}
+//# sourceMappingURL=transform.js.map
+
+/***/ }),
+
+/***/ 29981:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OTLP_SPAN_KIND_MAPPING = exports.OTLPExporterError = exports.opentelemetryProto = void 0;
+const api_1 = __nccwpck_require__(65163);
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+var opentelemetryProto;
+(function (opentelemetryProto) {
+    let metrics;
+    (function (metrics) {
+        let v1;
+        (function (v1) {
+            let AggregationTemporality;
+            (function (AggregationTemporality) {
+                // UNSPECIFIED is the default AggregationTemporality, it MUST not be used.
+                AggregationTemporality[AggregationTemporality["AGGREGATION_TEMPORALITY_UNSPECIFIED"] = 0] = "AGGREGATION_TEMPORALITY_UNSPECIFIED";
+                // DELTA is an AggregationTemporality for a metric aggregator which reports
+                // changes since last report time. Successive metrics contain aggregation of
+                // values from continuous and non-overlapping intervals.
+                //
+                // The values for a DELTA metric are based only on the time interval
+                // associated with one measurement cycle. There is no dependency on
+                // previous measurements like is the case for CUMULATIVE metrics.
+                //
+                // For example, consider a system measuring the number of requests that
+                // it receives and reports the sum of these requests every second as a
+                // DELTA metric:
+                //
+                //   1. The system starts receiving at time=t_0.
+                //   2. A request is received, the system measures 1 request.
+                //   3. A request is received, the system measures 1 request.
+                //   4. A request is received, the system measures 1 request.
+                //   5. The 1 second collection cycle ends. A metric is exported for the
+                //      number of requests received over the interval of time t_0 to
+                //      t_0+1 with a value of 3.
+                //   6. A request is received, the system measures 1 request.
+                //   7. A request is received, the system measures 1 request.
+                //   8. The 1 second collection cycle ends. A metric is exported for the
+                //      number of requests received over the interval of time t_0+1 to
+                //      t_0+2 with a value of 2.
+                AggregationTemporality[AggregationTemporality["AGGREGATION_TEMPORALITY_DELTA"] = 1] = "AGGREGATION_TEMPORALITY_DELTA";
+                // CUMULATIVE is an AggregationTemporality for a metric aggregator which
+                // reports changes since a fixed start time. This means that current values
+                // of a CUMULATIVE metric depend on all previous measurements since the
+                // start time. Because of this, the sender is required to retain this state
+                // in some form. If this state is lost or invalidated, the CUMULATIVE metric
+                // values MUST be reset and a new fixed start time following the last
+                // reported measurement time sent MUST be used.
+                //
+                // For example, consider a system measuring the number of requests that
+                // it receives and reports the sum of these requests every second as a
+                // CUMULATIVE metric:
+                //
+                //   1. The system starts receiving at time=t_0.
+                //   2. A request is received, the system measures 1 request.
+                //   3. A request is received, the system measures 1 request.
+                //   4. A request is received, the system measures 1 request.
+                //   5. The 1 second collection cycle ends. A metric is exported for the
+                //      number of requests received over the interval of time t_0 to
+                //      t_0+1 with a value of 3.
+                //   6. A request is received, the system measures 1 request.
+                //   7. A request is received, the system measures 1 request.
+                //   8. The 1 second collection cycle ends. A metric is exported for the
+                //      number of requests received over the interval of time t_0 to
+                //      t_0+2 with a value of 5.
+                //   9. The system experiences a fault and loses state.
+                //   10. The system recovers and resumes receiving at time=t_1.
+                //   11. A request is received, the system measures 1 request.
+                //   12. The 1 second collection cycle ends. A metric is exported for the
+                //      number of requests received over the interval of time t_1 to
+                //      t_0+1 with a value of 1.
+                //
+                // Note: Even though, when reporting changes since last report time, using
+                // CUMULATIVE is valid, it is not recommended. This may cause problems for
+                // systems that do not use start_time to determine when the aggregation
+                // value was reset (e.g. Prometheus).
+                AggregationTemporality[AggregationTemporality["AGGREGATION_TEMPORALITY_CUMULATIVE"] = 2] = "AGGREGATION_TEMPORALITY_CUMULATIVE";
+            })(AggregationTemporality = v1.AggregationTemporality || (v1.AggregationTemporality = {}));
+        })(v1 = metrics.v1 || (metrics.v1 = {}));
+    })(metrics = opentelemetryProto.metrics || (opentelemetryProto.metrics = {}));
+    let trace;
+    (function (trace) {
+        let v1;
+        (function (v1) {
+            let ConstantSampler;
+            (function (ConstantSampler) {
+                let ConstantDecision;
+                (function (ConstantDecision) {
+                    ConstantDecision[ConstantDecision["ALWAYS_OFF"] = 0] = "ALWAYS_OFF";
+                    ConstantDecision[ConstantDecision["ALWAYS_ON"] = 1] = "ALWAYS_ON";
+                    ConstantDecision[ConstantDecision["ALWAYS_PARENT"] = 2] = "ALWAYS_PARENT";
+                })(ConstantDecision = ConstantSampler.ConstantDecision || (ConstantSampler.ConstantDecision = {}));
+            })(ConstantSampler = v1.ConstantSampler || (v1.ConstantSampler = {}));
+            let Span;
+            (function (Span) {
+                // eslint-disable-next-line @typescript-eslint/no-shadow
+                let SpanKind;
+                (function (SpanKind) {
+                    SpanKind[SpanKind["SPAN_KIND_UNSPECIFIED"] = 0] = "SPAN_KIND_UNSPECIFIED";
+                    SpanKind[SpanKind["SPAN_KIND_INTERNAL"] = 1] = "SPAN_KIND_INTERNAL";
+                    SpanKind[SpanKind["SPAN_KIND_SERVER"] = 2] = "SPAN_KIND_SERVER";
+                    SpanKind[SpanKind["SPAN_KIND_CLIENT"] = 3] = "SPAN_KIND_CLIENT";
+                    SpanKind[SpanKind["SPAN_KIND_PRODUCER"] = 4] = "SPAN_KIND_PRODUCER";
+                    SpanKind[SpanKind["SPAN_KIND_CONSUMER"] = 5] = "SPAN_KIND_CONSUMER";
+                })(SpanKind = Span.SpanKind || (Span.SpanKind = {}));
+            })(Span = v1.Span || (v1.Span = {}));
+        })(v1 = trace.v1 || (trace.v1 = {}));
+    })(trace = opentelemetryProto.trace || (opentelemetryProto.trace = {}));
+    let common;
+    (function (common) {
+        let v1;
+        (function (v1) {
+            let ValueType;
+            (function (ValueType) {
+                ValueType[ValueType["STRING"] = 0] = "STRING";
+                ValueType[ValueType["INT"] = 1] = "INT";
+                ValueType[ValueType["DOUBLE"] = 2] = "DOUBLE";
+                ValueType[ValueType["BOOL"] = 3] = "BOOL";
+            })(ValueType = v1.ValueType || (v1.ValueType = {}));
+        })(v1 = common.v1 || (common.v1 = {}));
+    })(common = opentelemetryProto.common || (opentelemetryProto.common = {}));
+})(opentelemetryProto = exports.opentelemetryProto || (exports.opentelemetryProto = {}));
+/**
+ * Interface for handling error
+ */
+class OTLPExporterError extends Error {
+    constructor(message, code, data) {
+        super(message);
+        this.name = 'OTLPExporterError';
+        this.data = data;
+        this.code = code;
+    }
+}
+exports.OTLPExporterError = OTLPExporterError;
+/**
+ * Mapping between api SpanKind and proto SpanKind
+ */
+exports.OTLP_SPAN_KIND_MAPPING = {
+    [api_1.SpanKind.INTERNAL]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_INTERNAL,
+    [api_1.SpanKind.SERVER]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_SERVER,
+    [api_1.SpanKind.CLIENT]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_CLIENT,
+    [api_1.SpanKind.PRODUCER]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_PRODUCER,
+    [api_1.SpanKind.CONSUMER]: opentelemetryProto.trace.v1.Span.SpanKind.SPAN_KIND_CONSUMER,
+};
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
+/***/ 66109:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.appendResourcePathToUrlIfNotPresent = exports.parseHeaders = void 0;
+const api_1 = __nccwpck_require__(65163);
+/**
+ * Parses headers from config leaving only those that have defined values
+ * @param partialHeaders
+ */
+function parseHeaders(partialHeaders = {}) {
+    const headers = {};
+    Object.entries(partialHeaders).forEach(([key, value]) => {
+        if (typeof value !== 'undefined') {
+            headers[key] = String(value);
+        }
+        else {
+            api_1.diag.warn(`Header "${key}" has wrong value and will be ignored`);
+        }
+    });
+    return headers;
+}
+exports.parseHeaders = parseHeaders;
+function appendResourcePathToUrlIfNotPresent(url, path) {
+    if (url.match(/v\d\/(traces|metrics)$/))
+        return url;
+    return url + path;
+}
+exports.appendResourcePathToUrlIfNotPresent = appendResourcePathToUrlIfNotPresent;
+//# sourceMappingURL=util.js.map
+
+/***/ }),
+
+/***/ 99249:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExportResultCode = void 0;
+var ExportResultCode;
+(function (ExportResultCode) {
+    ExportResultCode[ExportResultCode["SUCCESS"] = 0] = "SUCCESS";
+    ExportResultCode[ExportResultCode["FAILED"] = 1] = "FAILED";
+})(ExportResultCode = exports.ExportResultCode || (exports.ExportResultCode = {}));
+//# sourceMappingURL=ExportResult.js.map
+
+/***/ }),
+
+/***/ 6831:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BAGGAGE_MAX_TOTAL_LENGTH = exports.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS = exports.BAGGAGE_MAX_NAME_VALUE_PAIRS = exports.BAGGAGE_HEADER = exports.BAGGAGE_ITEMS_SEPARATOR = exports.BAGGAGE_PROPERTIES_SEPARATOR = exports.BAGGAGE_KEY_PAIR_SEPARATOR = void 0;
+exports.BAGGAGE_KEY_PAIR_SEPARATOR = '=';
+exports.BAGGAGE_PROPERTIES_SEPARATOR = ';';
+exports.BAGGAGE_ITEMS_SEPARATOR = ',';
+// Name of the http header used to propagate the baggage
+exports.BAGGAGE_HEADER = 'baggage';
+// Maximum number of name-value pairs allowed by w3c spec
+exports.BAGGAGE_MAX_NAME_VALUE_PAIRS = 180;
+// Maximum number of bytes per a single name-value pair allowed by w3c spec
+exports.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS = 4096;
+// Maximum total length of all name-value pairs allowed by w3c spec
+exports.BAGGAGE_MAX_TOTAL_LENGTH = 8192;
+//# sourceMappingURL=constants.js.map
+
+/***/ }),
+
+/***/ 36283:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.W3CBaggagePropagator = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(91124);
+const constants_1 = __nccwpck_require__(6831);
+const utils_1 = __nccwpck_require__(30889);
+/**
+ * Propagates {@link Baggage} through Context format propagation.
+ *
+ * Based on the Baggage specification:
+ * https://w3c.github.io/baggage/
+ */
+class W3CBaggagePropagator {
+    inject(context, carrier, setter) {
+        const baggage = api_1.propagation.getBaggage(context);
+        if (!baggage || suppress_tracing_1.isTracingSuppressed(context))
+            return;
+        const keyPairs = utils_1.getKeyPairs(baggage)
+            .filter((pair) => {
+            return pair.length <= constants_1.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS;
+        })
+            .slice(0, constants_1.BAGGAGE_MAX_NAME_VALUE_PAIRS);
+        const headerValue = utils_1.serializeKeyPairs(keyPairs);
+        if (headerValue.length > 0) {
+            setter.set(carrier, constants_1.BAGGAGE_HEADER, headerValue);
+        }
+    }
+    extract(context, carrier, getter) {
+        const headerValue = getter.get(carrier, constants_1.BAGGAGE_HEADER);
+        if (!headerValue)
+            return context;
+        const baggage = {};
+        if (headerValue.length === 0) {
+            return context;
+        }
+        const pairs = headerValue.split(constants_1.BAGGAGE_ITEMS_SEPARATOR);
+        pairs.forEach(entry => {
+            const keyPair = utils_1.parsePairKeyValue(entry);
+            if (keyPair) {
+                const baggageEntry = { value: keyPair.value };
+                if (keyPair.metadata) {
+                    baggageEntry.metadata = keyPair.metadata;
+                }
+                baggage[keyPair.key] = baggageEntry;
+            }
+        });
+        if (Object.entries(baggage).length === 0) {
+            return context;
+        }
+        return api_1.propagation.setBaggage(context, api_1.propagation.createBaggage(baggage));
+    }
+    fields() {
+        return [constants_1.BAGGAGE_HEADER];
+    }
+}
+exports.W3CBaggagePropagator = W3CBaggagePropagator;
+//# sourceMappingURL=W3CBaggagePropagator.js.map
+
+/***/ }),
+
+/***/ 30889:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseKeyPairsIntoRecord = exports.parsePairKeyValue = exports.getKeyPairs = exports.serializeKeyPairs = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+const api_1 = __nccwpck_require__(65163);
+const constants_1 = __nccwpck_require__(6831);
+function serializeKeyPairs(keyPairs) {
+    return keyPairs.reduce((hValue, current) => {
+        const value = `${hValue}${hValue !== '' ? constants_1.BAGGAGE_ITEMS_SEPARATOR : ''}${current}`;
+        return value.length > constants_1.BAGGAGE_MAX_TOTAL_LENGTH ? hValue : value;
+    }, '');
+}
+exports.serializeKeyPairs = serializeKeyPairs;
+function getKeyPairs(baggage) {
+    return baggage
+        .getAllEntries()
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value.value)}`);
+}
+exports.getKeyPairs = getKeyPairs;
+function parsePairKeyValue(entry) {
+    const valueProps = entry.split(constants_1.BAGGAGE_PROPERTIES_SEPARATOR);
+    if (valueProps.length <= 0)
+        return;
+    const keyPairPart = valueProps.shift();
+    if (!keyPairPart)
+        return;
+    const keyPair = keyPairPart.split(constants_1.BAGGAGE_KEY_PAIR_SEPARATOR);
+    if (keyPair.length !== 2)
+        return;
+    const key = decodeURIComponent(keyPair[0].trim());
+    const value = decodeURIComponent(keyPair[1].trim());
+    let metadata;
+    if (valueProps.length > 0) {
+        metadata = api_1.baggageEntryMetadataFromString(valueProps.join(constants_1.BAGGAGE_PROPERTIES_SEPARATOR));
+    }
+    return { key, value, metadata };
+}
+exports.parsePairKeyValue = parsePairKeyValue;
+/**
+ * Parse a string serialized in the baggage HTTP Format (without metadata):
+ * https://github.com/w3c/baggage/blob/master/baggage/HTTP_HEADER_FORMAT.md
+ */
+function parseKeyPairsIntoRecord(value) {
+    if (typeof value !== 'string' || value.length === 0)
+        return {};
+    return value
+        .split(constants_1.BAGGAGE_ITEMS_SEPARATOR)
+        .map(entry => {
+        return parsePairKeyValue(entry);
+    })
+        .filter(keyPair => keyPair !== undefined && keyPair.value.length > 0)
+        .reduce((headers, keyPair) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        headers[keyPair.key] = keyPair.value;
+        return headers;
+    }, {});
+}
+exports.parseKeyPairsIntoRecord = parseKeyPairsIntoRecord;
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 29790:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isAttributeValue = exports.sanitizeAttributes = void 0;
+function sanitizeAttributes(attributes) {
+    const out = {};
+    if (attributes == null || typeof attributes !== 'object') {
+        return out;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    for (const [k, v] of Object.entries(attributes)) {
+        if (isAttributeValue(v)) {
+            if (Array.isArray(v)) {
+                out[k] = v.slice();
+            }
+            else {
+                out[k] = v;
+            }
+        }
+    }
+    return out;
+}
+exports.sanitizeAttributes = sanitizeAttributes;
+function isAttributeValue(val) {
+    if (val == null) {
+        return true;
+    }
+    if (Array.isArray(val)) {
+        return isHomogeneousAttributeValueArray(val);
+    }
+    return isValidPrimitiveAttributeValue(val);
+}
+exports.isAttributeValue = isAttributeValue;
+function isHomogeneousAttributeValueArray(arr) {
+    let type;
+    for (const element of arr) {
+        // null/undefined elements are allowed
+        if (element == null)
+            continue;
+        if (!type) {
+            if (isValidPrimitiveAttributeValue(element)) {
+                type = typeof element;
+                continue;
+            }
+            // encountered an invalid primitive
+            return false;
+        }
+        if (typeof element === type) {
+            continue;
+        }
+        return false;
+    }
+    return true;
+}
+function isValidPrimitiveAttributeValue(val) {
+    switch (typeof val) {
+        case 'number':
+            return true;
+        case 'boolean':
+            return true;
+        case 'string':
+            return true;
+    }
+    return false;
+}
+//# sourceMappingURL=attributes.js.map
+
+/***/ }),
+
+/***/ 47111:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.globalErrorHandler = exports.setGlobalErrorHandler = void 0;
+const logging_error_handler_1 = __nccwpck_require__(86792);
+/** The global error handler delegate */
+let delegateHandler = logging_error_handler_1.loggingErrorHandler();
+/**
+ * Set the global error handler
+ * @param {ErrorHandler} handler
+ */
+function setGlobalErrorHandler(handler) {
+    delegateHandler = handler;
+}
+exports.setGlobalErrorHandler = setGlobalErrorHandler;
+/**
+ * Return the global error handler
+ * @param {Exception} ex
+ */
+function globalErrorHandler(ex) {
+    try {
+        delegateHandler(ex);
+    }
+    catch (_a) { } // eslint-disable-line no-empty
+}
+exports.globalErrorHandler = globalErrorHandler;
+//# sourceMappingURL=global-error-handler.js.map
+
+/***/ }),
+
+/***/ 86792:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loggingErrorHandler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/**
+ * Returns a function that logs an error using the provided logger, or a
+ * console logger if one was not provided.
+ */
+function loggingErrorHandler() {
+    return (ex) => {
+        api_1.diag.error(stringifyException(ex));
+    };
+}
+exports.loggingErrorHandler = loggingErrorHandler;
+/**
+ * Converts an exception into a string representation
+ * @param {Exception} ex
+ */
+function stringifyException(ex) {
+    if (typeof ex === 'string') {
+        return ex;
+    }
+    else {
+        return JSON.stringify(flattenException(ex));
+    }
+}
+/**
+ * Flattens an exception into key-value pairs by traversing the prototype chain
+ * and coercing values to strings. Duplicate properties will not be overwritten;
+ * the first insert wins.
+ */
+function flattenException(ex) {
+    const result = {};
+    let current = ex;
+    while (current !== null) {
+        Object.getOwnPropertyNames(current).forEach(propertyName => {
+            if (result[propertyName])
+                return;
+            const value = current[propertyName];
+            if (value) {
+                result[propertyName] = String(value);
+            }
+        });
+        current = Object.getPrototypeOf(current);
+    }
+    return result;
+}
+//# sourceMappingURL=logging-error-handler.js.map
+
+/***/ }),
+
+/***/ 25202:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isTimeInput = exports.isTimeInputHrTime = exports.hrTimeToMicroseconds = exports.hrTimeToMilliseconds = exports.hrTimeToNanoseconds = exports.hrTimeToTimeStamp = exports.hrTimeDuration = exports.timeInputToHrTime = exports.hrTime = void 0;
+const platform_1 = __nccwpck_require__(75054);
+const NANOSECOND_DIGITS = 9;
+const SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS);
+/**
+ * Converts a number to HrTime, HrTime = [number, number].
+ * The first number is UNIX Epoch time in seconds since 00:00:00 UTC on 1 January 1970.
+ * The second number represents the partial second elapsed since Unix Epoch time represented by first number in nanoseconds.
+ * For example, 2021-01-01T12:30:10.150Z in UNIX Epoch time in milliseconds is represented as 1609504210150.
+ * numberToHrtime calculates the first number by converting and truncating the Epoch time in milliseconds to seconds:
+ * HrTime[0] = Math.trunc(1609504210150 / 1000) = 1609504210.
+ * numberToHrtime calculates the second number by converting the digits after the decimal point of the subtraction, (1609504210150 / 1000) - HrTime[0], to nanoseconds:
+ * HrTime[1] = Number((1609504210.150 - HrTime[0]).toFixed(9)) * SECOND_TO_NANOSECONDS = 150000000.
+ * This is represented in HrTime format as [1609504210, 150000000].
+ * @param epochMillis
+ */
+function numberToHrtime(epochMillis) {
+    const epochSeconds = epochMillis / 1000;
+    // Decimals only.
+    const seconds = Math.trunc(epochSeconds);
+    // Round sub-nanosecond accuracy to nanosecond.
+    const nanos = Number((epochSeconds - seconds).toFixed(NANOSECOND_DIGITS)) *
+        SECOND_TO_NANOSECONDS;
+    return [seconds, nanos];
+}
+function getTimeOrigin() {
+    let timeOrigin = platform_1.otperformance.timeOrigin;
+    if (typeof timeOrigin !== 'number') {
+        const perf = platform_1.otperformance;
+        timeOrigin = perf.timing && perf.timing.fetchStart;
+    }
+    return timeOrigin;
+}
+/**
+ * Returns an hrtime calculated via performance component.
+ * @param performanceNow
+ */
+function hrTime(performanceNow) {
+    const timeOrigin = numberToHrtime(getTimeOrigin());
+    const now = numberToHrtime(typeof performanceNow === 'number' ? performanceNow : platform_1.otperformance.now());
+    let seconds = timeOrigin[0] + now[0];
+    let nanos = timeOrigin[1] + now[1];
+    // Nanoseconds
+    if (nanos > SECOND_TO_NANOSECONDS) {
+        nanos -= SECOND_TO_NANOSECONDS;
+        seconds += 1;
+    }
+    return [seconds, nanos];
+}
+exports.hrTime = hrTime;
+/**
+ *
+ * Converts a TimeInput to an HrTime, defaults to _hrtime().
+ * @param time
+ */
+function timeInputToHrTime(time) {
+    // process.hrtime
+    if (isTimeInputHrTime(time)) {
+        return time;
+    }
+    else if (typeof time === 'number') {
+        // Must be a performance.now() if it's smaller than process start time.
+        if (time < getTimeOrigin()) {
+            return hrTime(time);
+        }
+        else {
+            // epoch milliseconds or performance.timeOrigin
+            return numberToHrtime(time);
+        }
+    }
+    else if (time instanceof Date) {
+        return numberToHrtime(time.getTime());
+    }
+    else {
+        throw TypeError('Invalid input type');
+    }
+}
+exports.timeInputToHrTime = timeInputToHrTime;
+/**
+ * Returns a duration of two hrTime.
+ * @param startTime
+ * @param endTime
+ */
+function hrTimeDuration(startTime, endTime) {
+    let seconds = endTime[0] - startTime[0];
+    let nanos = endTime[1] - startTime[1];
+    // overflow
+    if (nanos < 0) {
+        seconds -= 1;
+        // negate
+        nanos += SECOND_TO_NANOSECONDS;
+    }
+    return [seconds, nanos];
+}
+exports.hrTimeDuration = hrTimeDuration;
+/**
+ * Convert hrTime to timestamp, for example "2019-05-14T17:00:00.000123456Z"
+ * @param time
+ */
+function hrTimeToTimeStamp(time) {
+    const precision = NANOSECOND_DIGITS;
+    const tmp = `${'0'.repeat(precision)}${time[1]}Z`;
+    const nanoString = tmp.substr(tmp.length - precision - 1);
+    const date = new Date(time[0] * 1000).toISOString();
+    return date.replace('000Z', nanoString);
+}
+exports.hrTimeToTimeStamp = hrTimeToTimeStamp;
+/**
+ * Convert hrTime to nanoseconds.
+ * @param time
+ */
+function hrTimeToNanoseconds(time) {
+    return time[0] * SECOND_TO_NANOSECONDS + time[1];
+}
+exports.hrTimeToNanoseconds = hrTimeToNanoseconds;
+/**
+ * Convert hrTime to milliseconds.
+ * @param time
+ */
+function hrTimeToMilliseconds(time) {
+    return Math.round(time[0] * 1e3 + time[1] / 1e6);
+}
+exports.hrTimeToMilliseconds = hrTimeToMilliseconds;
+/**
+ * Convert hrTime to microseconds.
+ * @param time
+ */
+function hrTimeToMicroseconds(time) {
+    return Math.round(time[0] * 1e6 + time[1] / 1e3);
+}
+exports.hrTimeToMicroseconds = hrTimeToMicroseconds;
+/**
+ * check if time is HrTime
+ * @param value
+ */
+function isTimeInputHrTime(value) {
+    return (Array.isArray(value) &&
+        value.length === 2 &&
+        typeof value[0] === 'number' &&
+        typeof value[1] === 'number');
+}
+exports.isTimeInputHrTime = isTimeInputHrTime;
+/**
+ * check if input value is a correct types.TimeInput
+ * @param value
+ */
+function isTimeInput(value) {
+    return (isTimeInputHrTime(value) ||
+        typeof value === 'number' ||
+        value instanceof Date);
+}
+exports.isTimeInput = isTimeInput;
+//# sourceMappingURL=time.js.map
+
+/***/ }),
+
+/***/ 79180:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
+/***/ 85797:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.baggageUtils = void 0;
+__exportStar(__nccwpck_require__(36283), exports);
+__exportStar(__nccwpck_require__(29790), exports);
+__exportStar(__nccwpck_require__(47111), exports);
+__exportStar(__nccwpck_require__(86792), exports);
+__exportStar(__nccwpck_require__(25202), exports);
+__exportStar(__nccwpck_require__(79180), exports);
+__exportStar(__nccwpck_require__(99249), exports);
+__exportStar(__nccwpck_require__(77129), exports);
+exports.baggageUtils = __nccwpck_require__(30889);
+__exportStar(__nccwpck_require__(75054), exports);
+__exportStar(__nccwpck_require__(15382), exports);
+__exportStar(__nccwpck_require__(99320), exports);
+__exportStar(__nccwpck_require__(28882), exports);
+__exportStar(__nccwpck_require__(82765), exports);
+__exportStar(__nccwpck_require__(14218), exports);
+__exportStar(__nccwpck_require__(62233), exports);
+__exportStar(__nccwpck_require__(89054), exports);
+__exportStar(__nccwpck_require__(76168), exports);
+__exportStar(__nccwpck_require__(91124), exports);
+__exportStar(__nccwpck_require__(47364), exports);
+__exportStar(__nccwpck_require__(31331), exports);
+__exportStar(__nccwpck_require__(1502), exports);
+__exportStar(__nccwpck_require__(95803), exports);
+__exportStar(__nccwpck_require__(59747), exports);
+__exportStar(__nccwpck_require__(65071), exports);
+__exportStar(__nccwpck_require__(77129), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 64895:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.validateValue = exports.validateKey = void 0;
+const VALID_KEY_CHAR_RANGE = '[_0-9a-z-*/]';
+const VALID_KEY = `[a-z]${VALID_KEY_CHAR_RANGE}{0,255}`;
+const VALID_VENDOR_KEY = `[a-z0-9]${VALID_KEY_CHAR_RANGE}{0,240}@[a-z]${VALID_KEY_CHAR_RANGE}{0,13}`;
+const VALID_KEY_REGEX = new RegExp(`^(?:${VALID_KEY}|${VALID_VENDOR_KEY})$`);
+const VALID_VALUE_BASE_REGEX = /^[ -~]{0,255}[!-~]$/;
+const INVALID_VALUE_COMMA_EQUAL_REGEX = /,|=/;
+/**
+ * Key is opaque string up to 256 characters printable. It MUST begin with a
+ * lowercase letter, and can only contain lowercase letters a-z, digits 0-9,
+ * underscores _, dashes -, asterisks *, and forward slashes /.
+ * For multi-tenant vendor scenarios, an at sign (@) can be used to prefix the
+ * vendor name. Vendors SHOULD set the tenant ID at the beginning of the key.
+ * see https://www.w3.org/TR/trace-context/#key
+ */
+function validateKey(key) {
+    return VALID_KEY_REGEX.test(key);
+}
+exports.validateKey = validateKey;
+/**
+ * Value is opaque string up to 256 characters printable ASCII RFC0020
+ * characters (i.e., the range 0x20 to 0x7E) except comma , and =.
+ */
+function validateValue(value) {
+    return (VALID_VALUE_BASE_REGEX.test(value) &&
+        !INVALID_VALUE_COMMA_EQUAL_REGEX.test(value));
+}
+exports.validateValue = validateValue;
+//# sourceMappingURL=validators.js.map
+
+/***/ }),
+
+/***/ 75054:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(88331), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 52295:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RandomIdGenerator = void 0;
+const SPAN_ID_BYTES = 8;
+const TRACE_ID_BYTES = 16;
+class RandomIdGenerator {
+    constructor() {
+        /**
+         * Returns a random 16-byte trace ID formatted/encoded as a 32 lowercase hex
+         * characters corresponding to 128 bits.
+         */
+        this.generateTraceId = getIdGenerator(TRACE_ID_BYTES);
+        /**
+         * Returns a random 8-byte span ID formatted/encoded as a 16 lowercase hex
+         * characters corresponding to 64 bits.
+         */
+        this.generateSpanId = getIdGenerator(SPAN_ID_BYTES);
+    }
+}
+exports.RandomIdGenerator = RandomIdGenerator;
+const SHARED_BUFFER = Buffer.allocUnsafe(TRACE_ID_BYTES);
+function getIdGenerator(bytes) {
+    return function generateId() {
+        for (let i = 0; i < bytes / 4; i++) {
+            // unsigned right shift drops decimal part of the number
+            // it is required because if a number between 2**32 and 2**32 - 1 is generated, an out of range error is thrown by writeUInt32BE
+            SHARED_BUFFER.writeUInt32BE((Math.random() * 2 ** 32) >>> 0, i * 4);
+        }
+        // If buffer is all 0, set the last byte to 1 to guarantee a valid w3c id is generated
+        for (let i = 0; i < bytes; i++) {
+            if (SHARED_BUFFER[i] > 0) {
+                break;
+            }
+            else if (i === bytes - 1) {
+                SHARED_BUFFER[bytes - 1] = 1;
+            }
+        }
+        return SHARED_BUFFER.toString('hex', 0, bytes);
+    };
+}
+//# sourceMappingURL=RandomIdGenerator.js.map
+
+/***/ }),
+
+/***/ 73810:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getEnv = void 0;
+const os = __nccwpck_require__(12087);
+const environment_1 = __nccwpck_require__(31331);
+/**
+ * Gets the environment variables
+ */
+function getEnv() {
+    const processEnv = environment_1.parseEnvironment(process.env);
+    return Object.assign({
+        HOSTNAME: os.hostname(),
+    }, environment_1.DEFAULT_ENVIRONMENT, processEnv);
+}
+exports.getEnv = getEnv;
+//# sourceMappingURL=environment.js.map
+
+/***/ }),
+
+/***/ 19232:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._globalThis = void 0;
+/** only globals that common to node and browsers are allowed */
+// eslint-disable-next-line node/no-unsupported-features/es-builtins
+exports._globalThis = typeof globalThis === 'object' ? globalThis : global;
+//# sourceMappingURL=globalThis.js.map
+
+/***/ }),
+
+/***/ 29788:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.hexToBase64 = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function hexToBase64(hexStr) {
+    const hexStrLen = hexStr.length;
+    let hexAsciiCharsStr = '';
+    for (let i = 0; i < hexStrLen; i += 2) {
+        const hexPair = hexStr.substring(i, i + 2);
+        const hexVal = parseInt(hexPair, 16);
+        hexAsciiCharsStr += String.fromCharCode(hexVal);
+    }
+    return Buffer.from(hexAsciiCharsStr, 'ascii').toString('base64');
+}
+exports.hexToBase64 = hexToBase64;
+//# sourceMappingURL=hex-to-base64.js.map
+
+/***/ }),
+
+/***/ 88331:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(73810), exports);
+__exportStar(__nccwpck_require__(19232), exports);
+__exportStar(__nccwpck_require__(29788), exports);
+__exportStar(__nccwpck_require__(52295), exports);
+__exportStar(__nccwpck_require__(4393), exports);
+__exportStar(__nccwpck_require__(9292), exports);
+__exportStar(__nccwpck_require__(63450), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 4393:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.otperformance = void 0;
+const perf_hooks_1 = __nccwpck_require__(70630);
+exports.otperformance = perf_hooks_1.performance;
+//# sourceMappingURL=performance.js.map
+
+/***/ }),
+
+/***/ 9292:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SDK_INFO = void 0;
+const version_1 = __nccwpck_require__(77129);
+const semantic_conventions_1 = __nccwpck_require__(22039);
+/** Constants describing the SDK in use */
+exports.SDK_INFO = {
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME]: 'opentelemetry',
+    [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_NAME]: 'node',
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE]: semantic_conventions_1.TelemetrySdkLanguageValues.NODEJS,
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_VERSION]: version_1.VERSION,
+};
+//# sourceMappingURL=sdk-info.js.map
+
+/***/ }),
+
+/***/ 63450:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.unrefTimer = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function unrefTimer(timer) {
+    timer.unref();
+}
+exports.unrefTimer = unrefTimer;
+//# sourceMappingURL=timer-util.js.map
+
+/***/ }),
+
+/***/ 15382:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CompositePropagator = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Combines multiple propagators into a single propagator. */
+class CompositePropagator {
+    /**
+     * Construct a composite propagator from a list of propagators.
+     *
+     * @param [config] Configuration object for composite propagator
+     */
+    constructor(config = {}) {
+        var _a;
+        this._propagators = (_a = config.propagators) !== null && _a !== void 0 ? _a : [];
+        this._fields = Array.from(new Set(this._propagators
+            // older propagators may not have fields function, null check to be sure
+            .map(p => (typeof p.fields === 'function' ? p.fields() : []))
+            .reduce((x, y) => x.concat(y), [])));
+    }
+    /**
+     * Run each of the configured propagators with the given context and carrier.
+     * Propagators are run in the order they are configured, so if multiple
+     * propagators write the same carrier key, the propagator later in the list
+     * will "win".
+     *
+     * @param context Context to inject
+     * @param carrier Carrier into which context will be injected
+     */
+    inject(context, carrier, setter) {
+        for (const propagator of this._propagators) {
+            try {
+                propagator.inject(context, carrier, setter);
+            }
+            catch (err) {
+                api_1.diag.warn(`Failed to inject with ${propagator.constructor.name}. Err: ${err.message}`);
+            }
+        }
+    }
+    /**
+     * Run each of the configured propagators with the given context and carrier.
+     * Propagators are run in the order they are configured, so if multiple
+     * propagators write the same context key, the propagator later in the list
+     * will "win".
+     *
+     * @param context Context to add values to
+     * @param carrier Carrier from which to extract context
+     */
+    extract(context, carrier, getter) {
+        return this._propagators.reduce((ctx, propagator) => {
+            try {
+                return propagator.extract(ctx, carrier, getter);
+            }
+            catch (err) {
+                api_1.diag.warn(`Failed to inject with ${propagator.constructor.name}. Err: ${err.message}`);
+            }
+            return ctx;
+        }, context);
+    }
+    fields() {
+        // return a new array so our fields cannot be modified
+        return this._fields.slice();
+    }
+}
+exports.CompositePropagator = CompositePropagator;
+//# sourceMappingURL=composite.js.map
+
+/***/ }),
+
+/***/ 28882:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=IdGenerator.js.map
+
+/***/ }),
+
+/***/ 47364:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceState = void 0;
+const validators_1 = __nccwpck_require__(64895);
+const MAX_TRACE_STATE_ITEMS = 32;
+const MAX_TRACE_STATE_LEN = 512;
+const LIST_MEMBERS_SEPARATOR = ',';
+const LIST_MEMBER_KEY_VALUE_SPLITTER = '=';
+/**
+ * TraceState must be a class and not a simple object type because of the spec
+ * requirement (https://www.w3.org/TR/trace-context/#tracestate-field).
+ *
+ * Here is the list of allowed mutations:
+ * - New key-value pair should be added into the beginning of the list
+ * - The value of any key can be updated. Modified keys MUST be moved to the
+ * beginning of the list.
+ */
+class TraceState {
+    constructor(rawTraceState) {
+        this._internalState = new Map();
+        if (rawTraceState)
+            this._parse(rawTraceState);
+    }
+    set(key, value) {
+        // TODO: Benchmark the different approaches(map vs list) and
+        // use the faster one.
+        const traceState = this._clone();
+        if (traceState._internalState.has(key)) {
+            traceState._internalState.delete(key);
+        }
+        traceState._internalState.set(key, value);
+        return traceState;
+    }
+    unset(key) {
+        const traceState = this._clone();
+        traceState._internalState.delete(key);
+        return traceState;
+    }
+    get(key) {
+        return this._internalState.get(key);
+    }
+    serialize() {
+        return this._keys()
+            .reduce((agg, key) => {
+            agg.push(key + LIST_MEMBER_KEY_VALUE_SPLITTER + this.get(key));
+            return agg;
+        }, [])
+            .join(LIST_MEMBERS_SEPARATOR);
+    }
+    _parse(rawTraceState) {
+        if (rawTraceState.length > MAX_TRACE_STATE_LEN)
+            return;
+        this._internalState = rawTraceState
+            .split(LIST_MEMBERS_SEPARATOR)
+            .reverse() // Store in reverse so new keys (.set(...)) will be placed at the beginning
+            .reduce((agg, part) => {
+            const listMember = part.trim(); // Optional Whitespace (OWS) handling
+            const i = listMember.indexOf(LIST_MEMBER_KEY_VALUE_SPLITTER);
+            if (i !== -1) {
+                const key = listMember.slice(0, i);
+                const value = listMember.slice(i + 1, part.length);
+                if (validators_1.validateKey(key) && validators_1.validateValue(value)) {
+                    agg.set(key, value);
+                }
+                else {
+                    // TODO: Consider to add warning log
+                }
+            }
+            return agg;
+        }, new Map());
+        // Because of the reverse() requirement, trunc must be done after map is created
+        if (this._internalState.size > MAX_TRACE_STATE_ITEMS) {
+            this._internalState = new Map(Array.from(this._internalState.entries())
+                .reverse() // Use reverse same as original tracestate parse chain
+                .slice(0, MAX_TRACE_STATE_ITEMS));
+        }
+    }
+    _keys() {
+        return Array.from(this._internalState.keys()).reverse();
+    }
+    _clone() {
+        const traceState = new TraceState();
+        traceState._internalState = new Map(this._internalState);
+        return traceState;
+    }
+}
+exports.TraceState = TraceState;
+//# sourceMappingURL=TraceState.js.map
+
+/***/ }),
+
+/***/ 99320:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.W3CTraceContextPropagator = exports.parseTraceParent = exports.TRACE_STATE_HEADER = exports.TRACE_PARENT_HEADER = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(91124);
+const TraceState_1 = __nccwpck_require__(47364);
+exports.TRACE_PARENT_HEADER = 'traceparent';
+exports.TRACE_STATE_HEADER = 'tracestate';
+const VERSION = '00';
+const VERSION_PART = '(?!ff)[\\da-f]{2}';
+const TRACE_ID_PART = '(?![0]{32})[\\da-f]{32}';
+const PARENT_ID_PART = '(?![0]{16})[\\da-f]{16}';
+const FLAGS_PART = '[\\da-f]{2}';
+const TRACE_PARENT_REGEX = new RegExp(`^\\s?(${VERSION_PART})-(${TRACE_ID_PART})-(${PARENT_ID_PART})-(${FLAGS_PART})(-.*)?\\s?$`);
+/**
+ * Parses information from the [traceparent] span tag and converts it into {@link SpanContext}
+ * @param traceParent - A meta property that comes from server.
+ *     It should be dynamically generated server side to have the server's request trace Id,
+ *     a parent span Id that was set on the server's request span,
+ *     and the trace flags to indicate the server's sampling decision
+ *     (01 = sampled, 00 = not sampled).
+ *     for example: '{version}-{traceId}-{spanId}-{sampleDecision}'
+ *     For more information see {@link https://www.w3.org/TR/trace-context/}
+ */
+function parseTraceParent(traceParent) {
+    const match = TRACE_PARENT_REGEX.exec(traceParent);
+    if (!match)
+        return null;
+    // According to the specification the implementation should be compatible
+    // with future versions. If there are more parts, we only reject it if it's using version 00
+    // See https://www.w3.org/TR/trace-context/#versioning-of-traceparent
+    if (match[1] === '00' && match[5])
+        return null;
+    return {
+        traceId: match[2],
+        spanId: match[3],
+        traceFlags: parseInt(match[4], 16),
+    };
+}
+exports.parseTraceParent = parseTraceParent;
+/**
+ * Propagates {@link SpanContext} through Trace Context format propagation.
+ *
+ * Based on the Trace Context specification:
+ * https://www.w3.org/TR/trace-context/
+ */
+class W3CTraceContextPropagator {
+    inject(context, carrier, setter) {
+        const spanContext = api_1.trace.getSpanContext(context);
+        if (!spanContext ||
+            suppress_tracing_1.isTracingSuppressed(context) ||
+            !api_1.isSpanContextValid(spanContext))
+            return;
+        const traceParent = `${VERSION}-${spanContext.traceId}-${spanContext.spanId}-0${Number(spanContext.traceFlags || api_1.TraceFlags.NONE).toString(16)}`;
+        setter.set(carrier, exports.TRACE_PARENT_HEADER, traceParent);
+        if (spanContext.traceState) {
+            setter.set(carrier, exports.TRACE_STATE_HEADER, spanContext.traceState.serialize());
+        }
+    }
+    extract(context, carrier, getter) {
+        const traceParentHeader = getter.get(carrier, exports.TRACE_PARENT_HEADER);
+        if (!traceParentHeader)
+            return context;
+        const traceParent = Array.isArray(traceParentHeader)
+            ? traceParentHeader[0]
+            : traceParentHeader;
+        if (typeof traceParent !== 'string')
+            return context;
+        const spanContext = parseTraceParent(traceParent);
+        if (!spanContext)
+            return context;
+        spanContext.isRemote = true;
+        const traceStateHeader = getter.get(carrier, exports.TRACE_STATE_HEADER);
+        if (traceStateHeader) {
+            // If more than one `tracestate` header is found, we merge them into a
+            // single header.
+            const state = Array.isArray(traceStateHeader)
+                ? traceStateHeader.join(',')
+                : traceStateHeader;
+            spanContext.traceState = new TraceState_1.TraceState(typeof state === 'string' ? state : undefined);
+        }
+        return api_1.trace.setSpanContext(context, spanContext);
+    }
+    fields() {
+        return [exports.TRACE_PARENT_HEADER, exports.TRACE_STATE_HEADER];
+    }
+}
+exports.W3CTraceContextPropagator = W3CTraceContextPropagator;
+//# sourceMappingURL=W3CTraceContextPropagator.js.map
+
+/***/ }),
+
+/***/ 82765:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getRPCMetadata = exports.deleteRPCMetadata = exports.setRPCMetadata = exports.RPCType = void 0;
+const api_1 = __nccwpck_require__(65163);
+const RPC_METADATA_KEY = api_1.createContextKey('OpenTelemetry SDK Context Key RPC_METADATA');
+var RPCType;
+(function (RPCType) {
+    RPCType["HTTP"] = "http";
+})(RPCType = exports.RPCType || (exports.RPCType = {}));
+function setRPCMetadata(context, meta) {
+    return context.setValue(RPC_METADATA_KEY, meta);
+}
+exports.setRPCMetadata = setRPCMetadata;
+function deleteRPCMetadata(context) {
+    return context.deleteValue(RPC_METADATA_KEY);
+}
+exports.deleteRPCMetadata = deleteRPCMetadata;
+function getRPCMetadata(context) {
+    return context.getValue(RPC_METADATA_KEY);
+}
+exports.getRPCMetadata = getRPCMetadata;
+//# sourceMappingURL=rpc-metadata.js.map
+
+/***/ }),
+
+/***/ 14218:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOffSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples no traces. */
+class AlwaysOffSampler {
+    shouldSample() {
+        return {
+            decision: api_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return 'AlwaysOffSampler';
+    }
+}
+exports.AlwaysOffSampler = AlwaysOffSampler;
+//# sourceMappingURL=AlwaysOffSampler.js.map
+
+/***/ }),
+
+/***/ 62233:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOnSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples all traces. */
+class AlwaysOnSampler {
+    shouldSample() {
+        return {
+            decision: api_1.SamplingDecision.RECORD_AND_SAMPLED,
+        };
+    }
+    toString() {
+        return 'AlwaysOnSampler';
+    }
+}
+exports.AlwaysOnSampler = AlwaysOnSampler;
+//# sourceMappingURL=AlwaysOnSampler.js.map
+
+/***/ }),
+
+/***/ 89054:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ParentBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+const global_error_handler_1 = __nccwpck_require__(47111);
+const AlwaysOffSampler_1 = __nccwpck_require__(14218);
+const AlwaysOnSampler_1 = __nccwpck_require__(62233);
+/**
+ * A composite sampler that either respects the parent span's sampling decision
+ * or delegates to `delegateSampler` for root spans.
+ */
+class ParentBasedSampler {
+    constructor(config) {
+        var _a, _b, _c, _d;
+        this._root = config.root;
+        if (!this._root) {
+            global_error_handler_1.globalErrorHandler(new Error('ParentBasedSampler must have a root sampler configured'));
+            this._root = new AlwaysOnSampler_1.AlwaysOnSampler();
+        }
+        this._remoteParentSampled =
+            (_a = config.remoteParentSampled) !== null && _a !== void 0 ? _a : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._remoteParentNotSampled =
+            (_b = config.remoteParentNotSampled) !== null && _b !== void 0 ? _b : new AlwaysOffSampler_1.AlwaysOffSampler();
+        this._localParentSampled =
+            (_c = config.localParentSampled) !== null && _c !== void 0 ? _c : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._localParentNotSampled =
+            (_d = config.localParentNotSampled) !== null && _d !== void 0 ? _d : new AlwaysOffSampler_1.AlwaysOffSampler();
+    }
+    shouldSample(context, traceId, spanName, spanKind, attributes, links) {
+        const parentContext = api_1.trace.getSpanContext(context);
+        if (!parentContext || !api_1.isSpanContextValid(parentContext)) {
+            return this._root.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.isRemote) {
+            if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+                return this._remoteParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+            }
+            return this._remoteParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+            return this._localParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        return this._localParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+    }
+    toString() {
+        return `ParentBased{root=${this._root.toString()}, remoteParentSampled=${this._remoteParentSampled.toString()}, remoteParentNotSampled=${this._remoteParentNotSampled.toString()}, localParentSampled=${this._localParentSampled.toString()}, localParentNotSampled=${this._localParentNotSampled.toString()}}`;
+    }
+}
+exports.ParentBasedSampler = ParentBasedSampler;
+//# sourceMappingURL=ParentBasedSampler.js.map
+
+/***/ }),
+
+/***/ 76168:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceIdRatioBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples a given fraction of traces based of trace id deterministically. */
+class TraceIdRatioBasedSampler {
+    constructor(_ratio = 0) {
+        this._ratio = _ratio;
+        this._ratio = this._normalize(_ratio);
+        this._upperBound = Math.floor(this._ratio * 0xffffffff);
+    }
+    shouldSample(context, traceId) {
+        return {
+            decision: api_1.isValidTraceId(traceId) && this._accumulate(traceId) < this._upperBound
+                ? api_1.SamplingDecision.RECORD_AND_SAMPLED
+                : api_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return `TraceIdRatioBased{${this._ratio}}`;
+    }
+    _normalize(ratio) {
+        if (typeof ratio !== 'number' || isNaN(ratio))
+            return 0;
+        return ratio >= 1 ? 1 : ratio <= 0 ? 0 : ratio;
+    }
+    _accumulate(traceId) {
+        let accumulation = 0;
+        for (let i = 0; i < traceId.length / 8; i++) {
+            const pos = i * 8;
+            const part = parseInt(traceId.slice(pos, pos + 8), 16);
+            accumulation = (accumulation ^ part) >>> 0;
+        }
+        return accumulation;
+    }
+}
+exports.TraceIdRatioBasedSampler = TraceIdRatioBasedSampler;
+//# sourceMappingURL=TraceIdRatioBasedSampler.js.map
+
+/***/ }),
+
+/***/ 91124:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isTracingSuppressed = exports.unsuppressTracing = exports.suppressTracing = void 0;
+const api_1 = __nccwpck_require__(65163);
+const SUPPRESS_TRACING_KEY = api_1.createContextKey('OpenTelemetry SDK Context Key SUPPRESS_TRACING');
+function suppressTracing(context) {
+    return context.setValue(SUPPRESS_TRACING_KEY, true);
+}
+exports.suppressTracing = suppressTracing;
+function unsuppressTracing(context) {
+    return context.deleteValue(SUPPRESS_TRACING_KEY);
+}
+exports.unsuppressTracing = unsuppressTracing;
+function isTracingSuppressed(context) {
+    return context.getValue(SUPPRESS_TRACING_KEY) === true;
+}
+exports.isTracingSuppressed = isTracingSuppressed;
+//# sourceMappingURL=suppress-tracing.js.map
+
+/***/ }),
+
+/***/ 31331:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseEnvironment = exports.DEFAULT_ENVIRONMENT = exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = void 0;
+const api_1 = __nccwpck_require__(65163);
+const sampling_1 = __nccwpck_require__(95803);
+const DEFAULT_LIST_SEPARATOR = ',';
+/**
+ * Environment interface to define all names
+ */
+const ENVIRONMENT_NUMBERS_KEYS = [
+    'OTEL_BSP_EXPORT_TIMEOUT',
+    'OTEL_BSP_MAX_EXPORT_BATCH_SIZE',
+    'OTEL_BSP_MAX_QUEUE_SIZE',
+    'OTEL_BSP_SCHEDULE_DELAY',
+    'OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT',
+    'OTEL_ATTRIBUTE_COUNT_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT',
+    'OTEL_SPAN_EVENT_COUNT_LIMIT',
+    'OTEL_SPAN_LINK_COUNT_LIMIT',
+];
+function isEnvVarANumber(key) {
+    return (ENVIRONMENT_NUMBERS_KEYS.indexOf(key) > -1);
+}
+const ENVIRONMENT_LISTS_KEYS = [
+    'OTEL_NO_PATCH_MODULES',
+    'OTEL_PROPAGATORS',
+];
+function isEnvVarAList(key) {
+    return ENVIRONMENT_LISTS_KEYS.indexOf(key) > -1;
+}
+exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = Infinity;
+exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = 128;
+/**
+ * Default environment variables
+ */
+exports.DEFAULT_ENVIRONMENT = {
+    CONTAINER_NAME: '',
+    ECS_CONTAINER_METADATA_URI_V4: '',
+    ECS_CONTAINER_METADATA_URI: '',
+    HOSTNAME: '',
+    KUBERNETES_SERVICE_HOST: '',
+    NAMESPACE: '',
+    OTEL_BSP_EXPORT_TIMEOUT: 30000,
+    OTEL_BSP_MAX_EXPORT_BATCH_SIZE: 512,
+    OTEL_BSP_MAX_QUEUE_SIZE: 2048,
+    OTEL_BSP_SCHEDULE_DELAY: 5000,
+    OTEL_EXPORTER_JAEGER_AGENT_HOST: '',
+    OTEL_EXPORTER_JAEGER_ENDPOINT: '',
+    OTEL_EXPORTER_JAEGER_PASSWORD: '',
+    OTEL_EXPORTER_JAEGER_USER: '',
+    OTEL_EXPORTER_OTLP_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_HEADERS: '',
+    OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',
+    OTEL_EXPORTER_OTLP_METRICS_HEADERS: '',
+    OTEL_EXPORTER_ZIPKIN_ENDPOINT: 'http://localhost:9411/api/v2/spans',
+    OTEL_LOG_LEVEL: api_1.DiagLogLevel.INFO,
+    OTEL_NO_PATCH_MODULES: [],
+    OTEL_PROPAGATORS: ['tracecontext', 'baggage'],
+    OTEL_RESOURCE_ATTRIBUTES: '',
+    OTEL_SERVICE_NAME: '',
+    OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+    OTEL_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
+    OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+    OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
+    OTEL_SPAN_EVENT_COUNT_LIMIT: 128,
+    OTEL_SPAN_LINK_COUNT_LIMIT: 128,
+    OTEL_TRACES_EXPORTER: 'none',
+    OTEL_TRACES_SAMPLER: sampling_1.TracesSamplerValues.ParentBasedAlwaysOn,
+    OTEL_TRACES_SAMPLER_ARG: '',
+};
+/**
+ * Parses a variable as number with number validation
+ * @param name
+ * @param environment
+ * @param values
+ * @param min
+ * @param max
+ */
+function parseNumber(name, environment, values, min = -Infinity, max = Infinity) {
+    if (typeof values[name] !== 'undefined') {
+        const value = Number(values[name]);
+        if (!isNaN(value)) {
+            if (value < min) {
+                environment[name] = min;
+            }
+            else if (value > max) {
+                environment[name] = max;
+            }
+            else {
+                environment[name] = value;
+            }
+        }
+    }
+}
+/**
+ * Parses list-like strings from input into output.
+ * @param name
+ * @param environment
+ * @param values
+ * @param separator
+ */
+function parseStringList(name, output, input, separator = DEFAULT_LIST_SEPARATOR) {
+    const givenValue = input[name];
+    if (typeof givenValue === 'string') {
+        output[name] = givenValue.split(separator).map(v => v.trim());
+    }
+}
+// The support string -> DiagLogLevel mappings
+const logLevelMap = {
+    ALL: api_1.DiagLogLevel.ALL,
+    VERBOSE: api_1.DiagLogLevel.VERBOSE,
+    DEBUG: api_1.DiagLogLevel.DEBUG,
+    INFO: api_1.DiagLogLevel.INFO,
+    WARN: api_1.DiagLogLevel.WARN,
+    ERROR: api_1.DiagLogLevel.ERROR,
+    NONE: api_1.DiagLogLevel.NONE,
+};
+/**
+ * Environmentally sets log level if valid log level string is provided
+ * @param key
+ * @param environment
+ * @param values
+ */
+function setLogLevelFromEnv(key, environment, values) {
+    const value = values[key];
+    if (typeof value === 'string') {
+        const theLevel = logLevelMap[value.toUpperCase()];
+        if (theLevel != null) {
+            environment[key] = theLevel;
+        }
+    }
+}
+/**
+ * Parses environment values
+ * @param values
+ */
+function parseEnvironment(values) {
+    const environment = {};
+    for (const env in exports.DEFAULT_ENVIRONMENT) {
+        const key = env;
+        switch (key) {
+            case 'OTEL_LOG_LEVEL':
+                setLogLevelFromEnv(key, environment, values);
+                break;
+            default:
+                if (isEnvVarANumber(key)) {
+                    parseNumber(key, environment, values);
+                }
+                else if (isEnvVarAList(key)) {
+                    parseStringList(key, environment, values);
+                }
+                else {
+                    const value = values[key];
+                    if (typeof value !== 'undefined' && value !== null) {
+                        environment[key] = String(value);
+                    }
+                }
+        }
+    }
+    return environment;
+}
+exports.parseEnvironment = parseEnvironment;
+//# sourceMappingURL=environment.js.map
+
+/***/ }),
+
+/***/ 73839:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isPlainObject = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * based on lodash in order to support esm builds without esModuleInterop.
+ * lodash is using MIT License.
+ **/
+const objectTag = '[object Object]';
+const nullTag = '[object Null]';
+const undefinedTag = '[object Undefined]';
+const funcProto = Function.prototype;
+const funcToString = funcProto.toString;
+const objectCtorString = funcToString.call(Object);
+const getPrototype = overArg(Object.getPrototypeOf, Object);
+const objectProto = Object.prototype;
+const hasOwnProperty = objectProto.hasOwnProperty;
+const symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+const nativeObjectToString = objectProto.toString;
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+    return function (arg) {
+        return func(transform(arg));
+    };
+}
+/**
+ * Checks if `value` is a plain object, that is, an object created by the
+ * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.8.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * _.isPlainObject(new Foo);
+ * // => false
+ *
+ * _.isPlainObject([1, 2, 3]);
+ * // => false
+ *
+ * _.isPlainObject({ 'x': 0, 'y': 0 });
+ * // => true
+ *
+ * _.isPlainObject(Object.create(null));
+ * // => true
+ */
+function isPlainObject(value) {
+    if (!isObjectLike(value) || baseGetTag(value) !== objectTag) {
+        return false;
+    }
+    const proto = getPrototype(value);
+    if (proto === null) {
+        return true;
+    }
+    const Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+    return typeof Ctor == 'function' && Ctor instanceof Ctor &&
+        funcToString.call(Ctor) === objectCtorString;
+}
+exports.isPlainObject = isPlainObject;
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+}
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+    if (value == null) {
+        return value === undefined ? undefinedTag : nullTag;
+    }
+    return (symToStringTag && symToStringTag in Object(value))
+        ? getRawTag(value)
+        : objectToString(value);
+}
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+    const isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
+    let unmasked = false;
+    try {
+        value[symToStringTag] = undefined;
+        unmasked = true;
+    }
+    catch (e) {
+        // silence
+    }
+    const result = nativeObjectToString.call(value);
+    if (unmasked) {
+        if (isOwn) {
+            value[symToStringTag] = tag;
+        }
+        else {
+            delete value[symToStringTag];
+        }
+    }
+    return result;
+}
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+    return nativeObjectToString.call(value);
+}
+//# sourceMappingURL=lodash.merge.js.map
+
+/***/ }),
+
+/***/ 1502:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.merge = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const lodash_merge_1 = __nccwpck_require__(73839);
+const MAX_LEVEL = 20;
+/**
+ * Merges objects together
+ * @param args - objects / values to be merged
+ */
+function merge(...args) {
+    let result = args.shift();
+    const objects = new WeakMap();
+    while (args.length > 0) {
+        result = mergeTwoObjects(result, args.shift(), 0, objects);
+    }
+    return result;
+}
+exports.merge = merge;
+function takeValue(value) {
+    if (isArray(value)) {
+        return value.slice();
+    }
+    return value;
+}
+/**
+ * Merges two objects
+ * @param one - first object
+ * @param two - second object
+ * @param level - current deep level
+ * @param objects - objects holder that has been already referenced - to prevent
+ * cyclic dependency
+ */
+function mergeTwoObjects(one, two, level = 0, objects) {
+    let result;
+    if (level > MAX_LEVEL) {
+        return undefined;
+    }
+    level++;
+    if (isPrimitive(one) || isPrimitive(two) || isFunction(two)) {
+        result = takeValue(two);
+    }
+    else if (isArray(one)) {
+        result = one.slice();
+        if (isArray(two)) {
+            for (let i = 0, j = two.length; i < j; i++) {
+                result.push(takeValue(two[i]));
+            }
+        }
+        else if (isObject(two)) {
+            const keys = Object.keys(two);
+            for (let i = 0, j = keys.length; i < j; i++) {
+                const key = keys[i];
+                result[key] = takeValue(two[key]);
+            }
+        }
+    }
+    else if (isObject(one)) {
+        if (isObject(two)) {
+            if (!shouldMerge(one, two)) {
+                return two;
+            }
+            result = Object.assign({}, one);
+            const keys = Object.keys(two);
+            for (let i = 0, j = keys.length; i < j; i++) {
+                const key = keys[i];
+                const twoValue = two[key];
+                if (isPrimitive(twoValue)) {
+                    if (typeof twoValue === 'undefined') {
+                        delete result[key];
+                    }
+                    else {
+                        // result[key] = takeValue(twoValue);
+                        result[key] = twoValue;
+                    }
+                }
+                else {
+                    const obj1 = result[key];
+                    const obj2 = twoValue;
+                    if (wasObjectReferenced(one, key, objects) ||
+                        wasObjectReferenced(two, key, objects)) {
+                        delete result[key];
+                    }
+                    else {
+                        if (isObject(obj1) && isObject(obj2)) {
+                            const arr1 = objects.get(obj1) || [];
+                            const arr2 = objects.get(obj2) || [];
+                            arr1.push({ obj: one, key });
+                            arr2.push({ obj: two, key });
+                            objects.set(obj1, arr1);
+                            objects.set(obj2, arr2);
+                        }
+                        result[key] = mergeTwoObjects(result[key], twoValue, level, objects);
+                    }
+                }
+            }
+        }
+        else {
+            result = two;
+        }
+    }
+    return result;
+}
+/**
+ * Function to check if object has been already reference
+ * @param obj
+ * @param key
+ * @param objects
+ */
+function wasObjectReferenced(obj, key, objects) {
+    const arr = objects.get(obj[key]) || [];
+    for (let i = 0, j = arr.length; i < j; i++) {
+        const info = arr[i];
+        if (info.key === key && info.obj === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+function isArray(value) {
+    return Array.isArray(value);
+}
+function isFunction(value) {
+    return typeof value === 'function';
+}
+function isObject(value) {
+    return !isPrimitive(value) && !isArray(value) && !isFunction(value) && typeof value === 'object';
+}
+function isPrimitive(value) {
+    return typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean' ||
+        typeof value === 'undefined' ||
+        value instanceof Date ||
+        value instanceof RegExp ||
+        value === null;
+}
+function shouldMerge(one, two) {
+    if (!lodash_merge_1.isPlainObject(one) || !lodash_merge_1.isPlainObject(two)) {
+        return false;
+    }
+    return true;
+}
+//# sourceMappingURL=merge.js.map
+
+/***/ }),
+
+/***/ 95803:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TracesSamplerValues = void 0;
+var TracesSamplerValues;
+(function (TracesSamplerValues) {
+    TracesSamplerValues["AlwaysOff"] = "always_off";
+    TracesSamplerValues["AlwaysOn"] = "always_on";
+    TracesSamplerValues["ParentBasedAlwaysOff"] = "parentbased_always_off";
+    TracesSamplerValues["ParentBasedAlwaysOn"] = "parentbased_always_on";
+    TracesSamplerValues["ParentBasedTraceIdRatio"] = "parentbased_traceidratio";
+    TracesSamplerValues["TraceIdRatio"] = "traceidratio";
+})(TracesSamplerValues = exports.TracesSamplerValues || (exports.TracesSamplerValues = {}));
+//# sourceMappingURL=sampling.js.map
+
+/***/ }),
+
+/***/ 59747:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isUrlIgnored = exports.urlMatches = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function urlMatches(url, urlToMatch) {
+    if (typeof urlToMatch === 'string') {
+        return url === urlToMatch;
+    }
+    else {
+        return !!url.match(urlToMatch);
+    }
+}
+exports.urlMatches = urlMatches;
+/**
+ * Check if {@param url} should be ignored when comparing against {@param ignoredUrls}
+ * @param url
+ * @param ignoredUrls
+ */
+function isUrlIgnored(url, ignoredUrls) {
+    if (!ignoredUrls) {
+        return false;
+    }
+    for (const ignoreUrl of ignoredUrls) {
+        if (urlMatches(url, ignoreUrl)) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isUrlIgnored = isUrlIgnored;
+//# sourceMappingURL=url.js.map
+
+/***/ }),
+
+/***/ 65071:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isWrapped = void 0;
+/**
+ * Checks if certain function has been already wrapped
+ * @param func
+ */
+function isWrapped(func) {
+    return (typeof func === 'function' &&
+        typeof func.__original === 'function' &&
+        typeof func.__unwrap === 'function' &&
+        func.__wrapped === true);
+}
+exports.isWrapped = isWrapped;
+//# sourceMappingURL=wrap.js.map
+
+/***/ }),
+
+/***/ 77129:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.VERSION = void 0;
+// this is autogenerated file, see scripts/version-update.js
+exports.VERSION = '1.0.1';
+//# sourceMappingURL=version.js.map
+
+/***/ }),
+
+/***/ 22039:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(12787), exports);
+__exportStar(__nccwpck_require__(43896), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 35601:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TelemetrySdkLanguageValues = exports.OsTypeValues = exports.HostArchValues = exports.AwsEcsLaunchtypeValues = exports.CloudPlatformValues = exports.CloudProviderValues = exports.SemanticResourceAttributes = void 0;
+// DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+exports.SemanticResourceAttributes = {
+    /**
+    * Name of the cloud provider.
+    */
+    CLOUD_PROVIDER: 'cloud.provider',
+    /**
+    * The cloud account ID the resource is assigned to.
+    */
+    CLOUD_ACCOUNT_ID: 'cloud.account.id',
+    /**
+    * The geographical region the resource is running. Refer to your provider&#39;s docs to see the available regions, for example [Alibaba Cloud regions](https://www.alibabacloud.com/help/doc-detail/40654.htm), [AWS regions](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/), [Azure regions](https://azure.microsoft.com/en-us/global-infrastructure/geographies/), or [Google Cloud regions](https://cloud.google.com/about/locations).
+    */
+    CLOUD_REGION: 'cloud.region',
+    /**
+    * Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.
+    *
+    * Note: Availability zones are called &#34;zones&#34; on Alibaba Cloud and Google Cloud.
+    */
+    CLOUD_AVAILABILITY_ZONE: 'cloud.availability_zone',
+    /**
+    * The cloud platform in use.
+    *
+    * Note: The prefix of the service SHOULD match the one specified in `cloud.provider`.
+    */
+    CLOUD_PLATFORM: 'cloud.platform',
+    /**
+    * The Amazon Resource Name (ARN) of an [ECS container instance](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html).
+    */
+    AWS_ECS_CONTAINER_ARN: 'aws.ecs.container.arn',
+    /**
+    * The ARN of an [ECS cluster](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/clusters.html).
+    */
+    AWS_ECS_CLUSTER_ARN: 'aws.ecs.cluster.arn',
+    /**
+    * The [launch type](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_types.html) for an ECS task.
+    */
+    AWS_ECS_LAUNCHTYPE: 'aws.ecs.launchtype',
+    /**
+    * The ARN of an [ECS task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html).
+    */
+    AWS_ECS_TASK_ARN: 'aws.ecs.task.arn',
+    /**
+    * The task definition family this task definition is a member of.
+    */
+    AWS_ECS_TASK_FAMILY: 'aws.ecs.task.family',
+    /**
+    * The revision for this task definition.
+    */
+    AWS_ECS_TASK_REVISION: 'aws.ecs.task.revision',
+    /**
+    * The ARN of an EKS cluster.
+    */
+    AWS_EKS_CLUSTER_ARN: 'aws.eks.cluster.arn',
+    /**
+    * The name(s) of the AWS log group(s) an application is writing to.
+    *
+    * Note: Multiple log groups must be supported for cases like multi-container applications, where a single application has sidecar containers, and each write to their own log group.
+    */
+    AWS_LOG_GROUP_NAMES: 'aws.log.group.names',
+    /**
+    * The Amazon Resource Name(s) (ARN) of the AWS log group(s).
+    *
+    * Note: See the [log group ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format).
+    */
+    AWS_LOG_GROUP_ARNS: 'aws.log.group.arns',
+    /**
+    * The name(s) of the AWS log stream(s) an application is writing to.
+    */
+    AWS_LOG_STREAM_NAMES: 'aws.log.stream.names',
+    /**
+    * The ARN(s) of the AWS log stream(s).
+    *
+    * Note: See the [log stream ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format). One log group can contain several log streams, so these ARNs necessarily identify both a log group and a log stream.
+    */
+    AWS_LOG_STREAM_ARNS: 'aws.log.stream.arns',
+    /**
+    * Container name.
+    */
+    CONTAINER_NAME: 'container.name',
+    /**
+    * Container ID. Usually a UUID, as for example used to [identify Docker containers](https://docs.docker.com/engine/reference/run/#container-identification). The UUID might be abbreviated.
+    */
+    CONTAINER_ID: 'container.id',
+    /**
+    * The container runtime managing this container.
+    */
+    CONTAINER_RUNTIME: 'container.runtime',
+    /**
+    * Name of the image the container was built on.
+    */
+    CONTAINER_IMAGE_NAME: 'container.image.name',
+    /**
+    * Container image tag.
+    */
+    CONTAINER_IMAGE_TAG: 'container.image.tag',
+    /**
+    * Name of the [deployment environment](https://en.wikipedia.org/wiki/Deployment_environment) (aka deployment tier).
+    */
+    DEPLOYMENT_ENVIRONMENT: 'deployment.environment',
+    /**
+    * A unique identifier representing the device.
+    *
+    * Note: The device identifier MUST only be defined using the values outlined below. This value is not an advertising identifier and MUST NOT be used as such. On iOS (Swift or Objective-C), this value MUST be equal to the [vendor identifier](https://developer.apple.com/documentation/uikit/uidevice/1620059-identifierforvendor). On Android (Java or Kotlin), this value MUST be equal to the Firebase Installation ID or a globally unique UUID which is persisted across sessions in your application. More information can be found [here](https://developer.android.com/training/articles/user-data-ids) on best practices and exact implementation details. Caution should be taken when storing personal data or anything which can identify a user. GDPR and data protection laws may apply, ensure you do your own due diligence.
+    */
+    DEVICE_ID: 'device.id',
+    /**
+    * The model identifier for the device.
+    *
+    * Note: It&#39;s recommended this value represents a machine readable version of the model identifier rather than the market or consumer-friendly name of the device.
+    */
+    DEVICE_MODEL_IDENTIFIER: 'device.model.identifier',
+    /**
+    * The marketing name for the device model.
+    *
+    * Note: It&#39;s recommended this value represents a human readable version of the device model rather than a machine readable alternative.
+    */
+    DEVICE_MODEL_NAME: 'device.model.name',
+    /**
+    * The name of the single function that this runtime instance executes.
+    *
+    * Note: This is the name of the function as configured/deployed on the FaaS platform and is usually different from the name of the callback function (which may be stored in the [`code.namespace`/`code.function`](../../trace/semantic_conventions/span-general.md#source-code-attributes) span attributes).
+    */
+    FAAS_NAME: 'faas.name',
+    /**
+    * The unique ID of the single function that this runtime instance executes.
+    *
+    * Note: Depending on the cloud provider, use:
+  
+  * **AWS Lambda:** The function [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
+  Take care not to use the &#34;invoked ARN&#34; directly but replace any
+  [alias suffix](https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html) with the resolved function version, as the same runtime instance may be invokable with multiple
+  different aliases.
+  * **GCP:** The [URI of the resource](https://cloud.google.com/iam/docs/full-resource-names)
+  * **Azure:** The [Fully Qualified Resource ID](https://docs.microsoft.com/en-us/rest/api/resources/resources/get-by-id).
+  
+  On some providers, it may not be possible to determine the full ID at startup,
+  which is why this field cannot be made required. For example, on AWS the account ID
+  part of the ARN is not available without calling another AWS API
+  which may be deemed too slow for a short-running lambda function.
+  As an alternative, consider setting `faas.id` as a span attribute instead.
+    */
+    FAAS_ID: 'faas.id',
+    /**
+    * The immutable version of the function being executed.
+    *
+    * Note: Depending on the cloud provider and platform, use:
+  
+  * **AWS Lambda:** The [function version](https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html)
+    (an integer represented as a decimal string).
+  * **Google Cloud Run:** The [revision](https://cloud.google.com/run/docs/managing/revisions)
+    (i.e., the function name plus the revision suffix).
+  * **Google Cloud Functions:** The value of the
+    [`K_REVISION` environment variable](https://cloud.google.com/functions/docs/env-var#runtime_environment_variables_set_automatically).
+  * **Azure Functions:** Not applicable. Do not set this attribute.
+    */
+    FAAS_VERSION: 'faas.version',
+    /**
+    * The execution environment ID as a string, that will be potentially reused for other invocations to the same function/function version.
+    *
+    * Note: * **AWS Lambda:** Use the (full) log stream name.
+    */
+    FAAS_INSTANCE: 'faas.instance',
+    /**
+    * The amount of memory available to the serverless function in MiB.
+    *
+    * Note: It&#39;s recommended to set this attribute since e.g. too little memory can easily stop a Java AWS Lambda function from working correctly. On AWS Lambda, the environment variable `AWS_LAMBDA_FUNCTION_MEMORY_SIZE` provides this information.
+    */
+    FAAS_MAX_MEMORY: 'faas.max_memory',
+    /**
+    * Unique host ID. For Cloud, this must be the instance_id assigned by the cloud provider.
+    */
+    HOST_ID: 'host.id',
+    /**
+    * Name of the host. On Unix systems, it may contain what the hostname command returns, or the fully qualified hostname, or another name specified by the user.
+    */
+    HOST_NAME: 'host.name',
+    /**
+    * Type of host. For Cloud, this must be the machine type.
+    */
+    HOST_TYPE: 'host.type',
+    /**
+    * The CPU architecture the host system is running on.
+    */
+    HOST_ARCH: 'host.arch',
+    /**
+    * Name of the VM image or OS install the host was instantiated from.
+    */
+    HOST_IMAGE_NAME: 'host.image.name',
+    /**
+    * VM image ID. For Cloud, this value is from the provider.
+    */
+    HOST_IMAGE_ID: 'host.image.id',
+    /**
+    * The version string of the VM image as defined in [Version Attributes](README.md#version-attributes).
+    */
+    HOST_IMAGE_VERSION: 'host.image.version',
+    /**
+    * The name of the cluster.
+    */
+    K8S_CLUSTER_NAME: 'k8s.cluster.name',
+    /**
+    * The name of the Node.
+    */
+    K8S_NODE_NAME: 'k8s.node.name',
+    /**
+    * The UID of the Node.
+    */
+    K8S_NODE_UID: 'k8s.node.uid',
+    /**
+    * The name of the namespace that the pod is running in.
+    */
+    K8S_NAMESPACE_NAME: 'k8s.namespace.name',
+    /**
+    * The UID of the Pod.
+    */
+    K8S_POD_UID: 'k8s.pod.uid',
+    /**
+    * The name of the Pod.
+    */
+    K8S_POD_NAME: 'k8s.pod.name',
+    /**
+    * The name of the Container in a Pod template.
+    */
+    K8S_CONTAINER_NAME: 'k8s.container.name',
+    /**
+    * The UID of the ReplicaSet.
+    */
+    K8S_REPLICASET_UID: 'k8s.replicaset.uid',
+    /**
+    * The name of the ReplicaSet.
+    */
+    K8S_REPLICASET_NAME: 'k8s.replicaset.name',
+    /**
+    * The UID of the Deployment.
+    */
+    K8S_DEPLOYMENT_UID: 'k8s.deployment.uid',
+    /**
+    * The name of the Deployment.
+    */
+    K8S_DEPLOYMENT_NAME: 'k8s.deployment.name',
+    /**
+    * The UID of the StatefulSet.
+    */
+    K8S_STATEFULSET_UID: 'k8s.statefulset.uid',
+    /**
+    * The name of the StatefulSet.
+    */
+    K8S_STATEFULSET_NAME: 'k8s.statefulset.name',
+    /**
+    * The UID of the DaemonSet.
+    */
+    K8S_DAEMONSET_UID: 'k8s.daemonset.uid',
+    /**
+    * The name of the DaemonSet.
+    */
+    K8S_DAEMONSET_NAME: 'k8s.daemonset.name',
+    /**
+    * The UID of the Job.
+    */
+    K8S_JOB_UID: 'k8s.job.uid',
+    /**
+    * The name of the Job.
+    */
+    K8S_JOB_NAME: 'k8s.job.name',
+    /**
+    * The UID of the CronJob.
+    */
+    K8S_CRONJOB_UID: 'k8s.cronjob.uid',
+    /**
+    * The name of the CronJob.
+    */
+    K8S_CRONJOB_NAME: 'k8s.cronjob.name',
+    /**
+    * The operating system type.
+    */
+    OS_TYPE: 'os.type',
+    /**
+    * Human readable (not intended to be parsed) OS version information, like e.g. reported by `ver` or `lsb_release -a` commands.
+    */
+    OS_DESCRIPTION: 'os.description',
+    /**
+    * Human readable operating system name.
+    */
+    OS_NAME: 'os.name',
+    /**
+    * The version string of the operating system as defined in [Version Attributes](../../resource/semantic_conventions/README.md#version-attributes).
+    */
+    OS_VERSION: 'os.version',
+    /**
+    * Process identifier (PID).
+    */
+    PROCESS_PID: 'process.pid',
+    /**
+    * The name of the process executable. On Linux based systems, can be set to the `Name` in `proc/[pid]/status`. On Windows, can be set to the base name of `GetProcessImageFileNameW`.
+    */
+    PROCESS_EXECUTABLE_NAME: 'process.executable.name',
+    /**
+    * The full path to the process executable. On Linux based systems, can be set to the target of `proc/[pid]/exe`. On Windows, can be set to the result of `GetProcessImageFileNameW`.
+    */
+    PROCESS_EXECUTABLE_PATH: 'process.executable.path',
+    /**
+    * The command used to launch the process (i.e. the command name). On Linux based systems, can be set to the zeroth string in `proc/[pid]/cmdline`. On Windows, can be set to the first parameter extracted from `GetCommandLineW`.
+    */
+    PROCESS_COMMAND: 'process.command',
+    /**
+    * The full command used to launch the process as a single string representing the full command. On Windows, can be set to the result of `GetCommandLineW`. Do not set this if you have to assemble it just for monitoring; use `process.command_args` instead.
+    */
+    PROCESS_COMMAND_LINE: 'process.command_line',
+    /**
+    * All the command arguments (including the command/executable itself) as received by the process. On Linux-based systems (and some other Unixoid systems supporting procfs), can be set according to the list of null-delimited strings extracted from `proc/[pid]/cmdline`. For libc-based executables, this would be the full argv vector passed to `main`.
+    */
+    PROCESS_COMMAND_ARGS: 'process.command_args',
+    /**
+    * The username of the user that owns the process.
+    */
+    PROCESS_OWNER: 'process.owner',
+    /**
+    * The name of the runtime of this process. For compiled native binaries, this SHOULD be the name of the compiler.
+    */
+    PROCESS_RUNTIME_NAME: 'process.runtime.name',
+    /**
+    * The version of the runtime of this process, as returned by the runtime without modification.
+    */
+    PROCESS_RUNTIME_VERSION: 'process.runtime.version',
+    /**
+    * An additional description about the runtime of the process, for example a specific vendor customization of the runtime environment.
+    */
+    PROCESS_RUNTIME_DESCRIPTION: 'process.runtime.description',
+    /**
+    * Logical name of the service.
+    *
+    * Note: MUST be the same for all instances of horizontally scaled services. If the value was not specified, SDKs MUST fallback to `unknown_service:` concatenated with [`process.executable.name`](process.md#process), e.g. `unknown_service:bash`. If `process.executable.name` is not available, the value MUST be set to `unknown_service`.
+    */
+    SERVICE_NAME: 'service.name',
+    /**
+    * A namespace for `service.name`.
+    *
+    * Note: A string value having a meaning that helps to distinguish a group of services, for example the team name that owns a group of services. `service.name` is expected to be unique within the same namespace. If `service.namespace` is not specified in the Resource then `service.name` is expected to be unique for all services that have no explicit namespace defined (so the empty/unspecified namespace is simply one more valid namespace). Zero-length namespace string is assumed equal to unspecified namespace.
+    */
+    SERVICE_NAMESPACE: 'service.namespace',
+    /**
+    * The string ID of the service instance.
+    *
+    * Note: MUST be unique for each instance of the same `service.namespace,service.name` pair (in other words `service.namespace,service.name,service.instance.id` triplet MUST be globally unique). The ID helps to distinguish instances of the same service that exist at the same time (e.g. instances of a horizontally scaled service). It is preferable for the ID to be persistent and stay the same for the lifetime of the service instance, however it is acceptable that the ID is ephemeral and changes during important lifetime events for the service (e.g. service restarts). If the service has no inherent unique ID that can be used as the value of this attribute it is recommended to generate a random Version 1 or Version 4 RFC 4122 UUID (services aiming for reproducible UUIDs may also use Version 5, see RFC 4122 for more recommendations).
+    */
+    SERVICE_INSTANCE_ID: 'service.instance.id',
+    /**
+    * The version string of the service API or implementation.
+    */
+    SERVICE_VERSION: 'service.version',
+    /**
+    * The name of the telemetry SDK as defined above.
+    */
+    TELEMETRY_SDK_NAME: 'telemetry.sdk.name',
+    /**
+    * The language of the telemetry SDK.
+    */
+    TELEMETRY_SDK_LANGUAGE: 'telemetry.sdk.language',
+    /**
+    * The version string of the telemetry SDK.
+    */
+    TELEMETRY_SDK_VERSION: 'telemetry.sdk.version',
+    /**
+    * The version string of the auto instrumentation agent, if used.
+    */
+    TELEMETRY_AUTO_VERSION: 'telemetry.auto.version',
+    /**
+    * The name of the web engine.
+    */
+    WEBENGINE_NAME: 'webengine.name',
+    /**
+    * The version of the web engine.
+    */
+    WEBENGINE_VERSION: 'webengine.version',
+    /**
+    * Additional description of the web engine (e.g. detailed version and edition information).
+    */
+    WEBENGINE_DESCRIPTION: 'webengine.description',
+};
+exports.CloudProviderValues = {
+    /** Alibaba Cloud. */
+    ALIBABA_CLOUD: 'alibaba_cloud',
+    /** Amazon Web Services. */
+    AWS: 'aws',
+    /** Microsoft Azure. */
+    AZURE: 'azure',
+    /** Google Cloud Platform. */
+    GCP: 'gcp',
+};
+exports.CloudPlatformValues = {
+    /** Alibaba Cloud Elastic Compute Service. */
+    ALIBABA_CLOUD_ECS: 'alibaba_cloud_ecs',
+    /** Alibaba Cloud Function Compute. */
+    ALIBABA_CLOUD_FC: 'alibaba_cloud_fc',
+    /** AWS Elastic Compute Cloud. */
+    AWS_EC2: 'aws_ec2',
+    /** AWS Elastic Container Service. */
+    AWS_ECS: 'aws_ecs',
+    /** AWS Elastic Kubernetes Service. */
+    AWS_EKS: 'aws_eks',
+    /** AWS Lambda. */
+    AWS_LAMBDA: 'aws_lambda',
+    /** AWS Elastic Beanstalk. */
+    AWS_ELASTIC_BEANSTALK: 'aws_elastic_beanstalk',
+    /** Azure Virtual Machines. */
+    AZURE_VM: 'azure_vm',
+    /** Azure Container Instances. */
+    AZURE_CONTAINER_INSTANCES: 'azure_container_instances',
+    /** Azure Kubernetes Service. */
+    AZURE_AKS: 'azure_aks',
+    /** Azure Functions. */
+    AZURE_FUNCTIONS: 'azure_functions',
+    /** Azure App Service. */
+    AZURE_APP_SERVICE: 'azure_app_service',
+    /** Google Cloud Compute Engine (GCE). */
+    GCP_COMPUTE_ENGINE: 'gcp_compute_engine',
+    /** Google Cloud Run. */
+    GCP_CLOUD_RUN: 'gcp_cloud_run',
+    /** Google Cloud Kubernetes Engine (GKE). */
+    GCP_KUBERNETES_ENGINE: 'gcp_kubernetes_engine',
+    /** Google Cloud Functions (GCF). */
+    GCP_CLOUD_FUNCTIONS: 'gcp_cloud_functions',
+    /** Google Cloud App Engine (GAE). */
+    GCP_APP_ENGINE: 'gcp_app_engine',
+};
+exports.AwsEcsLaunchtypeValues = {
+    /** ec2. */
+    EC2: 'ec2',
+    /** fargate. */
+    FARGATE: 'fargate',
+};
+exports.HostArchValues = {
+    /** AMD64. */
+    AMD64: 'amd64',
+    /** ARM32. */
+    ARM32: 'arm32',
+    /** ARM64. */
+    ARM64: 'arm64',
+    /** Itanium. */
+    IA64: 'ia64',
+    /** 32-bit PowerPC. */
+    PPC32: 'ppc32',
+    /** 64-bit PowerPC. */
+    PPC64: 'ppc64',
+    /** 32-bit x86. */
+    X86: 'x86',
+};
+exports.OsTypeValues = {
+    /** Microsoft Windows. */
+    WINDOWS: 'windows',
+    /** Linux. */
+    LINUX: 'linux',
+    /** Apple Darwin. */
+    DARWIN: 'darwin',
+    /** FreeBSD. */
+    FREEBSD: 'freebsd',
+    /** NetBSD. */
+    NETBSD: 'netbsd',
+    /** OpenBSD. */
+    OPENBSD: 'openbsd',
+    /** DragonFly BSD. */
+    DRAGONFLYBSD: 'dragonflybsd',
+    /** HP-UX (Hewlett Packard Unix). */
+    HPUX: 'hpux',
+    /** AIX (Advanced Interactive eXecutive). */
+    AIX: 'aix',
+    /** Oracle Solaris. */
+    SOLARIS: 'solaris',
+    /** IBM z/OS. */
+    Z_OS: 'z_os',
+};
+exports.TelemetrySdkLanguageValues = {
+    /** cpp. */
+    CPP: 'cpp',
+    /** dotnet. */
+    DOTNET: 'dotnet',
+    /** erlang. */
+    ERLANG: 'erlang',
+    /** go. */
+    GO: 'go',
+    /** java. */
+    JAVA: 'java',
+    /** nodejs. */
+    NODEJS: 'nodejs',
+    /** php. */
+    PHP: 'php',
+    /** python. */
+    PYTHON: 'python',
+    /** ruby. */
+    RUBY: 'ruby',
+    /** webjs. */
+    WEBJS: 'webjs',
+};
+//# sourceMappingURL=SemanticResourceAttributes.js.map
+
+/***/ }),
+
+/***/ 43896:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(35601), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 92572:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MessageTypeValues = exports.RpcGrpcStatusCodeValues = exports.MessagingOperationValues = exports.MessagingDestinationKindValues = exports.HttpFlavorValues = exports.NetHostConnectionSubtypeValues = exports.NetHostConnectionTypeValues = exports.NetTransportValues = exports.FaasInvokedProviderValues = exports.FaasDocumentOperationValues = exports.FaasTriggerValues = exports.DbCassandraConsistencyLevelValues = exports.DbSystemValues = exports.SemanticAttributes = void 0;
+// DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+exports.SemanticAttributes = {
+    /**
+    * The full invoked ARN as provided on the `Context` passed to the function (`Lambda-Runtime-Invoked-Function-Arn` header on the `/runtime/invocation/next` applicable).
+    *
+    * Note: This may be different from `faas.id` if an alias is involved.
+    */
+    AWS_LAMBDA_INVOKED_ARN: 'aws.lambda.invoked_arn',
+    /**
+    * An identifier for the database management system (DBMS) product being used. See below for a list of well-known identifiers.
+    */
+    DB_SYSTEM: 'db.system',
+    /**
+    * The connection string used to connect to the database. It is recommended to remove embedded credentials.
+    */
+    DB_CONNECTION_STRING: 'db.connection_string',
+    /**
+    * Username for accessing the database.
+    */
+    DB_USER: 'db.user',
+    /**
+    * The fully-qualified class name of the [Java Database Connectivity (JDBC)](https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/) driver used to connect.
+    */
+    DB_JDBC_DRIVER_CLASSNAME: 'db.jdbc.driver_classname',
+    /**
+    * If no [tech-specific attribute](#call-level-attributes-for-specific-technologies) is defined, this attribute is used to report the name of the database being accessed. For commands that switch the database, this should be set to the target database (even if the command fails).
+    *
+    * Note: In some SQL databases, the database name to be used is called &#34;schema name&#34;.
+    */
+    DB_NAME: 'db.name',
+    /**
+    * The database statement being executed.
+    *
+    * Note: The value may be sanitized to exclude sensitive information.
+    */
+    DB_STATEMENT: 'db.statement',
+    /**
+    * The name of the operation being executed, e.g. the [MongoDB command name](https://docs.mongodb.com/manual/reference/command/#database-operations) such as `findAndModify`, or the SQL keyword.
+    *
+    * Note: When setting this to an SQL keyword, it is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if the operation name is provided by the library being instrumented. If the SQL statement has an ambiguous operation, or performs more than one operation, this value may be omitted.
+    */
+    DB_OPERATION: 'db.operation',
+    /**
+    * The Microsoft SQL Server [instance name](https://docs.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver15) connecting to. This name is used to determine the port of a named instance.
+    *
+    * Note: If setting a `db.mssql.instance_name`, `net.peer.port` is no longer required (but still recommended if non-standard).
+    */
+    DB_MSSQL_INSTANCE_NAME: 'db.mssql.instance_name',
+    /**
+    * The name of the keyspace being accessed. To be used instead of the generic `db.name` attribute.
+    */
+    DB_CASSANDRA_KEYSPACE: 'db.cassandra.keyspace',
+    /**
+    * The fetch size used for paging, i.e. how many rows will be returned at once.
+    */
+    DB_CASSANDRA_PAGE_SIZE: 'db.cassandra.page_size',
+    /**
+    * The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).
+    */
+    DB_CASSANDRA_CONSISTENCY_LEVEL: 'db.cassandra.consistency_level',
+    /**
+    * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
+    *
+    * Note: This mirrors the db.sql.table attribute but references cassandra rather than sql. It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
+    */
+    DB_CASSANDRA_TABLE: 'db.cassandra.table',
+    /**
+    * Whether or not the query is idempotent.
+    */
+    DB_CASSANDRA_IDEMPOTENCE: 'db.cassandra.idempotence',
+    /**
+    * The number of times a query was speculatively executed. Not set or `0` if the query was not executed speculatively.
+    */
+    DB_CASSANDRA_SPECULATIVE_EXECUTION_COUNT: 'db.cassandra.speculative_execution_count',
+    /**
+    * The ID of the coordinating node for a query.
+    */
+    DB_CASSANDRA_COORDINATOR_ID: 'db.cassandra.coordinator.id',
+    /**
+    * The data center of the coordinating node for a query.
+    */
+    DB_CASSANDRA_COORDINATOR_DC: 'db.cassandra.coordinator.dc',
+    /**
+    * The [HBase namespace](https://hbase.apache.org/book.html#_namespace) being accessed. To be used instead of the generic `db.name` attribute.
+    */
+    DB_HBASE_NAMESPACE: 'db.hbase.namespace',
+    /**
+    * The index of the database being accessed as used in the [`SELECT` command](https://redis.io/commands/select), provided as an integer. To be used instead of the generic `db.name` attribute.
+    */
+    DB_REDIS_DATABASE_INDEX: 'db.redis.database_index',
+    /**
+    * The collection being accessed within the database stated in `db.name`.
+    */
+    DB_MONGODB_COLLECTION: 'db.mongodb.collection',
+    /**
+    * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
+    *
+    * Note: It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
+    */
+    DB_SQL_TABLE: 'db.sql.table',
+    /**
+    * The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it.
+    */
+    EXCEPTION_TYPE: 'exception.type',
+    /**
+    * The exception message.
+    */
+    EXCEPTION_MESSAGE: 'exception.message',
+    /**
+    * A stacktrace as a string in the natural representation for the language runtime. The representation is to be determined and documented by each language SIG.
+    */
+    EXCEPTION_STACKTRACE: 'exception.stacktrace',
+    /**
+    * SHOULD be set to true if the exception event is recorded at a point where it is known that the exception is escaping the scope of the span.
+    *
+    * Note: An exception is considered to have escaped (or left) the scope of a span,
+  if that span is ended while the exception is still logically &#34;in flight&#34;.
+  This may be actually &#34;in flight&#34; in some languages (e.g. if the exception
+  is passed to a Context manager&#39;s `__exit__` method in Python) but will
+  usually be caught at the point of recording the exception in most languages.
+  
+  It is usually not possible to determine at the point where an exception is thrown
+  whether it will escape the scope of a span.
+  However, it is trivial to know that an exception
+  will escape, if one checks for an active exception just before ending the span,
+  as done in the [example above](#exception-end-example).
+  
+  It follows that an exception may still escape the scope of the span
+  even if the `exception.escaped` attribute was not set or set to false,
+  since the event might have been recorded at a time where it was not
+  clear whether the exception will escape.
+    */
+    EXCEPTION_ESCAPED: 'exception.escaped',
+    /**
+    * Type of the trigger on which the function is executed.
+    */
+    FAAS_TRIGGER: 'faas.trigger',
+    /**
+    * The execution ID of the current function execution.
+    */
+    FAAS_EXECUTION: 'faas.execution',
+    /**
+    * The name of the source on which the triggering operation was performed. For example, in Cloud Storage or S3 corresponds to the bucket name, and in Cosmos DB to the database name.
+    */
+    FAAS_DOCUMENT_COLLECTION: 'faas.document.collection',
+    /**
+    * Describes the type of the operation that was performed on the data.
+    */
+    FAAS_DOCUMENT_OPERATION: 'faas.document.operation',
+    /**
+    * A string containing the time when the data was accessed in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
+    */
+    FAAS_DOCUMENT_TIME: 'faas.document.time',
+    /**
+    * The document name/table subjected to the operation. For example, in Cloud Storage or S3 is the name of the file, and in Cosmos DB the table name.
+    */
+    FAAS_DOCUMENT_NAME: 'faas.document.name',
+    /**
+    * A string containing the function invocation time in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
+    */
+    FAAS_TIME: 'faas.time',
+    /**
+    * A string containing the schedule period as [Cron Expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).
+    */
+    FAAS_CRON: 'faas.cron',
+    /**
+    * A boolean that is true if the serverless function is executed for the first time (aka cold-start).
+    */
+    FAAS_COLDSTART: 'faas.coldstart',
+    /**
+    * The name of the invoked function.
+    *
+    * Note: SHOULD be equal to the `faas.name` resource attribute of the invoked function.
+    */
+    FAAS_INVOKED_NAME: 'faas.invoked_name',
+    /**
+    * The cloud provider of the invoked function.
+    *
+    * Note: SHOULD be equal to the `cloud.provider` resource attribute of the invoked function.
+    */
+    FAAS_INVOKED_PROVIDER: 'faas.invoked_provider',
+    /**
+    * The cloud region of the invoked function.
+    *
+    * Note: SHOULD be equal to the `cloud.region` resource attribute of the invoked function.
+    */
+    FAAS_INVOKED_REGION: 'faas.invoked_region',
+    /**
+    * Transport protocol used. See note below.
+    */
+    NET_TRANSPORT: 'net.transport',
+    /**
+    * Remote address of the peer (dotted decimal for IPv4 or [RFC5952](https://tools.ietf.org/html/rfc5952) for IPv6).
+    */
+    NET_PEER_IP: 'net.peer.ip',
+    /**
+    * Remote port number.
+    */
+    NET_PEER_PORT: 'net.peer.port',
+    /**
+    * Remote hostname or similar, see note below.
+    */
+    NET_PEER_NAME: 'net.peer.name',
+    /**
+    * Like `net.peer.ip` but for the host IP. Useful in case of a multi-IP host.
+    */
+    NET_HOST_IP: 'net.host.ip',
+    /**
+    * Like `net.peer.port` but for the host port.
+    */
+    NET_HOST_PORT: 'net.host.port',
+    /**
+    * Local hostname or similar, see note below.
+    */
+    NET_HOST_NAME: 'net.host.name',
+    /**
+    * The internet connection type currently being used by the host.
+    */
+    NET_HOST_CONNECTION_TYPE: 'net.host.connection.type',
+    /**
+    * This describes more details regarding the connection.type. It may be the type of cell technology connection, but it could be used for describing details about a wifi connection.
+    */
+    NET_HOST_CONNECTION_SUBTYPE: 'net.host.connection.subtype',
+    /**
+    * The name of the mobile carrier.
+    */
+    NET_HOST_CARRIER_NAME: 'net.host.carrier.name',
+    /**
+    * The mobile carrier country code.
+    */
+    NET_HOST_CARRIER_MCC: 'net.host.carrier.mcc',
+    /**
+    * The mobile carrier network code.
+    */
+    NET_HOST_CARRIER_MNC: 'net.host.carrier.mnc',
+    /**
+    * The ISO 3166-1 alpha-2 2-character country code associated with the mobile carrier network.
+    */
+    NET_HOST_CARRIER_ICC: 'net.host.carrier.icc',
+    /**
+    * The [`service.name`](../../resource/semantic_conventions/README.md#service) of the remote service. SHOULD be equal to the actual `service.name` resource attribute of the remote service if any.
+    */
+    PEER_SERVICE: 'peer.service',
+    /**
+    * Username or client_id extracted from the access token or [Authorization](https://tools.ietf.org/html/rfc7235#section-4.2) header in the inbound request from outside the system.
+    */
+    ENDUSER_ID: 'enduser.id',
+    /**
+    * Actual/assumed role the client is making the request under extracted from token or application security context.
+    */
+    ENDUSER_ROLE: 'enduser.role',
+    /**
+    * Scopes or granted authorities the client currently possesses extracted from token or application security context. The value would come from the scope associated with an [OAuth 2.0 Access Token](https://tools.ietf.org/html/rfc6749#section-3.3) or an attribute value in a [SAML 2.0 Assertion](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html).
+    */
+    ENDUSER_SCOPE: 'enduser.scope',
+    /**
+    * Current &#34;managed&#34; thread ID (as opposed to OS thread ID).
+    */
+    THREAD_ID: 'thread.id',
+    /**
+    * Current thread name.
+    */
+    THREAD_NAME: 'thread.name',
+    /**
+    * The method or function name, or equivalent (usually rightmost part of the code unit&#39;s name).
+    */
+    CODE_FUNCTION: 'code.function',
+    /**
+    * The &#34;namespace&#34; within which `code.function` is defined. Usually the qualified class or module name, such that `code.namespace` + some separator + `code.function` form a unique identifier for the code unit.
+    */
+    CODE_NAMESPACE: 'code.namespace',
+    /**
+    * The source code file name that identifies the code unit as uniquely as possible (preferably an absolute file path).
+    */
+    CODE_FILEPATH: 'code.filepath',
+    /**
+    * The line number in `code.filepath` best representing the operation. It SHOULD point within the code unit named in `code.function`.
+    */
+    CODE_LINENO: 'code.lineno',
+    /**
+    * HTTP request method.
+    */
+    HTTP_METHOD: 'http.method',
+    /**
+    * Full HTTP request URL in the form `scheme://host[:port]/path?query[#fragment]`. Usually the fragment is not transmitted over HTTP, but if it is known, it should be included nevertheless.
+    *
+    * Note: `http.url` MUST NOT contain credentials passed via URL in form of `https://username:password@www.example.com/`. In such case the attribute&#39;s value should be `https://www.example.com/`.
+    */
+    HTTP_URL: 'http.url',
+    /**
+    * The full request target as passed in a HTTP request line or equivalent.
+    */
+    HTTP_TARGET: 'http.target',
+    /**
+    * The value of the [HTTP host header](https://tools.ietf.org/html/rfc7230#section-5.4). An empty Host header should also be reported, see note.
+    *
+    * Note: When the header is present but empty the attribute SHOULD be set to the empty string. Note that this is a valid situation that is expected in certain cases, according the aforementioned [section of RFC 7230](https://tools.ietf.org/html/rfc7230#section-5.4). When the header is not set the attribute MUST NOT be set.
+    */
+    HTTP_HOST: 'http.host',
+    /**
+    * The URI scheme identifying the used protocol.
+    */
+    HTTP_SCHEME: 'http.scheme',
+    /**
+    * [HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).
+    */
+    HTTP_STATUS_CODE: 'http.status_code',
+    /**
+    * Kind of HTTP protocol used.
+    *
+    * Note: If `net.transport` is not specified, it can be assumed to be `IP.TCP` except if `http.flavor` is `QUIC`, in which case `IP.UDP` is assumed.
+    */
+    HTTP_FLAVOR: 'http.flavor',
+    /**
+    * Value of the [HTTP User-Agent](https://tools.ietf.org/html/rfc7231#section-5.5.3) header sent by the client.
+    */
+    HTTP_USER_AGENT: 'http.user_agent',
+    /**
+    * The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
+    */
+    HTTP_REQUEST_CONTENT_LENGTH: 'http.request_content_length',
+    /**
+    * The size of the uncompressed request payload body after transport decoding. Not set if transport encoding not used.
+    */
+    HTTP_REQUEST_CONTENT_LENGTH_UNCOMPRESSED: 'http.request_content_length_uncompressed',
+    /**
+    * The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
+    */
+    HTTP_RESPONSE_CONTENT_LENGTH: 'http.response_content_length',
+    /**
+    * The size of the uncompressed response payload body after transport decoding. Not set if transport encoding not used.
+    */
+    HTTP_RESPONSE_CONTENT_LENGTH_UNCOMPRESSED: 'http.response_content_length_uncompressed',
+    /**
+    * The primary server name of the matched virtual host. This should be obtained via configuration. If no such configuration can be obtained, this attribute MUST NOT be set ( `net.host.name` should be used instead).
+    *
+    * Note: `http.url` is usually not readily available on the server side but would have to be assembled in a cumbersome and sometimes lossy process from other information (see e.g. open-telemetry/opentelemetry-python/pull/148). It is thus preferred to supply the raw data that is available.
+    */
+    HTTP_SERVER_NAME: 'http.server_name',
+    /**
+    * The matched route (path template).
+    */
+    HTTP_ROUTE: 'http.route',
+    /**
+    * The IP address of the original client behind all proxies, if known (e.g. from [X-Forwarded-For](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For)).
+    *
+    * Note: This is not necessarily the same as `net.peer.ip`, which would
+  identify the network-level peer, which may be a proxy.
+  
+  This attribute should be set when a source of information different
+  from the one used for `net.peer.ip`, is available even if that other
+  source just confirms the same value as `net.peer.ip`.
+  Rationale: For `net.peer.ip`, one typically does not know if it
+  comes from a proxy, reverse proxy, or the actual client. Setting
+  `http.client_ip` when it&#39;s the same as `net.peer.ip` means that
+  one is at least somewhat confident that the address is not that of
+  the closest proxy.
+    */
+    HTTP_CLIENT_IP: 'http.client_ip',
+    /**
+    * The keys in the `RequestItems` object field.
+    */
+    AWS_DYNAMODB_TABLE_NAMES: 'aws.dynamodb.table_names',
+    /**
+    * The JSON-serialized value of each item in the `ConsumedCapacity` response field.
+    */
+    AWS_DYNAMODB_CONSUMED_CAPACITY: 'aws.dynamodb.consumed_capacity',
+    /**
+    * The JSON-serialized value of the `ItemCollectionMetrics` response field.
+    */
+    AWS_DYNAMODB_ITEM_COLLECTION_METRICS: 'aws.dynamodb.item_collection_metrics',
+    /**
+    * The value of the `ProvisionedThroughput.ReadCapacityUnits` request parameter.
+    */
+    AWS_DYNAMODB_PROVISIONED_READ_CAPACITY: 'aws.dynamodb.provisioned_read_capacity',
+    /**
+    * The value of the `ProvisionedThroughput.WriteCapacityUnits` request parameter.
+    */
+    AWS_DYNAMODB_PROVISIONED_WRITE_CAPACITY: 'aws.dynamodb.provisioned_write_capacity',
+    /**
+    * The value of the `ConsistentRead` request parameter.
+    */
+    AWS_DYNAMODB_CONSISTENT_READ: 'aws.dynamodb.consistent_read',
+    /**
+    * The value of the `ProjectionExpression` request parameter.
+    */
+    AWS_DYNAMODB_PROJECTION: 'aws.dynamodb.projection',
+    /**
+    * The value of the `Limit` request parameter.
+    */
+    AWS_DYNAMODB_LIMIT: 'aws.dynamodb.limit',
+    /**
+    * The value of the `AttributesToGet` request parameter.
+    */
+    AWS_DYNAMODB_ATTRIBUTES_TO_GET: 'aws.dynamodb.attributes_to_get',
+    /**
+    * The value of the `IndexName` request parameter.
+    */
+    AWS_DYNAMODB_INDEX_NAME: 'aws.dynamodb.index_name',
+    /**
+    * The value of the `Select` request parameter.
+    */
+    AWS_DYNAMODB_SELECT: 'aws.dynamodb.select',
+    /**
+    * The JSON-serialized value of each item of the `GlobalSecondaryIndexes` request field.
+    */
+    AWS_DYNAMODB_GLOBAL_SECONDARY_INDEXES: 'aws.dynamodb.global_secondary_indexes',
+    /**
+    * The JSON-serialized value of each item of the `LocalSecondaryIndexes` request field.
+    */
+    AWS_DYNAMODB_LOCAL_SECONDARY_INDEXES: 'aws.dynamodb.local_secondary_indexes',
+    /**
+    * The value of the `ExclusiveStartTableName` request parameter.
+    */
+    AWS_DYNAMODB_EXCLUSIVE_START_TABLE: 'aws.dynamodb.exclusive_start_table',
+    /**
+    * The the number of items in the `TableNames` response parameter.
+    */
+    AWS_DYNAMODB_TABLE_COUNT: 'aws.dynamodb.table_count',
+    /**
+    * The value of the `ScanIndexForward` request parameter.
+    */
+    AWS_DYNAMODB_SCAN_FORWARD: 'aws.dynamodb.scan_forward',
+    /**
+    * The value of the `Segment` request parameter.
+    */
+    AWS_DYNAMODB_SEGMENT: 'aws.dynamodb.segment',
+    /**
+    * The value of the `TotalSegments` request parameter.
+    */
+    AWS_DYNAMODB_TOTAL_SEGMENTS: 'aws.dynamodb.total_segments',
+    /**
+    * The value of the `Count` response parameter.
+    */
+    AWS_DYNAMODB_COUNT: 'aws.dynamodb.count',
+    /**
+    * The value of the `ScannedCount` response parameter.
+    */
+    AWS_DYNAMODB_SCANNED_COUNT: 'aws.dynamodb.scanned_count',
+    /**
+    * The JSON-serialized value of each item in the `AttributeDefinitions` request field.
+    */
+    AWS_DYNAMODB_ATTRIBUTE_DEFINITIONS: 'aws.dynamodb.attribute_definitions',
+    /**
+    * The JSON-serialized value of each item in the the `GlobalSecondaryIndexUpdates` request field.
+    */
+    AWS_DYNAMODB_GLOBAL_SECONDARY_INDEX_UPDATES: 'aws.dynamodb.global_secondary_index_updates',
+    /**
+    * A string identifying the messaging system.
+    */
+    MESSAGING_SYSTEM: 'messaging.system',
+    /**
+    * The message destination name. This might be equal to the span name but is required nevertheless.
+    */
+    MESSAGING_DESTINATION: 'messaging.destination',
+    /**
+    * The kind of message destination.
+    */
+    MESSAGING_DESTINATION_KIND: 'messaging.destination_kind',
+    /**
+    * A boolean that is true if the message destination is temporary.
+    */
+    MESSAGING_TEMP_DESTINATION: 'messaging.temp_destination',
+    /**
+    * The name of the transport protocol.
+    */
+    MESSAGING_PROTOCOL: 'messaging.protocol',
+    /**
+    * The version of the transport protocol.
+    */
+    MESSAGING_PROTOCOL_VERSION: 'messaging.protocol_version',
+    /**
+    * Connection string.
+    */
+    MESSAGING_URL: 'messaging.url',
+    /**
+    * A value used by the messaging system as an identifier for the message, represented as a string.
+    */
+    MESSAGING_MESSAGE_ID: 'messaging.message_id',
+    /**
+    * The [conversation ID](#conversations) identifying the conversation to which the message belongs, represented as a string. Sometimes called &#34;Correlation ID&#34;.
+    */
+    MESSAGING_CONVERSATION_ID: 'messaging.conversation_id',
+    /**
+    * The (uncompressed) size of the message payload in bytes. Also use this attribute if it is unknown whether the compressed or uncompressed payload size is reported.
+    */
+    MESSAGING_MESSAGE_PAYLOAD_SIZE_BYTES: 'messaging.message_payload_size_bytes',
+    /**
+    * The compressed size of the message payload in bytes.
+    */
+    MESSAGING_MESSAGE_PAYLOAD_COMPRESSED_SIZE_BYTES: 'messaging.message_payload_compressed_size_bytes',
+    /**
+    * A string identifying the kind of message consumption as defined in the [Operation names](#operation-names) section above. If the operation is &#34;send&#34;, this attribute MUST NOT be set, since the operation can be inferred from the span kind in that case.
+    */
+    MESSAGING_OPERATION: 'messaging.operation',
+    /**
+    * The identifier for the consumer receiving a message. For Kafka, set it to `{messaging.kafka.consumer_group} - {messaging.kafka.client_id}`, if both are present, or only `messaging.kafka.consumer_group`. For brokers, such as RabbitMQ and Artemis, set it to the `client_id` of the client consuming the message.
+    */
+    MESSAGING_CONSUMER_ID: 'messaging.consumer_id',
+    /**
+    * RabbitMQ message routing key.
+    */
+    MESSAGING_RABBITMQ_ROUTING_KEY: 'messaging.rabbitmq.routing_key',
+    /**
+    * Message keys in Kafka are used for grouping alike messages to ensure they&#39;re processed on the same partition. They differ from `messaging.message_id` in that they&#39;re not unique. If the key is `null`, the attribute MUST NOT be set.
+    *
+    * Note: If the key type is not string, it&#39;s string representation has to be supplied for the attribute. If the key has no unambiguous, canonical string form, don&#39;t include its value.
+    */
+    MESSAGING_KAFKA_MESSAGE_KEY: 'messaging.kafka.message_key',
+    /**
+    * Name of the Kafka Consumer Group that is handling the message. Only applies to consumers, not producers.
+    */
+    MESSAGING_KAFKA_CONSUMER_GROUP: 'messaging.kafka.consumer_group',
+    /**
+    * Client Id for the Consumer or Producer that is handling the message.
+    */
+    MESSAGING_KAFKA_CLIENT_ID: 'messaging.kafka.client_id',
+    /**
+    * Partition the message is sent to.
+    */
+    MESSAGING_KAFKA_PARTITION: 'messaging.kafka.partition',
+    /**
+    * A boolean that is true if the message is a tombstone.
+    */
+    MESSAGING_KAFKA_TOMBSTONE: 'messaging.kafka.tombstone',
+    /**
+    * A string identifying the remoting system.
+    */
+    RPC_SYSTEM: 'rpc.system',
+    /**
+    * The full (logical) name of the service being called, including its package name, if applicable.
+    *
+    * Note: This is the logical name of the service from the RPC interface perspective, which can be different from the name of any implementing class. The `code.namespace` attribute may be used to store the latter (despite the attribute name, it may include a class name; e.g., class with method actually executing the call on the server side, RPC client stub class on the client side).
+    */
+    RPC_SERVICE: 'rpc.service',
+    /**
+    * The name of the (logical) method being called, must be equal to the $method part in the span name.
+    *
+    * Note: This is the logical name of the method from the RPC interface perspective, which can be different from the name of any implementing method/function. The `code.function` attribute may be used to store the latter (e.g., method actually executing the call on the server side, RPC client stub method on the client side).
+    */
+    RPC_METHOD: 'rpc.method',
+    /**
+    * The [numeric status code](https://github.com/grpc/grpc/blob/v1.33.2/doc/statuscodes.md) of the gRPC request.
+    */
+    RPC_GRPC_STATUS_CODE: 'rpc.grpc.status_code',
+    /**
+    * Protocol version as in `jsonrpc` property of request/response. Since JSON-RPC 1.0 does not specify this, the value can be omitted.
+    */
+    RPC_JSONRPC_VERSION: 'rpc.jsonrpc.version',
+    /**
+    * `id` property of request or response. Since protocol allows id to be int, string, `null` or missing (for notifications), value is expected to be cast to string for simplicity. Use empty string in case of `null` value. Omit entirely if this is a notification.
+    */
+    RPC_JSONRPC_REQUEST_ID: 'rpc.jsonrpc.request_id',
+    /**
+    * `error.code` property of response if it is an error response.
+    */
+    RPC_JSONRPC_ERROR_CODE: 'rpc.jsonrpc.error_code',
+    /**
+    * `error.message` property of response if it is an error response.
+    */
+    RPC_JSONRPC_ERROR_MESSAGE: 'rpc.jsonrpc.error_message',
+    /**
+    * Whether this is a received or sent message.
+    */
+    MESSAGE_TYPE: 'message.type',
+    /**
+    * MUST be calculated as two different counters starting from `1` one for sent messages and one for received message.
+    *
+    * Note: This way we guarantee that the values will be consistent between different implementations.
+    */
+    MESSAGE_ID: 'message.id',
+    /**
+    * Compressed size of the message in bytes.
+    */
+    MESSAGE_COMPRESSED_SIZE: 'message.compressed_size',
+    /**
+    * Uncompressed size of the message in bytes.
+    */
+    MESSAGE_UNCOMPRESSED_SIZE: 'message.uncompressed_size',
+};
+exports.DbSystemValues = {
+    /** Some other SQL database. Fallback only. See notes. */
+    OTHER_SQL: 'other_sql',
+    /** Microsoft SQL Server. */
+    MSSQL: 'mssql',
+    /** MySQL. */
+    MYSQL: 'mysql',
+    /** Oracle Database. */
+    ORACLE: 'oracle',
+    /** IBM Db2. */
+    DB2: 'db2',
+    /** PostgreSQL. */
+    POSTGRESQL: 'postgresql',
+    /** Amazon Redshift. */
+    REDSHIFT: 'redshift',
+    /** Apache Hive. */
+    HIVE: 'hive',
+    /** Cloudscape. */
+    CLOUDSCAPE: 'cloudscape',
+    /** HyperSQL DataBase. */
+    HSQLDB: 'hsqldb',
+    /** Progress Database. */
+    PROGRESS: 'progress',
+    /** SAP MaxDB. */
+    MAXDB: 'maxdb',
+    /** SAP HANA. */
+    HANADB: 'hanadb',
+    /** Ingres. */
+    INGRES: 'ingres',
+    /** FirstSQL. */
+    FIRSTSQL: 'firstsql',
+    /** EnterpriseDB. */
+    EDB: 'edb',
+    /** InterSystems Caché. */
+    CACHE: 'cache',
+    /** Adabas (Adaptable Database System). */
+    ADABAS: 'adabas',
+    /** Firebird. */
+    FIREBIRD: 'firebird',
+    /** Apache Derby. */
+    DERBY: 'derby',
+    /** FileMaker. */
+    FILEMAKER: 'filemaker',
+    /** Informix. */
+    INFORMIX: 'informix',
+    /** InstantDB. */
+    INSTANTDB: 'instantdb',
+    /** InterBase. */
+    INTERBASE: 'interbase',
+    /** MariaDB. */
+    MARIADB: 'mariadb',
+    /** Netezza. */
+    NETEZZA: 'netezza',
+    /** Pervasive PSQL. */
+    PERVASIVE: 'pervasive',
+    /** PointBase. */
+    POINTBASE: 'pointbase',
+    /** SQLite. */
+    SQLITE: 'sqlite',
+    /** Sybase. */
+    SYBASE: 'sybase',
+    /** Teradata. */
+    TERADATA: 'teradata',
+    /** Vertica. */
+    VERTICA: 'vertica',
+    /** H2. */
+    H2: 'h2',
+    /** ColdFusion IMQ. */
+    COLDFUSION: 'coldfusion',
+    /** Apache Cassandra. */
+    CASSANDRA: 'cassandra',
+    /** Apache HBase. */
+    HBASE: 'hbase',
+    /** MongoDB. */
+    MONGODB: 'mongodb',
+    /** Redis. */
+    REDIS: 'redis',
+    /** Couchbase. */
+    COUCHBASE: 'couchbase',
+    /** CouchDB. */
+    COUCHDB: 'couchdb',
+    /** Microsoft Azure Cosmos DB. */
+    COSMOSDB: 'cosmosdb',
+    /** Amazon DynamoDB. */
+    DYNAMODB: 'dynamodb',
+    /** Neo4j. */
+    NEO4J: 'neo4j',
+    /** Apache Geode. */
+    GEODE: 'geode',
+    /** Elasticsearch. */
+    ELASTICSEARCH: 'elasticsearch',
+    /** Memcached. */
+    MEMCACHED: 'memcached',
+    /** CockroachDB. */
+    COCKROACHDB: 'cockroachdb',
+};
+exports.DbCassandraConsistencyLevelValues = {
+    /** all. */
+    ALL: 'all',
+    /** each_quorum. */
+    EACH_QUORUM: 'each_quorum',
+    /** quorum. */
+    QUORUM: 'quorum',
+    /** local_quorum. */
+    LOCAL_QUORUM: 'local_quorum',
+    /** one. */
+    ONE: 'one',
+    /** two. */
+    TWO: 'two',
+    /** three. */
+    THREE: 'three',
+    /** local_one. */
+    LOCAL_ONE: 'local_one',
+    /** any. */
+    ANY: 'any',
+    /** serial. */
+    SERIAL: 'serial',
+    /** local_serial. */
+    LOCAL_SERIAL: 'local_serial',
+};
+exports.FaasTriggerValues = {
+    /** A response to some data source operation such as a database or filesystem read/write. */
+    DATASOURCE: 'datasource',
+    /** To provide an answer to an inbound HTTP request. */
+    HTTP: 'http',
+    /** A function is set to be executed when messages are sent to a messaging system. */
+    PUBSUB: 'pubsub',
+    /** A function is scheduled to be executed regularly. */
+    TIMER: 'timer',
+    /** If none of the others apply. */
+    OTHER: 'other',
+};
+exports.FaasDocumentOperationValues = {
+    /** When a new object is created. */
+    INSERT: 'insert',
+    /** When an object is modified. */
+    EDIT: 'edit',
+    /** When an object is deleted. */
+    DELETE: 'delete',
+};
+exports.FaasInvokedProviderValues = {
+    /** Alibaba Cloud. */
+    ALIBABA_CLOUD: 'alibaba_cloud',
+    /** Amazon Web Services. */
+    AWS: 'aws',
+    /** Microsoft Azure. */
+    AZURE: 'azure',
+    /** Google Cloud Platform. */
+    GCP: 'gcp',
+};
+exports.NetTransportValues = {
+    /** ip_tcp. */
+    IP_TCP: 'ip_tcp',
+    /** ip_udp. */
+    IP_UDP: 'ip_udp',
+    /** Another IP-based protocol. */
+    IP: 'ip',
+    /** Unix Domain socket. See below. */
+    UNIX: 'unix',
+    /** Named or anonymous pipe. See note below. */
+    PIPE: 'pipe',
+    /** In-process communication. */
+    INPROC: 'inproc',
+    /** Something else (non IP-based). */
+    OTHER: 'other',
+};
+exports.NetHostConnectionTypeValues = {
+    /** wifi. */
+    WIFI: 'wifi',
+    /** wired. */
+    WIRED: 'wired',
+    /** cell. */
+    CELL: 'cell',
+    /** unavailable. */
+    UNAVAILABLE: 'unavailable',
+    /** unknown. */
+    UNKNOWN: 'unknown',
+};
+exports.NetHostConnectionSubtypeValues = {
+    /** GPRS. */
+    GPRS: 'gprs',
+    /** EDGE. */
+    EDGE: 'edge',
+    /** UMTS. */
+    UMTS: 'umts',
+    /** CDMA. */
+    CDMA: 'cdma',
+    /** EVDO Rel. 0. */
+    EVDO_0: 'evdo_0',
+    /** EVDO Rev. A. */
+    EVDO_A: 'evdo_a',
+    /** CDMA2000 1XRTT. */
+    CDMA2000_1XRTT: 'cdma2000_1xrtt',
+    /** HSDPA. */
+    HSDPA: 'hsdpa',
+    /** HSUPA. */
+    HSUPA: 'hsupa',
+    /** HSPA. */
+    HSPA: 'hspa',
+    /** IDEN. */
+    IDEN: 'iden',
+    /** EVDO Rev. B. */
+    EVDO_B: 'evdo_b',
+    /** LTE. */
+    LTE: 'lte',
+    /** EHRPD. */
+    EHRPD: 'ehrpd',
+    /** HSPAP. */
+    HSPAP: 'hspap',
+    /** GSM. */
+    GSM: 'gsm',
+    /** TD-SCDMA. */
+    TD_SCDMA: 'td_scdma',
+    /** IWLAN. */
+    IWLAN: 'iwlan',
+    /** 5G NR (New Radio). */
+    NR: 'nr',
+    /** 5G NRNSA (New Radio Non-Standalone). */
+    NRNSA: 'nrnsa',
+    /** LTE CA. */
+    LTE_CA: 'lte_ca',
+};
+exports.HttpFlavorValues = {
+    /** HTTP 1.0. */
+    HTTP_1_0: '1.0',
+    /** HTTP 1.1. */
+    HTTP_1_1: '1.1',
+    /** HTTP 2. */
+    HTTP_2_0: '2.0',
+    /** SPDY protocol. */
+    SPDY: 'SPDY',
+    /** QUIC protocol. */
+    QUIC: 'QUIC',
+};
+exports.MessagingDestinationKindValues = {
+    /** A message sent to a queue. */
+    QUEUE: 'queue',
+    /** A message sent to a topic. */
+    TOPIC: 'topic',
+};
+exports.MessagingOperationValues = {
+    /** receive. */
+    RECEIVE: 'receive',
+    /** process. */
+    PROCESS: 'process',
+};
+exports.RpcGrpcStatusCodeValues = {
+    /** OK. */
+    OK: 0,
+    /** CANCELLED. */
+    CANCELLED: 1,
+    /** UNKNOWN. */
+    UNKNOWN: 2,
+    /** INVALID_ARGUMENT. */
+    INVALID_ARGUMENT: 3,
+    /** DEADLINE_EXCEEDED. */
+    DEADLINE_EXCEEDED: 4,
+    /** NOT_FOUND. */
+    NOT_FOUND: 5,
+    /** ALREADY_EXISTS. */
+    ALREADY_EXISTS: 6,
+    /** PERMISSION_DENIED. */
+    PERMISSION_DENIED: 7,
+    /** RESOURCE_EXHAUSTED. */
+    RESOURCE_EXHAUSTED: 8,
+    /** FAILED_PRECONDITION. */
+    FAILED_PRECONDITION: 9,
+    /** ABORTED. */
+    ABORTED: 10,
+    /** OUT_OF_RANGE. */
+    OUT_OF_RANGE: 11,
+    /** UNIMPLEMENTED. */
+    UNIMPLEMENTED: 12,
+    /** INTERNAL. */
+    INTERNAL: 13,
+    /** UNAVAILABLE. */
+    UNAVAILABLE: 14,
+    /** DATA_LOSS. */
+    DATA_LOSS: 15,
+    /** UNAUTHENTICATED. */
+    UNAUTHENTICATED: 16,
+};
+exports.MessageTypeValues = {
+    /** sent. */
+    SENT: 'SENT',
+    /** received. */
+    RECEIVED: 'RECEIVED',
+};
+//# sourceMappingURL=SemanticAttributes.js.map
+
+/***/ }),
+
+/***/ 12787:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(92572), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 72723:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Resource = void 0;
+const semantic_conventions_1 = __nccwpck_require__(67275);
+const core_1 = __nccwpck_require__(89736);
+const platform_1 = __nccwpck_require__(7784);
+/**
+ * A Resource describes the entity for which a signals (metrics or trace) are
+ * collected.
+ */
+class Resource {
+    constructor(
+    /**
+     * A dictionary of attributes with string keys and values that provide
+     * information about the entity as numbers, strings or booleans
+     * TODO: Consider to add check/validation on attributes.
+     */
+    attributes) {
+        this.attributes = attributes;
+    }
+    /**
+     * Returns an empty Resource
+     */
+    static empty() {
+        return Resource.EMPTY;
+    }
+    /**
+     * Returns a Resource that indentifies the SDK in use.
+     */
+    static default() {
+        return new Resource({
+            [semantic_conventions_1.SemanticResourceAttributes.SERVICE_NAME]: (0, platform_1.defaultServiceName)(),
+            [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE]: core_1.SDK_INFO[semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE],
+            [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME]: core_1.SDK_INFO[semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME],
+            [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_VERSION]: core_1.SDK_INFO[semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_VERSION],
+        });
+    }
+    /**
+     * Returns a new, merged {@link Resource} by merging the current Resource
+     * with the other Resource. In case of a collision, other Resource takes
+     * precedence.
+     *
+     * @param other the Resource that will be merged with this.
+     * @returns the newly merged Resource.
+     */
+    merge(other) {
+        if (!other || !Object.keys(other.attributes).length)
+            return this;
+        // SpanAttributes from resource overwrite attributes from other resource.
+        const mergedAttributes = Object.assign({}, this.attributes, other.attributes);
+        return new Resource(mergedAttributes);
+    }
+}
+exports.Resource = Resource;
+Resource.EMPTY = new Resource({});
+//# sourceMappingURL=Resource.js.map
+
+/***/ }),
+
+/***/ 61565:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=config.js.map
+
+/***/ }),
+
+/***/ 15969:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.browserDetector = void 0;
+const api_1 = __nccwpck_require__(65163);
+const semantic_conventions_1 = __nccwpck_require__(67275);
+const __1 = __nccwpck_require__(3871);
+/**
+ * BrowserDetector will be used to detect the resources related to browser.
+ */
+class BrowserDetector {
+    async detect(config) {
+        const isBrowser = typeof navigator !== 'undefined';
+        if (!isBrowser) {
+            return __1.Resource.empty();
+        }
+        const browserResource = {
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_NAME]: 'browser',
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_DESCRIPTION]: 'Web Browser',
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_VERSION]: navigator.userAgent
+        };
+        return this._getResourceAttributes(browserResource, config);
+    }
+    /**
+     * Validates process resource attribute map from process variables
+     *
+     * @param browserResource The un-sanitized resource attributes from process as key/value pairs.
+     * @param config: Config
+     * @returns The sanitized resource attributes.
+     */
+    _getResourceAttributes(browserResource, _config) {
+        if (browserResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_VERSION] === '') {
+            api_1.diag.debug('BrowserDetector failed: Unable to find required browser resources. ');
+            return __1.Resource.empty();
+        }
+        else {
+            return new __1.Resource(Object.assign({}, browserResource));
+        }
+    }
+}
+exports.browserDetector = new BrowserDetector();
+//# sourceMappingURL=BrowserDetector.js.map
+
+/***/ }),
+
+/***/ 22474:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.envDetector = void 0;
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(89736);
+const semantic_conventions_1 = __nccwpck_require__(67275);
+const Resource_1 = __nccwpck_require__(72723);
+/**
+ * EnvDetector can be used to detect the presence of and create a Resource
+ * from the OTEL_RESOURCE_ATTRIBUTES environment variable.
+ */
+class EnvDetector {
+    constructor() {
+        // Type, attribute keys, and attribute values should not exceed 256 characters.
+        this._MAX_LENGTH = 255;
+        // OTEL_RESOURCE_ATTRIBUTES is a comma-separated list of attributes.
+        this._COMMA_SEPARATOR = ',';
+        // OTEL_RESOURCE_ATTRIBUTES contains key value pair separated by '='.
+        this._LABEL_KEY_VALUE_SPLITTER = '=';
+        this._ERROR_MESSAGE_INVALID_CHARS = 'should be a ASCII string with a length greater than 0 and not exceed ' +
+            this._MAX_LENGTH +
+            ' characters.';
+        this._ERROR_MESSAGE_INVALID_VALUE = 'should be a ASCII string with a length not exceed ' +
+            this._MAX_LENGTH +
+            ' characters.';
+    }
+    /**
+     * Returns a {@link Resource} populated with attributes from the
+     * OTEL_RESOURCE_ATTRIBUTES environment variable. Note this is an async
+     * function to conform to the Detector interface.
+     *
+     * @param config The resource detection config
+     */
+    async detect(_config) {
+        const attributes = {};
+        const env = (0, core_1.getEnv)();
+        const rawAttributes = env.OTEL_RESOURCE_ATTRIBUTES;
+        const serviceName = env.OTEL_SERVICE_NAME;
+        if (rawAttributes) {
+            try {
+                const parsedAttributes = this._parseResourceAttributes(rawAttributes);
+                Object.assign(attributes, parsedAttributes);
+            }
+            catch (e) {
+                api_1.diag.debug(`EnvDetector failed: ${e.message}`);
+            }
+        }
+        if (serviceName) {
+            attributes[semantic_conventions_1.SemanticResourceAttributes.SERVICE_NAME] = serviceName;
+        }
+        return new Resource_1.Resource(attributes);
+    }
+    /**
+     * Creates an attribute map from the OTEL_RESOURCE_ATTRIBUTES environment
+     * variable.
+     *
+     * OTEL_RESOURCE_ATTRIBUTES: A comma-separated list of attributes describing
+     * the source in more detail, e.g. “key1=val1,key2=val2”. Domain names and
+     * paths are accepted as attribute keys. Values may be quoted or unquoted in
+     * general. If a value contains whitespaces, =, or " characters, it must
+     * always be quoted.
+     *
+     * @param rawEnvAttributes The resource attributes as a comma-seperated list
+     * of key/value pairs.
+     * @returns The sanitized resource attributes.
+     */
+    _parseResourceAttributes(rawEnvAttributes) {
+        if (!rawEnvAttributes)
+            return {};
+        const attributes = {};
+        const rawAttributes = rawEnvAttributes.split(this._COMMA_SEPARATOR, -1);
+        for (const rawAttribute of rawAttributes) {
+            const keyValuePair = rawAttribute.split(this._LABEL_KEY_VALUE_SPLITTER, -1);
+            if (keyValuePair.length !== 2) {
+                continue;
+            }
+            let [key, value] = keyValuePair;
+            // Leading and trailing whitespaces are trimmed.
+            key = key.trim();
+            value = value.trim().split('^"|"$').join('');
+            if (!this._isValidAndNotEmpty(key)) {
+                throw new Error(`Attribute key ${this._ERROR_MESSAGE_INVALID_CHARS}`);
+            }
+            if (!this._isValid(value)) {
+                throw new Error(`Attribute value ${this._ERROR_MESSAGE_INVALID_VALUE}`);
+            }
+            attributes[key] = value;
+        }
+        return attributes;
+    }
+    /**
+     * Determines whether the given String is a valid printable ASCII string with
+     * a length not exceed _MAX_LENGTH characters.
+     *
+     * @param str The String to be validated.
+     * @returns Whether the String is valid.
+     */
+    _isValid(name) {
+        return name.length <= this._MAX_LENGTH && this._isPrintableString(name);
+    }
+    _isPrintableString(str) {
+        for (let i = 0; i < str.length; i++) {
+            const ch = str.charAt(i);
+            if (ch <= ' ' || ch >= '~') {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Determines whether the given String is a valid printable ASCII string with
+     * a length greater than 0 and not exceed _MAX_LENGTH characters.
+     *
+     * @param str The String to be validated.
+     * @returns Whether the String is valid and not empty.
+     */
+    _isValidAndNotEmpty(str) {
+        return str.length > 0 && this._isValid(str);
+    }
+}
+exports.envDetector = new EnvDetector();
+//# sourceMappingURL=EnvDetector.js.map
+
+/***/ }),
+
+/***/ 75267:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.processDetector = void 0;
+const api_1 = __nccwpck_require__(65163);
+const semantic_conventions_1 = __nccwpck_require__(67275);
+const Resource_1 = __nccwpck_require__(72723);
+/**
+ * ProcessDetector will be used to detect the resources related current process running
+ * and being instrumented from the NodeJS Process module.
+ */
+class ProcessDetector {
+    async detect(config) {
+        // Skip if not in Node.js environment.
+        if (typeof process !== 'object') {
+            return Resource_1.Resource.empty();
+        }
+        const processResource = {
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_PID]: process.pid,
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_EXECUTABLE_NAME]: process.title || '',
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_COMMAND]: process.argv[1] || '',
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_COMMAND_LINE]: process.argv.join(' ') || '',
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_VERSION]: process.versions.node,
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_NAME]: 'nodejs',
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_DESCRIPTION]: 'Node.js',
+        };
+        return this._getResourceAttributes(processResource, config);
+    }
+    /**
+     * Validates process resource attribute map from process varaibls
+     *
+     * @param processResource The unsantized resource attributes from process as key/value pairs.
+     * @param config: Config
+     * @returns The sanitized resource attributes.
+     */
+    _getResourceAttributes(processResource, _config) {
+        if (processResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_EXECUTABLE_NAME] ===
+            '' ||
+            processResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_EXECUTABLE_PATH] ===
+                '' ||
+            processResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_COMMAND] === '' ||
+            processResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_COMMAND_LINE] === '' ||
+            processResource[semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_VERSION] === '') {
+            api_1.diag.debug('ProcessDetector failed: Unable to find required process resources. ');
+            return Resource_1.Resource.empty();
+        }
+        else {
+            return new Resource_1.Resource(Object.assign({}, processResource));
+        }
+    }
+}
+exports.processDetector = new ProcessDetector();
+//# sourceMappingURL=ProcessDetector.js.map
+
+/***/ }),
+
+/***/ 24918:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(15969), exports);
+__exportStar(__nccwpck_require__(22474), exports);
+__exportStar(__nccwpck_require__(75267), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 3871:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(72723), exports);
+__exportStar(__nccwpck_require__(7784), exports);
+__exportStar(__nccwpck_require__(29566), exports);
+__exportStar(__nccwpck_require__(61565), exports);
+__exportStar(__nccwpck_require__(24918), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 7784:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(90342), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 99056:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.hostDetector = void 0;
+const semantic_conventions_1 = __nccwpck_require__(67275);
+const Resource_1 = __nccwpck_require__(72723);
+const os_1 = __nccwpck_require__(12087);
+/**
+ * HostDetector detects the resources related to the host current process is
+ * running on. Currently only non-cloud-based attributes are included.
+ */
+class HostDetector {
+    async detect(_config) {
+        const attributes = {
+            [semantic_conventions_1.SemanticResourceAttributes.HOST_NAME]: (0, os_1.hostname)(),
+            [semantic_conventions_1.SemanticResourceAttributes.HOST_ARCH]: this._normalizeArch((0, os_1.arch)()),
+        };
+        return new Resource_1.Resource(attributes);
+    }
+    _normalizeArch(nodeArchString) {
+        // Maps from https://nodejs.org/api/os.html#osarch to arch values in spec:
+        // https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/semantic_conventions/host.md
+        switch (nodeArchString) {
+            case 'arm':
+                return 'arm32';
+            case 'ppc':
+                return 'ppc32';
+            case 'x64':
+                return 'amd64';
+            default:
+                return nodeArchString;
+        }
+    }
+}
+exports.hostDetector = new HostDetector();
+//# sourceMappingURL=HostDetector.js.map
+
+/***/ }),
+
+/***/ 54618:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.osDetector = void 0;
+const semantic_conventions_1 = __nccwpck_require__(67275);
+const Resource_1 = __nccwpck_require__(72723);
+const os_1 = __nccwpck_require__(12087);
+/**
+ * OSDetector detects the resources related to the operating system (OS) on
+ * which the process represented by this resource is running.
+ */
+class OSDetector {
+    async detect(_config) {
+        const attributes = {
+            [semantic_conventions_1.SemanticResourceAttributes.OS_TYPE]: this._normalizeType((0, os_1.platform)()),
+            [semantic_conventions_1.SemanticResourceAttributes.OS_VERSION]: (0, os_1.release)(),
+        };
+        return new Resource_1.Resource(attributes);
+    }
+    _normalizeType(nodePlatform) {
+        // Maps from https://nodejs.org/api/os.html#osplatform to arch values in spec:
+        // https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/semantic_conventions/os.md
+        switch (nodePlatform) {
+            case 'sunos':
+                return 'solaris';
+            case 'win32':
+                return 'windows';
+            default:
+                return nodePlatform;
+        }
+    }
+}
+exports.osDetector = new OSDetector();
+//# sourceMappingURL=OSDetector.js.map
+
+/***/ }),
+
+/***/ 85671:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.defaultServiceName = void 0;
+function defaultServiceName() {
+    return `unknown_service:${process.argv0}`;
+}
+exports.defaultServiceName = defaultServiceName;
+//# sourceMappingURL=default-service-name.js.map
+
+/***/ }),
+
+/***/ 6018:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.detectResources = void 0;
+const Resource_1 = __nccwpck_require__(72723);
+const api_1 = __nccwpck_require__(65163);
+const util = __nccwpck_require__(31669);
+/**
+ * Runs all resource detectors and returns the results merged into a single
+ * Resource.
+ *
+ * @param config Configuration for resource detection
+ */
+const detectResources = async (config = {}) => {
+    const internalConfig = Object.assign(config);
+    const resources = await Promise.all((internalConfig.detectors || []).map(async (d) => {
+        try {
+            const resource = await d.detect(internalConfig);
+            api_1.diag.debug(`${d.constructor.name} found resource.`, resource);
+            return resource;
+        }
+        catch (e) {
+            api_1.diag.debug(`${d.constructor.name} failed: ${e.message}`);
+            return Resource_1.Resource.empty();
+        }
+    }));
+    // Future check if verbose logging is enabled issue #1903
+    logResources(resources);
+    return resources.reduce((acc, resource) => acc.merge(resource), Resource_1.Resource.empty());
+};
+exports.detectResources = detectResources;
+/**
+ * Writes debug information about the detected resources to the logger defined in the resource detection config, if one is provided.
+ *
+ * @param resources The array of {@link Resource} that should be logged. Empty entries will be ignored.
+ */
+const logResources = (resources) => {
+    resources.forEach(resource => {
+        // Print only populated resources
+        if (Object.keys(resource.attributes).length > 0) {
+            const resourceDebugString = util.inspect(resource.attributes, {
+                depth: 2,
+                breakLength: Infinity,
+                sorted: true,
+                compact: false,
+            });
+            api_1.diag.verbose(resourceDebugString);
+        }
+    });
+};
+//# sourceMappingURL=detect-resources.js.map
+
+/***/ }),
+
+/***/ 90342:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(85671), exports);
+__exportStar(__nccwpck_require__(6018), exports);
+__exportStar(__nccwpck_require__(99056), exports);
+__exportStar(__nccwpck_require__(54618), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 29566:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
+/***/ 78920:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BasicTracerProvider = exports.ForceFlushState = void 0;
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(89736);
+const resources_1 = __nccwpck_require__(3871);
+const _1 = __nccwpck_require__(29253);
+const config_1 = __nccwpck_require__(91);
+const MultiSpanProcessor_1 = __nccwpck_require__(12352);
+const NoopSpanProcessor_1 = __nccwpck_require__(69252);
+const platform_1 = __nccwpck_require__(10262);
+const utility_1 = __nccwpck_require__(54324);
+var ForceFlushState;
+(function (ForceFlushState) {
+    ForceFlushState[ForceFlushState["resolved"] = 0] = "resolved";
+    ForceFlushState[ForceFlushState["timeout"] = 1] = "timeout";
+    ForceFlushState[ForceFlushState["error"] = 2] = "error";
+    ForceFlushState[ForceFlushState["unresolved"] = 3] = "unresolved";
+})(ForceFlushState = exports.ForceFlushState || (exports.ForceFlushState = {}));
+/**
+ * This class represents a basic tracer provider which platform libraries can extend
+ */
+class BasicTracerProvider {
+    constructor(config = {}) {
+        var _a;
+        this._registeredSpanProcessors = [];
+        this._tracers = new Map();
+        const mergedConfig = (0, core_1.merge)({}, config_1.DEFAULT_CONFIG, (0, utility_1.reconfigureLimits)(config));
+        this.resource = (_a = mergedConfig.resource) !== null && _a !== void 0 ? _a : resources_1.Resource.empty();
+        this.resource = resources_1.Resource.default().merge(this.resource);
+        this._config = Object.assign({}, mergedConfig, {
+            resource: this.resource,
+        });
+        const defaultExporter = this._buildExporterFromEnv();
+        if (defaultExporter !== undefined) {
+            const batchProcessor = new platform_1.BatchSpanProcessor(defaultExporter);
+            this.activeSpanProcessor = batchProcessor;
+        }
+        else {
+            this.activeSpanProcessor = new NoopSpanProcessor_1.NoopSpanProcessor();
+        }
+    }
+    getTracer(name, version, options) {
+        const key = `${name}@${version || ''}:${(options === null || options === void 0 ? void 0 : options.schemaUrl) || ''}`;
+        if (!this._tracers.has(key)) {
+            this._tracers.set(key, new _1.Tracer({ name, version, schemaUrl: options === null || options === void 0 ? void 0 : options.schemaUrl }, this._config, this));
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this._tracers.get(key);
+    }
+    /**
+     * Adds a new {@link SpanProcessor} to this tracer.
+     * @param spanProcessor the new SpanProcessor to be added.
+     */
+    addSpanProcessor(spanProcessor) {
+        if (this._registeredSpanProcessors.length === 0) {
+            // since we might have enabled by default a batchProcessor, we disable it
+            // before adding the new one
+            this.activeSpanProcessor
+                .shutdown()
+                .catch(err => api_1.diag.error('Error while trying to shutdown current span processor', err));
+        }
+        this._registeredSpanProcessors.push(spanProcessor);
+        this.activeSpanProcessor = new MultiSpanProcessor_1.MultiSpanProcessor(this._registeredSpanProcessors);
+    }
+    getActiveSpanProcessor() {
+        return this.activeSpanProcessor;
+    }
+    /**
+     * Register this TracerProvider for use with the OpenTelemetry API.
+     * Undefined values may be replaced with defaults, and
+     * null values will be skipped.
+     *
+     * @param config Configuration object for SDK registration
+     */
+    register(config = {}) {
+        api_1.trace.setGlobalTracerProvider(this);
+        if (config.propagator === undefined) {
+            config.propagator = this._buildPropagatorFromEnv();
+        }
+        if (config.contextManager) {
+            api_1.context.setGlobalContextManager(config.contextManager);
+        }
+        if (config.propagator) {
+            api_1.propagation.setGlobalPropagator(config.propagator);
+        }
+    }
+    forceFlush() {
+        const timeout = this._config.forceFlushTimeoutMillis;
+        const promises = this._registeredSpanProcessors.map((spanProcessor) => {
+            return new Promise(resolve => {
+                let state;
+                const timeoutInterval = setTimeout(() => {
+                    resolve(new Error(`Span processor did not completed within timeout period of ${timeout} ms`));
+                    state = ForceFlushState.timeout;
+                }, timeout);
+                spanProcessor
+                    .forceFlush()
+                    .then(() => {
+                    clearTimeout(timeoutInterval);
+                    if (state !== ForceFlushState.timeout) {
+                        state = ForceFlushState.resolved;
+                        resolve(state);
+                    }
+                })
+                    .catch(error => {
+                    clearTimeout(timeoutInterval);
+                    state = ForceFlushState.error;
+                    resolve(error);
+                });
+            });
+        });
+        return new Promise((resolve, reject) => {
+            Promise.all(promises)
+                .then(results => {
+                const errors = results.filter(result => result !== ForceFlushState.resolved);
+                if (errors.length > 0) {
+                    reject(errors);
+                }
+                else {
+                    resolve();
+                }
+            })
+                .catch(error => reject([error]));
+        });
+    }
+    shutdown() {
+        return this.activeSpanProcessor.shutdown();
+    }
+    _getPropagator(name) {
+        var _a;
+        return (_a = BasicTracerProvider._registeredPropagators.get(name)) === null || _a === void 0 ? void 0 : _a();
+    }
+    _getSpanExporter(name) {
+        var _a;
+        return (_a = BasicTracerProvider._registeredExporters.get(name)) === null || _a === void 0 ? void 0 : _a();
+    }
+    _buildPropagatorFromEnv() {
+        // per spec, propagators from env must be deduplicated
+        const uniquePropagatorNames = Array.from(new Set((0, core_1.getEnv)().OTEL_PROPAGATORS));
+        const propagators = uniquePropagatorNames.map(name => {
+            const propagator = this._getPropagator(name);
+            if (!propagator) {
+                api_1.diag.warn(`Propagator "${name}" requested through environment variable is unavailable.`);
+            }
+            return propagator;
+        });
+        const validPropagators = propagators.reduce((list, item) => {
+            if (item) {
+                list.push(item);
+            }
+            return list;
+        }, []);
+        if (validPropagators.length === 0) {
+            return;
+        }
+        else if (uniquePropagatorNames.length === 1) {
+            return validPropagators[0];
+        }
+        else {
+            return new core_1.CompositePropagator({
+                propagators: validPropagators,
+            });
+        }
+    }
+    _buildExporterFromEnv() {
+        const exporterName = (0, core_1.getEnv)().OTEL_TRACES_EXPORTER;
+        if (exporterName === 'none')
+            return;
+        const exporter = this._getSpanExporter(exporterName);
+        if (!exporter) {
+            api_1.diag.error(`Exporter "${exporterName}" requested through environment variable is unavailable.`);
+        }
+        return exporter;
+    }
+}
+exports.BasicTracerProvider = BasicTracerProvider;
+BasicTracerProvider._registeredPropagators = new Map([
+    ['tracecontext', () => new core_1.W3CTraceContextPropagator()],
+    ['baggage', () => new core_1.W3CBaggagePropagator()],
+]);
+BasicTracerProvider._registeredExporters = new Map();
+//# sourceMappingURL=BasicTracerProvider.js.map
+
+/***/ }),
+
+/***/ 12352:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MultiSpanProcessor = void 0;
+const core_1 = __nccwpck_require__(89736);
+/**
+ * Implementation of the {@link SpanProcessor} that simply forwards all
+ * received events to a list of {@link SpanProcessor}s.
+ */
+class MultiSpanProcessor {
+    constructor(_spanProcessors) {
+        this._spanProcessors = _spanProcessors;
+    }
+    forceFlush() {
+        const promises = [];
+        for (const spanProcessor of this._spanProcessors) {
+            promises.push(spanProcessor.forceFlush());
+        }
+        return new Promise(resolve => {
+            Promise.all(promises)
+                .then(() => {
+                resolve();
+            })
+                .catch(error => {
+                (0, core_1.globalErrorHandler)(error || new Error('MultiSpanProcessor: forceFlush failed'));
+                resolve();
+            });
+        });
+    }
+    onStart(span, context) {
+        for (const spanProcessor of this._spanProcessors) {
+            spanProcessor.onStart(span, context);
+        }
+    }
+    onEnd(span) {
+        for (const spanProcessor of this._spanProcessors) {
+            spanProcessor.onEnd(span);
+        }
+    }
+    shutdown() {
+        const promises = [];
+        for (const spanProcessor of this._spanProcessors) {
+            promises.push(spanProcessor.shutdown());
+        }
+        return new Promise((resolve, reject) => {
+            Promise.all(promises).then(() => {
+                resolve();
+            }, reject);
+        });
+    }
+}
+exports.MultiSpanProcessor = MultiSpanProcessor;
+//# sourceMappingURL=MultiSpanProcessor.js.map
+
+/***/ }),
+
+/***/ 61301:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Span = void 0;
+const api = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(89736);
+const semantic_conventions_1 = __nccwpck_require__(67275);
+const enums_1 = __nccwpck_require__(35092);
+/**
+ * This class represents a span.
+ */
+class Span {
+    /** Constructs a new Span instance. */
+    constructor(parentTracer, context, spanName, spanContext, kind, parentSpanId, links = [], startTime = (0, core_1.hrTime)()) {
+        this.attributes = {};
+        this.links = [];
+        this.events = [];
+        this.status = {
+            code: api.SpanStatusCode.UNSET,
+        };
+        this.endTime = [0, 0];
+        this._ended = false;
+        this._duration = [-1, -1];
+        this.name = spanName;
+        this._spanContext = spanContext;
+        this.parentSpanId = parentSpanId;
+        this.kind = kind;
+        this.links = links;
+        this.startTime = (0, core_1.timeInputToHrTime)(startTime);
+        this.resource = parentTracer.resource;
+        this.instrumentationLibrary = parentTracer.instrumentationLibrary;
+        this._spanLimits = parentTracer.getSpanLimits();
+        this._spanProcessor = parentTracer.getActiveSpanProcessor();
+        this._spanProcessor.onStart(this, context);
+        this._attributeValueLengthLimit = this._spanLimits.attributeValueLengthLimit || 0;
+    }
+    spanContext() {
+        return this._spanContext;
+    }
+    setAttribute(key, value) {
+        if (value == null || this._isSpanEnded())
+            return this;
+        if (key.length === 0) {
+            api.diag.warn(`Invalid attribute key: ${key}`);
+            return this;
+        }
+        if (!(0, core_1.isAttributeValue)(value)) {
+            api.diag.warn(`Invalid attribute value set for key: ${key}`);
+            return this;
+        }
+        if (Object.keys(this.attributes).length >=
+            this._spanLimits.attributeCountLimit &&
+            !Object.prototype.hasOwnProperty.call(this.attributes, key)) {
+            return this;
+        }
+        this.attributes[key] = this._truncateToSize(value);
+        return this;
+    }
+    setAttributes(attributes) {
+        for (const [k, v] of Object.entries(attributes)) {
+            this.setAttribute(k, v);
+        }
+        return this;
+    }
+    /**
+     *
+     * @param name Span Name
+     * @param [attributesOrStartTime] Span attributes or start time
+     *     if type is {@type TimeInput} and 3rd param is undefined
+     * @param [startTime] Specified start time for the event
+     */
+    addEvent(name, attributesOrStartTime, startTime) {
+        if (this._isSpanEnded())
+            return this;
+        if (this._spanLimits.eventCountLimit === 0) {
+            api.diag.warn('No events allowed.');
+            return this;
+        }
+        if (this.events.length >= this._spanLimits.eventCountLimit) {
+            api.diag.warn('Dropping extra events.');
+            this.events.shift();
+        }
+        if ((0, core_1.isTimeInput)(attributesOrStartTime)) {
+            if (typeof startTime === 'undefined') {
+                startTime = attributesOrStartTime;
+            }
+            attributesOrStartTime = undefined;
+        }
+        if (typeof startTime === 'undefined') {
+            startTime = (0, core_1.hrTime)();
+        }
+        const attributes = (0, core_1.sanitizeAttributes)(attributesOrStartTime);
+        this.events.push({
+            name,
+            attributes,
+            time: (0, core_1.timeInputToHrTime)(startTime),
+        });
+        return this;
+    }
+    setStatus(status) {
+        if (this._isSpanEnded())
+            return this;
+        this.status = status;
+        return this;
+    }
+    updateName(name) {
+        if (this._isSpanEnded())
+            return this;
+        this.name = name;
+        return this;
+    }
+    end(endTime = (0, core_1.hrTime)()) {
+        if (this._isSpanEnded()) {
+            api.diag.error('You can only call end() on a span once.');
+            return;
+        }
+        this._ended = true;
+        this.endTime = (0, core_1.timeInputToHrTime)(endTime);
+        this._duration = (0, core_1.hrTimeDuration)(this.startTime, this.endTime);
+        if (this._duration[0] < 0) {
+            api.diag.warn('Inconsistent start and end time, startTime > endTime', this.startTime, this.endTime);
+        }
+        this._spanProcessor.onEnd(this);
+    }
+    isRecording() {
+        return this._ended === false;
+    }
+    recordException(exception, time = (0, core_1.hrTime)()) {
+        const attributes = {};
+        if (typeof exception === 'string') {
+            attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_MESSAGE] = exception;
+        }
+        else if (exception) {
+            if (exception.code) {
+                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_TYPE] = exception.code.toString();
+            }
+            else if (exception.name) {
+                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_TYPE] = exception.name;
+            }
+            if (exception.message) {
+                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_MESSAGE] = exception.message;
+            }
+            if (exception.stack) {
+                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_STACKTRACE] = exception.stack;
+            }
+        }
+        // these are minimum requirements from spec
+        if (attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_TYPE] ||
+            attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_MESSAGE]) {
+            this.addEvent(enums_1.ExceptionEventName, attributes, time);
+        }
+        else {
+            api.diag.warn(`Failed to record an exception ${exception}`);
+        }
+    }
+    get duration() {
+        return this._duration;
+    }
+    get ended() {
+        return this._ended;
+    }
+    _isSpanEnded() {
+        if (this._ended) {
+            api.diag.warn(`Can not execute the operation on ended Span {traceId: ${this._spanContext.traceId}, spanId: ${this._spanContext.spanId}}`);
+        }
+        return this._ended;
+    }
+    // Utility function to truncate given value within size
+    // for value type of string, will truncate to given limit
+    // for type of non-string, will return same value
+    _truncateToLimitUtil(value, limit) {
+        if (value.length <= limit) {
+            return value;
+        }
+        return value.substr(0, limit);
+    }
+    /**
+     * If the given attribute value is of type string and has more characters than given {@code attributeValueLengthLimit} then
+     * return string with trucated to {@code attributeValueLengthLimit} characters
+     *
+     * If the given attribute value is array of strings then
+     * return new array of strings with each element truncated to {@code attributeValueLengthLimit} characters
+     *
+     * Otherwise return same Attribute {@code value}
+     *
+     * @param value Attribute value
+     * @returns truncated attribute value if required, otherwise same value
+     */
+    _truncateToSize(value) {
+        const limit = this._attributeValueLengthLimit;
+        // Check limit
+        if (limit <= 0) {
+            // Negative values are invalid, so do not truncate
+            api.diag.warn(`Attribute value limit must be positive, got ${limit}`);
+            return value;
+        }
+        // String
+        if (typeof value === 'string') {
+            return this._truncateToLimitUtil(value, limit);
+        }
+        // Array of strings
+        if (Array.isArray(value)) {
+            return value.map(val => typeof val === 'string' ? this._truncateToLimitUtil(val, limit) : val);
+        }
+        // Other types, no need to apply value length limit
+        return value;
+    }
+}
+exports.Span = Span;
+//# sourceMappingURL=Span.js.map
+
+/***/ }),
+
+/***/ 3502:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=SpanProcessor.js.map
+
+/***/ }),
+
+/***/ 86598:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=TimedEvent.js.map
+
+/***/ }),
+
+/***/ 63806:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Tracer = void 0;
+const api = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(89736);
+const Span_1 = __nccwpck_require__(61301);
+const utility_1 = __nccwpck_require__(54324);
+/**
+ * This class represents a basic tracer.
+ */
+class Tracer {
+    /**
+     * Constructs a new Tracer instance.
+     */
+    constructor(instrumentationLibrary, config, _tracerProvider) {
+        this._tracerProvider = _tracerProvider;
+        const localConfig = (0, utility_1.mergeConfig)(config);
+        this._sampler = localConfig.sampler;
+        this._generalLimits = localConfig.generalLimits;
+        this._spanLimits = localConfig.spanLimits;
+        this._idGenerator = config.idGenerator || new core_1.RandomIdGenerator();
+        this.resource = _tracerProvider.resource;
+        this.instrumentationLibrary = instrumentationLibrary;
+    }
+    /**
+     * Starts a new Span or returns the default NoopSpan based on the sampling
+     * decision.
+     */
+    startSpan(name, options = {}, context = api.context.active()) {
+        var _a, _b;
+        if ((0, core_1.isTracingSuppressed)(context)) {
+            api.diag.debug('Instrumentation suppressed, returning Noop Span');
+            return api.trace.wrapSpanContext(api.INVALID_SPAN_CONTEXT);
+        }
+        // remove span from context in case a root span is requested via options
+        if (options.root) {
+            context = api.trace.deleteSpan(context);
+        }
+        const parentSpanContext = api.trace.getSpanContext(context);
+        const spanId = this._idGenerator.generateSpanId();
+        let traceId;
+        let traceState;
+        let parentSpanId;
+        if (!parentSpanContext || !api.trace.isSpanContextValid(parentSpanContext)) {
+            // New root span.
+            traceId = this._idGenerator.generateTraceId();
+        }
+        else {
+            // New child span.
+            traceId = parentSpanContext.traceId;
+            traceState = parentSpanContext.traceState;
+            parentSpanId = parentSpanContext.spanId;
+        }
+        const spanKind = (_a = options.kind) !== null && _a !== void 0 ? _a : api.SpanKind.INTERNAL;
+        const links = ((_b = options.links) !== null && _b !== void 0 ? _b : []).map(link => {
+            return {
+                context: link.context,
+                attributes: (0, core_1.sanitizeAttributes)(link.attributes),
+            };
+        });
+        const attributes = (0, core_1.sanitizeAttributes)(options.attributes);
+        // make sampling decision
+        const samplingResult = this._sampler.shouldSample(context, traceId, name, spanKind, attributes, links);
+        const traceFlags = samplingResult.decision === api.SamplingDecision.RECORD_AND_SAMPLED
+            ? api.TraceFlags.SAMPLED
+            : api.TraceFlags.NONE;
+        const spanContext = { traceId, spanId, traceFlags, traceState };
+        if (samplingResult.decision === api.SamplingDecision.NOT_RECORD) {
+            api.diag.debug('Recording is off, propagating context in a non-recording span');
+            return api.trace.wrapSpanContext(spanContext);
+        }
+        const span = new Span_1.Span(this, context, name, spanContext, spanKind, parentSpanId, links, options.startTime);
+        // Set initial span attributes. The attributes object may have been mutated
+        // by the sampler, so we sanitize the merged attributes before setting them.
+        const initAttributes = (0, core_1.sanitizeAttributes)(Object.assign(attributes, samplingResult.attributes));
+        span.setAttributes(initAttributes);
+        return span;
+    }
+    startActiveSpan(name, arg2, arg3, arg4) {
+        let opts;
+        let ctx;
+        let fn;
+        if (arguments.length < 2) {
+            return;
+        }
+        else if (arguments.length === 2) {
+            fn = arg2;
+        }
+        else if (arguments.length === 3) {
+            opts = arg2;
+            fn = arg3;
+        }
+        else {
+            opts = arg2;
+            ctx = arg3;
+            fn = arg4;
+        }
+        const parentContext = ctx !== null && ctx !== void 0 ? ctx : api.context.active();
+        const span = this.startSpan(name, opts, parentContext);
+        const contextWithSpanSet = api.trace.setSpan(parentContext, span);
+        return api.context.with(contextWithSpanSet, fn, undefined, span);
+    }
+    /** Returns the active {@link GeneralLimits}. */
+    getGeneralLimits() {
+        return this._generalLimits;
+    }
+    /** Returns the active {@link SpanLimits}. */
+    getSpanLimits() {
+        return this._spanLimits;
+    }
+    getActiveSpanProcessor() {
+        return this._tracerProvider.getActiveSpanProcessor();
+    }
+}
+exports.Tracer = Tracer;
+//# sourceMappingURL=Tracer.js.map
+
+/***/ }),
+
+/***/ 91:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.buildSamplerFromEnv = exports.DEFAULT_CONFIG = void 0;
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(89736);
+const env = (0, core_1.getEnv)();
+const FALLBACK_OTEL_TRACES_SAMPLER = core_1.TracesSamplerValues.AlwaysOn;
+const DEFAULT_RATIO = 1;
+/**
+ * Default configuration. For fields with primitive values, any user-provided
+ * value will override the corresponding default value. For fields with
+ * non-primitive values (like `spanLimits`), the user-provided value will be
+ * used to extend the default value.
+ */
+exports.DEFAULT_CONFIG = {
+    sampler: buildSamplerFromEnv(env),
+    forceFlushTimeoutMillis: 30000,
+    generalLimits: {
+        attributeValueLengthLimit: (0, core_1.getEnv)().OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+        attributeCountLimit: (0, core_1.getEnv)().OTEL_ATTRIBUTE_COUNT_LIMIT,
+    },
+    spanLimits: {
+        attributeValueLengthLimit: (0, core_1.getEnv)().OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+        attributeCountLimit: (0, core_1.getEnv)().OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT,
+        linkCountLimit: (0, core_1.getEnv)().OTEL_SPAN_LINK_COUNT_LIMIT,
+        eventCountLimit: (0, core_1.getEnv)().OTEL_SPAN_EVENT_COUNT_LIMIT,
+    },
+};
+/**
+ * Based on environment, builds a sampler, complies with specification.
+ * @param environment optional, by default uses getEnv(), but allows passing a value to reuse parsed environment
+ */
+function buildSamplerFromEnv(environment = (0, core_1.getEnv)()) {
+    switch (environment.OTEL_TRACES_SAMPLER) {
+        case core_1.TracesSamplerValues.AlwaysOn:
+            return new core_1.AlwaysOnSampler();
+        case core_1.TracesSamplerValues.AlwaysOff:
+            return new core_1.AlwaysOffSampler();
+        case core_1.TracesSamplerValues.ParentBasedAlwaysOn:
+            return new core_1.ParentBasedSampler({
+                root: new core_1.AlwaysOnSampler(),
+            });
+        case core_1.TracesSamplerValues.ParentBasedAlwaysOff:
+            return new core_1.ParentBasedSampler({
+                root: new core_1.AlwaysOffSampler(),
+            });
+        case core_1.TracesSamplerValues.TraceIdRatio:
+            return new core_1.TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment));
+        case core_1.TracesSamplerValues.ParentBasedTraceIdRatio:
+            return new core_1.ParentBasedSampler({
+                root: new core_1.TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment)),
+            });
+        default:
+            api_1.diag.error(`OTEL_TRACES_SAMPLER value "${environment.OTEL_TRACES_SAMPLER} invalid, defaulting to ${FALLBACK_OTEL_TRACES_SAMPLER}".`);
+            return new core_1.AlwaysOnSampler();
+    }
+}
+exports.buildSamplerFromEnv = buildSamplerFromEnv;
+function getSamplerProbabilityFromEnv(environment) {
+    if (environment.OTEL_TRACES_SAMPLER_ARG === undefined ||
+        environment.OTEL_TRACES_SAMPLER_ARG === '') {
+        api_1.diag.error(`OTEL_TRACES_SAMPLER_ARG is blank, defaulting to ${DEFAULT_RATIO}.`);
+        return DEFAULT_RATIO;
+    }
+    const probability = Number(environment.OTEL_TRACES_SAMPLER_ARG);
+    if (isNaN(probability)) {
+        api_1.diag.error(`OTEL_TRACES_SAMPLER_ARG=${environment.OTEL_TRACES_SAMPLER_ARG} was given, but it is invalid, defaulting to ${DEFAULT_RATIO}.`);
+        return DEFAULT_RATIO;
+    }
+    if (probability < 0 || probability > 1) {
+        api_1.diag.error(`OTEL_TRACES_SAMPLER_ARG=${environment.OTEL_TRACES_SAMPLER_ARG} was given, but it is out of range ([0..1]), defaulting to ${DEFAULT_RATIO}.`);
+        return DEFAULT_RATIO;
+    }
+    return probability;
+}
+//# sourceMappingURL=config.js.map
+
+/***/ }),
+
+/***/ 35092:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExceptionEventName = void 0;
+// Event name definitions
+exports.ExceptionEventName = 'exception';
+//# sourceMappingURL=enums.js.map
+
+/***/ }),
+
+/***/ 69727:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BatchSpanProcessorBase = void 0;
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(89736);
+/**
+ * Implementation of the {@link SpanProcessor} that batches spans exported by
+ * the SDK then pushes them to the exporter pipeline.
+ */
+class BatchSpanProcessorBase {
+    constructor(_exporter, config) {
+        this._exporter = _exporter;
+        this._finishedSpans = [];
+        const env = (0, core_1.getEnv)();
+        this._maxExportBatchSize =
+            typeof (config === null || config === void 0 ? void 0 : config.maxExportBatchSize) === 'number'
+                ? config.maxExportBatchSize
+                : env.OTEL_BSP_MAX_EXPORT_BATCH_SIZE;
+        this._maxQueueSize =
+            typeof (config === null || config === void 0 ? void 0 : config.maxQueueSize) === 'number'
+                ? config.maxQueueSize
+                : env.OTEL_BSP_MAX_QUEUE_SIZE;
+        this._scheduledDelayMillis =
+            typeof (config === null || config === void 0 ? void 0 : config.scheduledDelayMillis) === 'number'
+                ? config.scheduledDelayMillis
+                : env.OTEL_BSP_SCHEDULE_DELAY;
+        this._exportTimeoutMillis =
+            typeof (config === null || config === void 0 ? void 0 : config.exportTimeoutMillis) === 'number'
+                ? config.exportTimeoutMillis
+                : env.OTEL_BSP_EXPORT_TIMEOUT;
+        this._shutdownOnce = new core_1.BindOnceFuture(this._shutdown, this);
+    }
+    forceFlush() {
+        if (this._shutdownOnce.isCalled) {
+            return this._shutdownOnce.promise;
+        }
+        return this._flushAll();
+    }
+    // does nothing.
+    onStart(_span, _parentContext) { }
+    onEnd(span) {
+        if (this._shutdownOnce.isCalled) {
+            return;
+        }
+        if ((span.spanContext().traceFlags & api_1.TraceFlags.SAMPLED) === 0) {
+            return;
+        }
+        this._addToBuffer(span);
+    }
+    shutdown() {
+        return this._shutdownOnce.call();
+    }
+    _shutdown() {
+        return Promise.resolve()
+            .then(() => {
+            return this.onShutdown();
+        })
+            .then(() => {
+            return this._flushAll();
+        })
+            .then(() => {
+            return this._exporter.shutdown();
+        });
+    }
+    /** Add a span in the buffer. */
+    _addToBuffer(span) {
+        if (this._finishedSpans.length >= this._maxQueueSize) {
+            // limit reached, drop span
+            return;
+        }
+        this._finishedSpans.push(span);
+        this._maybeStartTimer();
+    }
+    /**
+     * Send all spans to the exporter respecting the batch size limit
+     * This function is used only on forceFlush or shutdown,
+     * for all other cases _flush should be used
+     * */
+    _flushAll() {
+        return new Promise((resolve, reject) => {
+            const promises = [];
+            // calculate number of batches
+            const count = Math.ceil(this._finishedSpans.length / this._maxExportBatchSize);
+            for (let i = 0, j = count; i < j; i++) {
+                promises.push(this._flushOneBatch());
+            }
+            Promise.all(promises)
+                .then(() => {
+                resolve();
+            })
+                .catch(reject);
+        });
+    }
+    _flushOneBatch() {
+        this._clearTimer();
+        if (this._finishedSpans.length === 0) {
+            return Promise.resolve();
+        }
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => {
+                // don't wait anymore for export, this way the next batch can start
+                reject(new Error('Timeout'));
+            }, this._exportTimeoutMillis);
+            // prevent downstream exporter calls from generating spans
+            api_1.context.with((0, core_1.suppressTracing)(api_1.context.active()), () => {
+                // Reset the finished spans buffer here because the next invocations of the _flush method
+                // could pass the same finished spans to the exporter if the buffer is cleared
+                // outside of the execution of this callback.
+                this._exporter.export(this._finishedSpans.splice(0, this._maxExportBatchSize), result => {
+                    var _a;
+                    clearTimeout(timer);
+                    if (result.code === core_1.ExportResultCode.SUCCESS) {
+                        resolve();
+                    }
+                    else {
+                        reject((_a = result.error) !== null && _a !== void 0 ? _a : new Error('BatchSpanProcessor: span export failed'));
+                    }
+                });
+            });
+        });
+    }
+    _maybeStartTimer() {
+        if (this._timer !== undefined)
+            return;
+        this._timer = setTimeout(() => {
+            this._flushOneBatch()
+                .then(() => {
+                if (this._finishedSpans.length > 0) {
+                    this._clearTimer();
+                    this._maybeStartTimer();
+                }
+            })
+                .catch(e => {
+                (0, core_1.globalErrorHandler)(e);
+            });
+        }, this._scheduledDelayMillis);
+        (0, core_1.unrefTimer)(this._timer);
+    }
+    _clearTimer() {
+        if (this._timer !== undefined) {
+            clearTimeout(this._timer);
+            this._timer = undefined;
+        }
+    }
+}
+exports.BatchSpanProcessorBase = BatchSpanProcessorBase;
+//# sourceMappingURL=BatchSpanProcessorBase.js.map
+
+/***/ }),
+
+/***/ 36784:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ConsoleSpanExporter = void 0;
+const core_1 = __nccwpck_require__(89736);
+/**
+ * This is implementation of {@link SpanExporter} that prints spans to the
+ * console. This class can be used for diagnostic purposes.
+ */
+/* eslint-disable no-console */
+class ConsoleSpanExporter {
+    /**
+     * Export spans.
+     * @param spans
+     * @param resultCallback
+     */
+    export(spans, resultCallback) {
+        return this._sendSpans(spans, resultCallback);
+    }
+    /**
+     * Shutdown the exporter.
+     */
+    shutdown() {
+        this._sendSpans([]);
+        return Promise.resolve();
+    }
+    /**
+     * converts span info into more readable format
+     * @param span
+     */
+    _exportInfo(span) {
+        return {
+            traceId: span.spanContext().traceId,
+            parentId: span.parentSpanId,
+            name: span.name,
+            id: span.spanContext().spanId,
+            kind: span.kind,
+            timestamp: (0, core_1.hrTimeToMicroseconds)(span.startTime),
+            duration: (0, core_1.hrTimeToMicroseconds)(span.duration),
+            attributes: span.attributes,
+            status: span.status,
+            events: span.events,
+            links: span.links
+        };
+    }
+    /**
+     * Showing spans in console
+     * @param spans
+     * @param done
+     */
+    _sendSpans(spans, done) {
+        for (const span of spans) {
+            console.dir(this._exportInfo(span), { depth: 3 });
+        }
+        if (done) {
+            return done({ code: core_1.ExportResultCode.SUCCESS });
+        }
+    }
+}
+exports.ConsoleSpanExporter = ConsoleSpanExporter;
+//# sourceMappingURL=ConsoleSpanExporter.js.map
+
+/***/ }),
+
+/***/ 24093:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InMemorySpanExporter = void 0;
+const core_1 = __nccwpck_require__(89736);
+/**
+ * This class can be used for testing purposes. It stores the exported spans
+ * in a list in memory that can be retrieved using the `getFinishedSpans()`
+ * method.
+ */
+class InMemorySpanExporter {
+    constructor() {
+        this._finishedSpans = [];
+        /**
+         * Indicates if the exporter has been "shutdown."
+         * When false, exported spans will not be stored in-memory.
+         */
+        this._stopped = false;
+    }
+    export(spans, resultCallback) {
+        if (this._stopped)
+            return resultCallback({
+                code: core_1.ExportResultCode.FAILED,
+                error: new Error('Exporter has been stopped'),
+            });
+        this._finishedSpans.push(...spans);
+        setTimeout(() => resultCallback({ code: core_1.ExportResultCode.SUCCESS }), 0);
+    }
+    shutdown() {
+        this._stopped = true;
+        this._finishedSpans = [];
+        return Promise.resolve();
+    }
+    reset() {
+        this._finishedSpans = [];
+    }
+    getFinishedSpans() {
+        return this._finishedSpans;
+    }
+}
+exports.InMemorySpanExporter = InMemorySpanExporter;
+//# sourceMappingURL=InMemorySpanExporter.js.map
+
+/***/ }),
+
+/***/ 69252:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NoopSpanProcessor = void 0;
+/** No-op implementation of SpanProcessor */
+class NoopSpanProcessor {
+    onStart(_span, _context) { }
+    onEnd(_span) { }
+    shutdown() {
+        return Promise.resolve();
+    }
+    forceFlush() {
+        return Promise.resolve();
+    }
+}
+exports.NoopSpanProcessor = NoopSpanProcessor;
+//# sourceMappingURL=NoopSpanProcessor.js.map
+
+/***/ }),
+
+/***/ 25561:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=ReadableSpan.js.map
+
+/***/ }),
+
+/***/ 89802:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SimpleSpanProcessor = void 0;
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(89736);
+/**
+ * An implementation of the {@link SpanProcessor} that converts the {@link Span}
+ * to {@link ReadableSpan} and passes it to the configured exporter.
+ *
+ * Only spans that are sampled are converted.
+ */
+class SimpleSpanProcessor {
+    constructor(_exporter) {
+        this._exporter = _exporter;
+        this._shutdownOnce = new core_1.BindOnceFuture(this._shutdown, this);
+    }
+    forceFlush() {
+        // do nothing as all spans are being exported without waiting
+        return Promise.resolve();
+    }
+    // does nothing.
+    onStart(_span, _parentContext) { }
+    onEnd(span) {
+        if (this._shutdownOnce.isCalled) {
+            return;
+        }
+        if ((span.spanContext().traceFlags & api_1.TraceFlags.SAMPLED) === 0) {
+            return;
+        }
+        // prevent downstream exporter calls from generating spans
+        api_1.context.with((0, core_1.suppressTracing)(api_1.context.active()), () => {
+            this._exporter.export([span], result => {
+                var _a;
+                if (result.code !== core_1.ExportResultCode.SUCCESS) {
+                    (0, core_1.globalErrorHandler)((_a = result.error) !== null && _a !== void 0 ? _a : new Error(`SimpleSpanProcessor: span export failed (status ${result})`));
+                }
+            });
+        });
+    }
+    shutdown() {
+        return this._shutdownOnce.call();
+    }
+    _shutdown() {
+        return this._exporter.shutdown();
+    }
+}
+exports.SimpleSpanProcessor = SimpleSpanProcessor;
+//# sourceMappingURL=SimpleSpanProcessor.js.map
+
+/***/ }),
+
+/***/ 4570:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=SpanExporter.js.map
+
+/***/ }),
+
+/***/ 29253:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(63806), exports);
+__exportStar(__nccwpck_require__(78920), exports);
+__exportStar(__nccwpck_require__(10262), exports);
+__exportStar(__nccwpck_require__(36784), exports);
+__exportStar(__nccwpck_require__(24093), exports);
+__exportStar(__nccwpck_require__(25561), exports);
+__exportStar(__nccwpck_require__(89802), exports);
+__exportStar(__nccwpck_require__(4570), exports);
+__exportStar(__nccwpck_require__(69252), exports);
+__exportStar(__nccwpck_require__(61301), exports);
+__exportStar(__nccwpck_require__(3502), exports);
+__exportStar(__nccwpck_require__(86598), exports);
+__exportStar(__nccwpck_require__(49068), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 10262:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(36573), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 97913:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BatchSpanProcessor = void 0;
+const BatchSpanProcessorBase_1 = __nccwpck_require__(69727);
+class BatchSpanProcessor extends BatchSpanProcessorBase_1.BatchSpanProcessorBase {
+    onShutdown() { }
+}
+exports.BatchSpanProcessor = BatchSpanProcessor;
+//# sourceMappingURL=BatchSpanProcessor.js.map
+
+/***/ }),
+
+/***/ 36573:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(97913), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 49068:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
+/***/ 54324:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.reconfigureLimits = exports.mergeConfig = void 0;
+const config_1 = __nccwpck_require__(91);
+/**
+ * Function to merge Default configuration (as specified in './config') with
+ * user provided configurations.
+ */
+function mergeConfig(userConfig) {
+    const perInstanceDefaults = {
+        sampler: (0, config_1.buildSamplerFromEnv)(),
+    };
+    const target = Object.assign({}, config_1.DEFAULT_CONFIG, perInstanceDefaults, userConfig);
+    target.generalLimits = Object.assign({}, config_1.DEFAULT_CONFIG.generalLimits, userConfig.generalLimits || {});
+    target.spanLimits = Object.assign({}, config_1.DEFAULT_CONFIG.spanLimits, userConfig.spanLimits || {});
+    return target;
+}
+exports.mergeConfig = mergeConfig;
+/**
+ * When general limits are provided and model specific limits are not,
+ * configures the model specific limits by using the values from the general ones.
+ * @param userConfig User provided tracer configuration
+ */
+function reconfigureLimits(userConfig) {
+    var _a, _b;
+    const spanLimits = Object.assign({}, userConfig.spanLimits);
+    /**
+     * When span attribute count limit is not defined, but general attribute count limit is defined
+     * Then, span attribute count limit will be same as general one
+     */
+    if (spanLimits.attributeCountLimit == null && ((_a = userConfig.generalLimits) === null || _a === void 0 ? void 0 : _a.attributeCountLimit) != null) {
+        spanLimits.attributeCountLimit = userConfig.generalLimits.attributeCountLimit;
+    }
+    /**
+     * When span attribute value length limit is not defined, but general attribute value length limit is defined
+     * Then, span attribute value length limit will be same as general one
+     */
+    if (spanLimits.attributeValueLengthLimit == null && ((_b = userConfig.generalLimits) === null || _b === void 0 ? void 0 : _b.attributeValueLengthLimit) != null) {
+        spanLimits.attributeValueLengthLimit = userConfig.generalLimits.attributeValueLengthLimit;
+    }
+    return Object.assign({}, userConfig, { spanLimits });
+}
+exports.reconfigureLimits = reconfigureLimits;
+//# sourceMappingURL=utility.js.map
+
+/***/ }),
+
+/***/ 67275:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(45836), exports);
+__exportStar(__nccwpck_require__(2834), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 85003:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TelemetrySdkLanguageValues = exports.OsTypeValues = exports.HostArchValues = exports.AwsEcsLaunchtypeValues = exports.CloudPlatformValues = exports.CloudProviderValues = exports.SemanticResourceAttributes = void 0;
+// DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+exports.SemanticResourceAttributes = {
+    /**
+    * Name of the cloud provider.
+    */
+    CLOUD_PROVIDER: 'cloud.provider',
+    /**
+    * The cloud account ID the resource is assigned to.
+    */
+    CLOUD_ACCOUNT_ID: 'cloud.account.id',
+    /**
+    * The geographical region the resource is running. Refer to your provider&#39;s docs to see the available regions, for example [Alibaba Cloud regions](https://www.alibabacloud.com/help/doc-detail/40654.htm), [AWS regions](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/), [Azure regions](https://azure.microsoft.com/en-us/global-infrastructure/geographies/), or [Google Cloud regions](https://cloud.google.com/about/locations).
+    */
+    CLOUD_REGION: 'cloud.region',
+    /**
+    * Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.
+    *
+    * Note: Availability zones are called &#34;zones&#34; on Alibaba Cloud and Google Cloud.
+    */
+    CLOUD_AVAILABILITY_ZONE: 'cloud.availability_zone',
+    /**
+    * The cloud platform in use.
+    *
+    * Note: The prefix of the service SHOULD match the one specified in `cloud.provider`.
+    */
+    CLOUD_PLATFORM: 'cloud.platform',
+    /**
+    * The Amazon Resource Name (ARN) of an [ECS container instance](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html).
+    */
+    AWS_ECS_CONTAINER_ARN: 'aws.ecs.container.arn',
+    /**
+    * The ARN of an [ECS cluster](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/clusters.html).
+    */
+    AWS_ECS_CLUSTER_ARN: 'aws.ecs.cluster.arn',
+    /**
+    * The [launch type](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_types.html) for an ECS task.
+    */
+    AWS_ECS_LAUNCHTYPE: 'aws.ecs.launchtype',
+    /**
+    * The ARN of an [ECS task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html).
+    */
+    AWS_ECS_TASK_ARN: 'aws.ecs.task.arn',
+    /**
+    * The task definition family this task definition is a member of.
+    */
+    AWS_ECS_TASK_FAMILY: 'aws.ecs.task.family',
+    /**
+    * The revision for this task definition.
+    */
+    AWS_ECS_TASK_REVISION: 'aws.ecs.task.revision',
+    /**
+    * The ARN of an EKS cluster.
+    */
+    AWS_EKS_CLUSTER_ARN: 'aws.eks.cluster.arn',
+    /**
+    * The name(s) of the AWS log group(s) an application is writing to.
+    *
+    * Note: Multiple log groups must be supported for cases like multi-container applications, where a single application has sidecar containers, and each write to their own log group.
+    */
+    AWS_LOG_GROUP_NAMES: 'aws.log.group.names',
+    /**
+    * The Amazon Resource Name(s) (ARN) of the AWS log group(s).
+    *
+    * Note: See the [log group ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format).
+    */
+    AWS_LOG_GROUP_ARNS: 'aws.log.group.arns',
+    /**
+    * The name(s) of the AWS log stream(s) an application is writing to.
+    */
+    AWS_LOG_STREAM_NAMES: 'aws.log.stream.names',
+    /**
+    * The ARN(s) of the AWS log stream(s).
+    *
+    * Note: See the [log stream ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format). One log group can contain several log streams, so these ARNs necessarily identify both a log group and a log stream.
+    */
+    AWS_LOG_STREAM_ARNS: 'aws.log.stream.arns',
+    /**
+    * Container name.
+    */
+    CONTAINER_NAME: 'container.name',
+    /**
+    * Container ID. Usually a UUID, as for example used to [identify Docker containers](https://docs.docker.com/engine/reference/run/#container-identification). The UUID might be abbreviated.
+    */
+    CONTAINER_ID: 'container.id',
+    /**
+    * The container runtime managing this container.
+    */
+    CONTAINER_RUNTIME: 'container.runtime',
+    /**
+    * Name of the image the container was built on.
+    */
+    CONTAINER_IMAGE_NAME: 'container.image.name',
+    /**
+    * Container image tag.
+    */
+    CONTAINER_IMAGE_TAG: 'container.image.tag',
+    /**
+    * Name of the [deployment environment](https://en.wikipedia.org/wiki/Deployment_environment) (aka deployment tier).
+    */
+    DEPLOYMENT_ENVIRONMENT: 'deployment.environment',
+    /**
+    * A unique identifier representing the device.
+    *
+    * Note: The device identifier MUST only be defined using the values outlined below. This value is not an advertising identifier and MUST NOT be used as such. On iOS (Swift or Objective-C), this value MUST be equal to the [vendor identifier](https://developer.apple.com/documentation/uikit/uidevice/1620059-identifierforvendor). On Android (Java or Kotlin), this value MUST be equal to the Firebase Installation ID or a globally unique UUID which is persisted across sessions in your application. More information can be found [here](https://developer.android.com/training/articles/user-data-ids) on best practices and exact implementation details. Caution should be taken when storing personal data or anything which can identify a user. GDPR and data protection laws may apply, ensure you do your own due diligence.
+    */
+    DEVICE_ID: 'device.id',
+    /**
+    * The model identifier for the device.
+    *
+    * Note: It&#39;s recommended this value represents a machine readable version of the model identifier rather than the market or consumer-friendly name of the device.
+    */
+    DEVICE_MODEL_IDENTIFIER: 'device.model.identifier',
+    /**
+    * The marketing name for the device model.
+    *
+    * Note: It&#39;s recommended this value represents a human readable version of the device model rather than a machine readable alternative.
+    */
+    DEVICE_MODEL_NAME: 'device.model.name',
+    /**
+    * The name of the single function that this runtime instance executes.
+    *
+    * Note: This is the name of the function as configured/deployed on the FaaS platform and is usually different from the name of the callback function (which may be stored in the [`code.namespace`/`code.function`](../../trace/semantic_conventions/span-general.md#source-code-attributes) span attributes).
+    */
+    FAAS_NAME: 'faas.name',
+    /**
+    * The unique ID of the single function that this runtime instance executes.
+    *
+    * Note: Depending on the cloud provider, use:
+  
+  * **AWS Lambda:** The function [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
+  Take care not to use the &#34;invoked ARN&#34; directly but replace any
+  [alias suffix](https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html) with the resolved function version, as the same runtime instance may be invokable with multiple
+  different aliases.
+  * **GCP:** The [URI of the resource](https://cloud.google.com/iam/docs/full-resource-names)
+  * **Azure:** The [Fully Qualified Resource ID](https://docs.microsoft.com/en-us/rest/api/resources/resources/get-by-id).
+  
+  On some providers, it may not be possible to determine the full ID at startup,
+  which is why this field cannot be made required. For example, on AWS the account ID
+  part of the ARN is not available without calling another AWS API
+  which may be deemed too slow for a short-running lambda function.
+  As an alternative, consider setting `faas.id` as a span attribute instead.
+    */
+    FAAS_ID: 'faas.id',
+    /**
+    * The immutable version of the function being executed.
+    *
+    * Note: Depending on the cloud provider and platform, use:
+  
+  * **AWS Lambda:** The [function version](https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html)
+    (an integer represented as a decimal string).
+  * **Google Cloud Run:** The [revision](https://cloud.google.com/run/docs/managing/revisions)
+    (i.e., the function name plus the revision suffix).
+  * **Google Cloud Functions:** The value of the
+    [`K_REVISION` environment variable](https://cloud.google.com/functions/docs/env-var#runtime_environment_variables_set_automatically).
+  * **Azure Functions:** Not applicable. Do not set this attribute.
+    */
+    FAAS_VERSION: 'faas.version',
+    /**
+    * The execution environment ID as a string, that will be potentially reused for other invocations to the same function/function version.
+    *
+    * Note: * **AWS Lambda:** Use the (full) log stream name.
+    */
+    FAAS_INSTANCE: 'faas.instance',
+    /**
+    * The amount of memory available to the serverless function in MiB.
+    *
+    * Note: It&#39;s recommended to set this attribute since e.g. too little memory can easily stop a Java AWS Lambda function from working correctly. On AWS Lambda, the environment variable `AWS_LAMBDA_FUNCTION_MEMORY_SIZE` provides this information.
+    */
+    FAAS_MAX_MEMORY: 'faas.max_memory',
+    /**
+    * Unique host ID. For Cloud, this must be the instance_id assigned by the cloud provider.
+    */
+    HOST_ID: 'host.id',
+    /**
+    * Name of the host. On Unix systems, it may contain what the hostname command returns, or the fully qualified hostname, or another name specified by the user.
+    */
+    HOST_NAME: 'host.name',
+    /**
+    * Type of host. For Cloud, this must be the machine type.
+    */
+    HOST_TYPE: 'host.type',
+    /**
+    * The CPU architecture the host system is running on.
+    */
+    HOST_ARCH: 'host.arch',
+    /**
+    * Name of the VM image or OS install the host was instantiated from.
+    */
+    HOST_IMAGE_NAME: 'host.image.name',
+    /**
+    * VM image ID. For Cloud, this value is from the provider.
+    */
+    HOST_IMAGE_ID: 'host.image.id',
+    /**
+    * The version string of the VM image as defined in [Version SpanAttributes](README.md#version-attributes).
+    */
+    HOST_IMAGE_VERSION: 'host.image.version',
+    /**
+    * The name of the cluster.
+    */
+    K8S_CLUSTER_NAME: 'k8s.cluster.name',
+    /**
+    * The name of the Node.
+    */
+    K8S_NODE_NAME: 'k8s.node.name',
+    /**
+    * The UID of the Node.
+    */
+    K8S_NODE_UID: 'k8s.node.uid',
+    /**
+    * The name of the namespace that the pod is running in.
+    */
+    K8S_NAMESPACE_NAME: 'k8s.namespace.name',
+    /**
+    * The UID of the Pod.
+    */
+    K8S_POD_UID: 'k8s.pod.uid',
+    /**
+    * The name of the Pod.
+    */
+    K8S_POD_NAME: 'k8s.pod.name',
+    /**
+    * The name of the Container in a Pod template.
+    */
+    K8S_CONTAINER_NAME: 'k8s.container.name',
+    /**
+    * The UID of the ReplicaSet.
+    */
+    K8S_REPLICASET_UID: 'k8s.replicaset.uid',
+    /**
+    * The name of the ReplicaSet.
+    */
+    K8S_REPLICASET_NAME: 'k8s.replicaset.name',
+    /**
+    * The UID of the Deployment.
+    */
+    K8S_DEPLOYMENT_UID: 'k8s.deployment.uid',
+    /**
+    * The name of the Deployment.
+    */
+    K8S_DEPLOYMENT_NAME: 'k8s.deployment.name',
+    /**
+    * The UID of the StatefulSet.
+    */
+    K8S_STATEFULSET_UID: 'k8s.statefulset.uid',
+    /**
+    * The name of the StatefulSet.
+    */
+    K8S_STATEFULSET_NAME: 'k8s.statefulset.name',
+    /**
+    * The UID of the DaemonSet.
+    */
+    K8S_DAEMONSET_UID: 'k8s.daemonset.uid',
+    /**
+    * The name of the DaemonSet.
+    */
+    K8S_DAEMONSET_NAME: 'k8s.daemonset.name',
+    /**
+    * The UID of the Job.
+    */
+    K8S_JOB_UID: 'k8s.job.uid',
+    /**
+    * The name of the Job.
+    */
+    K8S_JOB_NAME: 'k8s.job.name',
+    /**
+    * The UID of the CronJob.
+    */
+    K8S_CRONJOB_UID: 'k8s.cronjob.uid',
+    /**
+    * The name of the CronJob.
+    */
+    K8S_CRONJOB_NAME: 'k8s.cronjob.name',
+    /**
+    * The operating system type.
+    */
+    OS_TYPE: 'os.type',
+    /**
+    * Human readable (not intended to be parsed) OS version information, like e.g. reported by `ver` or `lsb_release -a` commands.
+    */
+    OS_DESCRIPTION: 'os.description',
+    /**
+    * Human readable operating system name.
+    */
+    OS_NAME: 'os.name',
+    /**
+    * The version string of the operating system as defined in [Version SpanAttributes](../../resource/semantic_conventions/README.md#version-attributes).
+    */
+    OS_VERSION: 'os.version',
+    /**
+    * Process identifier (PID).
+    */
+    PROCESS_PID: 'process.pid',
+    /**
+    * The name of the process executable. On Linux based systems, can be set to the `Name` in `proc/[pid]/status`. On Windows, can be set to the base name of `GetProcessImageFileNameW`.
+    */
+    PROCESS_EXECUTABLE_NAME: 'process.executable.name',
+    /**
+    * The full path to the process executable. On Linux based systems, can be set to the target of `proc/[pid]/exe`. On Windows, can be set to the result of `GetProcessImageFileNameW`.
+    */
+    PROCESS_EXECUTABLE_PATH: 'process.executable.path',
+    /**
+    * The command used to launch the process (i.e. the command name). On Linux based systems, can be set to the zeroth string in `proc/[pid]/cmdline`. On Windows, can be set to the first parameter extracted from `GetCommandLineW`.
+    */
+    PROCESS_COMMAND: 'process.command',
+    /**
+    * The full command used to launch the process as a single string representing the full command. On Windows, can be set to the result of `GetCommandLineW`. Do not set this if you have to assemble it just for monitoring; use `process.command_args` instead.
+    */
+    PROCESS_COMMAND_LINE: 'process.command_line',
+    /**
+    * All the command arguments (including the command/executable itself) as received by the process. On Linux-based systems (and some other Unixoid systems supporting procfs), can be set according to the list of null-delimited strings extracted from `proc/[pid]/cmdline`. For libc-based executables, this would be the full argv vector passed to `main`.
+    */
+    PROCESS_COMMAND_ARGS: 'process.command_args',
+    /**
+    * The username of the user that owns the process.
+    */
+    PROCESS_OWNER: 'process.owner',
+    /**
+    * The name of the runtime of this process. For compiled native binaries, this SHOULD be the name of the compiler.
+    */
+    PROCESS_RUNTIME_NAME: 'process.runtime.name',
+    /**
+    * The version of the runtime of this process, as returned by the runtime without modification.
+    */
+    PROCESS_RUNTIME_VERSION: 'process.runtime.version',
+    /**
+    * An additional description about the runtime of the process, for example a specific vendor customization of the runtime environment.
+    */
+    PROCESS_RUNTIME_DESCRIPTION: 'process.runtime.description',
+    /**
+    * Logical name of the service.
+    *
+    * Note: MUST be the same for all instances of horizontally scaled services. If the value was not specified, SDKs MUST fallback to `unknown_service:` concatenated with [`process.executable.name`](process.md#process), e.g. `unknown_service:bash`. If `process.executable.name` is not available, the value MUST be set to `unknown_service`.
+    */
+    SERVICE_NAME: 'service.name',
+    /**
+    * A namespace for `service.name`.
+    *
+    * Note: A string value having a meaning that helps to distinguish a group of services, for example the team name that owns a group of services. `service.name` is expected to be unique within the same namespace. If `service.namespace` is not specified in the Resource then `service.name` is expected to be unique for all services that have no explicit namespace defined (so the empty/unspecified namespace is simply one more valid namespace). Zero-length namespace string is assumed equal to unspecified namespace.
+    */
+    SERVICE_NAMESPACE: 'service.namespace',
+    /**
+    * The string ID of the service instance.
+    *
+    * Note: MUST be unique for each instance of the same `service.namespace,service.name` pair (in other words `service.namespace,service.name,service.instance.id` triplet MUST be globally unique). The ID helps to distinguish instances of the same service that exist at the same time (e.g. instances of a horizontally scaled service). It is preferable for the ID to be persistent and stay the same for the lifetime of the service instance, however it is acceptable that the ID is ephemeral and changes during important lifetime events for the service (e.g. service restarts). If the service has no inherent unique ID that can be used as the value of this attribute it is recommended to generate a random Version 1 or Version 4 RFC 4122 UUID (services aiming for reproducible UUIDs may also use Version 5, see RFC 4122 for more recommendations).
+    */
+    SERVICE_INSTANCE_ID: 'service.instance.id',
+    /**
+    * The version string of the service API or implementation.
+    */
+    SERVICE_VERSION: 'service.version',
+    /**
+    * The name of the telemetry SDK as defined above.
+    */
+    TELEMETRY_SDK_NAME: 'telemetry.sdk.name',
+    /**
+    * The language of the telemetry SDK.
+    */
+    TELEMETRY_SDK_LANGUAGE: 'telemetry.sdk.language',
+    /**
+    * The version string of the telemetry SDK.
+    */
+    TELEMETRY_SDK_VERSION: 'telemetry.sdk.version',
+    /**
+    * The version string of the auto instrumentation agent, if used.
+    */
+    TELEMETRY_AUTO_VERSION: 'telemetry.auto.version',
+    /**
+    * The name of the web engine.
+    */
+    WEBENGINE_NAME: 'webengine.name',
+    /**
+    * The version of the web engine.
+    */
+    WEBENGINE_VERSION: 'webengine.version',
+    /**
+    * Additional description of the web engine (e.g. detailed version and edition information).
+    */
+    WEBENGINE_DESCRIPTION: 'webengine.description',
+};
+exports.CloudProviderValues = {
+    /** Alibaba Cloud. */
+    ALIBABA_CLOUD: 'alibaba_cloud',
+    /** Amazon Web Services. */
+    AWS: 'aws',
+    /** Microsoft Azure. */
+    AZURE: 'azure',
+    /** Google Cloud Platform. */
+    GCP: 'gcp',
+};
+exports.CloudPlatformValues = {
+    /** Alibaba Cloud Elastic Compute Service. */
+    ALIBABA_CLOUD_ECS: 'alibaba_cloud_ecs',
+    /** Alibaba Cloud Function Compute. */
+    ALIBABA_CLOUD_FC: 'alibaba_cloud_fc',
+    /** AWS Elastic Compute Cloud. */
+    AWS_EC2: 'aws_ec2',
+    /** AWS Elastic Container Service. */
+    AWS_ECS: 'aws_ecs',
+    /** AWS Elastic Kubernetes Service. */
+    AWS_EKS: 'aws_eks',
+    /** AWS Lambda. */
+    AWS_LAMBDA: 'aws_lambda',
+    /** AWS Elastic Beanstalk. */
+    AWS_ELASTIC_BEANSTALK: 'aws_elastic_beanstalk',
+    /** Azure Virtual Machines. */
+    AZURE_VM: 'azure_vm',
+    /** Azure Container Instances. */
+    AZURE_CONTAINER_INSTANCES: 'azure_container_instances',
+    /** Azure Kubernetes Service. */
+    AZURE_AKS: 'azure_aks',
+    /** Azure Functions. */
+    AZURE_FUNCTIONS: 'azure_functions',
+    /** Azure App Service. */
+    AZURE_APP_SERVICE: 'azure_app_service',
+    /** Google Cloud Compute Engine (GCE). */
+    GCP_COMPUTE_ENGINE: 'gcp_compute_engine',
+    /** Google Cloud Run. */
+    GCP_CLOUD_RUN: 'gcp_cloud_run',
+    /** Google Cloud Kubernetes Engine (GKE). */
+    GCP_KUBERNETES_ENGINE: 'gcp_kubernetes_engine',
+    /** Google Cloud Functions (GCF). */
+    GCP_CLOUD_FUNCTIONS: 'gcp_cloud_functions',
+    /** Google Cloud App Engine (GAE). */
+    GCP_APP_ENGINE: 'gcp_app_engine',
+};
+exports.AwsEcsLaunchtypeValues = {
+    /** ec2. */
+    EC2: 'ec2',
+    /** fargate. */
+    FARGATE: 'fargate',
+};
+exports.HostArchValues = {
+    /** AMD64. */
+    AMD64: 'amd64',
+    /** ARM32. */
+    ARM32: 'arm32',
+    /** ARM64. */
+    ARM64: 'arm64',
+    /** Itanium. */
+    IA64: 'ia64',
+    /** 32-bit PowerPC. */
+    PPC32: 'ppc32',
+    /** 64-bit PowerPC. */
+    PPC64: 'ppc64',
+    /** 32-bit x86. */
+    X86: 'x86',
+};
+exports.OsTypeValues = {
+    /** Microsoft Windows. */
+    WINDOWS: 'windows',
+    /** Linux. */
+    LINUX: 'linux',
+    /** Apple Darwin. */
+    DARWIN: 'darwin',
+    /** FreeBSD. */
+    FREEBSD: 'freebsd',
+    /** NetBSD. */
+    NETBSD: 'netbsd',
+    /** OpenBSD. */
+    OPENBSD: 'openbsd',
+    /** DragonFly BSD. */
+    DRAGONFLYBSD: 'dragonflybsd',
+    /** HP-UX (Hewlett Packard Unix). */
+    HPUX: 'hpux',
+    /** AIX (Advanced Interactive eXecutive). */
+    AIX: 'aix',
+    /** Oracle Solaris. */
+    SOLARIS: 'solaris',
+    /** IBM z/OS. */
+    Z_OS: 'z_os',
+};
+exports.TelemetrySdkLanguageValues = {
+    /** cpp. */
+    CPP: 'cpp',
+    /** dotnet. */
+    DOTNET: 'dotnet',
+    /** erlang. */
+    ERLANG: 'erlang',
+    /** go. */
+    GO: 'go',
+    /** java. */
+    JAVA: 'java',
+    /** nodejs. */
+    NODEJS: 'nodejs',
+    /** php. */
+    PHP: 'php',
+    /** python. */
+    PYTHON: 'python',
+    /** ruby. */
+    RUBY: 'ruby',
+    /** webjs. */
+    WEBJS: 'webjs',
+};
+//# sourceMappingURL=SemanticResourceAttributes.js.map
+
+/***/ }),
+
+/***/ 2834:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(85003), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 89943:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MessageTypeValues = exports.RpcGrpcStatusCodeValues = exports.MessagingOperationValues = exports.MessagingDestinationKindValues = exports.HttpFlavorValues = exports.NetHostConnectionSubtypeValues = exports.NetHostConnectionTypeValues = exports.NetTransportValues = exports.FaasInvokedProviderValues = exports.FaasDocumentOperationValues = exports.FaasTriggerValues = exports.DbCassandraConsistencyLevelValues = exports.DbSystemValues = exports.SemanticAttributes = void 0;
+// DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+exports.SemanticAttributes = {
+    /**
+    * The full invoked ARN as provided on the `Context` passed to the function (`Lambda-Runtime-Invoked-Function-Arn` header on the `/runtime/invocation/next` applicable).
+    *
+    * Note: This may be different from `faas.id` if an alias is involved.
+    */
+    AWS_LAMBDA_INVOKED_ARN: 'aws.lambda.invoked_arn',
+    /**
+    * An identifier for the database management system (DBMS) product being used. See below for a list of well-known identifiers.
+    */
+    DB_SYSTEM: 'db.system',
+    /**
+    * The connection string used to connect to the database. It is recommended to remove embedded credentials.
+    */
+    DB_CONNECTION_STRING: 'db.connection_string',
+    /**
+    * Username for accessing the database.
+    */
+    DB_USER: 'db.user',
+    /**
+    * The fully-qualified class name of the [Java Database Connectivity (JDBC)](https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/) driver used to connect.
+    */
+    DB_JDBC_DRIVER_CLASSNAME: 'db.jdbc.driver_classname',
+    /**
+    * If no [tech-specific attribute](#call-level-attributes-for-specific-technologies) is defined, this attribute is used to report the name of the database being accessed. For commands that switch the database, this should be set to the target database (even if the command fails).
+    *
+    * Note: In some SQL databases, the database name to be used is called &#34;schema name&#34;.
+    */
+    DB_NAME: 'db.name',
+    /**
+    * The database statement being executed.
+    *
+    * Note: The value may be sanitized to exclude sensitive information.
+    */
+    DB_STATEMENT: 'db.statement',
+    /**
+    * The name of the operation being executed, e.g. the [MongoDB command name](https://docs.mongodb.com/manual/reference/command/#database-operations) such as `findAndModify`, or the SQL keyword.
+    *
+    * Note: When setting this to an SQL keyword, it is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if the operation name is provided by the library being instrumented. If the SQL statement has an ambiguous operation, or performs more than one operation, this value may be omitted.
+    */
+    DB_OPERATION: 'db.operation',
+    /**
+    * The Microsoft SQL Server [instance name](https://docs.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver15) connecting to. This name is used to determine the port of a named instance.
+    *
+    * Note: If setting a `db.mssql.instance_name`, `net.peer.port` is no longer required (but still recommended if non-standard).
+    */
+    DB_MSSQL_INSTANCE_NAME: 'db.mssql.instance_name',
+    /**
+    * The name of the keyspace being accessed. To be used instead of the generic `db.name` attribute.
+    */
+    DB_CASSANDRA_KEYSPACE: 'db.cassandra.keyspace',
+    /**
+    * The fetch size used for paging, i.e. how many rows will be returned at once.
+    */
+    DB_CASSANDRA_PAGE_SIZE: 'db.cassandra.page_size',
+    /**
+    * The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).
+    */
+    DB_CASSANDRA_CONSISTENCY_LEVEL: 'db.cassandra.consistency_level',
+    /**
+    * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
+    *
+    * Note: This mirrors the db.sql.table attribute but references cassandra rather than sql. It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
+    */
+    DB_CASSANDRA_TABLE: 'db.cassandra.table',
+    /**
+    * Whether or not the query is idempotent.
+    */
+    DB_CASSANDRA_IDEMPOTENCE: 'db.cassandra.idempotence',
+    /**
+    * The number of times a query was speculatively executed. Not set or `0` if the query was not executed speculatively.
+    */
+    DB_CASSANDRA_SPECULATIVE_EXECUTION_COUNT: 'db.cassandra.speculative_execution_count',
+    /**
+    * The ID of the coordinating node for a query.
+    */
+    DB_CASSANDRA_COORDINATOR_ID: 'db.cassandra.coordinator.id',
+    /**
+    * The data center of the coordinating node for a query.
+    */
+    DB_CASSANDRA_COORDINATOR_DC: 'db.cassandra.coordinator.dc',
+    /**
+    * The [HBase namespace](https://hbase.apache.org/book.html#_namespace) being accessed. To be used instead of the generic `db.name` attribute.
+    */
+    DB_HBASE_NAMESPACE: 'db.hbase.namespace',
+    /**
+    * The index of the database being accessed as used in the [`SELECT` command](https://redis.io/commands/select), provided as an integer. To be used instead of the generic `db.name` attribute.
+    */
+    DB_REDIS_DATABASE_INDEX: 'db.redis.database_index',
+    /**
+    * The collection being accessed within the database stated in `db.name`.
+    */
+    DB_MONGODB_COLLECTION: 'db.mongodb.collection',
+    /**
+    * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
+    *
+    * Note: It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
+    */
+    DB_SQL_TABLE: 'db.sql.table',
+    /**
+    * The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it.
+    */
+    EXCEPTION_TYPE: 'exception.type',
+    /**
+    * The exception message.
+    */
+    EXCEPTION_MESSAGE: 'exception.message',
+    /**
+    * A stacktrace as a string in the natural representation for the language runtime. The representation is to be determined and documented by each language SIG.
+    */
+    EXCEPTION_STACKTRACE: 'exception.stacktrace',
+    /**
+    * SHOULD be set to true if the exception event is recorded at a point where it is known that the exception is escaping the scope of the span.
+    *
+    * Note: An exception is considered to have escaped (or left) the scope of a span,
+  if that span is ended while the exception is still logically &#34;in flight&#34;.
+  This may be actually &#34;in flight&#34; in some languages (e.g. if the exception
+  is passed to a Context manager&#39;s `__exit__` method in Python) but will
+  usually be caught at the point of recording the exception in most languages.
+  
+  It is usually not possible to determine at the point where an exception is thrown
+  whether it will escape the scope of a span.
+  However, it is trivial to know that an exception
+  will escape, if one checks for an active exception just before ending the span,
+  as done in the [example above](#exception-end-example).
+  
+  It follows that an exception may still escape the scope of the span
+  even if the `exception.escaped` attribute was not set or set to false,
+  since the event might have been recorded at a time where it was not
+  clear whether the exception will escape.
+    */
+    EXCEPTION_ESCAPED: 'exception.escaped',
+    /**
+    * Type of the trigger on which the function is executed.
+    */
+    FAAS_TRIGGER: 'faas.trigger',
+    /**
+    * The execution ID of the current function execution.
+    */
+    FAAS_EXECUTION: 'faas.execution',
+    /**
+    * The name of the source on which the triggering operation was performed. For example, in Cloud Storage or S3 corresponds to the bucket name, and in Cosmos DB to the database name.
+    */
+    FAAS_DOCUMENT_COLLECTION: 'faas.document.collection',
+    /**
+    * Describes the type of the operation that was performed on the data.
+    */
+    FAAS_DOCUMENT_OPERATION: 'faas.document.operation',
+    /**
+    * A string containing the time when the data was accessed in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
+    */
+    FAAS_DOCUMENT_TIME: 'faas.document.time',
+    /**
+    * The document name/table subjected to the operation. For example, in Cloud Storage or S3 is the name of the file, and in Cosmos DB the table name.
+    */
+    FAAS_DOCUMENT_NAME: 'faas.document.name',
+    /**
+    * A string containing the function invocation time in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
+    */
+    FAAS_TIME: 'faas.time',
+    /**
+    * A string containing the schedule period as [Cron Expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).
+    */
+    FAAS_CRON: 'faas.cron',
+    /**
+    * A boolean that is true if the serverless function is executed for the first time (aka cold-start).
+    */
+    FAAS_COLDSTART: 'faas.coldstart',
+    /**
+    * The name of the invoked function.
+    *
+    * Note: SHOULD be equal to the `faas.name` resource attribute of the invoked function.
+    */
+    FAAS_INVOKED_NAME: 'faas.invoked_name',
+    /**
+    * The cloud provider of the invoked function.
+    *
+    * Note: SHOULD be equal to the `cloud.provider` resource attribute of the invoked function.
+    */
+    FAAS_INVOKED_PROVIDER: 'faas.invoked_provider',
+    /**
+    * The cloud region of the invoked function.
+    *
+    * Note: SHOULD be equal to the `cloud.region` resource attribute of the invoked function.
+    */
+    FAAS_INVOKED_REGION: 'faas.invoked_region',
+    /**
+    * Transport protocol used. See note below.
+    */
+    NET_TRANSPORT: 'net.transport',
+    /**
+    * Remote address of the peer (dotted decimal for IPv4 or [RFC5952](https://tools.ietf.org/html/rfc5952) for IPv6).
+    */
+    NET_PEER_IP: 'net.peer.ip',
+    /**
+    * Remote port number.
+    */
+    NET_PEER_PORT: 'net.peer.port',
+    /**
+    * Remote hostname or similar, see note below.
+    */
+    NET_PEER_NAME: 'net.peer.name',
+    /**
+    * Like `net.peer.ip` but for the host IP. Useful in case of a multi-IP host.
+    */
+    NET_HOST_IP: 'net.host.ip',
+    /**
+    * Like `net.peer.port` but for the host port.
+    */
+    NET_HOST_PORT: 'net.host.port',
+    /**
+    * Local hostname or similar, see note below.
+    */
+    NET_HOST_NAME: 'net.host.name',
+    /**
+    * The internet connection type currently being used by the host.
+    */
+    NET_HOST_CONNECTION_TYPE: 'net.host.connection.type',
+    /**
+    * This describes more details regarding the connection.type. It may be the type of cell technology connection, but it could be used for describing details about a wifi connection.
+    */
+    NET_HOST_CONNECTION_SUBTYPE: 'net.host.connection.subtype',
+    /**
+    * The name of the mobile carrier.
+    */
+    NET_HOST_CARRIER_NAME: 'net.host.carrier.name',
+    /**
+    * The mobile carrier country code.
+    */
+    NET_HOST_CARRIER_MCC: 'net.host.carrier.mcc',
+    /**
+    * The mobile carrier network code.
+    */
+    NET_HOST_CARRIER_MNC: 'net.host.carrier.mnc',
+    /**
+    * The ISO 3166-1 alpha-2 2-character country code associated with the mobile carrier network.
+    */
+    NET_HOST_CARRIER_ICC: 'net.host.carrier.icc',
+    /**
+    * The [`service.name`](../../resource/semantic_conventions/README.md#service) of the remote service. SHOULD be equal to the actual `service.name` resource attribute of the remote service if any.
+    */
+    PEER_SERVICE: 'peer.service',
+    /**
+    * Username or client_id extracted from the access token or [Authorization](https://tools.ietf.org/html/rfc7235#section-4.2) header in the inbound request from outside the system.
+    */
+    ENDUSER_ID: 'enduser.id',
+    /**
+    * Actual/assumed role the client is making the request under extracted from token or application security context.
+    */
+    ENDUSER_ROLE: 'enduser.role',
+    /**
+    * Scopes or granted authorities the client currently possesses extracted from token or application security context. The value would come from the scope associated with an [OAuth 2.0 Access Token](https://tools.ietf.org/html/rfc6749#section-3.3) or an attribute value in a [SAML 2.0 Assertion](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html).
+    */
+    ENDUSER_SCOPE: 'enduser.scope',
+    /**
+    * Current &#34;managed&#34; thread ID (as opposed to OS thread ID).
+    */
+    THREAD_ID: 'thread.id',
+    /**
+    * Current thread name.
+    */
+    THREAD_NAME: 'thread.name',
+    /**
+    * The method or function name, or equivalent (usually rightmost part of the code unit&#39;s name).
+    */
+    CODE_FUNCTION: 'code.function',
+    /**
+    * The &#34;namespace&#34; within which `code.function` is defined. Usually the qualified class or module name, such that `code.namespace` + some separator + `code.function` form a unique identifier for the code unit.
+    */
+    CODE_NAMESPACE: 'code.namespace',
+    /**
+    * The source code file name that identifies the code unit as uniquely as possible (preferably an absolute file path).
+    */
+    CODE_FILEPATH: 'code.filepath',
+    /**
+    * The line number in `code.filepath` best representing the operation. It SHOULD point within the code unit named in `code.function`.
+    */
+    CODE_LINENO: 'code.lineno',
+    /**
+    * HTTP request method.
+    */
+    HTTP_METHOD: 'http.method',
+    /**
+    * Full HTTP request URL in the form `scheme://host[:port]/path?query[#fragment]`. Usually the fragment is not transmitted over HTTP, but if it is known, it should be included nevertheless.
+    *
+    * Note: `http.url` MUST NOT contain credentials passed via URL in form of `https://username:password@www.example.com/`. In such case the attribute&#39;s value should be `https://www.example.com/`.
+    */
+    HTTP_URL: 'http.url',
+    /**
+    * The full request target as passed in a HTTP request line or equivalent.
+    */
+    HTTP_TARGET: 'http.target',
+    /**
+    * The value of the [HTTP host header](https://tools.ietf.org/html/rfc7230#section-5.4). An empty Host header should also be reported, see note.
+    *
+    * Note: When the header is present but empty the attribute SHOULD be set to the empty string. Note that this is a valid situation that is expected in certain cases, according the aforementioned [section of RFC 7230](https://tools.ietf.org/html/rfc7230#section-5.4). When the header is not set the attribute MUST NOT be set.
+    */
+    HTTP_HOST: 'http.host',
+    /**
+    * The URI scheme identifying the used protocol.
+    */
+    HTTP_SCHEME: 'http.scheme',
+    /**
+    * [HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).
+    */
+    HTTP_STATUS_CODE: 'http.status_code',
+    /**
+    * Kind of HTTP protocol used.
+    *
+    * Note: If `net.transport` is not specified, it can be assumed to be `IP.TCP` except if `http.flavor` is `QUIC`, in which case `IP.UDP` is assumed.
+    */
+    HTTP_FLAVOR: 'http.flavor',
+    /**
+    * Value of the [HTTP User-Agent](https://tools.ietf.org/html/rfc7231#section-5.5.3) header sent by the client.
+    */
+    HTTP_USER_AGENT: 'http.user_agent',
+    /**
+    * The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
+    */
+    HTTP_REQUEST_CONTENT_LENGTH: 'http.request_content_length',
+    /**
+    * The size of the uncompressed request payload body after transport decoding. Not set if transport encoding not used.
+    */
+    HTTP_REQUEST_CONTENT_LENGTH_UNCOMPRESSED: 'http.request_content_length_uncompressed',
+    /**
+    * The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
+    */
+    HTTP_RESPONSE_CONTENT_LENGTH: 'http.response_content_length',
+    /**
+    * The size of the uncompressed response payload body after transport decoding. Not set if transport encoding not used.
+    */
+    HTTP_RESPONSE_CONTENT_LENGTH_UNCOMPRESSED: 'http.response_content_length_uncompressed',
+    /**
+    * The primary server name of the matched virtual host. This should be obtained via configuration. If no such configuration can be obtained, this attribute MUST NOT be set ( `net.host.name` should be used instead).
+    *
+    * Note: `http.url` is usually not readily available on the server side but would have to be assembled in a cumbersome and sometimes lossy process from other information (see e.g. open-telemetry/opentelemetry-python/pull/148). It is thus preferred to supply the raw data that is available.
+    */
+    HTTP_SERVER_NAME: 'http.server_name',
+    /**
+    * The matched route (path template).
+    */
+    HTTP_ROUTE: 'http.route',
+    /**
+    * The IP address of the original client behind all proxies, if known (e.g. from [X-Forwarded-For](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For)).
+    *
+    * Note: This is not necessarily the same as `net.peer.ip`, which would
+  identify the network-level peer, which may be a proxy.
+  
+  This attribute should be set when a source of information different
+  from the one used for `net.peer.ip`, is available even if that other
+  source just confirms the same value as `net.peer.ip`.
+  Rationale: For `net.peer.ip`, one typically does not know if it
+  comes from a proxy, reverse proxy, or the actual client. Setting
+  `http.client_ip` when it&#39;s the same as `net.peer.ip` means that
+  one is at least somewhat confident that the address is not that of
+  the closest proxy.
+    */
+    HTTP_CLIENT_IP: 'http.client_ip',
+    /**
+    * The keys in the `RequestItems` object field.
+    */
+    AWS_DYNAMODB_TABLE_NAMES: 'aws.dynamodb.table_names',
+    /**
+    * The JSON-serialized value of each item in the `ConsumedCapacity` response field.
+    */
+    AWS_DYNAMODB_CONSUMED_CAPACITY: 'aws.dynamodb.consumed_capacity',
+    /**
+    * The JSON-serialized value of the `ItemCollectionMetrics` response field.
+    */
+    AWS_DYNAMODB_ITEM_COLLECTION_METRICS: 'aws.dynamodb.item_collection_metrics',
+    /**
+    * The value of the `ProvisionedThroughput.ReadCapacityUnits` request parameter.
+    */
+    AWS_DYNAMODB_PROVISIONED_READ_CAPACITY: 'aws.dynamodb.provisioned_read_capacity',
+    /**
+    * The value of the `ProvisionedThroughput.WriteCapacityUnits` request parameter.
+    */
+    AWS_DYNAMODB_PROVISIONED_WRITE_CAPACITY: 'aws.dynamodb.provisioned_write_capacity',
+    /**
+    * The value of the `ConsistentRead` request parameter.
+    */
+    AWS_DYNAMODB_CONSISTENT_READ: 'aws.dynamodb.consistent_read',
+    /**
+    * The value of the `ProjectionExpression` request parameter.
+    */
+    AWS_DYNAMODB_PROJECTION: 'aws.dynamodb.projection',
+    /**
+    * The value of the `Limit` request parameter.
+    */
+    AWS_DYNAMODB_LIMIT: 'aws.dynamodb.limit',
+    /**
+    * The value of the `AttributesToGet` request parameter.
+    */
+    AWS_DYNAMODB_ATTRIBUTES_TO_GET: 'aws.dynamodb.attributes_to_get',
+    /**
+    * The value of the `IndexName` request parameter.
+    */
+    AWS_DYNAMODB_INDEX_NAME: 'aws.dynamodb.index_name',
+    /**
+    * The value of the `Select` request parameter.
+    */
+    AWS_DYNAMODB_SELECT: 'aws.dynamodb.select',
+    /**
+    * The JSON-serialized value of each item of the `GlobalSecondaryIndexes` request field.
+    */
+    AWS_DYNAMODB_GLOBAL_SECONDARY_INDEXES: 'aws.dynamodb.global_secondary_indexes',
+    /**
+    * The JSON-serialized value of each item of the `LocalSecondaryIndexes` request field.
+    */
+    AWS_DYNAMODB_LOCAL_SECONDARY_INDEXES: 'aws.dynamodb.local_secondary_indexes',
+    /**
+    * The value of the `ExclusiveStartTableName` request parameter.
+    */
+    AWS_DYNAMODB_EXCLUSIVE_START_TABLE: 'aws.dynamodb.exclusive_start_table',
+    /**
+    * The the number of items in the `TableNames` response parameter.
+    */
+    AWS_DYNAMODB_TABLE_COUNT: 'aws.dynamodb.table_count',
+    /**
+    * The value of the `ScanIndexForward` request parameter.
+    */
+    AWS_DYNAMODB_SCAN_FORWARD: 'aws.dynamodb.scan_forward',
+    /**
+    * The value of the `Segment` request parameter.
+    */
+    AWS_DYNAMODB_SEGMENT: 'aws.dynamodb.segment',
+    /**
+    * The value of the `TotalSegments` request parameter.
+    */
+    AWS_DYNAMODB_TOTAL_SEGMENTS: 'aws.dynamodb.total_segments',
+    /**
+    * The value of the `Count` response parameter.
+    */
+    AWS_DYNAMODB_COUNT: 'aws.dynamodb.count',
+    /**
+    * The value of the `ScannedCount` response parameter.
+    */
+    AWS_DYNAMODB_SCANNED_COUNT: 'aws.dynamodb.scanned_count',
+    /**
+    * The JSON-serialized value of each item in the `AttributeDefinitions` request field.
+    */
+    AWS_DYNAMODB_ATTRIBUTE_DEFINITIONS: 'aws.dynamodb.attribute_definitions',
+    /**
+    * The JSON-serialized value of each item in the the `GlobalSecondaryIndexUpdates` request field.
+    */
+    AWS_DYNAMODB_GLOBAL_SECONDARY_INDEX_UPDATES: 'aws.dynamodb.global_secondary_index_updates',
+    /**
+    * A string identifying the messaging system.
+    */
+    MESSAGING_SYSTEM: 'messaging.system',
+    /**
+    * The message destination name. This might be equal to the span name but is required nevertheless.
+    */
+    MESSAGING_DESTINATION: 'messaging.destination',
+    /**
+    * The kind of message destination.
+    */
+    MESSAGING_DESTINATION_KIND: 'messaging.destination_kind',
+    /**
+    * A boolean that is true if the message destination is temporary.
+    */
+    MESSAGING_TEMP_DESTINATION: 'messaging.temp_destination',
+    /**
+    * The name of the transport protocol.
+    */
+    MESSAGING_PROTOCOL: 'messaging.protocol',
+    /**
+    * The version of the transport protocol.
+    */
+    MESSAGING_PROTOCOL_VERSION: 'messaging.protocol_version',
+    /**
+    * Connection string.
+    */
+    MESSAGING_URL: 'messaging.url',
+    /**
+    * A value used by the messaging system as an identifier for the message, represented as a string.
+    */
+    MESSAGING_MESSAGE_ID: 'messaging.message_id',
+    /**
+    * The [conversation ID](#conversations) identifying the conversation to which the message belongs, represented as a string. Sometimes called &#34;Correlation ID&#34;.
+    */
+    MESSAGING_CONVERSATION_ID: 'messaging.conversation_id',
+    /**
+    * The (uncompressed) size of the message payload in bytes. Also use this attribute if it is unknown whether the compressed or uncompressed payload size is reported.
+    */
+    MESSAGING_MESSAGE_PAYLOAD_SIZE_BYTES: 'messaging.message_payload_size_bytes',
+    /**
+    * The compressed size of the message payload in bytes.
+    */
+    MESSAGING_MESSAGE_PAYLOAD_COMPRESSED_SIZE_BYTES: 'messaging.message_payload_compressed_size_bytes',
+    /**
+    * A string identifying the kind of message consumption as defined in the [Operation names](#operation-names) section above. If the operation is &#34;send&#34;, this attribute MUST NOT be set, since the operation can be inferred from the span kind in that case.
+    */
+    MESSAGING_OPERATION: 'messaging.operation',
+    /**
+    * The identifier for the consumer receiving a message. For Kafka, set it to `{messaging.kafka.consumer_group} - {messaging.kafka.client_id}`, if both are present, or only `messaging.kafka.consumer_group`. For brokers, such as RabbitMQ and Artemis, set it to the `client_id` of the client consuming the message.
+    */
+    MESSAGING_CONSUMER_ID: 'messaging.consumer_id',
+    /**
+    * RabbitMQ message routing key.
+    */
+    MESSAGING_RABBITMQ_ROUTING_KEY: 'messaging.rabbitmq.routing_key',
+    /**
+    * Message keys in Kafka are used for grouping alike messages to ensure they&#39;re processed on the same partition. They differ from `messaging.message_id` in that they&#39;re not unique. If the key is `null`, the attribute MUST NOT be set.
+    *
+    * Note: If the key type is not string, it&#39;s string representation has to be supplied for the attribute. If the key has no unambiguous, canonical string form, don&#39;t include its value.
+    */
+    MESSAGING_KAFKA_MESSAGE_KEY: 'messaging.kafka.message_key',
+    /**
+    * Name of the Kafka Consumer Group that is handling the message. Only applies to consumers, not producers.
+    */
+    MESSAGING_KAFKA_CONSUMER_GROUP: 'messaging.kafka.consumer_group',
+    /**
+    * Client Id for the Consumer or Producer that is handling the message.
+    */
+    MESSAGING_KAFKA_CLIENT_ID: 'messaging.kafka.client_id',
+    /**
+    * Partition the message is sent to.
+    */
+    MESSAGING_KAFKA_PARTITION: 'messaging.kafka.partition',
+    /**
+    * A boolean that is true if the message is a tombstone.
+    */
+    MESSAGING_KAFKA_TOMBSTONE: 'messaging.kafka.tombstone',
+    /**
+    * A string identifying the remoting system.
+    */
+    RPC_SYSTEM: 'rpc.system',
+    /**
+    * The full (logical) name of the service being called, including its package name, if applicable.
+    *
+    * Note: This is the logical name of the service from the RPC interface perspective, which can be different from the name of any implementing class. The `code.namespace` attribute may be used to store the latter (despite the attribute name, it may include a class name; e.g., class with method actually executing the call on the server side, RPC client stub class on the client side).
+    */
+    RPC_SERVICE: 'rpc.service',
+    /**
+    * The name of the (logical) method being called, must be equal to the $method part in the span name.
+    *
+    * Note: This is the logical name of the method from the RPC interface perspective, which can be different from the name of any implementing method/function. The `code.function` attribute may be used to store the latter (e.g., method actually executing the call on the server side, RPC client stub method on the client side).
+    */
+    RPC_METHOD: 'rpc.method',
+    /**
+    * The [numeric status code](https://github.com/grpc/grpc/blob/v1.33.2/doc/statuscodes.md) of the gRPC request.
+    */
+    RPC_GRPC_STATUS_CODE: 'rpc.grpc.status_code',
+    /**
+    * Protocol version as in `jsonrpc` property of request/response. Since JSON-RPC 1.0 does not specify this, the value can be omitted.
+    */
+    RPC_JSONRPC_VERSION: 'rpc.jsonrpc.version',
+    /**
+    * `id` property of request or response. Since protocol allows id to be int, string, `null` or missing (for notifications), value is expected to be cast to string for simplicity. Use empty string in case of `null` value. Omit entirely if this is a notification.
+    */
+    RPC_JSONRPC_REQUEST_ID: 'rpc.jsonrpc.request_id',
+    /**
+    * `error.code` property of response if it is an error response.
+    */
+    RPC_JSONRPC_ERROR_CODE: 'rpc.jsonrpc.error_code',
+    /**
+    * `error.message` property of response if it is an error response.
+    */
+    RPC_JSONRPC_ERROR_MESSAGE: 'rpc.jsonrpc.error_message',
+    /**
+    * Whether this is a received or sent message.
+    */
+    MESSAGE_TYPE: 'message.type',
+    /**
+    * MUST be calculated as two different counters starting from `1` one for sent messages and one for received message.
+    *
+    * Note: This way we guarantee that the values will be consistent between different implementations.
+    */
+    MESSAGE_ID: 'message.id',
+    /**
+    * Compressed size of the message in bytes.
+    */
+    MESSAGE_COMPRESSED_SIZE: 'message.compressed_size',
+    /**
+    * Uncompressed size of the message in bytes.
+    */
+    MESSAGE_UNCOMPRESSED_SIZE: 'message.uncompressed_size',
+};
+exports.DbSystemValues = {
+    /** Some other SQL database. Fallback only. See notes. */
+    OTHER_SQL: 'other_sql',
+    /** Microsoft SQL Server. */
+    MSSQL: 'mssql',
+    /** MySQL. */
+    MYSQL: 'mysql',
+    /** Oracle Database. */
+    ORACLE: 'oracle',
+    /** IBM Db2. */
+    DB2: 'db2',
+    /** PostgreSQL. */
+    POSTGRESQL: 'postgresql',
+    /** Amazon Redshift. */
+    REDSHIFT: 'redshift',
+    /** Apache Hive. */
+    HIVE: 'hive',
+    /** Cloudscape. */
+    CLOUDSCAPE: 'cloudscape',
+    /** HyperSQL DataBase. */
+    HSQLDB: 'hsqldb',
+    /** Progress Database. */
+    PROGRESS: 'progress',
+    /** SAP MaxDB. */
+    MAXDB: 'maxdb',
+    /** SAP HANA. */
+    HANADB: 'hanadb',
+    /** Ingres. */
+    INGRES: 'ingres',
+    /** FirstSQL. */
+    FIRSTSQL: 'firstsql',
+    /** EnterpriseDB. */
+    EDB: 'edb',
+    /** InterSystems Caché. */
+    CACHE: 'cache',
+    /** Adabas (Adaptable Database System). */
+    ADABAS: 'adabas',
+    /** Firebird. */
+    FIREBIRD: 'firebird',
+    /** Apache Derby. */
+    DERBY: 'derby',
+    /** FileMaker. */
+    FILEMAKER: 'filemaker',
+    /** Informix. */
+    INFORMIX: 'informix',
+    /** InstantDB. */
+    INSTANTDB: 'instantdb',
+    /** InterBase. */
+    INTERBASE: 'interbase',
+    /** MariaDB. */
+    MARIADB: 'mariadb',
+    /** Netezza. */
+    NETEZZA: 'netezza',
+    /** Pervasive PSQL. */
+    PERVASIVE: 'pervasive',
+    /** PointBase. */
+    POINTBASE: 'pointbase',
+    /** SQLite. */
+    SQLITE: 'sqlite',
+    /** Sybase. */
+    SYBASE: 'sybase',
+    /** Teradata. */
+    TERADATA: 'teradata',
+    /** Vertica. */
+    VERTICA: 'vertica',
+    /** H2. */
+    H2: 'h2',
+    /** ColdFusion IMQ. */
+    COLDFUSION: 'coldfusion',
+    /** Apache Cassandra. */
+    CASSANDRA: 'cassandra',
+    /** Apache HBase. */
+    HBASE: 'hbase',
+    /** MongoDB. */
+    MONGODB: 'mongodb',
+    /** Redis. */
+    REDIS: 'redis',
+    /** Couchbase. */
+    COUCHBASE: 'couchbase',
+    /** CouchDB. */
+    COUCHDB: 'couchdb',
+    /** Microsoft Azure Cosmos DB. */
+    COSMOSDB: 'cosmosdb',
+    /** Amazon DynamoDB. */
+    DYNAMODB: 'dynamodb',
+    /** Neo4j. */
+    NEO4J: 'neo4j',
+    /** Apache Geode. */
+    GEODE: 'geode',
+    /** Elasticsearch. */
+    ELASTICSEARCH: 'elasticsearch',
+    /** Memcached. */
+    MEMCACHED: 'memcached',
+    /** CockroachDB. */
+    COCKROACHDB: 'cockroachdb',
+};
+exports.DbCassandraConsistencyLevelValues = {
+    /** all. */
+    ALL: 'all',
+    /** each_quorum. */
+    EACH_QUORUM: 'each_quorum',
+    /** quorum. */
+    QUORUM: 'quorum',
+    /** local_quorum. */
+    LOCAL_QUORUM: 'local_quorum',
+    /** one. */
+    ONE: 'one',
+    /** two. */
+    TWO: 'two',
+    /** three. */
+    THREE: 'three',
+    /** local_one. */
+    LOCAL_ONE: 'local_one',
+    /** any. */
+    ANY: 'any',
+    /** serial. */
+    SERIAL: 'serial',
+    /** local_serial. */
+    LOCAL_SERIAL: 'local_serial',
+};
+exports.FaasTriggerValues = {
+    /** A response to some data source operation such as a database or filesystem read/write. */
+    DATASOURCE: 'datasource',
+    /** To provide an answer to an inbound HTTP request. */
+    HTTP: 'http',
+    /** A function is set to be executed when messages are sent to a messaging system. */
+    PUBSUB: 'pubsub',
+    /** A function is scheduled to be executed regularly. */
+    TIMER: 'timer',
+    /** If none of the others apply. */
+    OTHER: 'other',
+};
+exports.FaasDocumentOperationValues = {
+    /** When a new object is created. */
+    INSERT: 'insert',
+    /** When an object is modified. */
+    EDIT: 'edit',
+    /** When an object is deleted. */
+    DELETE: 'delete',
+};
+exports.FaasInvokedProviderValues = {
+    /** Alibaba Cloud. */
+    ALIBABA_CLOUD: 'alibaba_cloud',
+    /** Amazon Web Services. */
+    AWS: 'aws',
+    /** Microsoft Azure. */
+    AZURE: 'azure',
+    /** Google Cloud Platform. */
+    GCP: 'gcp',
+};
+exports.NetTransportValues = {
+    /** ip_tcp. */
+    IP_TCP: 'ip_tcp',
+    /** ip_udp. */
+    IP_UDP: 'ip_udp',
+    /** Another IP-based protocol. */
+    IP: 'ip',
+    /** Unix Domain socket. See below. */
+    UNIX: 'unix',
+    /** Named or anonymous pipe. See note below. */
+    PIPE: 'pipe',
+    /** In-process communication. */
+    INPROC: 'inproc',
+    /** Something else (non IP-based). */
+    OTHER: 'other',
+};
+exports.NetHostConnectionTypeValues = {
+    /** wifi. */
+    WIFI: 'wifi',
+    /** wired. */
+    WIRED: 'wired',
+    /** cell. */
+    CELL: 'cell',
+    /** unavailable. */
+    UNAVAILABLE: 'unavailable',
+    /** unknown. */
+    UNKNOWN: 'unknown',
+};
+exports.NetHostConnectionSubtypeValues = {
+    /** GPRS. */
+    GPRS: 'gprs',
+    /** EDGE. */
+    EDGE: 'edge',
+    /** UMTS. */
+    UMTS: 'umts',
+    /** CDMA. */
+    CDMA: 'cdma',
+    /** EVDO Rel. 0. */
+    EVDO_0: 'evdo_0',
+    /** EVDO Rev. A. */
+    EVDO_A: 'evdo_a',
+    /** CDMA2000 1XRTT. */
+    CDMA2000_1XRTT: 'cdma2000_1xrtt',
+    /** HSDPA. */
+    HSDPA: 'hsdpa',
+    /** HSUPA. */
+    HSUPA: 'hsupa',
+    /** HSPA. */
+    HSPA: 'hspa',
+    /** IDEN. */
+    IDEN: 'iden',
+    /** EVDO Rev. B. */
+    EVDO_B: 'evdo_b',
+    /** LTE. */
+    LTE: 'lte',
+    /** EHRPD. */
+    EHRPD: 'ehrpd',
+    /** HSPAP. */
+    HSPAP: 'hspap',
+    /** GSM. */
+    GSM: 'gsm',
+    /** TD-SCDMA. */
+    TD_SCDMA: 'td_scdma',
+    /** IWLAN. */
+    IWLAN: 'iwlan',
+    /** 5G NR (New Radio). */
+    NR: 'nr',
+    /** 5G NRNSA (New Radio Non-Standalone). */
+    NRNSA: 'nrnsa',
+    /** LTE CA. */
+    LTE_CA: 'lte_ca',
+};
+exports.HttpFlavorValues = {
+    /** HTTP 1.0. */
+    HTTP_1_0: '1.0',
+    /** HTTP 1.1. */
+    HTTP_1_1: '1.1',
+    /** HTTP 2. */
+    HTTP_2_0: '2.0',
+    /** SPDY protocol. */
+    SPDY: 'SPDY',
+    /** QUIC protocol. */
+    QUIC: 'QUIC',
+};
+exports.MessagingDestinationKindValues = {
+    /** A message sent to a queue. */
+    QUEUE: 'queue',
+    /** A message sent to a topic. */
+    TOPIC: 'topic',
+};
+exports.MessagingOperationValues = {
+    /** receive. */
+    RECEIVE: 'receive',
+    /** process. */
+    PROCESS: 'process',
+};
+exports.RpcGrpcStatusCodeValues = {
+    /** OK. */
+    OK: 0,
+    /** CANCELLED. */
+    CANCELLED: 1,
+    /** UNKNOWN. */
+    UNKNOWN: 2,
+    /** INVALID_ARGUMENT. */
+    INVALID_ARGUMENT: 3,
+    /** DEADLINE_EXCEEDED. */
+    DEADLINE_EXCEEDED: 4,
+    /** NOT_FOUND. */
+    NOT_FOUND: 5,
+    /** ALREADY_EXISTS. */
+    ALREADY_EXISTS: 6,
+    /** PERMISSION_DENIED. */
+    PERMISSION_DENIED: 7,
+    /** RESOURCE_EXHAUSTED. */
+    RESOURCE_EXHAUSTED: 8,
+    /** FAILED_PRECONDITION. */
+    FAILED_PRECONDITION: 9,
+    /** ABORTED. */
+    ABORTED: 10,
+    /** OUT_OF_RANGE. */
+    OUT_OF_RANGE: 11,
+    /** UNIMPLEMENTED. */
+    UNIMPLEMENTED: 12,
+    /** INTERNAL. */
+    INTERNAL: 13,
+    /** UNAVAILABLE. */
+    UNAVAILABLE: 14,
+    /** DATA_LOSS. */
+    DATA_LOSS: 15,
+    /** UNAUTHENTICATED. */
+    UNAUTHENTICATED: 16,
+};
+exports.MessageTypeValues = {
+    /** sent. */
+    SENT: 'SENT',
+    /** received. */
+    RECEIVED: 'RECEIVED',
+};
+//# sourceMappingURL=SemanticAttributes.js.map
+
+/***/ }),
+
+/***/ 45836:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(89943), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -27012,7 +35157,7 @@ function asPromise(fn, ctx/*, varargs */) {
 
 /***/ }),
 
-/***/ 6718:
+/***/ 26718:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -27159,7 +35304,7 @@ base64.test = function test(string) {
 
 /***/ }),
 
-/***/ 8882:
+/***/ 58882:
 /***/ ((module) => {
 
 "use strict";
@@ -27266,7 +35411,7 @@ codegen.verbose = false;
 
 /***/ }),
 
-/***/ 6850:
+/***/ 86850:
 /***/ ((module) => {
 
 "use strict";
@@ -27350,7 +35495,7 @@ EventEmitter.prototype.emit = function emit(evt) {
 
 /***/ }),
 
-/***/ 663:
+/***/ 50663:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -27358,7 +35503,7 @@ EventEmitter.prototype.emit = function emit(evt) {
 module.exports = fetch;
 
 var asPromise = __nccwpck_require__(252),
-    inquire   = __nccwpck_require__(94);
+    inquire   = __nccwpck_require__(60094);
 
 var fs = inquire("fs");
 
@@ -27473,7 +35618,7 @@ fetch.xhr = function fetch_xhr(filename, options, callback) {
 
 /***/ }),
 
-/***/ 1843:
+/***/ 21843:
 /***/ ((module) => {
 
 "use strict";
@@ -27816,7 +35961,7 @@ function readUintBE(buf, pos) {
 
 /***/ }),
 
-/***/ 94:
+/***/ 60094:
 /***/ ((module) => {
 
 "use strict";
@@ -27841,7 +35986,7 @@ function inquire(moduleName) {
 
 /***/ }),
 
-/***/ 4761:
+/***/ 24761:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -27914,7 +36059,7 @@ path.resolve = function resolve(originPath, includePath, alreadyNormalized) {
 
 /***/ }),
 
-/***/ 7743:
+/***/ 47743:
 /***/ ((module) => {
 
 "use strict";
@@ -27970,7 +36115,7 @@ function pool(alloc, slice, size) {
 
 /***/ }),
 
-/***/ 9049:
+/***/ 99049:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -28083,34 +36228,34 @@ utf8.write = function utf8_write(string, buffer, offset) {
 
 /***/ }),
 
-/***/ 6545:
+/***/ 96545:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-module.exports = __nccwpck_require__(2618);
+module.exports = __nccwpck_require__(52618);
 
 /***/ }),
 
-/***/ 8104:
+/***/ 68104:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
-var settle = __nccwpck_require__(3211);
-var buildFullPath = __nccwpck_require__(1934);
-var buildURL = __nccwpck_require__(646);
-var http = __nccwpck_require__(8605);
-var https = __nccwpck_require__(7211);
-var httpFollow = __nccwpck_require__(7707).http;
-var httpsFollow = __nccwpck_require__(7707).https;
-var url = __nccwpck_require__(8835);
-var zlib = __nccwpck_require__(8761);
-var VERSION = __nccwpck_require__(4322).version;
-var createError = __nccwpck_require__(5226);
-var enhanceError = __nccwpck_require__(1516);
-var defaults = __nccwpck_require__(8190);
-var Cancel = __nccwpck_require__(8875);
+var utils = __nccwpck_require__(20328);
+var settle = __nccwpck_require__(13211);
+var buildFullPath = __nccwpck_require__(41934);
+var buildURL = __nccwpck_require__(30646);
+var http = __nccwpck_require__(98605);
+var https = __nccwpck_require__(57211);
+var httpFollow = __nccwpck_require__(67707).http;
+var httpsFollow = __nccwpck_require__(67707).https;
+var url = __nccwpck_require__(78835);
+var zlib = __nccwpck_require__(78761);
+var VERSION = __nccwpck_require__(94322).version;
+var createError = __nccwpck_require__(15226);
+var enhanceError = __nccwpck_require__(21516);
+var defaults = __nccwpck_require__(98190);
+var Cancel = __nccwpck_require__(98875);
 
 var isHttps = /https:?/;
 
@@ -28492,16 +36637,16 @@ module.exports = function httpAdapter(config) {
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
-var settle = __nccwpck_require__(3211);
-var cookies = __nccwpck_require__(1545);
-var buildURL = __nccwpck_require__(646);
-var buildFullPath = __nccwpck_require__(1934);
-var parseHeaders = __nccwpck_require__(6455);
-var isURLSameOrigin = __nccwpck_require__(3608);
-var createError = __nccwpck_require__(5226);
-var defaults = __nccwpck_require__(8190);
-var Cancel = __nccwpck_require__(8875);
+var utils = __nccwpck_require__(20328);
+var settle = __nccwpck_require__(13211);
+var cookies = __nccwpck_require__(21545);
+var buildURL = __nccwpck_require__(30646);
+var buildFullPath = __nccwpck_require__(41934);
+var parseHeaders = __nccwpck_require__(86455);
+var isURLSameOrigin = __nccwpck_require__(33608);
+var createError = __nccwpck_require__(15226);
+var defaults = __nccwpck_require__(98190);
+var Cancel = __nccwpck_require__(98875);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -28706,17 +36851,17 @@ module.exports = function xhrAdapter(config) {
 
 /***/ }),
 
-/***/ 2618:
+/***/ 52618:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
-var bind = __nccwpck_require__(7065);
-var Axios = __nccwpck_require__(8178);
-var mergeConfig = __nccwpck_require__(4831);
-var defaults = __nccwpck_require__(8190);
+var utils = __nccwpck_require__(20328);
+var bind = __nccwpck_require__(77065);
+var Axios = __nccwpck_require__(98178);
+var mergeConfig = __nccwpck_require__(74831);
+var defaults = __nccwpck_require__(98190);
 
 /**
  * Create an instance of Axios
@@ -28749,19 +36894,19 @@ var axios = createInstance(defaults);
 axios.Axios = Axios;
 
 // Expose Cancel & CancelToken
-axios.Cancel = __nccwpck_require__(8875);
-axios.CancelToken = __nccwpck_require__(1587);
-axios.isCancel = __nccwpck_require__(4057);
-axios.VERSION = __nccwpck_require__(4322).version;
+axios.Cancel = __nccwpck_require__(98875);
+axios.CancelToken = __nccwpck_require__(71587);
+axios.isCancel = __nccwpck_require__(64057);
+axios.VERSION = __nccwpck_require__(94322).version;
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __nccwpck_require__(4850);
+axios.spread = __nccwpck_require__(74850);
 
 // Expose isAxiosError
-axios.isAxiosError = __nccwpck_require__(650);
+axios.isAxiosError = __nccwpck_require__(60650);
 
 module.exports = axios;
 
@@ -28771,7 +36916,7 @@ module.exports.default = axios;
 
 /***/ }),
 
-/***/ 8875:
+/***/ 98875:
 /***/ ((module) => {
 
 "use strict";
@@ -28798,13 +36943,13 @@ module.exports = Cancel;
 
 /***/ }),
 
-/***/ 1587:
+/***/ 71587:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Cancel = __nccwpck_require__(8875);
+var Cancel = __nccwpck_require__(98875);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -28925,7 +37070,7 @@ module.exports = CancelToken;
 
 /***/ }),
 
-/***/ 4057:
+/***/ 64057:
 /***/ ((module) => {
 
 "use strict";
@@ -28938,18 +37083,18 @@ module.exports = function isCancel(value) {
 
 /***/ }),
 
-/***/ 8178:
+/***/ 98178:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
-var buildURL = __nccwpck_require__(646);
+var utils = __nccwpck_require__(20328);
+var buildURL = __nccwpck_require__(30646);
 var InterceptorManager = __nccwpck_require__(3214);
-var dispatchRequest = __nccwpck_require__(5062);
-var mergeConfig = __nccwpck_require__(4831);
-var validator = __nccwpck_require__(1632);
+var dispatchRequest = __nccwpck_require__(85062);
+var mergeConfig = __nccwpck_require__(74831);
+var validator = __nccwpck_require__(51632);
 
 var validators = validator.validators;
 /**
@@ -29107,7 +37252,7 @@ module.exports = Axios;
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
+var utils = __nccwpck_require__(20328);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -29163,14 +37308,14 @@ module.exports = InterceptorManager;
 
 /***/ }),
 
-/***/ 1934:
+/***/ 41934:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var isAbsoluteURL = __nccwpck_require__(1301);
-var combineURLs = __nccwpck_require__(7189);
+var isAbsoluteURL = __nccwpck_require__(41301);
+var combineURLs = __nccwpck_require__(57189);
 
 /**
  * Creates a new URL by combining the baseURL with the requestedURL,
@@ -29191,13 +37336,13 @@ module.exports = function buildFullPath(baseURL, requestedURL) {
 
 /***/ }),
 
-/***/ 5226:
+/***/ 15226:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var enhanceError = __nccwpck_require__(1516);
+var enhanceError = __nccwpck_require__(21516);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -29217,17 +37362,17 @@ module.exports = function createError(message, config, code, request, response) 
 
 /***/ }),
 
-/***/ 5062:
+/***/ 85062:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
-var transformData = __nccwpck_require__(9812);
-var isCancel = __nccwpck_require__(4057);
-var defaults = __nccwpck_require__(8190);
-var Cancel = __nccwpck_require__(8875);
+var utils = __nccwpck_require__(20328);
+var transformData = __nccwpck_require__(19812);
+var isCancel = __nccwpck_require__(64057);
+var defaults = __nccwpck_require__(98190);
+var Cancel = __nccwpck_require__(98875);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -29312,7 +37457,7 @@ module.exports = function dispatchRequest(config) {
 
 /***/ }),
 
-/***/ 1516:
+/***/ 21516:
 /***/ ((module) => {
 
 "use strict";
@@ -29363,13 +37508,13 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 /***/ }),
 
-/***/ 4831:
+/***/ 74831:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
+var utils = __nccwpck_require__(20328);
 
 /**
  * Config-specific merge-function which creates a new config-object
@@ -29470,13 +37615,13 @@ module.exports = function mergeConfig(config1, config2) {
 
 /***/ }),
 
-/***/ 3211:
+/***/ 13211:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var createError = __nccwpck_require__(5226);
+var createError = __nccwpck_require__(15226);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -29503,14 +37648,14 @@ module.exports = function settle(resolve, reject, response) {
 
 /***/ }),
 
-/***/ 9812:
+/***/ 19812:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
-var defaults = __nccwpck_require__(8190);
+var utils = __nccwpck_require__(20328);
+var defaults = __nccwpck_require__(98190);
 
 /**
  * Transform the data for a request or a response
@@ -29533,15 +37678,15 @@ module.exports = function transformData(data, headers, fns) {
 
 /***/ }),
 
-/***/ 8190:
+/***/ 98190:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
-var normalizeHeaderName = __nccwpck_require__(6240);
-var enhanceError = __nccwpck_require__(1516);
+var utils = __nccwpck_require__(20328);
+var normalizeHeaderName = __nccwpck_require__(36240);
+var enhanceError = __nccwpck_require__(21516);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -29560,7 +37705,7 @@ function getDefaultAdapter() {
     adapter = __nccwpck_require__(3454);
   } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
     // For node use HTTP adapter
-    adapter = __nccwpck_require__(8104);
+    adapter = __nccwpck_require__(68104);
   }
   return adapter;
 }
@@ -29675,7 +37820,7 @@ module.exports = defaults;
 
 /***/ }),
 
-/***/ 4322:
+/***/ 94322:
 /***/ ((module) => {
 
 module.exports = {
@@ -29684,7 +37829,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 7065:
+/***/ 77065:
 /***/ ((module) => {
 
 "use strict";
@@ -29703,13 +37848,13 @@ module.exports = function bind(fn, thisArg) {
 
 /***/ }),
 
-/***/ 646:
+/***/ 30646:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
+var utils = __nccwpck_require__(20328);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -29781,7 +37926,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 /***/ }),
 
-/***/ 7189:
+/***/ 57189:
 /***/ ((module) => {
 
 "use strict";
@@ -29803,13 +37948,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 /***/ }),
 
-/***/ 1545:
+/***/ 21545:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
+var utils = __nccwpck_require__(20328);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -29864,7 +38009,7 @@ module.exports = (
 
 /***/ }),
 
-/***/ 1301:
+/***/ 41301:
 /***/ ((module) => {
 
 "use strict";
@@ -29886,13 +38031,13 @@ module.exports = function isAbsoluteURL(url) {
 
 /***/ }),
 
-/***/ 650:
+/***/ 60650:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
+var utils = __nccwpck_require__(20328);
 
 /**
  * Determines whether the payload is an error thrown by Axios
@@ -29907,13 +38052,13 @@ module.exports = function isAxiosError(payload) {
 
 /***/ }),
 
-/***/ 3608:
+/***/ 33608:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
+var utils = __nccwpck_require__(20328);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -29983,13 +38128,13 @@ module.exports = (
 
 /***/ }),
 
-/***/ 6240:
+/***/ 36240:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
+var utils = __nccwpck_require__(20328);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -30003,13 +38148,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 /***/ }),
 
-/***/ 6455:
+/***/ 86455:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(328);
+var utils = __nccwpck_require__(20328);
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -30064,7 +38209,7 @@ module.exports = function parseHeaders(headers) {
 
 /***/ }),
 
-/***/ 4850:
+/***/ 74850:
 /***/ ((module) => {
 
 "use strict";
@@ -30099,13 +38244,13 @@ module.exports = function spread(callback) {
 
 /***/ }),
 
-/***/ 1632:
+/***/ 51632:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var VERSION = __nccwpck_require__(4322).version;
+var VERSION = __nccwpck_require__(94322).version;
 
 var validators = {};
 
@@ -30189,13 +38334,13 @@ module.exports = {
 
 /***/ }),
 
-/***/ 328:
+/***/ 20328:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var bind = __nccwpck_require__(7065);
+var bind = __nccwpck_require__(77065);
 
 // utils is a library of generic helper functions non-specific to axios
 
@@ -30616,10 +38761,10 @@ function range(a, b, str) {
 
 /***/ }),
 
-/***/ 3682:
+/***/ 83682:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var register = __nccwpck_require__(4670)
+var register = __nccwpck_require__(44670)
 var addHook = __nccwpck_require__(5549)
 var removeHook = __nccwpck_require__(6819)
 
@@ -30733,7 +38878,7 @@ function addHook(state, kind, name, hook) {
 
 /***/ }),
 
-/***/ 4670:
+/***/ 44670:
 /***/ ((module) => {
 
 module.exports = register;
@@ -30793,10 +38938,10 @@ function removeHook(state, name, method) {
 
 /***/ }),
 
-/***/ 3717:
+/***/ 33717:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var concatMap = __nccwpck_require__(6891);
+var concatMap = __nccwpck_require__(86891);
 var balanced = __nccwpck_require__(9417);
 
 module.exports = expandTop;
@@ -31001,7 +39146,7 @@ function expand(str, isTop) {
 
 /***/ }),
 
-/***/ 6891:
+/***/ 86891:
 /***/ ((module) => {
 
 module.exports = function (xs, fn) {
@@ -31021,7 +39166,7 @@ var isArray = Array.isArray || function (xs) {
 
 /***/ }),
 
-/***/ 5898:
+/***/ 95898:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -31126,7 +39271,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __nccwpck_require__(4293).Buffer.isBuffer;
+exports.isBuffer = __nccwpck_require__(64293).Buffer.isBuffer;
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -31135,7 +39280,7 @@ function objectToString(o) {
 
 /***/ }),
 
-/***/ 8222:
+/***/ 28222:
 /***/ ((module, exports, __nccwpck_require__) => {
 
 /* eslint-env browser */
@@ -31392,7 +39537,7 @@ function localstorage() {
 	}
 }
 
-module.exports = __nccwpck_require__(6243)(exports);
+module.exports = __nccwpck_require__(46243)(exports);
 
 const {formatters} = module.exports;
 
@@ -31411,7 +39556,7 @@ formatters.j = function (v) {
 
 /***/ }),
 
-/***/ 6243:
+/***/ 46243:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
@@ -31427,7 +39572,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __nccwpck_require__(900);
+	createDebug.humanize = __nccwpck_require__(80900);
 	createDebug.destroy = destroy;
 
 	Object.keys(env).forEach(key => {
@@ -31692,7 +39837,7 @@ module.exports = setup;
 
 /***/ }),
 
-/***/ 8237:
+/***/ 38237:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 /**
@@ -31701,23 +39846,23 @@ module.exports = setup;
  */
 
 if (typeof process === 'undefined' || process.type === 'renderer' || process.browser === true || process.__nwjs) {
-	module.exports = __nccwpck_require__(8222);
+	module.exports = __nccwpck_require__(28222);
 } else {
-	module.exports = __nccwpck_require__(5332);
+	module.exports = __nccwpck_require__(35332);
 }
 
 
 /***/ }),
 
-/***/ 5332:
+/***/ 35332:
 /***/ ((module, exports, __nccwpck_require__) => {
 
 /**
  * Module dependencies.
  */
 
-const tty = __nccwpck_require__(3867);
-const util = __nccwpck_require__(1669);
+const tty = __nccwpck_require__(33867);
+const util = __nccwpck_require__(31669);
 
 /**
  * This is the Node.js implementation of `debug()`.
@@ -31743,7 +39888,7 @@ exports.colors = [6, 2, 3, 4, 5, 1];
 try {
 	// Optional dependency (as in, doesn't need to be installed, NOT like optionalDependencies in package.json)
 	// eslint-disable-next-line import/no-extraneous-dependencies
-	const supportsColor = __nccwpck_require__(9318);
+	const supportsColor = __nccwpck_require__(59318);
 
 	if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
 		exports.colors = [
@@ -31951,7 +40096,7 @@ function init(debug) {
 	}
 }
 
-module.exports = __nccwpck_require__(6243)(exports);
+module.exports = __nccwpck_require__(46243)(exports);
 
 const {formatters} = module.exports;
 
@@ -31979,7 +40124,7 @@ formatters.O = function (v) {
 
 /***/ }),
 
-/***/ 8932:
+/***/ 58932:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -32007,7 +40152,7 @@ exports.Deprecation = Deprecation;
 
 /***/ }),
 
-/***/ 1133:
+/***/ 31133:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 var debug;
@@ -32016,7 +40161,7 @@ module.exports = function () {
   if (!debug) {
     try {
       /* eslint global-require: off */
-      debug = __nccwpck_require__(8237)("follow-redirects");
+      debug = __nccwpck_require__(38237)("follow-redirects");
     }
     catch (error) { /* */ }
     if (typeof debug !== "function") {
@@ -32029,16 +40174,16 @@ module.exports = function () {
 
 /***/ }),
 
-/***/ 7707:
+/***/ 67707:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var url = __nccwpck_require__(8835);
+var url = __nccwpck_require__(78835);
 var URL = url.URL;
-var http = __nccwpck_require__(8605);
-var https = __nccwpck_require__(7211);
-var Writable = __nccwpck_require__(2413).Writable;
-var assert = __nccwpck_require__(2357);
-var debug = __nccwpck_require__(1133);
+var http = __nccwpck_require__(98605);
+var https = __nccwpck_require__(57211);
+var Writable = __nccwpck_require__(92413).Writable;
+var assert = __nccwpck_require__(42357);
+var debug = __nccwpck_require__(31133);
 
 // Create handlers that pass events from native requests
 var events = ["abort", "aborted", "connect", "error", "socket", "timeout"];
@@ -32304,25 +40449,30 @@ RedirectableRequest.prototype._performRequest = function () {
   // If specified, use the agent corresponding to the protocol
   // (HTTP and HTTPS use different types of agents)
   if (this._options.agents) {
-    var scheme = protocol.substr(0, protocol.length - 1);
+    var scheme = protocol.slice(0, -1);
     this._options.agent = this._options.agents[scheme];
   }
 
-  // Create the native request
+  // Create the native request and set up its event handlers
   var request = this._currentRequest =
         nativeProtocol.request(this._options, this._onNativeResponse);
-  this._currentUrl = url.format(this._options);
-
-  // Set up event handlers
   request._redirectable = this;
-  for (var e = 0; e < events.length; e++) {
-    request.on(events[e], eventHandlers[events[e]]);
+  for (var event of events) {
+    request.on(event, eventHandlers[event]);
   }
+
+  // RFC7230§5.3.1: When making a request directly to an origin server, […]
+  // a client MUST send only the absolute path […] as the request-target.
+  this._currentUrl = /^\//.test(this._options.path) ?
+    url.format(this._options) :
+    // When making a request to a proxy, […]
+    // a client MUST send the target URI in absolute-form […].
+    this._currentUrl = this._options.path;
 
   // End a redirected request
   // (The first request must be ended explicitly with RedirectableRequest#end)
   if (this._isRedirect) {
-    // Write the request entity and end.
+    // Write the request entity and end
     var i = 0;
     var self = this;
     var buffers = this._requestBodyBuffers;
@@ -32370,96 +40520,120 @@ RedirectableRequest.prototype._processResponse = function (response) {
   // the user agent MAY automatically redirect its request to the URI
   // referenced by the Location field value,
   // even if the specific status code is not understood.
+
+  // If the response is not a redirect; return it as-is
   var location = response.headers.location;
-  if (location && this._options.followRedirects !== false &&
-      statusCode >= 300 && statusCode < 400) {
-    // Abort the current request
-    abortRequest(this._currentRequest);
-    // Discard the remainder of the response to avoid waiting for data
-    response.destroy();
-
-    // RFC7231§6.4: A client SHOULD detect and intervene
-    // in cyclical redirections (i.e., "infinite" redirection loops).
-    if (++this._redirectCount > this._options.maxRedirects) {
-      this.emit("error", new TooManyRedirectsError());
-      return;
-    }
-
-    // RFC7231§6.4: Automatic redirection needs to done with
-    // care for methods not known to be safe, […]
-    // RFC7231§6.4.2–3: For historical reasons, a user agent MAY change
-    // the request method from POST to GET for the subsequent request.
-    if ((statusCode === 301 || statusCode === 302) && this._options.method === "POST" ||
-        // RFC7231§6.4.4: The 303 (See Other) status code indicates that
-        // the server is redirecting the user agent to a different resource […]
-        // A user agent can perform a retrieval request targeting that URI
-        // (a GET or HEAD request if using HTTP) […]
-        (statusCode === 303) && !/^(?:GET|HEAD)$/.test(this._options.method)) {
-      this._options.method = "GET";
-      // Drop a possible entity and headers related to it
-      this._requestBodyBuffers = [];
-      removeMatchingHeaders(/^content-/i, this._options.headers);
-    }
-
-    // Drop the Host header, as the redirect might lead to a different host
-    var currentHostHeader = removeMatchingHeaders(/^host$/i, this._options.headers);
-
-    // If the redirect is relative, carry over the host of the last request
-    var currentUrlParts = url.parse(this._currentUrl);
-    var currentHost = currentHostHeader || currentUrlParts.host;
-    var currentUrl = /^\w+:/.test(location) ? this._currentUrl :
-      url.format(Object.assign(currentUrlParts, { host: currentHost }));
-
-    // Determine the URL of the redirection
-    var redirectUrl;
-    try {
-      redirectUrl = url.resolve(currentUrl, location);
-    }
-    catch (cause) {
-      this.emit("error", new RedirectionError(cause));
-      return;
-    }
-
-    // Create the redirected request
-    debug("redirecting to", redirectUrl);
-    this._isRedirect = true;
-    var redirectUrlParts = url.parse(redirectUrl);
-    Object.assign(this._options, redirectUrlParts);
-
-    // Drop the confidential headers when redirecting to another domain
-    if (!(redirectUrlParts.host === currentHost || isSubdomainOf(redirectUrlParts.host, currentHost))) {
-      removeMatchingHeaders(/^(?:authorization|cookie)$/i, this._options.headers);
-    }
-
-    // Evaluate the beforeRedirect callback
-    if (typeof this._options.beforeRedirect === "function") {
-      var responseDetails = { headers: response.headers };
-      try {
-        this._options.beforeRedirect.call(null, this._options, responseDetails);
-      }
-      catch (err) {
-        this.emit("error", err);
-        return;
-      }
-      this._sanitizeOptions(this._options);
-    }
-
-    // Perform the redirected request
-    try {
-      this._performRequest();
-    }
-    catch (cause) {
-      this.emit("error", new RedirectionError(cause));
-    }
-  }
-  else {
-    // The response is not a redirect; return it as-is
+  if (!location || this._options.followRedirects === false ||
+      statusCode < 300 || statusCode >= 400) {
     response.responseUrl = this._currentUrl;
     response.redirects = this._redirects;
     this.emit("response", response);
 
     // Clean up
     this._requestBodyBuffers = [];
+    return;
+  }
+
+  // The response is a redirect, so abort the current request
+  abortRequest(this._currentRequest);
+  // Discard the remainder of the response to avoid waiting for data
+  response.destroy();
+
+  // RFC7231§6.4: A client SHOULD detect and intervene
+  // in cyclical redirections (i.e., "infinite" redirection loops).
+  if (++this._redirectCount > this._options.maxRedirects) {
+    this.emit("error", new TooManyRedirectsError());
+    return;
+  }
+
+  // Store the request headers if applicable
+  var requestHeaders;
+  var beforeRedirect = this._options.beforeRedirect;
+  if (beforeRedirect) {
+    requestHeaders = Object.assign({
+      // The Host header was set by nativeProtocol.request
+      Host: response.req.getHeader("host"),
+    }, this._options.headers);
+  }
+
+  // RFC7231§6.4: Automatic redirection needs to done with
+  // care for methods not known to be safe, […]
+  // RFC7231§6.4.2–3: For historical reasons, a user agent MAY change
+  // the request method from POST to GET for the subsequent request.
+  var method = this._options.method;
+  if ((statusCode === 301 || statusCode === 302) && this._options.method === "POST" ||
+      // RFC7231§6.4.4: The 303 (See Other) status code indicates that
+      // the server is redirecting the user agent to a different resource […]
+      // A user agent can perform a retrieval request targeting that URI
+      // (a GET or HEAD request if using HTTP) […]
+      (statusCode === 303) && !/^(?:GET|HEAD)$/.test(this._options.method)) {
+    this._options.method = "GET";
+    // Drop a possible entity and headers related to it
+    this._requestBodyBuffers = [];
+    removeMatchingHeaders(/^content-/i, this._options.headers);
+  }
+
+  // Drop the Host header, as the redirect might lead to a different host
+  var currentHostHeader = removeMatchingHeaders(/^host$/i, this._options.headers);
+
+  // If the redirect is relative, carry over the host of the last request
+  var currentUrlParts = url.parse(this._currentUrl);
+  var currentHost = currentHostHeader || currentUrlParts.host;
+  var currentUrl = /^\w+:/.test(location) ? this._currentUrl :
+    url.format(Object.assign(currentUrlParts, { host: currentHost }));
+
+  // Determine the URL of the redirection
+  var redirectUrl;
+  try {
+    redirectUrl = url.resolve(currentUrl, location);
+  }
+  catch (cause) {
+    this.emit("error", new RedirectionError(cause));
+    return;
+  }
+
+  // Create the redirected request
+  debug("redirecting to", redirectUrl);
+  this._isRedirect = true;
+  var redirectUrlParts = url.parse(redirectUrl);
+  Object.assign(this._options, redirectUrlParts);
+
+  // Drop confidential headers when redirecting to a less secure protocol
+  // or to a different domain that is not a superdomain
+  if (redirectUrlParts.protocol !== currentUrlParts.protocol &&
+     redirectUrlParts.protocol !== "https:" ||
+     redirectUrlParts.host !== currentHost &&
+     !isSubdomain(redirectUrlParts.host, currentHost)) {
+    removeMatchingHeaders(/^(?:authorization|cookie)$/i, this._options.headers);
+  }
+
+  // Evaluate the beforeRedirect callback
+  if (typeof beforeRedirect === "function") {
+    var responseDetails = {
+      headers: response.headers,
+      statusCode: statusCode,
+    };
+    var requestDetails = {
+      url: currentUrl,
+      method: method,
+      headers: requestHeaders,
+    };
+    try {
+      beforeRedirect(this._options, responseDetails, requestDetails);
+    }
+    catch (err) {
+      this.emit("error", err);
+      return;
+    }
+    this._sanitizeOptions(this._options);
+  }
+
+  // Perform the redirected request
+  try {
+    this._performRequest();
+  }
+  catch (cause) {
+    this.emit("error", new RedirectionError(cause));
   }
 };
 
@@ -32586,14 +40760,14 @@ function createErrorType(code, defaultMessage) {
 }
 
 function abortRequest(request) {
-  for (var e = 0; e < events.length; e++) {
-    request.removeListener(events[e], eventHandlers[events[e]]);
+  for (var event of events) {
+    request.removeListener(event, eventHandlers[event]);
   }
   request.on("error", noop);
   request.abort();
 }
 
-function isSubdomainOf(subdomain, domain) {
+function isSubdomain(subdomain, domain) {
   const dot = subdomain.length - domain.length - 1;
   return dot > 0 && subdomain[dot] === "." && subdomain.endsWith(domain);
 }
@@ -32605,7 +40779,7 @@ module.exports.wrap = wrap;
 
 /***/ }),
 
-/***/ 6863:
+/***/ 46863:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 module.exports = realpath
@@ -32615,13 +40789,13 @@ realpath.realpathSync = realpathSync
 realpath.monkeypatch = monkeypatch
 realpath.unmonkeypatch = unmonkeypatch
 
-var fs = __nccwpck_require__(5747)
+var fs = __nccwpck_require__(35747)
 var origRealpath = fs.realpath
 var origRealpathSync = fs.realpathSync
 
 var version = process.version
 var ok = /^v[0-5]\./.test(version)
-var old = __nccwpck_require__(1734)
+var old = __nccwpck_require__(71734)
 
 function newError (er) {
   return er && er.syscall === 'realpath' && (
@@ -32678,7 +40852,7 @@ function unmonkeypatch () {
 
 /***/ }),
 
-/***/ 1734:
+/***/ 71734:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -32702,9 +40876,9 @@ function unmonkeypatch () {
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var pathModule = __nccwpck_require__(5622);
+var pathModule = __nccwpck_require__(85622);
 var isWindows = process.platform === 'win32';
-var fs = __nccwpck_require__(5747);
+var fs = __nccwpck_require__(35747);
 
 // JavaScript implementation of realpath, ported from node pre-v6
 
@@ -32988,7 +41162,7 @@ exports.realpath = function realpath(p, cache, cb) {
 
 /***/ }),
 
-/***/ 7625:
+/***/ 47625:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 exports.setopts = setopts
@@ -33003,10 +41177,10 @@ function ownProp (obj, field) {
   return Object.prototype.hasOwnProperty.call(obj, field)
 }
 
-var fs = __nccwpck_require__(5747)
-var path = __nccwpck_require__(5622)
-var minimatch = __nccwpck_require__(3973)
-var isAbsolute = __nccwpck_require__(8714)
+var fs = __nccwpck_require__(35747)
+var path = __nccwpck_require__(85622)
+var minimatch = __nccwpck_require__(83973)
+var isAbsolute = __nccwpck_require__(38714)
 var Minimatch = minimatch.Minimatch
 
 function alphasort (a, b) {
@@ -33231,7 +41405,7 @@ function childrenIgnored (self, path) {
 
 /***/ }),
 
-/***/ 1957:
+/***/ 91957:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 // Approach:
@@ -33276,20 +41450,20 @@ function childrenIgnored (self, path) {
 
 module.exports = glob
 
-var rp = __nccwpck_require__(6863)
-var minimatch = __nccwpck_require__(3973)
+var rp = __nccwpck_require__(46863)
+var minimatch = __nccwpck_require__(83973)
 var Minimatch = minimatch.Minimatch
-var inherits = __nccwpck_require__(4124)
-var EE = __nccwpck_require__(8614).EventEmitter
-var path = __nccwpck_require__(5622)
-var assert = __nccwpck_require__(2357)
-var isAbsolute = __nccwpck_require__(8714)
-var globSync = __nccwpck_require__(9010)
-var common = __nccwpck_require__(7625)
+var inherits = __nccwpck_require__(44124)
+var EE = __nccwpck_require__(28614).EventEmitter
+var path = __nccwpck_require__(85622)
+var assert = __nccwpck_require__(42357)
+var isAbsolute = __nccwpck_require__(38714)
+var globSync = __nccwpck_require__(29010)
+var common = __nccwpck_require__(47625)
 var setopts = common.setopts
 var ownProp = common.ownProp
-var inflight = __nccwpck_require__(2492)
-var util = __nccwpck_require__(1669)
+var inflight = __nccwpck_require__(52492)
+var util = __nccwpck_require__(31669)
 var childrenIgnored = common.childrenIgnored
 var isIgnored = common.isIgnored
 
@@ -34025,21 +42199,21 @@ Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
 
 /***/ }),
 
-/***/ 9010:
+/***/ 29010:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 module.exports = globSync
 globSync.GlobSync = GlobSync
 
-var rp = __nccwpck_require__(6863)
-var minimatch = __nccwpck_require__(3973)
+var rp = __nccwpck_require__(46863)
+var minimatch = __nccwpck_require__(83973)
 var Minimatch = minimatch.Minimatch
-var Glob = __nccwpck_require__(1957).Glob
-var util = __nccwpck_require__(1669)
-var path = __nccwpck_require__(5622)
-var assert = __nccwpck_require__(2357)
-var isAbsolute = __nccwpck_require__(8714)
-var common = __nccwpck_require__(7625)
+var Glob = __nccwpck_require__(91957).Glob
+var util = __nccwpck_require__(31669)
+var path = __nccwpck_require__(85622)
+var assert = __nccwpck_require__(42357)
+var isAbsolute = __nccwpck_require__(38714)
+var common = __nccwpck_require__(47625)
 var setopts = common.setopts
 var ownProp = common.ownProp
 var childrenIgnored = common.childrenIgnored
@@ -34515,7 +42689,7 @@ GlobSync.prototype._makeAbs = function (f) {
 
 /***/ }),
 
-/***/ 1621:
+/***/ 31621:
 /***/ ((module) => {
 
 "use strict";
@@ -34531,7 +42705,7 @@ module.exports = (flag, argv = process.argv) => {
 
 /***/ }),
 
-/***/ 2927:
+/***/ 12927:
 /***/ ((module) => {
 
 "use strict";
@@ -34612,10 +42786,10 @@ function immediate(task) {
 
 /***/ }),
 
-/***/ 2492:
+/***/ 52492:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var wrappy = __nccwpck_require__(2940)
+var wrappy = __nccwpck_require__(62940)
 var reqs = Object.create(null)
 var once = __nccwpck_require__(1223)
 
@@ -34673,11 +42847,11 @@ function slice (args) {
 
 /***/ }),
 
-/***/ 4124:
+/***/ 44124:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 try {
-  var util = __nccwpck_require__(1669);
+  var util = __nccwpck_require__(31669);
   /* istanbul ignore next */
   if (typeof util.inherits !== 'function') throw '';
   module.exports = util.inherits;
@@ -34723,7 +42897,7 @@ if (typeof Object.create === 'function') {
 
 /***/ }),
 
-/***/ 3287:
+/***/ 63287:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -34769,7 +42943,7 @@ exports.isPlainObject = isPlainObject;
 
 /***/ }),
 
-/***/ 893:
+/***/ 20893:
 /***/ ((module) => {
 
 var toString = {}.toString;
@@ -34781,13 +42955,13 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 
-/***/ 3504:
+/***/ 83504:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var utils = __nccwpck_require__(7898);
-var support = __nccwpck_require__(6584);
+var utils = __nccwpck_require__(67898);
+var support = __nccwpck_require__(56584);
 // private property
 var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
@@ -34895,16 +43069,16 @@ exports.decode = function(input) {
 
 /***/ }),
 
-/***/ 8263:
+/***/ 18263:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var external = __nccwpck_require__(9124);
-var DataWorker = __nccwpck_require__(5942);
-var Crc32Probe = __nccwpck_require__(4352);
-var DataLengthProbe = __nccwpck_require__(2968);
+var external = __nccwpck_require__(89124);
+var DataWorker = __nccwpck_require__(75942);
+var Crc32Probe = __nccwpck_require__(74352);
+var DataLengthProbe = __nccwpck_require__(12968);
 
 /**
  * Represent a compressed object, with everything needed to decompress it.
@@ -34977,13 +43151,13 @@ module.exports = CompressedObject;
 
 /***/ }),
 
-/***/ 6017:
+/***/ 36017:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var GenericWorker = __nccwpck_require__(6704);
+var GenericWorker = __nccwpck_require__(86704);
 
 exports.STORE = {
     magic: "\x00\x00",
@@ -34994,18 +43168,18 @@ exports.STORE = {
         return new GenericWorker("STORE decompression");
     }
 };
-exports.DEFLATE = __nccwpck_require__(7993);
+exports.DEFLATE = __nccwpck_require__(57993);
 
 
 /***/ }),
 
-/***/ 7844:
+/***/ 87844:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(7898);
+var utils = __nccwpck_require__(67898);
 
 /**
  * The following functions come from pako, from pako/lib/zlib/crc32.js
@@ -35084,7 +43258,7 @@ module.exports = function crc32wrapper(input, crc) {
 
 /***/ }),
 
-/***/ 4697:
+/***/ 84697:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -35103,7 +43277,7 @@ exports.dosPermissions = null;
 
 /***/ }),
 
-/***/ 9124:
+/***/ 89124:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -35117,7 +43291,7 @@ var ES6Promise = null;
 if (typeof Promise !== "undefined") {
     ES6Promise = Promise;
 } else {
-    ES6Promise = __nccwpck_require__(5444);
+    ES6Promise = __nccwpck_require__(35444);
 }
 
 /**
@@ -35130,16 +43304,16 @@ module.exports = {
 
 /***/ }),
 
-/***/ 7993:
+/***/ 57993:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 var USE_TYPEDARRAY = (typeof Uint8Array !== 'undefined') && (typeof Uint16Array !== 'undefined') && (typeof Uint32Array !== 'undefined');
 
-var pako = __nccwpck_require__(1726);
-var utils = __nccwpck_require__(7898);
-var GenericWorker = __nccwpck_require__(6704);
+var pako = __nccwpck_require__(31726);
+var utils = __nccwpck_require__(67898);
+var GenericWorker = __nccwpck_require__(86704);
 
 var ARRAY_TYPE = USE_TYPEDARRAY ? "uint8array" : "array";
 
@@ -35229,11 +43403,11 @@ exports.uncompressWorker = function () {
 "use strict";
 
 
-var utils = __nccwpck_require__(7898);
-var GenericWorker = __nccwpck_require__(6704);
-var utf8 = __nccwpck_require__(4281);
-var crc32 = __nccwpck_require__(7844);
-var signature = __nccwpck_require__(4454);
+var utils = __nccwpck_require__(67898);
+var GenericWorker = __nccwpck_require__(86704);
+var utf8 = __nccwpck_require__(74281);
+var crc32 = __nccwpck_require__(87844);
+var signature = __nccwpck_require__(94454);
 
 /**
  * Transform an integer into a string in hexadecimal.
@@ -35771,13 +43945,13 @@ module.exports = ZipFileWorker;
 
 /***/ }),
 
-/***/ 4573:
+/***/ 34573:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var compressions = __nccwpck_require__(6017);
+var compressions = __nccwpck_require__(36017);
 var ZipFileWorker = __nccwpck_require__(1271);
 
 /**
@@ -35836,7 +44010,7 @@ exports.generateWorker = function (zip, options, comment) {
 
 /***/ }),
 
-/***/ 3592:
+/***/ 83592:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -35880,10 +44054,10 @@ function JSZip() {
         return newObj;
     };
 }
-JSZip.prototype = __nccwpck_require__(5255);
-JSZip.prototype.loadAsync = __nccwpck_require__(4508);
-JSZip.support = __nccwpck_require__(6584);
-JSZip.defaults = __nccwpck_require__(4697);
+JSZip.prototype = __nccwpck_require__(65255);
+JSZip.prototype.loadAsync = __nccwpck_require__(94508);
+JSZip.support = __nccwpck_require__(56584);
+JSZip.defaults = __nccwpck_require__(84697);
 
 // TODO find a better way to handle this version,
 // a require('package.json').version doesn't work with webpack, see #327
@@ -35893,23 +44067,23 @@ JSZip.loadAsync = function (content, options) {
     return new JSZip().loadAsync(content, options);
 };
 
-JSZip.external = __nccwpck_require__(9124);
+JSZip.external = __nccwpck_require__(89124);
 module.exports = JSZip;
 
 
 /***/ }),
 
-/***/ 4508:
+/***/ 94508:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var utils = __nccwpck_require__(7898);
-var external = __nccwpck_require__(9124);
-var utf8 = __nccwpck_require__(4281);
-var ZipEntries = __nccwpck_require__(271);
-var Crc32Probe = __nccwpck_require__(4352);
-var nodejsUtils = __nccwpck_require__(7968);
+var utils = __nccwpck_require__(67898);
+var external = __nccwpck_require__(89124);
+var utf8 = __nccwpck_require__(74281);
+var ZipEntries = __nccwpck_require__(90271);
+var Crc32Probe = __nccwpck_require__(74352);
+var nodejsUtils = __nccwpck_require__(47968);
 
 /**
  * Check the CRC32 of an entry.
@@ -35988,14 +44162,14 @@ module.exports = function (data, options) {
 
 /***/ }),
 
-/***/ 3581:
+/***/ 83581:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(7898);
-var GenericWorker = __nccwpck_require__(6704);
+var utils = __nccwpck_require__(67898);
+var GenericWorker = __nccwpck_require__(86704);
 
 /**
  * A worker that use a nodejs stream as source.
@@ -36070,15 +44244,15 @@ module.exports = NodejsStreamInputAdapter;
 
 /***/ }),
 
-/***/ 1176:
+/***/ 11176:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Readable = __nccwpck_require__(1642).Readable;
+var Readable = __nccwpck_require__(51642).Readable;
 
-var utils = __nccwpck_require__(7898);
+var utils = __nccwpck_require__(67898);
 utils.inherits(NodejsStreamOutputAdapter, Readable);
 
 /**
@@ -36120,7 +44294,7 @@ module.exports = NodejsStreamOutputAdapter;
 
 /***/ }),
 
-/***/ 7968:
+/***/ 47968:
 /***/ ((module) => {
 
 "use strict";
@@ -36185,21 +44359,21 @@ module.exports = {
 
 /***/ }),
 
-/***/ 5255:
+/***/ 65255:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var utf8 = __nccwpck_require__(4281);
-var utils = __nccwpck_require__(7898);
-var GenericWorker = __nccwpck_require__(6704);
-var StreamHelper = __nccwpck_require__(2432);
-var defaults = __nccwpck_require__(4697);
-var CompressedObject = __nccwpck_require__(8263);
-var ZipObject = __nccwpck_require__(6228);
-var generate = __nccwpck_require__(4573);
-var nodejsUtils = __nccwpck_require__(7968);
-var NodejsStreamInputAdapter = __nccwpck_require__(3581);
+var utf8 = __nccwpck_require__(74281);
+var utils = __nccwpck_require__(67898);
+var GenericWorker = __nccwpck_require__(86704);
+var StreamHelper = __nccwpck_require__(12432);
+var defaults = __nccwpck_require__(84697);
+var CompressedObject = __nccwpck_require__(18263);
+var ZipObject = __nccwpck_require__(86228);
+var generate = __nccwpck_require__(34573);
+var nodejsUtils = __nccwpck_require__(47968);
+var NodejsStreamInputAdapter = __nccwpck_require__(83581);
 
 
 /**
@@ -36582,13 +44756,13 @@ module.exports = out;
 
 /***/ }),
 
-/***/ 9402:
+/***/ 39402:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var DataReader = __nccwpck_require__(8488);
-var utils = __nccwpck_require__(7898);
+var DataReader = __nccwpck_require__(68488);
+var utils = __nccwpck_require__(67898);
 
 function ArrayReader(data) {
     DataReader.call(this, data);
@@ -36647,12 +44821,12 @@ module.exports = ArrayReader;
 
 /***/ }),
 
-/***/ 8488:
+/***/ 68488:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var utils = __nccwpck_require__(7898);
+var utils = __nccwpck_require__(67898);
 
 function DataReader(data) {
     this.data = data; // type : see implementation
@@ -36776,8 +44950,8 @@ module.exports = DataReader;
 
 "use strict";
 
-var Uint8ArrayReader = __nccwpck_require__(3348);
-var utils = __nccwpck_require__(7898);
+var Uint8ArrayReader = __nccwpck_require__(73348);
+var utils = __nccwpck_require__(67898);
 
 function NodeBufferReader(data) {
     Uint8ArrayReader.call(this, data);
@@ -36798,13 +44972,13 @@ module.exports = NodeBufferReader;
 
 /***/ }),
 
-/***/ 7532:
+/***/ 57532:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var DataReader = __nccwpck_require__(8488);
-var utils = __nccwpck_require__(7898);
+var DataReader = __nccwpck_require__(68488);
+var utils = __nccwpck_require__(67898);
 
 function StringReader(data) {
     DataReader.call(this, data);
@@ -36844,13 +45018,13 @@ module.exports = StringReader;
 
 /***/ }),
 
-/***/ 3348:
+/***/ 73348:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var ArrayReader = __nccwpck_require__(9402);
-var utils = __nccwpck_require__(7898);
+var ArrayReader = __nccwpck_require__(39402);
+var utils = __nccwpck_require__(67898);
 
 function Uint8ArrayReader(data) {
     ArrayReader.call(this, data);
@@ -36874,18 +45048,18 @@ module.exports = Uint8ArrayReader;
 
 /***/ }),
 
-/***/ 801:
+/***/ 17351:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(7898);
-var support = __nccwpck_require__(6584);
-var ArrayReader = __nccwpck_require__(9402);
-var StringReader = __nccwpck_require__(7532);
+var utils = __nccwpck_require__(67898);
+var support = __nccwpck_require__(56584);
+var ArrayReader = __nccwpck_require__(39402);
+var StringReader = __nccwpck_require__(57532);
 var NodeBufferReader = __nccwpck_require__(3916);
-var Uint8ArrayReader = __nccwpck_require__(3348);
+var Uint8ArrayReader = __nccwpck_require__(73348);
 
 /**
  * Create a reader adapted to the data.
@@ -36910,7 +45084,7 @@ module.exports = function (data) {
 
 /***/ }),
 
-/***/ 4454:
+/***/ 94454:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -36925,14 +45099,14 @@ exports.DATA_DESCRIPTOR = "PK\x07\x08";
 
 /***/ }),
 
-/***/ 2896:
+/***/ 92896:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var GenericWorker = __nccwpck_require__(6704);
-var utils = __nccwpck_require__(7898);
+var GenericWorker = __nccwpck_require__(86704);
+var utils = __nccwpck_require__(67898);
 
 /**
  * A worker which convert chunks to a specified type.
@@ -36959,15 +45133,15 @@ module.exports = ConvertWorker;
 
 /***/ }),
 
-/***/ 4352:
+/***/ 74352:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var GenericWorker = __nccwpck_require__(6704);
-var crc32 = __nccwpck_require__(7844);
-var utils = __nccwpck_require__(7898);
+var GenericWorker = __nccwpck_require__(86704);
+var crc32 = __nccwpck_require__(87844);
+var utils = __nccwpck_require__(67898);
 
 /**
  * A worker which calculate the crc32 of the data flowing through.
@@ -36991,14 +45165,14 @@ module.exports = Crc32Probe;
 
 /***/ }),
 
-/***/ 2968:
+/***/ 12968:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(7898);
-var GenericWorker = __nccwpck_require__(6704);
+var utils = __nccwpck_require__(67898);
+var GenericWorker = __nccwpck_require__(86704);
 
 /**
  * A worker which calculate the total length of the data flowing through.
@@ -37028,14 +45202,14 @@ module.exports = DataLengthProbe;
 
 /***/ }),
 
-/***/ 5942:
+/***/ 75942:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(7898);
-var GenericWorker = __nccwpck_require__(6704);
+var utils = __nccwpck_require__(67898);
+var GenericWorker = __nccwpck_require__(86704);
 
 // the size of the generated chunks
 // TODO expose this as a public variable
@@ -37152,7 +45326,7 @@ module.exports = DataWorker;
 
 /***/ }),
 
-/***/ 6704:
+/***/ 86704:
 /***/ ((module) => {
 
 "use strict";
@@ -37423,23 +45597,23 @@ module.exports = GenericWorker;
 
 /***/ }),
 
-/***/ 2432:
+/***/ 12432:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(7898);
-var ConvertWorker = __nccwpck_require__(2896);
-var GenericWorker = __nccwpck_require__(6704);
-var base64 = __nccwpck_require__(3504);
-var support = __nccwpck_require__(6584);
-var external = __nccwpck_require__(9124);
+var utils = __nccwpck_require__(67898);
+var ConvertWorker = __nccwpck_require__(92896);
+var GenericWorker = __nccwpck_require__(86704);
+var base64 = __nccwpck_require__(83504);
+var support = __nccwpck_require__(56584);
+var external = __nccwpck_require__(89124);
 
 var NodejsStreamOutputAdapter = null;
 if (support.nodestream) {
     try {
-        NodejsStreamOutputAdapter = __nccwpck_require__(1176);
+        NodejsStreamOutputAdapter = __nccwpck_require__(11176);
     } catch(e) {}
 }
 
@@ -37643,7 +45817,7 @@ module.exports = StreamHelper;
 
 /***/ }),
 
-/***/ 6584:
+/***/ 56584:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -37681,7 +45855,7 @@ else {
 }
 
 try {
-    exports.nodestream = !!__nccwpck_require__(1642).Readable;
+    exports.nodestream = !!__nccwpck_require__(51642).Readable;
 } catch(e) {
     exports.nodestream = false;
 }
@@ -37689,16 +45863,16 @@ try {
 
 /***/ }),
 
-/***/ 4281:
+/***/ 74281:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var utils = __nccwpck_require__(7898);
-var support = __nccwpck_require__(6584);
-var nodejsUtils = __nccwpck_require__(7968);
-var GenericWorker = __nccwpck_require__(6704);
+var utils = __nccwpck_require__(67898);
+var support = __nccwpck_require__(56584);
+var nodejsUtils = __nccwpck_require__(47968);
+var GenericWorker = __nccwpck_require__(86704);
 
 /**
  * The following functions come from pako, from pako/lib/utils/strings
@@ -37972,17 +46146,17 @@ exports.Utf8EncodeWorker = Utf8EncodeWorker;
 
 /***/ }),
 
-/***/ 7898:
+/***/ 67898:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var support = __nccwpck_require__(6584);
-var base64 = __nccwpck_require__(3504);
-var nodejsUtils = __nccwpck_require__(7968);
-var setImmediate = __nccwpck_require__(9044);
-var external = __nccwpck_require__(9124);
+var support = __nccwpck_require__(56584);
+var base64 = __nccwpck_require__(83504);
+var nodejsUtils = __nccwpck_require__(47968);
+var setImmediate = __nccwpck_require__(89044);
+var external = __nccwpck_require__(89124);
 
 
 /**
@@ -38456,17 +46630,17 @@ exports.prepareContent = function(name, inputData, isBinary, isOptimizedBinarySt
 
 /***/ }),
 
-/***/ 271:
+/***/ 90271:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var readerFor = __nccwpck_require__(801);
-var utils = __nccwpck_require__(7898);
-var sig = __nccwpck_require__(4454);
-var ZipEntry = __nccwpck_require__(9688);
-var utf8 = __nccwpck_require__(4281);
-var support = __nccwpck_require__(6584);
+var readerFor = __nccwpck_require__(17351);
+var utils = __nccwpck_require__(67898);
+var sig = __nccwpck_require__(94454);
+var ZipEntry = __nccwpck_require__(89688);
+var utf8 = __nccwpck_require__(74281);
+var support = __nccwpck_require__(56584);
 //  class ZipEntries {{{
 /**
  * All the entries in the zip file.
@@ -38726,18 +46900,18 @@ module.exports = ZipEntries;
 
 /***/ }),
 
-/***/ 9688:
+/***/ 89688:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var readerFor = __nccwpck_require__(801);
-var utils = __nccwpck_require__(7898);
-var CompressedObject = __nccwpck_require__(8263);
-var crc32fn = __nccwpck_require__(7844);
-var utf8 = __nccwpck_require__(4281);
-var compressions = __nccwpck_require__(6017);
-var support = __nccwpck_require__(6584);
+var readerFor = __nccwpck_require__(17351);
+var utils = __nccwpck_require__(67898);
+var CompressedObject = __nccwpck_require__(18263);
+var crc32fn = __nccwpck_require__(87844);
+var utf8 = __nccwpck_require__(74281);
+var compressions = __nccwpck_require__(36017);
+var support = __nccwpck_require__(56584);
 
 var MADE_BY_DOS = 0x00;
 var MADE_BY_UNIX = 0x03;
@@ -39028,17 +47202,17 @@ module.exports = ZipEntry;
 
 /***/ }),
 
-/***/ 6228:
+/***/ 86228:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var StreamHelper = __nccwpck_require__(2432);
-var DataWorker = __nccwpck_require__(5942);
-var utf8 = __nccwpck_require__(4281);
-var CompressedObject = __nccwpck_require__(8263);
-var GenericWorker = __nccwpck_require__(6704);
+var StreamHelper = __nccwpck_require__(12432);
+var DataWorker = __nccwpck_require__(75942);
+var utf8 = __nccwpck_require__(74281);
+var CompressedObject = __nccwpck_require__(18263);
+var GenericWorker = __nccwpck_require__(86704);
 
 /**
  * A simple object representing a file in the zip file.
@@ -39169,12 +47343,12 @@ module.exports = ZipObject;
 
 /***/ }),
 
-/***/ 5444:
+/***/ 35444:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var immediate = __nccwpck_require__(2927);
+var immediate = __nccwpck_require__(12927);
 
 /* istanbul ignore next */
 function INTERNAL() {}
@@ -40081,7 +48255,7 @@ module.exports = camelCase;
 
 /***/ }),
 
-/***/ 3973:
+/***/ 83973:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 module.exports = minimatch
@@ -40089,11 +48263,11 @@ minimatch.Minimatch = Minimatch
 
 var path = { sep: '/' }
 try {
-  path = __nccwpck_require__(5622)
+  path = __nccwpck_require__(85622)
 } catch (er) {}
 
 var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {}
-var expand = __nccwpck_require__(3717)
+var expand = __nccwpck_require__(33717)
 
 var plTypes = {
   '!': { open: '(?:(?!(?:', close: '))[^/]*?)'},
@@ -41011,7 +49185,7 @@ function regExpEscape (s) {
 
 /***/ }),
 
-/***/ 900:
+/***/ 80900:
 /***/ ((module) => {
 
 /**
@@ -41180,7 +49354,7 @@ function plural(ms, msAbs, n, name) {
 
 /***/ }),
 
-/***/ 467:
+/***/ 80467:
 /***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -41190,12 +49364,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var Stream = _interopDefault(__nccwpck_require__(2413));
-var http = _interopDefault(__nccwpck_require__(8605));
-var Url = _interopDefault(__nccwpck_require__(8835));
-var whatwgUrl = _interopDefault(__nccwpck_require__(8665));
-var https = _interopDefault(__nccwpck_require__(7211));
-var zlib = _interopDefault(__nccwpck_require__(8761));
+var Stream = _interopDefault(__nccwpck_require__(92413));
+var http = _interopDefault(__nccwpck_require__(98605));
+var Url = _interopDefault(__nccwpck_require__(78835));
+var whatwgUrl = _interopDefault(__nccwpck_require__(28665));
+var https = _interopDefault(__nccwpck_require__(57211));
+var zlib = _interopDefault(__nccwpck_require__(78761));
 
 // Based on https://github.com/tmpvar/jsdom/blob/aa85b2abf07766ff7bf5c1f6daafb3726f2f2db5/lib/jsdom/living/blob.js
 
@@ -41346,7 +49520,7 @@ FetchError.prototype.name = 'FetchError';
 
 let convert;
 try {
-	convert = __nccwpck_require__(2877).convert;
+	convert = __nccwpck_require__(22877).convert;
 } catch (e) {}
 
 const INTERNALS = Symbol('Body internals');
@@ -42888,7 +51062,7 @@ exports.FetchError = FetchError;
 /***/ 1223:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var wrappy = __nccwpck_require__(2940)
+var wrappy = __nccwpck_require__(62940)
 module.exports = wrappy(once)
 module.exports.strict = wrappy(onceStrict)
 
@@ -42934,7 +51108,7 @@ function onceStrict (fn) {
 
 /***/ }),
 
-/***/ 1726:
+/***/ 31726:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -42943,9 +51117,9 @@ function onceStrict (fn) {
 
 var assign    = __nccwpck_require__(5483).assign;
 
-var deflate   = __nccwpck_require__(7265);
-var inflate   = __nccwpck_require__(6522);
-var constants = __nccwpck_require__(8282);
+var deflate   = __nccwpck_require__(17265);
+var inflate   = __nccwpck_require__(96522);
+var constants = __nccwpck_require__(58282);
 
 var pako = {};
 
@@ -42956,18 +51130,18 @@ module.exports = pako;
 
 /***/ }),
 
-/***/ 7265:
+/***/ 17265:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 
-var zlib_deflate = __nccwpck_require__(978);
+var zlib_deflate = __nccwpck_require__(70978);
 var utils        = __nccwpck_require__(5483);
-var strings      = __nccwpck_require__(2380);
+var strings      = __nccwpck_require__(42380);
 var msg          = __nccwpck_require__(1890);
-var ZStream      = __nccwpck_require__(6442);
+var ZStream      = __nccwpck_require__(86442);
 
 var toString = Object.prototype.toString;
 
@@ -43364,20 +51538,20 @@ exports.gzip = gzip;
 
 /***/ }),
 
-/***/ 6522:
+/***/ 96522:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 
-var zlib_inflate = __nccwpck_require__(409);
+var zlib_inflate = __nccwpck_require__(90409);
 var utils        = __nccwpck_require__(5483);
-var strings      = __nccwpck_require__(2380);
-var c            = __nccwpck_require__(8282);
+var strings      = __nccwpck_require__(42380);
+var c            = __nccwpck_require__(58282);
 var msg          = __nccwpck_require__(1890);
-var ZStream      = __nccwpck_require__(6442);
-var GZheader     = __nccwpck_require__(5105);
+var ZStream      = __nccwpck_require__(86442);
+var GZheader     = __nccwpck_require__(35105);
 
 var toString = Object.prototype.toString;
 
@@ -43908,7 +52082,7 @@ exports.setTyped(TYPED_OK);
 
 /***/ }),
 
-/***/ 2380:
+/***/ 42380:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -44103,7 +52277,7 @@ exports.utf8border = function (buf, max) {
 
 /***/ }),
 
-/***/ 6924:
+/***/ 86924:
 /***/ ((module) => {
 
 "use strict";
@@ -44162,7 +52336,7 @@ module.exports = adler32;
 
 /***/ }),
 
-/***/ 8282:
+/***/ 58282:
 /***/ ((module) => {
 
 "use strict";
@@ -44238,7 +52412,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 7242:
+/***/ 87242:
 /***/ ((module) => {
 
 "use strict";
@@ -44305,7 +52479,7 @@ module.exports = crc32;
 
 /***/ }),
 
-/***/ 978:
+/***/ 70978:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -44331,9 +52505,9 @@ module.exports = crc32;
 // 3. This notice may not be removed or altered from any source distribution.
 
 var utils   = __nccwpck_require__(5483);
-var trees   = __nccwpck_require__(8754);
-var adler32 = __nccwpck_require__(6924);
-var crc32   = __nccwpck_require__(7242);
+var trees   = __nccwpck_require__(78754);
+var adler32 = __nccwpck_require__(86924);
+var crc32   = __nccwpck_require__(87242);
 var msg     = __nccwpck_require__(1890);
 
 /* Public constants ==========================================================*/
@@ -46187,7 +54361,7 @@ exports.deflateTune = deflateTune;
 
 /***/ }),
 
-/***/ 5105:
+/***/ 35105:
 /***/ ((module) => {
 
 "use strict";
@@ -46253,7 +54427,7 @@ module.exports = GZheader;
 
 /***/ }),
 
-/***/ 5349:
+/***/ 65349:
 /***/ ((module) => {
 
 "use strict";
@@ -46606,7 +54780,7 @@ module.exports = function inflate_fast(strm, start) {
 
 /***/ }),
 
-/***/ 409:
+/***/ 90409:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -46632,10 +54806,10 @@ module.exports = function inflate_fast(strm, start) {
 // 3. This notice may not be removed or altered from any source distribution.
 
 var utils         = __nccwpck_require__(5483);
-var adler32       = __nccwpck_require__(6924);
-var crc32         = __nccwpck_require__(7242);
-var inflate_fast  = __nccwpck_require__(5349);
-var inflate_table = __nccwpck_require__(6895);
+var adler32       = __nccwpck_require__(86924);
+var crc32         = __nccwpck_require__(87242);
+var inflate_fast  = __nccwpck_require__(65349);
+var inflate_table = __nccwpck_require__(56895);
 
 var CODES = 0;
 var LENS = 1;
@@ -48170,7 +56344,7 @@ exports.inflateUndermine = inflateUndermine;
 
 /***/ }),
 
-/***/ 6895:
+/***/ 56895:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -48561,7 +56735,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 8754:
+/***/ 78754:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -49791,7 +57965,7 @@ exports._tr_align = _tr_align;
 
 /***/ }),
 
-/***/ 6442:
+/***/ 86442:
 /***/ ((module) => {
 
 "use strict";
@@ -49846,7 +58020,7 @@ module.exports = ZStream;
 
 /***/ }),
 
-/***/ 8714:
+/***/ 38714:
 /***/ ((module) => {
 
 "use strict";
@@ -49874,7 +58048,7 @@ module.exports.win32 = win32;
 
 /***/ }),
 
-/***/ 7810:
+/***/ 47810:
 /***/ ((module) => {
 
 "use strict";
@@ -49927,13 +58101,13 @@ function nextTick(fn, arg1, arg2, arg3) {
 
 /***/ }),
 
-/***/ 1629:
+/***/ 21629:
 /***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var $protobuf = __nccwpck_require__(5881);
-module.exports = exports = $protobuf.descriptor = $protobuf.Root.fromJSON(__nccwpck_require__(333)).lookup(".google.protobuf");
+var $protobuf = __nccwpck_require__(85881);
+module.exports = exports = $protobuf.descriptor = $protobuf.Root.fromJSON(__nccwpck_require__(40333)).lookup(".google.protobuf");
 
 var Namespace = $protobuf.Namespace,
     Root      = $protobuf.Root,
@@ -50987,19 +59161,19 @@ function underScore(str) {
 
 /***/ }),
 
-/***/ 5881:
+/***/ 85881:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 // full library entry point.
 
 
-module.exports = __nccwpck_require__(5360);
+module.exports = __nccwpck_require__(15360);
 
 
 /***/ }),
 
-/***/ 2134:
+/***/ 12134:
 /***/ ((module) => {
 
 "use strict";
@@ -51406,7 +59580,7 @@ common.get = function get(file) {
 
 /***/ }),
 
-/***/ 3617:
+/***/ 13617:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -51417,8 +59591,8 @@ common.get = function get(file) {
  */
 var converter = exports;
 
-var Enum = __nccwpck_require__(7732),
-    util = __nccwpck_require__(7174);
+var Enum = __nccwpck_require__(17732),
+    util = __nccwpck_require__(47174);
 
 /**
  * Generates a partial value fromObject conveter.
@@ -51707,16 +59881,16 @@ converter.toObject = function toObject(mtype) {
 
 /***/ }),
 
-/***/ 5871:
+/***/ 65871:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 module.exports = decoder;
 
-var Enum    = __nccwpck_require__(7732),
-    types   = __nccwpck_require__(288),
-    util    = __nccwpck_require__(7174);
+var Enum    = __nccwpck_require__(17732),
+    types   = __nccwpck_require__(6581),
+    util    = __nccwpck_require__(47174);
 
 function missing(field) {
     return "missing required '" + field.name + "'";
@@ -51843,16 +60017,16 @@ function decoder(mtype) {
 
 /***/ }),
 
-/***/ 3072:
+/***/ 23072:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 module.exports = encoder;
 
-var Enum     = __nccwpck_require__(7732),
-    types    = __nccwpck_require__(288),
-    util     = __nccwpck_require__(7174);
+var Enum     = __nccwpck_require__(17732),
+    types    = __nccwpck_require__(6581),
+    util     = __nccwpck_require__(47174);
 
 /**
  * Generates a partial message type encoder.
@@ -51951,7 +60125,7 @@ function encoder(mtype) {
 
 /***/ }),
 
-/***/ 7732:
+/***/ 17732:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -51959,11 +60133,11 @@ function encoder(mtype) {
 module.exports = Enum;
 
 // extends ReflectionObject
-var ReflectionObject = __nccwpck_require__(3575);
+var ReflectionObject = __nccwpck_require__(83575);
 ((Enum.prototype = Object.create(ReflectionObject.prototype)).constructor = Enum).className = "Enum";
 
-var Namespace = __nccwpck_require__(6189),
-    util = __nccwpck_require__(7174);
+var Namespace = __nccwpck_require__(76189),
+    util = __nccwpck_require__(47174);
 
 /**
  * Constructs a new enum instance.
@@ -52140,7 +60314,7 @@ Enum.prototype.isReservedName = function isReservedName(name) {
 
 /***/ }),
 
-/***/ 8213:
+/***/ 48213:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -52148,12 +60322,12 @@ Enum.prototype.isReservedName = function isReservedName(name) {
 module.exports = Field;
 
 // extends ReflectionObject
-var ReflectionObject = __nccwpck_require__(3575);
+var ReflectionObject = __nccwpck_require__(83575);
 ((Field.prototype = Object.create(ReflectionObject.prototype)).constructor = Field).className = "Field";
 
-var Enum  = __nccwpck_require__(7732),
-    types = __nccwpck_require__(288),
-    util  = __nccwpck_require__(7174);
+var Enum  = __nccwpck_require__(17732),
+    types = __nccwpck_require__(6581),
+    util  = __nccwpck_require__(47174);
 
 var Type; // cyclic
 
@@ -52522,12 +60696,12 @@ Field._configure = function configure(Type_) {
 
 /***/ }),
 
-/***/ 6119:
+/***/ 26119:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var protobuf = module.exports = __nccwpck_require__(3242);
+var protobuf = module.exports = __nccwpck_require__(73242);
 
 protobuf.build = "light";
 
@@ -52600,30 +60774,30 @@ function loadSync(filename, root) {
 protobuf.loadSync = loadSync;
 
 // Serialization
-protobuf.encoder          = __nccwpck_require__(3072);
-protobuf.decoder          = __nccwpck_require__(5871);
-protobuf.verifier         = __nccwpck_require__(4334);
-protobuf.converter        = __nccwpck_require__(3617);
+protobuf.encoder          = __nccwpck_require__(23072);
+protobuf.decoder          = __nccwpck_require__(65871);
+protobuf.verifier         = __nccwpck_require__(34334);
+protobuf.converter        = __nccwpck_require__(13617);
 
 // Reflection
-protobuf.ReflectionObject = __nccwpck_require__(3575);
-protobuf.Namespace        = __nccwpck_require__(6189);
-protobuf.Root             = __nccwpck_require__(2614);
-protobuf.Enum             = __nccwpck_require__(7732);
-protobuf.Type             = __nccwpck_require__(8520);
-protobuf.Field            = __nccwpck_require__(8213);
-protobuf.OneOf            = __nccwpck_require__(4408);
-protobuf.MapField         = __nccwpck_require__(7777);
-protobuf.Service          = __nccwpck_require__(1521);
-protobuf.Method           = __nccwpck_require__(7771);
+protobuf.ReflectionObject = __nccwpck_require__(83575);
+protobuf.Namespace        = __nccwpck_require__(76189);
+protobuf.Root             = __nccwpck_require__(32614);
+protobuf.Enum             = __nccwpck_require__(17732);
+protobuf.Type             = __nccwpck_require__(38520);
+protobuf.Field            = __nccwpck_require__(48213);
+protobuf.OneOf            = __nccwpck_require__(44408);
+protobuf.MapField         = __nccwpck_require__(67777);
+protobuf.Service          = __nccwpck_require__(6178);
+protobuf.Method           = __nccwpck_require__(57771);
 
 // Runtime
-protobuf.Message          = __nccwpck_require__(8027);
-protobuf.wrappers         = __nccwpck_require__(3216);
+protobuf.Message          = __nccwpck_require__(68027);
+protobuf.wrappers         = __nccwpck_require__(63216);
 
 // Utility
-protobuf.types            = __nccwpck_require__(288);
-protobuf.util             = __nccwpck_require__(7174);
+protobuf.types            = __nccwpck_require__(6581);
+protobuf.util             = __nccwpck_require__(47174);
 
 // Set up possibly cyclic reflection dependencies
 protobuf.ReflectionObject._configure(protobuf.Root);
@@ -52634,7 +60808,7 @@ protobuf.Field._configure(protobuf.Type);
 
 /***/ }),
 
-/***/ 3242:
+/***/ 73242:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -52650,15 +60824,15 @@ var protobuf = exports;
 protobuf.build = "minimal";
 
 // Serialization
-protobuf.Writer       = __nccwpck_require__(3098);
-protobuf.BufferWriter = __nccwpck_require__(1863);
-protobuf.Reader       = __nccwpck_require__(1011);
-protobuf.BufferReader = __nccwpck_require__(339);
+protobuf.Writer       = __nccwpck_require__(13098);
+protobuf.BufferWriter = __nccwpck_require__(41863);
+protobuf.Reader       = __nccwpck_require__(41011);
+protobuf.BufferReader = __nccwpck_require__(80339);
 
 // Utility
-protobuf.util         = __nccwpck_require__(1241);
-protobuf.rpc          = __nccwpck_require__(6444);
-protobuf.roots        = __nccwpck_require__(73);
+protobuf.util         = __nccwpck_require__(71241);
+protobuf.rpc          = __nccwpck_require__(86444);
+protobuf.roots        = __nccwpck_require__(50073);
 protobuf.configure    = configure;
 
 /* istanbul ignore next */
@@ -52678,19 +60852,19 @@ configure();
 
 /***/ }),
 
-/***/ 5360:
+/***/ 15360:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-var protobuf = module.exports = __nccwpck_require__(6119);
+var protobuf = module.exports = __nccwpck_require__(26119);
 
 protobuf.build = "full";
 
 // Parser
-protobuf.tokenize         = __nccwpck_require__(1157);
-protobuf.parse            = __nccwpck_require__(2137);
-protobuf.common           = __nccwpck_require__(2134);
+protobuf.tokenize         = __nccwpck_require__(61157);
+protobuf.parse            = __nccwpck_require__(32137);
+protobuf.common           = __nccwpck_require__(12134);
 
 // Configure parser
 protobuf.Root._configure(protobuf.Type, protobuf.parse, protobuf.common);
@@ -52698,7 +60872,7 @@ protobuf.Root._configure(protobuf.Type, protobuf.parse, protobuf.common);
 
 /***/ }),
 
-/***/ 7777:
+/***/ 67777:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -52706,11 +60880,11 @@ protobuf.Root._configure(protobuf.Type, protobuf.parse, protobuf.common);
 module.exports = MapField;
 
 // extends Field
-var Field = __nccwpck_require__(8213);
+var Field = __nccwpck_require__(48213);
 ((MapField.prototype = Object.create(Field.prototype)).constructor = MapField).className = "MapField";
 
-var types   = __nccwpck_require__(288),
-    util    = __nccwpck_require__(7174);
+var types   = __nccwpck_require__(6581),
+    util    = __nccwpck_require__(47174);
 
 /**
  * Constructs a new map field instance.
@@ -52832,14 +61006,14 @@ MapField.d = function decorateMapField(fieldId, fieldKeyType, fieldValueType) {
 
 /***/ }),
 
-/***/ 8027:
+/***/ 68027:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 module.exports = Message;
 
-var util = __nccwpck_require__(1241);
+var util = __nccwpck_require__(71241);
 
 /**
  * Constructs a new message instance.
@@ -52978,7 +61152,7 @@ Message.prototype.toJSON = function toJSON() {
 
 /***/ }),
 
-/***/ 7771:
+/***/ 57771:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -52986,10 +61160,10 @@ Message.prototype.toJSON = function toJSON() {
 module.exports = Method;
 
 // extends ReflectionObject
-var ReflectionObject = __nccwpck_require__(3575);
+var ReflectionObject = __nccwpck_require__(83575);
 ((Method.prototype = Object.create(ReflectionObject.prototype)).constructor = Method).className = "Method";
 
-var util = __nccwpck_require__(7174);
+var util = __nccwpck_require__(47174);
 
 /**
  * Constructs a new service method instance.
@@ -53146,7 +61320,7 @@ Method.prototype.resolve = function resolve() {
 
 /***/ }),
 
-/***/ 6189:
+/***/ 76189:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -53154,12 +61328,12 @@ Method.prototype.resolve = function resolve() {
 module.exports = Namespace;
 
 // extends ReflectionObject
-var ReflectionObject = __nccwpck_require__(3575);
+var ReflectionObject = __nccwpck_require__(83575);
 ((Namespace.prototype = Object.create(ReflectionObject.prototype)).constructor = Namespace).className = "Namespace";
 
-var Field    = __nccwpck_require__(8213),
-    OneOf    = __nccwpck_require__(4408),
-    util     = __nccwpck_require__(7174);
+var Field    = __nccwpck_require__(48213),
+    OneOf    = __nccwpck_require__(44408),
+    util     = __nccwpck_require__(47174);
 
 var Type,    // cyclic
     Service,
@@ -53588,7 +61762,7 @@ Namespace._configure = function(Type_, Service_, Enum_) {
 
 /***/ }),
 
-/***/ 3575:
+/***/ 83575:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -53597,7 +61771,7 @@ module.exports = ReflectionObject;
 
 ReflectionObject.className = "ReflectionObject";
 
-var util = __nccwpck_require__(7174);
+var util = __nccwpck_require__(47174);
 
 var Root; // cyclic
 
@@ -53839,7 +62013,7 @@ ReflectionObject._configure = function(Root_) {
 
 /***/ }),
 
-/***/ 4408:
+/***/ 44408:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -53847,11 +62021,11 @@ ReflectionObject._configure = function(Root_) {
 module.exports = OneOf;
 
 // extends ReflectionObject
-var ReflectionObject = __nccwpck_require__(3575);
+var ReflectionObject = __nccwpck_require__(83575);
 ((OneOf.prototype = Object.create(ReflectionObject.prototype)).constructor = OneOf).className = "OneOf";
 
-var Field = __nccwpck_require__(8213),
-    util  = __nccwpck_require__(7174);
+var Field = __nccwpck_require__(48213),
+    util  = __nccwpck_require__(47174);
 
 /**
  * Constructs a new oneof instance.
@@ -54050,7 +62224,7 @@ OneOf.d = function decorateOneOf() {
 
 /***/ }),
 
-/***/ 2137:
+/***/ 32137:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -54060,17 +62234,17 @@ module.exports = parse;
 parse.filename = null;
 parse.defaults = { keepCase: false };
 
-var tokenize  = __nccwpck_require__(1157),
-    Root      = __nccwpck_require__(2614),
-    Type      = __nccwpck_require__(8520),
-    Field     = __nccwpck_require__(8213),
-    MapField  = __nccwpck_require__(7777),
-    OneOf     = __nccwpck_require__(4408),
-    Enum      = __nccwpck_require__(7732),
-    Service   = __nccwpck_require__(1521),
-    Method    = __nccwpck_require__(7771),
-    types     = __nccwpck_require__(288),
-    util      = __nccwpck_require__(7174);
+var tokenize  = __nccwpck_require__(61157),
+    Root      = __nccwpck_require__(32614),
+    Type      = __nccwpck_require__(38520),
+    Field     = __nccwpck_require__(48213),
+    MapField  = __nccwpck_require__(67777),
+    OneOf     = __nccwpck_require__(44408),
+    Enum      = __nccwpck_require__(17732),
+    Service   = __nccwpck_require__(6178),
+    Method    = __nccwpck_require__(57771),
+    types     = __nccwpck_require__(6581),
+    util      = __nccwpck_require__(47174);
 
 var base10Re    = /^[1-9][0-9]*$/,
     base10NegRe = /^-?[1-9][0-9]*$/,
@@ -54878,14 +63052,14 @@ function parse(source, root, options) {
 
 /***/ }),
 
-/***/ 1011:
+/***/ 41011:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 module.exports = Reader;
 
-var util      = __nccwpck_require__(1241);
+var util      = __nccwpck_require__(71241);
 
 var BufferReader; // cyclic
 
@@ -55297,7 +63471,7 @@ Reader._configure = function(BufferReader_) {
 
 /***/ }),
 
-/***/ 339:
+/***/ 80339:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -55305,10 +63479,10 @@ Reader._configure = function(BufferReader_) {
 module.exports = BufferReader;
 
 // extends Reader
-var Reader = __nccwpck_require__(1011);
+var Reader = __nccwpck_require__(41011);
 (BufferReader.prototype = Object.create(Reader.prototype)).constructor = BufferReader;
 
-var util = __nccwpck_require__(1241);
+var util = __nccwpck_require__(71241);
 
 /**
  * Constructs a new buffer reader instance.
@@ -55356,7 +63530,7 @@ BufferReader._configure();
 
 /***/ }),
 
-/***/ 2614:
+/***/ 32614:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -55364,13 +63538,13 @@ BufferReader._configure();
 module.exports = Root;
 
 // extends Namespace
-var Namespace = __nccwpck_require__(6189);
+var Namespace = __nccwpck_require__(76189);
 ((Root.prototype = Object.create(Namespace.prototype)).constructor = Root).className = "Root";
 
-var Field   = __nccwpck_require__(8213),
-    Enum    = __nccwpck_require__(7732),
-    OneOf   = __nccwpck_require__(4408),
-    util    = __nccwpck_require__(7174);
+var Field   = __nccwpck_require__(48213),
+    Enum    = __nccwpck_require__(17732),
+    OneOf   = __nccwpck_require__(44408),
+    util    = __nccwpck_require__(47174);
 
 var Type,   // cyclic
     parse,  // might be excluded
@@ -55727,7 +63901,7 @@ Root._configure = function(Type_, parse_, common_) {
 
 /***/ }),
 
-/***/ 73:
+/***/ 50073:
 /***/ ((module) => {
 
 "use strict";
@@ -55753,7 +63927,7 @@ module.exports = {};
 
 /***/ }),
 
-/***/ 6444:
+/***/ 86444:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -55792,19 +63966,19 @@ var rpc = exports;
  * @returns {undefined}
  */
 
-rpc.Service = __nccwpck_require__(2439);
+rpc.Service = __nccwpck_require__(12439);
 
 
 /***/ }),
 
-/***/ 2439:
+/***/ 12439:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 module.exports = Service;
 
-var util = __nccwpck_require__(1241);
+var util = __nccwpck_require__(71241);
 
 // Extends EventEmitter
 (Service.prototype = Object.create(util.EventEmitter.prototype)).constructor = Service;
@@ -55947,7 +64121,7 @@ Service.prototype.end = function end(endedByRPC) {
 
 /***/ }),
 
-/***/ 1521:
+/***/ 6178:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -55955,12 +64129,12 @@ Service.prototype.end = function end(endedByRPC) {
 module.exports = Service;
 
 // extends Namespace
-var Namespace = __nccwpck_require__(6189);
+var Namespace = __nccwpck_require__(76189);
 ((Service.prototype = Object.create(Namespace.prototype)).constructor = Service).className = "Service";
 
-var Method = __nccwpck_require__(7771),
-    util   = __nccwpck_require__(7174),
-    rpc    = __nccwpck_require__(6444);
+var Method = __nccwpck_require__(57771),
+    util   = __nccwpck_require__(47174),
+    rpc    = __nccwpck_require__(86444);
 
 /**
  * Constructs a new service instance.
@@ -56122,7 +64296,7 @@ Service.prototype.create = function create(rpcImpl, requestDelimited, responseDe
 
 /***/ }),
 
-/***/ 1157:
+/***/ 61157:
 /***/ ((module) => {
 
 "use strict";
@@ -56533,7 +64707,7 @@ function tokenize(source, alternateCommentMode) {
 
 /***/ }),
 
-/***/ 8520:
+/***/ 38520:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -56541,23 +64715,23 @@ function tokenize(source, alternateCommentMode) {
 module.exports = Type;
 
 // extends Namespace
-var Namespace = __nccwpck_require__(6189);
+var Namespace = __nccwpck_require__(76189);
 ((Type.prototype = Object.create(Namespace.prototype)).constructor = Type).className = "Type";
 
-var Enum      = __nccwpck_require__(7732),
-    OneOf     = __nccwpck_require__(4408),
-    Field     = __nccwpck_require__(8213),
-    MapField  = __nccwpck_require__(7777),
-    Service   = __nccwpck_require__(1521),
-    Message   = __nccwpck_require__(8027),
-    Reader    = __nccwpck_require__(1011),
-    Writer    = __nccwpck_require__(3098),
-    util      = __nccwpck_require__(7174),
-    encoder   = __nccwpck_require__(3072),
-    decoder   = __nccwpck_require__(5871),
-    verifier  = __nccwpck_require__(4334),
-    converter = __nccwpck_require__(3617),
-    wrappers  = __nccwpck_require__(3216);
+var Enum      = __nccwpck_require__(17732),
+    OneOf     = __nccwpck_require__(44408),
+    Field     = __nccwpck_require__(48213),
+    MapField  = __nccwpck_require__(67777),
+    Service   = __nccwpck_require__(6178),
+    Message   = __nccwpck_require__(68027),
+    Reader    = __nccwpck_require__(41011),
+    Writer    = __nccwpck_require__(13098),
+    util      = __nccwpck_require__(47174),
+    encoder   = __nccwpck_require__(23072),
+    decoder   = __nccwpck_require__(65871),
+    verifier  = __nccwpck_require__(34334),
+    converter = __nccwpck_require__(13617),
+    wrappers  = __nccwpck_require__(63216);
 
 /**
  * Constructs a new reflected message type instance.
@@ -57130,7 +65304,7 @@ Type.d = function decorateType(typeName) {
 
 /***/ }),
 
-/***/ 288:
+/***/ 6581:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -57142,7 +65316,7 @@ Type.d = function decorateType(typeName) {
  */
 var types = exports;
 
-var util = __nccwpck_require__(7174);
+var util = __nccwpck_require__(47174);
 
 var s = [
     "double",   // 0
@@ -57334,7 +65508,7 @@ types.packed = bake([
 
 /***/ }),
 
-/***/ 7174:
+/***/ 47174:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -57344,16 +65518,16 @@ types.packed = bake([
  * Various utility functions.
  * @namespace
  */
-var util = module.exports = __nccwpck_require__(1241);
+var util = module.exports = __nccwpck_require__(71241);
 
-var roots = __nccwpck_require__(73);
+var roots = __nccwpck_require__(50073);
 
 var Type, // cyclic
     Enum;
 
-util.codegen = __nccwpck_require__(8882);
-util.fetch   = __nccwpck_require__(663);
-util.path    = __nccwpck_require__(4761);
+util.codegen = __nccwpck_require__(58882);
+util.fetch   = __nccwpck_require__(50663);
+util.path    = __nccwpck_require__(24761);
 
 /**
  * Node's fs module if available.
@@ -57472,7 +65646,7 @@ util.decorateType = function decorateType(ctor, typeName) {
 
     /* istanbul ignore next */
     if (!Type)
-        Type = __nccwpck_require__(8520);
+        Type = __nccwpck_require__(38520);
 
     var type = new Type(typeName || ctor.name);
     util.decorateRoot.add(type);
@@ -57497,7 +65671,7 @@ util.decorateEnum = function decorateEnum(object) {
 
     /* istanbul ignore next */
     if (!Enum)
-        Enum = __nccwpck_require__(7732);
+        Enum = __nccwpck_require__(17732);
 
     var enm = new Enum("Enum" + decorateEnumIndex++, object);
     util.decorateRoot.add(enm);
@@ -57516,6 +65690,9 @@ util.decorateEnum = function decorateEnum(object) {
 util.setProperty = function setProperty(dst, path, value) {
     function setProp(dst, path, value) {
         var part = path.shift();
+        if (part === "__proto__") {
+          return dst;
+        }
         if (path.length > 0) {
             dst[part] = setProp(dst[part] || {}, path, value);
         } else {
@@ -57544,7 +65721,7 @@ util.setProperty = function setProperty(dst, path, value) {
  */
 Object.defineProperty(util, "decorateRoot", {
     get: function() {
-        return roots["decorated"] || (roots["decorated"] = new (__nccwpck_require__(2614))());
+        return roots["decorated"] || (roots["decorated"] = new (__nccwpck_require__(32614))());
     }
 });
 
@@ -57558,7 +65735,7 @@ Object.defineProperty(util, "decorateRoot", {
 
 module.exports = LongBits;
 
-var util = __nccwpck_require__(1241);
+var util = __nccwpck_require__(71241);
 
 /**
  * Constructs new long bits.
@@ -57759,7 +65936,7 @@ LongBits.prototype.length = function length() {
 
 /***/ }),
 
-/***/ 1241:
+/***/ 71241:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -57770,22 +65947,22 @@ var util = exports;
 util.asPromise = __nccwpck_require__(252);
 
 // converts to / from base64 encoded strings
-util.base64 = __nccwpck_require__(6718);
+util.base64 = __nccwpck_require__(26718);
 
 // base class of rpc.Service
-util.EventEmitter = __nccwpck_require__(6850);
+util.EventEmitter = __nccwpck_require__(86850);
 
 // float handling accross browsers
-util.float = __nccwpck_require__(1843);
+util.float = __nccwpck_require__(21843);
 
 // requires modules optionally and hides the call from bundlers
-util.inquire = __nccwpck_require__(94);
+util.inquire = __nccwpck_require__(60094);
 
 // converts to / from utf8 encoded strings
-util.utf8 = __nccwpck_require__(9049);
+util.utf8 = __nccwpck_require__(99049);
 
 // provides a node-like buffer pool in the browser
-util.pool = __nccwpck_require__(7743);
+util.pool = __nccwpck_require__(47743);
 
 // utility to work with the low and high bits of a 64 bit value
 util.LongBits = __nccwpck_require__(8374);
@@ -58188,15 +66365,15 @@ util._configure = function() {
 
 /***/ }),
 
-/***/ 4334:
+/***/ 34334:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 module.exports = verifier;
 
-var Enum      = __nccwpck_require__(7732),
-    util      = __nccwpck_require__(7174);
+var Enum      = __nccwpck_require__(17732),
+    util      = __nccwpck_require__(47174);
 
 function invalid(field, expected) {
     return field.name + ": " + expected + (field.repeated && expected !== "array" ? "[]" : field.map && expected !== "object" ? "{k:"+field.keyType+"}" : "") + " expected";
@@ -58372,7 +66549,7 @@ function verifier(mtype) {
 
 /***/ }),
 
-/***/ 3216:
+/***/ 63216:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -58385,7 +66562,7 @@ function verifier(mtype) {
  */
 var wrappers = exports;
 
-var Message = __nccwpck_require__(8027);
+var Message = __nccwpck_require__(68027);
 
 /**
  * From object converter part of an {@link IWrapper}.
@@ -58482,14 +66659,14 @@ wrappers[".google.protobuf.Any"] = {
 
 /***/ }),
 
-/***/ 3098:
+/***/ 13098:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 module.exports = Writer;
 
-var util      = __nccwpck_require__(1241);
+var util      = __nccwpck_require__(71241);
 
 var BufferWriter; // cyclic
 
@@ -58955,7 +67132,7 @@ Writer._configure = function(BufferWriter_) {
 
 /***/ }),
 
-/***/ 1863:
+/***/ 41863:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -58963,10 +67140,10 @@ Writer._configure = function(BufferWriter_) {
 module.exports = BufferWriter;
 
 // extends Writer
-var Writer = __nccwpck_require__(3098);
+var Writer = __nccwpck_require__(13098);
 (BufferWriter.prototype = Object.create(Writer.prototype)).constructor = BufferWriter;
 
-var util = __nccwpck_require__(1241);
+var util = __nccwpck_require__(71241);
 
 /**
  * Constructs a new buffer writer instance.
@@ -59048,7 +67225,7 @@ BufferWriter._configure();
 
 /***/ }),
 
-/***/ 1359:
+/***/ 41359:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -59082,7 +67259,7 @@ BufferWriter._configure();
 
 /*<replacement>*/
 
-var pna = __nccwpck_require__(7810);
+var pna = __nccwpck_require__(47810);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -59097,12 +67274,12 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var util = Object.create(__nccwpck_require__(5898));
-util.inherits = __nccwpck_require__(4124);
+var util = Object.create(__nccwpck_require__(95898));
+util.inherits = __nccwpck_require__(44124);
 /*</replacement>*/
 
-var Readable = __nccwpck_require__(1433);
-var Writable = __nccwpck_require__(6993);
+var Readable = __nccwpck_require__(51433);
+var Writable = __nccwpck_require__(26993);
 
 util.inherits(Duplex, Readable);
 
@@ -59186,7 +67363,7 @@ Duplex.prototype._destroy = function (err, cb) {
 
 /***/ }),
 
-/***/ 1542:
+/***/ 81542:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -59219,11 +67396,11 @@ Duplex.prototype._destroy = function (err, cb) {
 
 module.exports = PassThrough;
 
-var Transform = __nccwpck_require__(4415);
+var Transform = __nccwpck_require__(34415);
 
 /*<replacement>*/
-var util = Object.create(__nccwpck_require__(5898));
-util.inherits = __nccwpck_require__(4124);
+var util = Object.create(__nccwpck_require__(95898));
+util.inherits = __nccwpck_require__(44124);
 /*</replacement>*/
 
 util.inherits(PassThrough, Transform);
@@ -59240,7 +67417,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 
 /***/ }),
 
-/***/ 1433:
+/***/ 51433:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -59269,13 +67446,13 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 
 /*<replacement>*/
 
-var pna = __nccwpck_require__(7810);
+var pna = __nccwpck_require__(47810);
 /*</replacement>*/
 
 module.exports = Readable;
 
 /*<replacement>*/
-var isArray = __nccwpck_require__(893);
+var isArray = __nccwpck_require__(20893);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -59285,7 +67462,7 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 
 /*<replacement>*/
-var EE = __nccwpck_require__(8614).EventEmitter;
+var EE = __nccwpck_require__(28614).EventEmitter;
 
 var EElistenerCount = function (emitter, type) {
   return emitter.listeners(type).length;
@@ -59293,12 +67470,12 @@ var EElistenerCount = function (emitter, type) {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __nccwpck_require__(2387);
+var Stream = __nccwpck_require__(62387);
 /*</replacement>*/
 
 /*<replacement>*/
 
-var Buffer = __nccwpck_require__(1867).Buffer;
+var Buffer = __nccwpck_require__(21867).Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -59310,12 +67487,12 @@ function _isUint8Array(obj) {
 /*</replacement>*/
 
 /*<replacement>*/
-var util = Object.create(__nccwpck_require__(5898));
-util.inherits = __nccwpck_require__(4124);
+var util = Object.create(__nccwpck_require__(95898));
+util.inherits = __nccwpck_require__(44124);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __nccwpck_require__(1669);
+var debugUtil = __nccwpck_require__(31669);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -59324,8 +67501,8 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
-var BufferList = __nccwpck_require__(7053);
-var destroyImpl = __nccwpck_require__(7049);
+var BufferList = __nccwpck_require__(27053);
+var destroyImpl = __nccwpck_require__(97049);
 var StringDecoder;
 
 util.inherits(Readable, Stream);
@@ -59345,7 +67522,7 @@ function prependListener(emitter, event, fn) {
 }
 
 function ReadableState(options, stream) {
-  Duplex = Duplex || __nccwpck_require__(1359);
+  Duplex = Duplex || __nccwpck_require__(41359);
 
   options = options || {};
 
@@ -59415,14 +67592,14 @@ function ReadableState(options, stream) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __nccwpck_require__(4841)/* .StringDecoder */ .s;
+    if (!StringDecoder) StringDecoder = __nccwpck_require__(94841)/* .StringDecoder */ .s;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
 }
 
 function Readable(options) {
-  Duplex = Duplex || __nccwpck_require__(1359);
+  Duplex = Duplex || __nccwpck_require__(41359);
 
   if (!(this instanceof Readable)) return new Readable(options);
 
@@ -59571,7 +67748,7 @@ Readable.prototype.isPaused = function () {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __nccwpck_require__(4841)/* .StringDecoder */ .s;
+  if (!StringDecoder) StringDecoder = __nccwpck_require__(94841)/* .StringDecoder */ .s;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
   return this;
@@ -60266,7 +68443,7 @@ function indexOf(xs, x) {
 
 /***/ }),
 
-/***/ 4415:
+/***/ 34415:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -60337,11 +68514,11 @@ function indexOf(xs, x) {
 
 module.exports = Transform;
 
-var Duplex = __nccwpck_require__(1359);
+var Duplex = __nccwpck_require__(41359);
 
 /*<replacement>*/
-var util = Object.create(__nccwpck_require__(5898));
-util.inherits = __nccwpck_require__(4124);
+var util = Object.create(__nccwpck_require__(95898));
+util.inherits = __nccwpck_require__(44124);
 /*</replacement>*/
 
 util.inherits(Transform, Duplex);
@@ -60487,7 +68664,7 @@ function done(stream, er, data) {
 
 /***/ }),
 
-/***/ 6993:
+/***/ 26993:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -60520,7 +68697,7 @@ function done(stream, er, data) {
 
 /*<replacement>*/
 
-var pna = __nccwpck_require__(7810);
+var pna = __nccwpck_require__(47810);
 /*</replacement>*/
 
 module.exports = Writable;
@@ -60557,23 +68734,23 @@ var Duplex;
 Writable.WritableState = WritableState;
 
 /*<replacement>*/
-var util = Object.create(__nccwpck_require__(5898));
-util.inherits = __nccwpck_require__(4124);
+var util = Object.create(__nccwpck_require__(95898));
+util.inherits = __nccwpck_require__(44124);
 /*</replacement>*/
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __nccwpck_require__(7127)
+  deprecate: __nccwpck_require__(65278)
 };
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __nccwpck_require__(2387);
+var Stream = __nccwpck_require__(62387);
 /*</replacement>*/
 
 /*<replacement>*/
 
-var Buffer = __nccwpck_require__(1867).Buffer;
+var Buffer = __nccwpck_require__(21867).Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -60584,14 +68761,14 @@ function _isUint8Array(obj) {
 
 /*</replacement>*/
 
-var destroyImpl = __nccwpck_require__(7049);
+var destroyImpl = __nccwpck_require__(97049);
 
 util.inherits(Writable, Stream);
 
 function nop() {}
 
 function WritableState(options, stream) {
-  Duplex = Duplex || __nccwpck_require__(1359);
+  Duplex = Duplex || __nccwpck_require__(41359);
 
   options = options || {};
 
@@ -60741,7 +68918,7 @@ if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.protot
 }
 
 function Writable(options) {
-  Duplex = Duplex || __nccwpck_require__(1359);
+  Duplex = Duplex || __nccwpck_require__(41359);
 
   // Writable ctor is applied to Duplexes, too.
   // `realHasInstance` is necessary because using plain `instanceof`
@@ -61181,7 +69358,7 @@ Writable.prototype._destroy = function (err, cb) {
 
 /***/ }),
 
-/***/ 7053:
+/***/ 27053:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -61189,8 +69366,8 @@ Writable.prototype._destroy = function (err, cb) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Buffer = __nccwpck_require__(1867).Buffer;
-var util = __nccwpck_require__(1669);
+var Buffer = __nccwpck_require__(21867).Buffer;
+var util = __nccwpck_require__(31669);
 
 function copyBuffer(src, target, offset) {
   src.copy(target, offset);
@@ -61267,7 +69444,7 @@ if (util && util.inspect && util.inspect.custom) {
 
 /***/ }),
 
-/***/ 7049:
+/***/ 97049:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -61275,7 +69452,7 @@ if (util && util.inspect && util.inspect.custom) {
 
 /*<replacement>*/
 
-var pna = __nccwpck_require__(7810);
+var pna = __nccwpck_require__(47810);
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API
@@ -61348,18 +69525,18 @@ module.exports = {
 
 /***/ }),
 
-/***/ 2387:
+/***/ 62387:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-module.exports = __nccwpck_require__(2413);
+module.exports = __nccwpck_require__(92413);
 
 
 /***/ }),
 
-/***/ 1642:
+/***/ 51642:
 /***/ ((module, exports, __nccwpck_require__) => {
 
-var Stream = __nccwpck_require__(2413);
+var Stream = __nccwpck_require__(92413);
 if (process.env.READABLE_STREAM === 'disable' && Stream) {
   module.exports = Stream;
   exports = module.exports = Stream.Readable;
@@ -61370,27 +69547,27 @@ if (process.env.READABLE_STREAM === 'disable' && Stream) {
   exports.PassThrough = Stream.PassThrough;
   exports.Stream = Stream;
 } else {
-  exports = module.exports = __nccwpck_require__(1433);
+  exports = module.exports = __nccwpck_require__(51433);
   exports.Stream = Stream || exports;
   exports.Readable = exports;
-  exports.Writable = __nccwpck_require__(6993);
-  exports.Duplex = __nccwpck_require__(1359);
-  exports.Transform = __nccwpck_require__(4415);
-  exports.PassThrough = __nccwpck_require__(1542);
+  exports.Writable = __nccwpck_require__(26993);
+  exports.Duplex = __nccwpck_require__(41359);
+  exports.Transform = __nccwpck_require__(34415);
+  exports.PassThrough = __nccwpck_require__(81542);
 }
 
 
 /***/ }),
 
-/***/ 4959:
+/***/ 14959:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const assert = __nccwpck_require__(2357)
-const path = __nccwpck_require__(5622)
-const fs = __nccwpck_require__(5747)
+const assert = __nccwpck_require__(42357)
+const path = __nccwpck_require__(85622)
+const fs = __nccwpck_require__(35747)
 let glob = undefined
 try {
-  glob = __nccwpck_require__(1957)
+  glob = __nccwpck_require__(91957)
 } catch (_err) {
   // treat glob as optional.
 }
@@ -61749,11 +69926,11 @@ rimraf.sync = rimrafSync
 
 /***/ }),
 
-/***/ 1867:
+/***/ 21867:
 /***/ ((module, exports, __nccwpck_require__) => {
 
 /* eslint-disable node/no-deprecated-api */
-var buffer = __nccwpck_require__(4293)
+var buffer = __nccwpck_require__(64293)
 var Buffer = buffer.Buffer
 
 // alternative to using Object.keys for old browsers
@@ -61818,7 +69995,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 /***/ }),
 
-/***/ 9044:
+/***/ 89044:
 /***/ ((module) => {
 
 "use strict";
@@ -61833,7 +70010,7 @@ module.exports = typeof setImmediate === 'function' ? setImmediate :
 
 /***/ }),
 
-/***/ 4841:
+/***/ 94841:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -61862,7 +70039,7 @@ module.exports = typeof setImmediate === 'function' ? setImmediate :
 
 /*<replacement>*/
 
-var Buffer = __nccwpck_require__(1867).Buffer;
+var Buffer = __nccwpck_require__(21867).Buffer;
 /*</replacement>*/
 
 var isEncoding = Buffer.isEncoding || function (encoding) {
@@ -62136,14 +70313,14 @@ function simpleEnd(buf) {
 
 /***/ }),
 
-/***/ 9318:
+/***/ 59318:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-const os = __nccwpck_require__(2087);
-const tty = __nccwpck_require__(3867);
-const hasFlag = __nccwpck_require__(1621);
+const os = __nccwpck_require__(12087);
+const tty = __nccwpck_require__(33867);
+const hasFlag = __nccwpck_require__(31621);
 
 const {env} = process;
 
@@ -62279,13 +70456,13 @@ module.exports = {
 
 /***/ }),
 
-/***/ 8065:
+/***/ 68065:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-const { promisify } = __nccwpck_require__(1669);
+const { promisify } = __nccwpck_require__(31669);
 const tmp = __nccwpck_require__(8517);
 
 // file
@@ -62351,12 +70528,12 @@ module.exports.setGracefulCleanup = tmp.setGracefulCleanup;
 /*
  * Module dependencies.
  */
-const fs = __nccwpck_require__(5747);
-const os = __nccwpck_require__(2087);
-const path = __nccwpck_require__(5622);
-const crypto = __nccwpck_require__(6417);
+const fs = __nccwpck_require__(35747);
+const os = __nccwpck_require__(12087);
+const path = __nccwpck_require__(85622);
+const crypto = __nccwpck_require__(76417);
 const _c = { fs: fs.constants, os: os.constants };
-const rimraf = __nccwpck_require__(4959);
+const rimraf = __nccwpck_require__(14959);
 
 /*
  * The working inner variables.
@@ -63124,14 +71301,14 @@ module.exports.setGracefulCleanup = setGracefulCleanup;
 
 /***/ }),
 
-/***/ 4256:
+/***/ 84256:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var punycode = __nccwpck_require__(4213);
-var mappingTable = __nccwpck_require__(68);
+var punycode = __nccwpck_require__(94213);
+var mappingTable = __nccwpck_require__(80068);
 
 var PROCESSING_OPTIONS = {
   TRANSITIONAL: 0,
@@ -63325,27 +71502,27 @@ module.exports.PROCESSING_OPTIONS = PROCESSING_OPTIONS;
 
 /***/ }),
 
-/***/ 4294:
+/***/ 74294:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-module.exports = __nccwpck_require__(4219);
+module.exports = __nccwpck_require__(54219);
 
 
 /***/ }),
 
-/***/ 4219:
+/***/ 54219:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var net = __nccwpck_require__(1631);
+var net = __nccwpck_require__(11631);
 var tls = __nccwpck_require__(4016);
-var http = __nccwpck_require__(8605);
-var https = __nccwpck_require__(7211);
-var events = __nccwpck_require__(8614);
-var assert = __nccwpck_require__(2357);
-var util = __nccwpck_require__(1669);
+var http = __nccwpck_require__(98605);
+var https = __nccwpck_require__(57211);
+var events = __nccwpck_require__(28614);
+var assert = __nccwpck_require__(42357);
+var util = __nccwpck_require__(31669);
 
 
 exports.httpOverHttp = httpOverHttp;
@@ -63605,7 +71782,7 @@ exports.debug = debug; // for test
 
 /***/ }),
 
-/***/ 5030:
+/***/ 45030:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -63631,7 +71808,7 @@ exports.getUserAgent = getUserAgent;
 
 /***/ }),
 
-/***/ 7127:
+/***/ 65278:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
@@ -63639,12 +71816,12 @@ exports.getUserAgent = getUserAgent;
  * For Node.js, simply re-export the core `util.deprecate` function.
  */
 
-module.exports = __nccwpck_require__(1669).deprecate;
+module.exports = __nccwpck_require__(31669).deprecate;
 
 
 /***/ }),
 
-/***/ 4886:
+/***/ 54886:
 /***/ ((module) => {
 
 "use strict";
@@ -63841,7 +72018,7 @@ conversions["RegExp"] = function (V, opts) {
 
 /***/ }),
 
-/***/ 7537:
+/***/ 97537:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -64049,15 +72226,15 @@ exports.implementation = class URLImpl {
 
 /***/ }),
 
-/***/ 3394:
+/***/ 63394:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-const conversions = __nccwpck_require__(4886);
-const utils = __nccwpck_require__(3185);
-const Impl = __nccwpck_require__(7537);
+const conversions = __nccwpck_require__(54886);
+const utils = __nccwpck_require__(83185);
+const Impl = __nccwpck_require__(97537);
 
 const impl = utils.implSymbol;
 
@@ -64253,13 +72430,13 @@ module.exports = {
 
 /***/ }),
 
-/***/ 8665:
+/***/ 28665:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-exports.URL = __nccwpck_require__(3394).interface;
+exports.URL = __nccwpck_require__(63394).interface;
 exports.serializeURL = __nccwpck_require__(2158).serializeURL;
 exports.serializeURLOrigin = __nccwpck_require__(2158).serializeURLOrigin;
 exports.basicURLParse = __nccwpck_require__(2158).basicURLParse;
@@ -64277,8 +72454,8 @@ exports.parseURL = __nccwpck_require__(2158).parseURL;
 
 "use strict";
 
-const punycode = __nccwpck_require__(4213);
-const tr46 = __nccwpck_require__(4256);
+const punycode = __nccwpck_require__(94213);
+const tr46 = __nccwpck_require__(84256);
 
 const specialSchemes = {
   ftp: 21,
@@ -65577,7 +73754,7 @@ module.exports.parseURL = function (input, options) {
 
 /***/ }),
 
-/***/ 3185:
+/***/ 83185:
 /***/ ((module) => {
 
 "use strict";
@@ -65605,7 +73782,7 @@ module.exports.implForWrapper = function (wrapper) {
 
 /***/ }),
 
-/***/ 2940:
+/***/ 62940:
 /***/ ((module) => {
 
 // Returns a wrapper function that returns a wrapped callback
@@ -65645,7 +73822,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 2877:
+/***/ 22877:
 /***/ ((module) => {
 
 module.exports = eval("require")("encoding");
@@ -65653,7 +73830,7 @@ module.exports = eval("require")("encoding");
 
 /***/ }),
 
-/***/ 8155:
+/***/ 78155:
 /***/ ((module) => {
 
 "use strict";
@@ -65661,7 +73838,7 @@ module.exports = JSON.parse('{"nested":{"google":{"nested":{"protobuf":{"nested"
 
 /***/ }),
 
-/***/ 333:
+/***/ 40333:
 /***/ ((module) => {
 
 "use strict";
@@ -65669,7 +73846,7 @@ module.exports = JSON.parse('{"nested":{"google":{"nested":{"protobuf":{"nested"
 
 /***/ }),
 
-/***/ 6663:
+/***/ 56663:
 /***/ ((module) => {
 
 "use strict";
@@ -65677,7 +73854,7 @@ module.exports = JSON.parse('{"nested":{"google":{"nested":{"protobuf":{"nested"
 
 /***/ }),
 
-/***/ 5715:
+/***/ 75715:
 /***/ ((module) => {
 
 "use strict";
@@ -65685,7 +73862,7 @@ module.exports = JSON.parse('{"nested":{"google":{"nested":{"protobuf":{"nested"
 
 /***/ }),
 
-/***/ 68:
+/***/ 80068:
 /***/ ((module) => {
 
 "use strict";
@@ -65693,7 +73870,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 
 /***/ }),
 
-/***/ 2357:
+/***/ 42357:
 /***/ ((module) => {
 
 "use strict";
@@ -65701,7 +73878,7 @@ module.exports = require("assert");
 
 /***/ }),
 
-/***/ 4293:
+/***/ 64293:
 /***/ ((module) => {
 
 "use strict";
@@ -65709,7 +73886,7 @@ module.exports = require("buffer");
 
 /***/ }),
 
-/***/ 6417:
+/***/ 76417:
 /***/ ((module) => {
 
 "use strict";
@@ -65717,7 +73894,7 @@ module.exports = require("crypto");
 
 /***/ }),
 
-/***/ 881:
+/***/ 40881:
 /***/ ((module) => {
 
 "use strict";
@@ -65725,7 +73902,7 @@ module.exports = require("dns");
 
 /***/ }),
 
-/***/ 8614:
+/***/ 28614:
 /***/ ((module) => {
 
 "use strict";
@@ -65733,7 +73910,7 @@ module.exports = require("events");
 
 /***/ }),
 
-/***/ 5747:
+/***/ 35747:
 /***/ ((module) => {
 
 "use strict";
@@ -65741,7 +73918,7 @@ module.exports = require("fs");
 
 /***/ }),
 
-/***/ 8605:
+/***/ 98605:
 /***/ ((module) => {
 
 "use strict";
@@ -65749,7 +73926,7 @@ module.exports = require("http");
 
 /***/ }),
 
-/***/ 7565:
+/***/ 97565:
 /***/ ((module) => {
 
 "use strict";
@@ -65757,7 +73934,7 @@ module.exports = require("http2");
 
 /***/ }),
 
-/***/ 7211:
+/***/ 57211:
 /***/ ((module) => {
 
 "use strict";
@@ -65765,7 +73942,7 @@ module.exports = require("https");
 
 /***/ }),
 
-/***/ 1631:
+/***/ 11631:
 /***/ ((module) => {
 
 "use strict";
@@ -65773,7 +73950,7 @@ module.exports = require("net");
 
 /***/ }),
 
-/***/ 2087:
+/***/ 12087:
 /***/ ((module) => {
 
 "use strict";
@@ -65781,7 +73958,7 @@ module.exports = require("os");
 
 /***/ }),
 
-/***/ 5622:
+/***/ 85622:
 /***/ ((module) => {
 
 "use strict";
@@ -65789,7 +73966,7 @@ module.exports = require("path");
 
 /***/ }),
 
-/***/ 630:
+/***/ 70630:
 /***/ ((module) => {
 
 "use strict";
@@ -65797,7 +73974,7 @@ module.exports = require("perf_hooks");
 
 /***/ }),
 
-/***/ 4213:
+/***/ 94213:
 /***/ ((module) => {
 
 "use strict";
@@ -65805,7 +73982,7 @@ module.exports = require("punycode");
 
 /***/ }),
 
-/***/ 1058:
+/***/ 51058:
 /***/ ((module) => {
 
 "use strict";
@@ -65813,7 +73990,7 @@ module.exports = require("readline");
 
 /***/ }),
 
-/***/ 2413:
+/***/ 92413:
 /***/ ((module) => {
 
 "use strict";
@@ -65829,7 +74006,7 @@ module.exports = require("tls");
 
 /***/ }),
 
-/***/ 3867:
+/***/ 33867:
 /***/ ((module) => {
 
 "use strict";
@@ -65837,7 +74014,7 @@ module.exports = require("tty");
 
 /***/ }),
 
-/***/ 8835:
+/***/ 78835:
 /***/ ((module) => {
 
 "use strict";
@@ -65845,7 +74022,7 @@ module.exports = require("url");
 
 /***/ }),
 
-/***/ 1669:
+/***/ 31669:
 /***/ ((module) => {
 
 "use strict";
@@ -65853,7 +74030,7 @@ module.exports = require("util");
 
 /***/ }),
 
-/***/ 8761:
+/***/ 78761:
 /***/ ((module) => {
 
 "use strict";
@@ -65903,7 +74080,7 @@ module.exports = require("zlib");
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(4822);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(94822);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
