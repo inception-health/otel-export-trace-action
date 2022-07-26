@@ -55,6 +55,7 @@ jobs:
           file_pattern: dist
   release-please:
     runs-on: ubuntu-latest
+    needs: [update-dist]
     steps:
       - id: release
         uses: GoogleCloudPlatform/release-please-action@v2
