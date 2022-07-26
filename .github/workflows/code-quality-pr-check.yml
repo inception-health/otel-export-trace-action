@@ -64,6 +64,6 @@ jobs:
         with:
           otlpEndpoint: "TEST"
           otlpHeaders: "TEST"
-          githubToken: "TEST"
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
         env:
           OTEL_CONSOLE_ONLY: "true"
