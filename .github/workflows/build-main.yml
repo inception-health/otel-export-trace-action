@@ -60,6 +60,6 @@ jobs:
       - id: release
         uses: GoogleCloudPlatform/release-please-action@v2
         with:
-          token: "${{ secrets.BUILD_PATH }}"
+          token: "${{ secrets.BUILD_PAT }}"
           release-type: node
           package-name: otel-export-trace
