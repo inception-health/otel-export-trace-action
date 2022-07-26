@@ -62,6 +62,7 @@ jobs:
       - name: export trace
         uses: ./
         with:
-          otlpEndpoint: ""
-          otlpHeaders: ""
-          githubToken: ""
+          otlpEndpoint: "TEST"
+          otlpHeaders: "TEST"
+          githubToken: "TEST"
+          devMode: "true"

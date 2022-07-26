@@ -254,13 +254,14 @@ async function run() {
     const ghContext = github.context;
     const otlpEndpoint = core.getInput("otlpEndpoint");
     const otlpHeaders = core.getInput("otlpHeaders");
+    const devMode = core.getInput("devMode") === "true";
     const runId = parseInt(core.getInput("runId") || `${ghContext.runId}`);
     const ghToken = core.getInput("githubToken") || process.env.GITHUB_TOKEN || "";
     const octokit = github.getOctokit(ghToken);
     core.info(`Get Workflow Run Jobs for ${runId}`);
     const workflowRunJobs = await (0, github_1.getWorkflowRunJobs)(ghContext, octokit, runId);
     core.info(`Create Trace Provider for ${otlpEndpoint}`);
-    const provider = (0, tracing_1.createTracerProvider)(otlpEndpoint, otlpHeaders, workflowRunJobs);
+    const provider = (0, tracing_1.createTracerProvider)(otlpEndpoint, otlpHeaders, workflowRunJobs, devMode);
     try {
         core.info(`Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`);
         const spanContext = await (0, tracing_1.traceWorkflowRunJobs)({
@@ -752,7 +753,7 @@ function stringToHeader(value) {
         return result;
     }, {});
 }
-function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs) {
+function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs, devMode = false) {
     const serviceName = workflowRunJobs.workflowRun.name ||
         `${workflowRunJobs.workflowRun.workflow_id}`;
     const serviceInstanceId = [
@@ -772,7 +773,7 @@ function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs) {
         }),
     });
     let exporter = new sdk_trace_base_1.ConsoleSpanExporter();
-    if (otlpEndpoint && otlpHeaders) {
+    if (!devMode) {
         exporter = new exporter_trace_otlp_grpc_1.OTLPTraceExporter({
             url: otlpEndpoint,
             credentials: grpc.credentials.createSsl(),

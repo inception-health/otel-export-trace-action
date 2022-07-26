@@ -30,7 +30,8 @@ function stringToHeader(value: string): StringDict {
 export function createTracerProvider(
   otlpEndpoint: string,
   otlpHeaders: string,
-  workflowRunJobs: WorkflowRunJobs
+  workflowRunJobs: WorkflowRunJobs,
+  devMode = false
 ): BasicTracerProvider {
   const serviceName =
     workflowRunJobs.workflowRun.name ||
@@ -55,7 +56,7 @@ export function createTracerProvider(
 
   let exporter: SpanExporter = new ConsoleSpanExporter();
 
-  if (otlpEndpoint && otlpHeaders) {
+  if (!devMode) {
     exporter = new OTLPTraceExporter({
       url: otlpEndpoint,
       credentials: grpc.credentials.createSsl(),
