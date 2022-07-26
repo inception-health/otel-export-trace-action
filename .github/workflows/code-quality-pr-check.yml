@@ -53,7 +53,7 @@ jobs:
           type: "junit"
           githubToken: ${{ secrets.GITHUB_TOKEN }}
   otel-export-trace:
-    needs: [update-dist, tests, lint-and-format]
+    needs: [tests, lint-and-format]
     if: always()
     name: OpenTelemetry Export Trace
     runs-on: ubuntu-latest
