@@ -742,10 +742,14 @@ function stringToHeader(value) {
     const pairs = value.split(",");
     return pairs.reduce((result, item) => {
         const [key, value] = item.split("=");
-        return {
-            ...result,
-            [key.trim()]: value.trim(),
-        };
+        if (key && value) {
+            return {
+                ...result,
+                [key.trim()]: value.trim(),
+            };
+        }
+        // istanbul ignore next
+        return result;
     }, {});
 }
 function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs) {
@@ -767,11 +771,15 @@ function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs) {
             [semantic_conventions_1.SemanticResourceAttributes.SERVICE_VERSION]: serviceVersion,
         }),
     });
-    provider.addSpanProcessor(new sdk_trace_base_1.SimpleSpanProcessor(new exporter_trace_otlp_grpc_1.OTLPTraceExporter({
-        url: otlpEndpoint,
-        credentials: grpc.credentials.createSsl(),
-        metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
-    })));
+    let exporter = new sdk_trace_base_1.ConsoleSpanExporter();
+    if (otlpEndpoint && otlpHeaders) {
+        exporter = new exporter_trace_otlp_grpc_1.OTLPTraceExporter({
+            url: otlpEndpoint,
+            credentials: grpc.credentials.createSsl(),
+            metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
+        });
+    }
+    provider.addSpanProcessor(new sdk_trace_base_1.SimpleSpanProcessor(exporter));
     provider.register();
     return provider;
 }
