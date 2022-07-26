@@ -10,6 +10,8 @@ import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import { WorkflowRunJobs } from "../github";
 import { Resource } from "@opentelemetry/resources";
 
+const OTEL_CONSOLE_ONLY = process.env.OTEL_CONSOLE_ONLY === "true";
+
 type StringDict = { [key: string]: string };
 
 function stringToHeader(value: string): StringDict {
@@ -30,8 +32,7 @@ function stringToHeader(value: string): StringDict {
 export function createTracerProvider(
   otlpEndpoint: string,
   otlpHeaders: string,
-  workflowRunJobs: WorkflowRunJobs,
-  devMode = false
+  workflowRunJobs: WorkflowRunJobs
 ): BasicTracerProvider {
   const serviceName =
     workflowRunJobs.workflowRun.name ||
@@ -56,7 +57,7 @@ export function createTracerProvider(
 
   let exporter: SpanExporter = new ConsoleSpanExporter();
 
-  if (!devMode) {
+  if (!OTEL_CONSOLE_ONLY) {
     exporter = new OTLPTraceExporter({
       url: otlpEndpoint,
       credentials: grpc.credentials.createSsl(),

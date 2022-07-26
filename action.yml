@@ -19,10 +19,6 @@ inputs:
   runId:
     description: Workflow Run ID to Export. Defaults to env.GITHUB_RUN_ID
     required: false
-  devMode:
-    description: Uses ConsoleSpanExporter instead of GRPC for dev testing. Set to "true" to enable. Defaults to "false".
-    required: false
-    default: "false"
 outputs:
   traceId:
     description: The OpenTelemetry Trace ID for this Trace

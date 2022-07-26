@@ -254,14 +254,13 @@ async function run() {
     const ghContext = github.context;
     const otlpEndpoint = core.getInput("otlpEndpoint");
     const otlpHeaders = core.getInput("otlpHeaders");
-    const devMode = core.getInput("devMode") === "true";
     const runId = parseInt(core.getInput("runId") || `${ghContext.runId}`);
     const ghToken = core.getInput("githubToken") || process.env.GITHUB_TOKEN || "";
     const octokit = github.getOctokit(ghToken);
     core.info(`Get Workflow Run Jobs for ${runId}`);
     const workflowRunJobs = await (0, github_1.getWorkflowRunJobs)(ghContext, octokit, runId);
     core.info(`Create Trace Provider for ${otlpEndpoint}`);
-    const provider = (0, tracing_1.createTracerProvider)(otlpEndpoint, otlpHeaders, workflowRunJobs, devMode);
+    const provider = (0, tracing_1.createTracerProvider)(otlpEndpoint, otlpHeaders, workflowRunJobs);
     try {
         core.info(`Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`);
         const spanContext = await (0, tracing_1.traceWorkflowRunJobs)({
@@ -739,6 +738,7 @@ const sdk_trace_base_1 = __nccwpck_require__(29253);
 const exporter_trace_otlp_grpc_1 = __nccwpck_require__(60160);
 const semantic_conventions_1 = __nccwpck_require__(67275);
 const resources_1 = __nccwpck_require__(3871);
+const OTEL_CONSOLE_ONLY = process.env.OTEL_CONSOLE_ONLY === "true";
 function stringToHeader(value) {
     const pairs = value.split(",");
     return pairs.reduce((result, item) => {
@@ -753,7 +753,7 @@ function stringToHeader(value) {
         return result;
     }, {});
 }
-function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs, devMode = false) {
+function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs) {
     const serviceName = workflowRunJobs.workflowRun.name ||
         `${workflowRunJobs.workflowRun.workflow_id}`;
     const serviceInstanceId = [
@@ -773,7 +773,7 @@ function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs, devMod
         }),
     });
     let exporter = new sdk_trace_base_1.ConsoleSpanExporter();
-    if (!devMode) {
+    if (!OTEL_CONSOLE_ONLY) {
         exporter = new exporter_trace_otlp_grpc_1.OTLPTraceExporter({
             url: otlpEndpoint,
             credentials: grpc.credentials.createSsl(),

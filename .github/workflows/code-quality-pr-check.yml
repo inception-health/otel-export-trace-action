@@ -65,4 +65,5 @@ jobs:
           otlpEndpoint: "TEST"
           otlpHeaders: "TEST"
           githubToken: "TEST"
-          devMode: "true"
+        env:
+          OTEL_CONSOLE_ONLY: "true"
