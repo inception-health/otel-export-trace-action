@@ -51,6 +51,18 @@ describe("createTracerProvider", () => {
       ).toEqual(`${mockWorkflowRunJobs.workflowRun.id}`);
     });
 
+    it("has service.name resource as a custom parameter", () => {
+      subject = createTracerProvider(
+        "localhost",
+        "test=foo",
+        mockWorkflowRunJobs,
+        "custom-service-name"
+      );
+      expect(
+        subject.resource.attributes[SemanticResourceAttributes.SERVICE_NAME]
+      ).toEqual("custom-service-name");
+    });
+
     it("has service.instance.id resource", () => {
       subject = createTracerProvider(
         "localhost",

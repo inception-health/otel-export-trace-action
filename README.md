@@ -113,12 +113,13 @@ jobs:
 
 ### Action Inputs
 
-| name         | description                                                                    | required | default           |
-| ------------ | ------------------------------------------------------------------------------ | -------- | ----------------- |
-| otlpEndpoint | The destination endpoint to export OpenTelemetry traces to                     | true     |                   |
-| otlpHeaders  | Network Headers for the destination endpoint to export OpenTelemetry traces to | true     |                   |
-| githubToken  | The repository token with Workflow permissions. Not required for public repos  | false    |                   |
-| runId        | Workflow Run ID to Export                                                      | false    | env.GITHUB_RUN_ID |
+| name            | description                                                                    | required | default           |
+| --------------- | ------------------------------------------------------------------------------ | -------- | ----------------- |
+| otlpEndpoint    | The destination endpoint to export OpenTelemetry traces to                     | true     |                   |
+| otlpHeaders     | Network Headers for the destination endpoint to export OpenTelemetry traces to | true     |                   |
+| otelServiceName | OpenTelemetry service name                                                     | false    |                   |
+| githubToken     | The repository token with Workflow permissions. Not required for public repos  | false    |                   |
+| runId           | Workflow Run ID to Export                                                      | false    | env.GITHUB_RUN_ID |
 
 ### Action Outputs
 
