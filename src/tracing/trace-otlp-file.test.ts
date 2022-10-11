@@ -42,13 +42,13 @@ describe("traceJunitArtifact", () => {
     return tracerProvider.shutdown();
   });
 
-  it("testsuites otlp trace", async () => {
-    const junitFilePath = path.join(
-      "src",
-      "tracing",
-      "__assets__",
-      "testsuites-trace.otlp"
-    );
+  it.each([
+    ["v1-0-1-fail-test-trace.otlp", api.SpanStatusCode.ERROR],
+    ["v1-0-1-success-trace.otlp", api.SpanStatusCode.ERROR],
+    ["v1-0-1-testsuite-trace.otlp", api.SpanStatusCode.ERROR],
+    ["v1-0-1-testsuites-trace.otlp", api.SpanStatusCode.ERROR],
+  ])("$0 otlp trace", async (file, statusCode) => {
+    const junitFilePath = path.join("src", "tracing", "__assets__", file);
     const startTime = new Date("2022-01-22T04:45:30");
 
     const span = tracer.startSpan(
@@ -75,7 +75,7 @@ describe("traceJunitArtifact", () => {
       expect(s.endTime[0]).toBeGreaterThanOrEqual(s.startTime[0]);
       expect(s.endTime[1]).toBeGreaterThanOrEqual(s.startTime[1]);
       expect(s.status).toBeDefined();
-      if (s.status.code === api.SpanStatusCode.ERROR) {
+      if (s.status.code === statusCode) {
         expect(s.attributes.error).toBeTruthy();
       } else {
         expect(s.attributes.error).toBeFalsy();
@@ -83,85 +83,126 @@ describe("traceJunitArtifact", () => {
     });
   });
 
-  it("testsuite otlp trace", async () => {
-    const junitFilePath = path.join(
-      "src",
-      "tracing",
-      "__assets__",
-      "testsuite-trace.otlp"
-    );
-    const startTime = new Date("2022-01-22T04:45:30");
+  // it("testsuites otlp trace", async () => {
+  //   const junitFilePath = path.join(
+  //     "src",
+  //     "tracing",
+  //     "__assets__",
+  //     "testsuites-trace.otlp"
+  //   );
+  //   const startTime = new Date("2022-01-22T04:45:30");
 
-    const span = tracer.startSpan(
-      "traceTestReportArtifact",
-      { startTime, root: true, attributes: { root: true } },
-      api.ROOT_CONTEXT
-    );
-    await traceOTLPFile({
-      tracer,
-      parentSpan: span as Span,
-      startTime,
-      path: junitFilePath,
-    });
-    span.end(new Date("2022-01-22T04:45:34"));
+  //   const span = tracer.startSpan(
+  //     "traceTestReportArtifact",
+  //     { startTime, root: true, attributes: { root: true } },
+  //     api.ROOT_CONTEXT
+  //   );
+  //   await traceOTLPFile({
+  //     tracer,
+  //     parentSpan: span as Span,
+  //     startTime,
+  //     path: junitFilePath,
+  //   });
+  //   span.end(new Date("2022-01-22T04:45:34"));
 
-    const spans = memoryExporter.getFinishedSpans();
-    expect(spans.length).toEqual(7);
+  //   const spans = memoryExporter.getFinishedSpans();
+  //   expect(spans.length).toEqual(9);
 
-    spans.forEach((s) => {
-      expect(s.attributes).toBeDefined();
-      expect(Object.keys(s.attributes).length).toBeGreaterThan(0);
-      expect(s.endTime).toBeDefined();
-      expect(s.startTime).toBeDefined();
-      expect(s.endTime[0]).toBeGreaterThanOrEqual(s.startTime[0]);
-      expect(s.endTime[1]).toBeGreaterThanOrEqual(s.startTime[1]);
-      expect(s.status).toBeDefined();
-      if (s.status.code === api.SpanStatusCode.ERROR) {
-        expect(s.attributes.error).toBeTruthy();
-      } else {
-        expect(s.attributes.error).toBeFalsy();
-      }
-    });
-  });
+  //   spans.forEach((s) => {
+  //     expect(s.attributes).toBeDefined();
+  //     expect(Object.keys(s.attributes).length).toBeGreaterThan(0);
+  //     expect(s.endTime).toBeDefined();
+  //     expect(s.startTime).toBeDefined();
+  //     expect(s.endTime[0]).toBeGreaterThanOrEqual(s.startTime[0]);
+  //     expect(s.endTime[1]).toBeGreaterThanOrEqual(s.startTime[1]);
+  //     expect(s.status).toBeDefined();
+  //     if (s.status.code === api.SpanStatusCode.ERROR) {
+  //       expect(s.attributes.error).toBeTruthy();
+  //     } else {
+  //       expect(s.attributes.error).toBeFalsy();
+  //     }
+  //   });
+  // });
 
-  it("test failed otlp trace", async () => {
-    const junitFilePath = path.join(
-      "src",
-      "tracing",
-      "__assets__",
-      "fail-test-trace.otlp"
-    );
-    const startTime = new Date("2022-02-01T18:37:11");
+  // it("testsuite otlp trace", async () => {
+  //   const junitFilePath = path.join(
+  //     "src",
+  //     "tracing",
+  //     "__assets__",
+  //     "testsuite-trace.otlp"
+  //   );
+  //   const startTime = new Date("2022-01-22T04:45:30");
 
-    const span = tracer.startSpan(
-      "traceTestReportArtifact",
-      { startTime, root: true, attributes: { root: true } },
-      api.ROOT_CONTEXT
-    );
-    await traceOTLPFile({
-      tracer,
-      parentSpan: span as Span,
-      startTime,
-      path: junitFilePath,
-    });
-    span.end(new Date("2022-02-01T18:37:14"));
+  //   const span = tracer.startSpan(
+  //     "traceTestReportArtifact",
+  //     { startTime, root: true, attributes: { root: true } },
+  //     api.ROOT_CONTEXT
+  //   );
+  //   await traceOTLPFile({
+  //     tracer,
+  //     parentSpan: span as Span,
+  //     startTime,
+  //     path: junitFilePath,
+  //   });
+  //   span.end(new Date("2022-01-22T04:45:34"));
 
-    const spans = memoryExporter.getFinishedSpans();
-    expect(spans.length).toEqual(14);
+  //   const spans = memoryExporter.getFinishedSpans();
+  //   expect(spans.length).toEqual(7);
 
-    spans.forEach((s) => {
-      expect(s.attributes).toBeDefined();
-      expect(Object.keys(s.attributes).length).toBeGreaterThan(0);
-      expect(s.endTime).toBeDefined();
-      expect(s.startTime).toBeDefined();
-      expect(s.endTime[0]).toBeGreaterThanOrEqual(s.startTime[0]);
-      expect(s.endTime[1]).toBeGreaterThanOrEqual(s.startTime[1]);
-      expect(s.status).toBeDefined();
-      if (s.status.code === api.SpanStatusCode.ERROR) {
-        expect(s.attributes.error).toBeTruthy();
-      } else {
-        expect(s.attributes.error).toBeFalsy();
-      }
-    });
-  });
+  //   spans.forEach((s) => {
+  //     expect(s.attributes).toBeDefined();
+  //     expect(Object.keys(s.attributes).length).toBeGreaterThan(0);
+  //     expect(s.endTime).toBeDefined();
+  //     expect(s.startTime).toBeDefined();
+  //     expect(s.endTime[0]).toBeGreaterThanOrEqual(s.startTime[0]);
+  //     expect(s.endTime[1]).toBeGreaterThanOrEqual(s.startTime[1]);
+  //     expect(s.status).toBeDefined();
+  //     if (s.status.code === api.SpanStatusCode.ERROR) {
+  //       expect(s.attributes.error).toBeTruthy();
+  //     } else {
+  //       expect(s.attributes.error).toBeFalsy();
+  //     }
+  //   });
+  // });
+
+  // it("test failed otlp trace", async () => {
+  //   const junitFilePath = path.join(
+  //     "src",
+  //     "tracing",
+  //     "__assets__",
+  //     "fail-test-trace.otlp"
+  //   );
+  //   const startTime = new Date("2022-02-01T18:37:11");
+
+  //   const span = tracer.startSpan(
+  //     "traceTestReportArtifact",
+  //     { startTime, root: true, attributes: { root: true } },
+  //     api.ROOT_CONTEXT
+  //   );
+  //   await traceOTLPFile({
+  //     tracer,
+  //     parentSpan: span as Span,
+  //     startTime,
+  //     path: junitFilePath,
+  //   });
+  //   span.end(new Date("2022-02-01T18:37:14"));
+
+  //   const spans = memoryExporter.getFinishedSpans();
+  //   expect(spans.length).toEqual(14);
+
+  //   spans.forEach((s) => {
+  //     expect(s.attributes).toBeDefined();
+  //     expect(Object.keys(s.attributes).length).toBeGreaterThan(0);
+  //     expect(s.endTime).toBeDefined();
+  //     expect(s.startTime).toBeDefined();
+  //     expect(s.endTime[0]).toBeGreaterThanOrEqual(s.startTime[0]);
+  //     expect(s.endTime[1]).toBeGreaterThanOrEqual(s.startTime[1]);
+  //     expect(s.status).toBeDefined();
+  //     if (s.status.code === api.SpanStatusCode.ERROR) {
+  //       expect(s.attributes.error).toBeTruthy();
+  //     } else {
+  //       expect(s.attributes.error).toBeFalsy();
+  //     }
+  //   });
+  // });
 });
