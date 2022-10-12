@@ -54,6 +54,41 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+### With Additional Data
+
+```yaml
+name: OpenTelemetry Export Trace
+
+on:
+  workflow_run:
+    workflows: [my-workflow]
+    types: [completed]
+
+jobs:
+  otel-export-trace:
+    name: OpenTelemetry Export Trace
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Additional Data
+        id: generate_additional_data
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const additionalData = {}
+            addtionaData['myField'] = 'myValue'
+            additionalData['myOtherField'] = 'myOtherValue'
+            return additionalData
+
+      - name: Export Workflow Trace
+        uses: inception-health/otel-export-trace-action@latest
+        with:
+          otlpEndpoint: grpc://api.honeycomb.io:443/
+          otlpHeaders: ${{ secrets.OTLP_HEADERS }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          runId: ${{ github.event.workflow_run.id }}
+          additionalData: ${{ steps.generate_additional_data.outputs.result }}
+```
+
 ### With Junit Tracing
 
 Combined with [OpenTelemetry Upload Trace Artifact](https://github.com/marketplace/actions/opentelemetry-upload-trace-artifact) this action will Download the OTLP Trace Log Artifact uploaded from the Workflow Run and export it.

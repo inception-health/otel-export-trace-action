@@ -23,6 +23,9 @@ inputs:
   runId:
     description: Workflow Run ID to Export. Defaults to env.GITHUB_RUN_ID
     required: false
+  additionalAttributes:
+    description: Additional attributes to add to the exported trace
+    required: false
 outputs:
   traceId:
     description: The OpenTelemetry Trace ID for this Trace

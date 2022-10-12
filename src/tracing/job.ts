@@ -6,6 +6,7 @@ import {
   Context,
   trace,
   SpanContext,
+  Attributes,
 } from "@opentelemetry/api";
 import { BasicTracerProvider, Tracer } from "@opentelemetry/sdk-trace-base";
 import * as core from "@actions/core";
@@ -33,9 +34,9 @@ export async function traceWorkflowRunJobs({
     workflowRunJobs.workflowRun.run_started_at ||
       workflowRunJobs.workflowRun.created_at
   );
-  let headRef = undefined;
-  let baseRef = undefined;
-  let baseSha = undefined;
+  let headRef: string | undefined = undefined;
+  let baseRef: string | undefined = undefined;
+  let baseSha: string | undefined = undefined;
   if (
     workflowRunJobs.workflowRun.pull_requests &&
     workflowRunJobs.workflowRun.pull_requests.length > 0
@@ -45,34 +46,42 @@ export async function traceWorkflowRunJobs({
     baseSha = workflowRunJobs.workflowRun.pull_requests[0].base?.sha;
   }
 
+  const attributes: Attributes = {
+    "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
+    "github.run_id": workflowRunJobs.workflowRun.id,
+    "github.run_number": workflowRunJobs.workflowRun.run_number,
+    "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
+    "github.html_url": workflowRunJobs.workflowRun.html_url,
+    "github.workflow_url": workflowRunJobs.workflowRun.workflow_url,
+    "github.event": workflowRunJobs.workflowRun.event,
+    "github.workflow": workflowRunJobs.workflowRun.name || undefined,
+    "github.conclusion": workflowRunJobs.workflowRun.conclusion || undefined,
+    "github.created_at": workflowRunJobs.workflowRun.created_at,
+    "github.updated_at": workflowRunJobs.workflowRun.updated_at,
+    "github.run_started_at": workflowRunJobs.workflowRun.run_started_at,
+    "github.author_name":
+      workflowRunJobs.workflowRun.head_commit?.author?.name || undefined,
+    "github.author_email":
+      workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
+    "github.head_sha": workflowRunJobs.workflowRun.head_sha,
+    "github.head_ref": headRef,
+    "github.base_ref": baseRef,
+    "github.base_sha": baseSha,
+    error: workflowRunJobs.workflowRun.conclusion === "failure",
+  };
+
+  if (core.getInput("additionalAttributes")) {
+    const additionAttributes: unknown = JSON.parse(
+      core.getInput("additionalAttributes")
+    );
+    Object.assign(attributes, additionAttributes);
+  }
+
   const rootSpan = tracer.startSpan(
     workflowRunJobs.workflowRun.name ||
       `${workflowRunJobs.workflowRun.workflow_id}`,
     {
-      attributes: {
-        "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
-        "github.run_id": workflowRunJobs.workflowRun.id,
-        "github.run_number": workflowRunJobs.workflowRun.run_number,
-        "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
-        "github.html_url": workflowRunJobs.workflowRun.html_url,
-        "github.workflow_url": workflowRunJobs.workflowRun.workflow_url,
-        "github.event": workflowRunJobs.workflowRun.event,
-        "github.workflow": workflowRunJobs.workflowRun.name || undefined,
-        "github.conclusion":
-          workflowRunJobs.workflowRun.conclusion || undefined,
-        "github.created_at": workflowRunJobs.workflowRun.created_at,
-        "github.updated_at": workflowRunJobs.workflowRun.updated_at,
-        "github.run_started_at": workflowRunJobs.workflowRun.run_started_at,
-        "github.author_name":
-          workflowRunJobs.workflowRun.head_commit?.author?.name || undefined,
-        "github.author_email":
-          workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
-        "github.head_sha": workflowRunJobs.workflowRun.head_sha,
-        "github.head_ref": headRef,
-        "github.base_ref": baseRef,
-        "github.base_sha": baseSha,
-        error: workflowRunJobs.workflowRun.conclusion === "failure",
-      },
+      attributes,
       root: true,
       startTime,
     },
