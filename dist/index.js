@@ -334,7 +334,7 @@ const api_1 = __nccwpck_require__(65163);
 const core = __importStar(__nccwpck_require__(42186));
 const step_1 = __nccwpck_require__(59431);
 async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
     const tracer = provider.getTracer("otel-export-trace");
     const startTime = new Date(workflowRunJobs.workflowRun.run_started_at ||
         workflowRunJobs.workflowRun.created_at);
@@ -384,6 +384,16 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
             "github.run_started_at": workflowRunJobs.workflowRun.run_started_at,
             "github.author_name": ((_e = (_d = workflowRunJobs.workflowRun.head_commit) === null || _d === void 0 ? void 0 : _d.author) === null || _e === void 0 ? void 0 : _e.name) || undefined,
             "github.author_email": ((_g = (_f = workflowRunJobs.workflowRun.head_commit) === null || _f === void 0 ? void 0 : _f.author) === null || _g === void 0 ? void 0 : _g.email) || undefined,
+            "github.head_commit.id": ((_h = workflowRunJobs.workflowRun.head_commit) === null || _h === void 0 ? void 0 : _h.id) || undefined,
+            "github.head_commit.tree_id": ((_j = workflowRunJobs.workflowRun.head_commit) === null || _j === void 0 ? void 0 : _j.tree_id) || undefined,
+            "github.head_commit.author.name": ((_l = (_k = workflowRunJobs.workflowRun.head_commit) === null || _k === void 0 ? void 0 : _k.author) === null || _l === void 0 ? void 0 : _l.email) || undefined,
+            "github.head_commit.author.email": ((_o = (_m = workflowRunJobs.workflowRun.head_commit) === null || _m === void 0 ? void 0 : _m.author) === null || _o === void 0 ? void 0 : _o.email) || undefined,
+            "github.head_commit.committer.name": ((_q = (_p = workflowRunJobs.workflowRun.head_commit) === null || _p === void 0 ? void 0 : _p.committer) === null || _q === void 0 ? void 0 : _q.email) ||
+                undefined,
+            "github.head_commit.committer.email": ((_s = (_r = workflowRunJobs.workflowRun.head_commit) === null || _r === void 0 ? void 0 : _r.committer) === null || _s === void 0 ? void 0 : _s.email) ||
+                undefined,
+            "github.head_commit.message": ((_t = workflowRunJobs.workflowRun.head_commit) === null || _t === void 0 ? void 0 : _t.message) || undefined,
+            "github.head_commit.timestamp": ((_u = workflowRunJobs.workflowRun.head_commit) === null || _u === void 0 ? void 0 : _u.timestamp) || undefined,
             "github.head_sha": workflowRunJobs.workflowRun.head_sha,
             "github.head_ref": headRef,
             "github.base_ref": baseRef,

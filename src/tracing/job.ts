@@ -90,6 +90,24 @@ export async function traceWorkflowRunJobs({
           workflowRunJobs.workflowRun.head_commit?.author?.name || undefined,
         "github.author_email":
           workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
+        "github.head_commit.id":
+          workflowRunJobs.workflowRun.head_commit?.id || undefined,
+        "github.head_commit.tree_id":
+          workflowRunJobs.workflowRun.head_commit?.tree_id || undefined,
+        "github.head_commit.author.name":
+          workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
+        "github.head_commit.author.email":
+          workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
+        "github.head_commit.committer.name":
+          workflowRunJobs.workflowRun.head_commit?.committer?.email ||
+          undefined,
+        "github.head_commit.committer.email":
+          workflowRunJobs.workflowRun.head_commit?.committer?.email ||
+          undefined,
+        "github.head_commit.message":
+          workflowRunJobs.workflowRun.head_commit?.message || undefined,
+        "github.head_commit.timestamp":
+          workflowRunJobs.workflowRun.head_commit?.timestamp || undefined,
         "github.head_sha": workflowRunJobs.workflowRun.head_sha,
         "github.head_ref": headRef,
         "github.base_ref": baseRef,
