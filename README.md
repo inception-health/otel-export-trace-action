@@ -133,41 +133,42 @@ jobs:
 | ---------------------------- | ------- | ------------------------------------------------- |
 | name                         | string  | Workflow/Job/Step name                            |
 | service.instance.id          | string  | {repo_full_name}/{workflow_id}/{run_id}/{run_num} |
-| service.name                 | string  | Github Workflow Name                              |
-| service.namespace            | string  | Github Repo Full Name                             |
-| service.version              | string  | Github Workflow Run HEAD SHA                      |
-| github.workflow_id           | integer | Github Workflow ID                                |
-| github.workflow              | string  | Github Workflow Name                              |
-| github.workflow_url          | string  | Github Workflow URL                               |
-| github.run_attempt           | integer | Github Workflow Run Attempt                       |
-| github.run_id                | integer | Github Workflow Run ID                            |
-| github.run_number            | integer | Github Workflow Run Number                        |
-| github.created_at            | integer | Github Workflow Run Created Timestamp             |
-| github.updated_at            | integer | Github Workflow Run Updated Timestamp             |
-| github.run_started_at        | integer | Github Workflow Run Started Timestamp             |
-| github.html_url              | string  | Github Workflow Run HTML URL                      |
-| github.author_email          | string  | Github Workflow Run Author Email                  |
-| github.author_name           | string  | Github Workflow Run Author Name                   |
-| github.conclusion            | string  | Github Workflow Run Conclusion                    |
-| github.event                 | string  | Github Workflow Run Event Name                    |
-| github.git_refs_url          | string  | Github Workflow Run refs url                      |
-| github.head_sha              | string  | Github Workflow Run HEAD SHA                      |
-| github.job.id                | float   | Github Job Run ID                                 |
-| github.job.name              | string  | Github Job Run Name                               |
-| github.job.started_at        | string  | Github Job Run started_at                         |
-| github.job.completed_at      | string  | Github Job Run completed_at                       |
-| github.job.conclusion        | string  | Github Job Run Conclusion                         |
-| github.job.labels            | string  | Github Job Run Labels. Comma separated values     |
-| github.job.run_attempt       | integer | Github Job Run Run Attempt                        |
-| github.job.run_id            | integer | Github Job Run Run ID                             |
-| github.job.runner_group_id   | integer | Github Job Runner Group ID                        |
-| github.job.runner_group_name | string  | Github Job Runner Group Name                      |
-| github.job.runner_name       | string  | Github Job Runner Name                            |
-| github.job.step.conclusion   | string  | Github Step Run Conclusion                        |
-| github.job.step.name         | string  | Github Step Run Name                              |
-| github.job.step.number       | integer | Github Step Run Number                            |
-| github.job.step.started_at   | string  | Github Step Run started_at                        |
-| github.job.step.completed_at | string  | Github Step Run completed_at                      |
+| service.name                 | string  | GitHub Workflow Name                              |
+| service.namespace            | string  | GitHub Repo Full Name                             |
+| service.version              | string  | GitHub Workflow Run HEAD SHA                      |
+| github.workflow_id           | integer | GitHub Workflow ID                                |
+| github.workflow              | string  | GitHub Workflow Name                              |
+| github.workflow_url          | string  | GitHub Workflow URL                               |
+| github.run_attempt           | integer | GitHub Workflow Run Attempt                       |
+| github.run_id                | integer | GitHub Workflow Run ID                            |
+| github.run_number            | integer | GitHub Workflow Run Number                        |
+| github.created_at            | integer | GitHub Workflow Run Created Timestamp             |
+| github.updated_at            | integer | GitHub Workflow Run Updated Timestamp             |
+| github.run_started_at        | integer | GitHub Workflow Run Started Timestamp             |
+| github.html_url              | string  | GitHub Workflow Run HTML URL                      |
+| github.author_email          | string  | GitHub Workflow Run Author Email                  |
+| github.author_name           | string  | GitHub Workflow Run Author Name                   |
+| github.conclusion            | string  | GitHub Workflow Run Conclusion                    |
+| github.event                 | string  | GitHub Workflow Run Event Name                    |
+| github.git_refs_url          | string  | GitHub Workflow Run refs URL                      |
+| github.head_sha              | string  | GitHub Workflow Run HEAD SHA                      |
+| github.job.id                | float   | GitHub Job ID                                     |
+| github.job.name              | string  | GitHub Job Run Name                               |
+| github.job.started_at        | string  | GitHub Job Run started_at                         |
+| github.job.completed_at      | string  | GitHub Job Run completed_at                       |
+| github.job.conclusion        | string  | GitHub Job Run Conclusion                         |
+| github.job.labels            | string  | GitHub Job Run Labels. Comma separated values     |
+| github.job.run_attempt       | integer | GitHub Job Run Run Attempt                        |
+| github.job.run_id            | integer | GitHub Job Run ID                                 |
+| github.job.runner_group_id   | integer | GitHub Job Runner Group ID                        |
+| github.job.runner_group_name | string  | GitHub Job Runner Group Name                      |
+| github.job.runner_name       | string  | GitHub Job Runner Name                            |
+| github.job.step.conclusion   | string  | GitHub Step Run Conclusion                        |
+| github.job.step.id           | string  | GitHub Step ID                                    |
+| github.job.step.name         | string  | GitHub Step Name                                  |
+| github.job.step.number       | integer | GitHub Step Run Number                            |
+| github.job.step.started_at   | string  | GitHub Step Run started_at                        |
+| github.job.step.completed_at | string  | GitHub Step Run completed_at                      |
 
 ## Honeycomb Example Trace
 

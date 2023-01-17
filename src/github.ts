@@ -16,11 +16,12 @@ export type ListJobsForWorkflowRunType =
 export type WorkflowRunJob = ListJobsForWorkflowRunType["data"]["jobs"][0];
 export type WorkflowRunJobStep = {
   status: "queued" | "in_progress" | "completed";
-  conclusion: string | null;
+  conclusion?: string | null;
+  id?: string;
   name: string;
   number: number;
-  started_at?: string | null | undefined;
-  completed_at?: string | null | undefined;
+  started_at?: string | null;
+  completed_at?: string | null;
 };
 export type WorkflowRun = GetWorkflowRunType["data"];
 export type ListWorkflowRunArtifactsResponse =
