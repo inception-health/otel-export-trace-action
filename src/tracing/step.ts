@@ -28,7 +28,11 @@ export async function traceWorkflowRunStep({
 }: TraceWorkflowRunStepParams) {
   if (!step || !step.completed_at || !step.started_at) {
     const stepName = step?.name || "UNDEFINED";
-    console.warn(`Step ${stepName} is not completed yet`);
+    console.warn(`Step ${stepName} is not completed yet.`);
+    return;
+  }
+  if (step.conclusion == "cancelled" || step.conclusion == "skipped") {
+    console.info(`Step ${step.name} did not run.`);
     return;
   }
   core.debug(`Trace Step ${step.name}`);
