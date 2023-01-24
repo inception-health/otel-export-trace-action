@@ -501,7 +501,11 @@ const trace_otlp_file_1 = __nccwpck_require__(40535);
 async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tracer, workflowArtifacts, step, }) {
     if (!step || !step.completed_at || !step.started_at) {
         const stepName = (step === null || step === void 0 ? void 0 : step.name) || "UNDEFINED";
-        console.warn(`Step ${stepName} is not completed yet`);
+        console.warn(`Step ${stepName} is not completed yet.`);
+        return;
+    }
+    if (step.conclusion == "cancelled" || step.conclusion == "skipped") {
+        console.info(`Step ${step.name} did not run.`);
         return;
     }
     core.debug(`Trace Step ${step.name}`);
@@ -515,6 +519,7 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
             "github.job.step.started_at": step.started_at || undefined,
             "github.job.step.completed_at": step.completed_at || undefined,
             error: step.conclusion === "failure",
+            ...(step.id && { "github.job.step.id": step.id }),
         },
         startTime,
     }, ctx);
