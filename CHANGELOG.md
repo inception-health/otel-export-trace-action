@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://www.github.com/inception-health/otel-export-trace-action/compare/v1.6.0...v1.7.0) (2023-01-25)
+
+
+### Features
+
+* **#31:** Omit spans for skipped and canceled jobs ([#33](https://www.github.com/inception-health/otel-export-trace-action/issues/33)) ([8ef4ea0](https://www.github.com/inception-health/otel-export-trace-action/commit/8ef4ea0ab7a65ffa2ddfcb8ef9f39b3417b57f15))
+
+
+### Bug Fixes
+
+* build ([#35](https://www.github.com/inception-health/otel-export-trace-action/issues/35)) ([4ea5bca](https://www.github.com/inception-health/otel-export-trace-action/commit/4ea5bca9c404a0e219662adf190585af9dc23566))
+
 ## [1.6.0](https://www.github.com/inception-health/otel-export-trace-action/compare/v1.5.8...v1.6.0) (2022-07-26)
 
 
