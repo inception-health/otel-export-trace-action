@@ -36,6 +36,7 @@ export async function traceWorkflowRunJobs({
   let headRef = undefined;
   let baseRef = undefined;
   let baseSha = undefined;
+  let pull_requests = {};
   if (
     workflowRunJobs.workflowRun.pull_requests &&
     workflowRunJobs.workflowRun.pull_requests.length > 0
@@ -43,6 +44,28 @@ export async function traceWorkflowRunJobs({
     headRef = workflowRunJobs.workflowRun.pull_requests[0].head?.ref;
     baseRef = workflowRunJobs.workflowRun.pull_requests[0].base?.ref;
     baseSha = workflowRunJobs.workflowRun.pull_requests[0].base?.sha;
+    pull_requests = workflowRunJobs.workflowRun.pull_requests.reduce(
+      (result, pr, idx) => {
+        const prefix = `github.pull_requests.${idx}`;
+        return {
+          ...result,
+          [`${prefix}.id`]: pr.id,
+          [`${prefix}.url`]: pr.url,
+          [`${prefix}.number`]: pr.number,
+          [`${prefix}.head.sha`]: pr.head.sha,
+          [`${prefix}.head.ref`]: pr.head.ref,
+          [`${prefix}.head.repo.id`]: pr.head.repo.id,
+          [`${prefix}.head.repo.url`]: pr.head.repo.url,
+          [`${prefix}.head.repo.name`]: pr.head.repo.name,
+          [`${prefix}.base.ref`]: pr.base.ref,
+          [`${prefix}.base.sha`]: pr.base.sha,
+          [`${prefix}.base.repo.id`]: pr.base.repo.id,
+          [`${prefix}.base.repo.url`]: pr.base.repo.url,
+          [`${prefix}.base.repo.name`]: pr.base.repo.name,
+        };
+      },
+      {}
+    );
   }
 
   const rootSpan = tracer.startSpan(
@@ -67,11 +90,30 @@ export async function traceWorkflowRunJobs({
           workflowRunJobs.workflowRun.head_commit?.author?.name || undefined,
         "github.author_email":
           workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
+        "github.head_commit.id":
+          workflowRunJobs.workflowRun.head_commit?.id || undefined,
+        "github.head_commit.tree_id":
+          workflowRunJobs.workflowRun.head_commit?.tree_id || undefined,
+        "github.head_commit.author.name":
+          workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
+        "github.head_commit.author.email":
+          workflowRunJobs.workflowRun.head_commit?.author?.email || undefined,
+        "github.head_commit.committer.name":
+          workflowRunJobs.workflowRun.head_commit?.committer?.email ||
+          undefined,
+        "github.head_commit.committer.email":
+          workflowRunJobs.workflowRun.head_commit?.committer?.email ||
+          undefined,
+        "github.head_commit.message":
+          workflowRunJobs.workflowRun.head_commit?.message || undefined,
+        "github.head_commit.timestamp":
+          workflowRunJobs.workflowRun.head_commit?.timestamp || undefined,
         "github.head_sha": workflowRunJobs.workflowRun.head_sha,
         "github.head_ref": headRef,
         "github.base_ref": baseRef,
         "github.base_sha": baseSha,
         error: workflowRunJobs.workflowRun.conclusion === "failure",
+        ...pull_requests,
       },
       root: true,
       startTime,
