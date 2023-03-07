@@ -187,6 +187,7 @@ jobs:
 | github.job.runner_group_id              | integer | Github Job Runner Group ID                            |
 | github.job.runner_group_name            | string  | Github Job Runner Group Name                          |
 | github.job.runner_name                  | string  | Github Job Runner Name                                |
+| github.job.step.id                      | string  | GitHub Step ID                                        |
 | github.job.step.conclusion              | string  | Github Step Run Conclusion                            |
 | github.job.step.name                    | string  | Github Step Run Name                                  |
 | github.job.step.number                  | integer | Github Step Run Number                                |
