@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      time: "10:00"
+      timezone: America/Chicago
+    pull-request-branch-name:
+      separator: "-"
+    open-pull-requests-limit: 20
+    target-branch: "main"
