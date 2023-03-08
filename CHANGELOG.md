@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://www.github.com/inception-health/otel-export-trace-action/compare/v1.7.0...v1.8.0) (2023-03-07)
+
+
+### Features
+
+* add pull_requests attributes ([#30](https://www.github.com/inception-health/otel-export-trace-action/issues/30)) ([083bce1](https://www.github.com/inception-health/otel-export-trace-action/commit/083bce13bd12677eb6914a59271b253ec1eac35e))
+
 ## [1.7.0](https://www.github.com/inception-health/otel-export-trace-action/compare/v1.6.0...v1.7.0) (2023-01-25)
 
 
