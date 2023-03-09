@@ -31,7 +31,7 @@ jobs:
       - name: package
         run: npm run package
       - name: validate dist
-        run: git status && exit $(git status --porcelain | wc -l)
+        run: git diff && exit $(git status --porcelain | wc -l)
   tests:
     strategy:
       matrix:
