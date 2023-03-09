@@ -20634,7 +20634,9 @@ class W3CBaggagePropagator {
     }
     extract(context, carrier, getter) {
         const headerValue = getter.get(carrier, constants_1.BAGGAGE_HEADER);
-        const baggageString = Array.isArray(headerValue) ? headerValue.join(constants_1.BAGGAGE_ITEMS_SEPARATOR) : headerValue;
+        const baggageString = Array.isArray(headerValue)
+            ? headerValue.join(constants_1.BAGGAGE_ITEMS_SEPARATOR)
+            : headerValue;
         if (!baggageString)
             return context;
         const baggage = {};
@@ -20749,6 +20751,71 @@ function parseKeyPairsIntoRecord(value) {
 }
 exports.parseKeyPairsIntoRecord = parseKeyPairsIntoRecord;
 //# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 54848:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AnchoredClock = void 0;
+/**
+ * A utility for returning wall times anchored to a given point in time. Wall time measurements will
+ * not be taken from the system, but instead are computed by adding a monotonic clock time
+ * to the anchor point.
+ *
+ * This is needed because the system time can change and result in unexpected situations like
+ * spans ending before they are started. Creating an anchored clock for each local root span
+ * ensures that span timings and durations are accurate while preventing span times from drifting
+ * too far from the system clock.
+ *
+ * Only creating an anchored clock once per local trace ensures span times are correct relative
+ * to each other. For example, a child span will never have a start time before its parent even
+ * if the system clock is corrected during the local trace.
+ *
+ * Heavily inspired by the OTel Java anchored clock
+ * https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk/trace/src/main/java/io/opentelemetry/sdk/trace/AnchoredClock.java
+ */
+class AnchoredClock {
+    /**
+     * Create a new AnchoredClock anchored to the current time returned by systemClock.
+     *
+     * @param systemClock should be a clock that returns the number of milliseconds since January 1 1970 such as Date
+     * @param monotonicClock should be a clock that counts milliseconds monotonically such as window.performance or perf_hooks.performance
+     */
+    constructor(systemClock, monotonicClock) {
+        this._monotonicClock = monotonicClock;
+        this._epochMillis = systemClock.now();
+        this._performanceMillis = monotonicClock.now();
+    }
+    /**
+     * Returns the current time by adding the number of milliseconds since the
+     * AnchoredClock was created to the creation epoch time
+     */
+    now() {
+        const delta = this._monotonicClock.now() - this._performanceMillis;
+        return this._epochMillis + delta;
+    }
+}
+exports.AnchoredClock = AnchoredClock;
+//# sourceMappingURL=anchored-clock.js.map
 
 /***/ }),
 
@@ -20986,31 +21053,25 @@ function flattenException(ex) {
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isTimeInput = exports.isTimeInputHrTime = exports.hrTimeToMicroseconds = exports.hrTimeToMilliseconds = exports.hrTimeToNanoseconds = exports.hrTimeToTimeStamp = exports.hrTimeDuration = exports.timeInputToHrTime = exports.hrTime = void 0;
+exports.addHrTimes = exports.isTimeInput = exports.isTimeInputHrTime = exports.hrTimeToMicroseconds = exports.hrTimeToMilliseconds = exports.hrTimeToNanoseconds = exports.hrTimeToTimeStamp = exports.hrTimeDuration = exports.timeInputToHrTime = exports.hrTime = exports.getTimeOrigin = exports.millisToHrTime = void 0;
 const platform_1 = __nccwpck_require__(6730);
 const NANOSECOND_DIGITS = 9;
+const NANOSECOND_DIGITS_IN_MILLIS = 6;
+const MILLISECONDS_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS_IN_MILLIS);
 const SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS);
 /**
- * Converts a number to HrTime, HrTime = [number, number].
- * The first number is UNIX Epoch time in seconds since 00:00:00 UTC on 1 January 1970.
- * The second number represents the partial second elapsed since Unix Epoch time represented by first number in nanoseconds.
- * For example, 2021-01-01T12:30:10.150Z in UNIX Epoch time in milliseconds is represented as 1609504210150.
- * numberToHrtime calculates the first number by converting and truncating the Epoch time in milliseconds to seconds:
- * HrTime[0] = Math.trunc(1609504210150 / 1000) = 1609504210.
- * numberToHrtime calculates the second number by converting the digits after the decimal point of the subtraction, (1609504210150 / 1000) - HrTime[0], to nanoseconds:
- * HrTime[1] = Number((1609504210.150 - HrTime[0]).toFixed(9)) * SECOND_TO_NANOSECONDS = 150000000.
- * This is represented in HrTime format as [1609504210, 150000000].
+ * Converts a number of milliseconds from epoch to HrTime([seconds, remainder in nanoseconds]).
  * @param epochMillis
  */
-function numberToHrtime(epochMillis) {
+function millisToHrTime(epochMillis) {
     const epochSeconds = epochMillis / 1000;
     // Decimals only.
     const seconds = Math.trunc(epochSeconds);
     // Round sub-nanosecond accuracy to nanosecond.
-    const nanos = Number((epochSeconds - seconds).toFixed(NANOSECOND_DIGITS)) *
-        SECOND_TO_NANOSECONDS;
+    const nanos = Math.round((epochMillis % 1000) * MILLISECONDS_TO_NANOSECONDS);
     return [seconds, nanos];
 }
+exports.millisToHrTime = millisToHrTime;
 function getTimeOrigin() {
     let timeOrigin = platform_1.otperformance.timeOrigin;
     if (typeof timeOrigin !== 'number') {
@@ -21019,21 +21080,15 @@ function getTimeOrigin() {
     }
     return timeOrigin;
 }
+exports.getTimeOrigin = getTimeOrigin;
 /**
  * Returns an hrtime calculated via performance component.
  * @param performanceNow
  */
 function hrTime(performanceNow) {
-    const timeOrigin = numberToHrtime(getTimeOrigin());
-    const now = numberToHrtime(typeof performanceNow === 'number' ? performanceNow : platform_1.otperformance.now());
-    let seconds = timeOrigin[0] + now[0];
-    let nanos = timeOrigin[1] + now[1];
-    // Nanoseconds
-    if (nanos > SECOND_TO_NANOSECONDS) {
-        nanos -= SECOND_TO_NANOSECONDS;
-        seconds += 1;
-    }
-    return [seconds, nanos];
+    const timeOrigin = millisToHrTime(getTimeOrigin());
+    const now = millisToHrTime(typeof performanceNow === 'number' ? performanceNow : platform_1.otperformance.now());
+    return addHrTimes(timeOrigin, now);
 }
 exports.hrTime = hrTime;
 /**
@@ -21053,11 +21108,11 @@ function timeInputToHrTime(time) {
         }
         else {
             // epoch milliseconds or performance.timeOrigin
-            return numberToHrtime(time);
+            return millisToHrTime(time);
         }
     }
     else if (time instanceof Date) {
-        return numberToHrtime(time.getTime());
+        return millisToHrTime(time.getTime());
     }
     else {
         throw TypeError('Invalid input type');
@@ -21138,6 +21193,19 @@ function isTimeInput(value) {
         value instanceof Date);
 }
 exports.isTimeInput = isTimeInput;
+/**
+ * Given 2 HrTime formatted times, return their sum as an HrTime.
+ */
+function addHrTimes(time1, time2) {
+    const out = [time1[0] + time2[0], time1[1] + time2[1]];
+    // Nanoseconds
+    if (out[1] >= SECOND_TO_NANOSECONDS) {
+        out[1] -= SECOND_TO_NANOSECONDS;
+        out[0] += 1;
+    }
+    return out;
+}
+exports.addHrTimes = addHrTimes;
 //# sourceMappingURL=time.js.map
 
 /***/ }),
@@ -21198,8 +21266,9 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.baggageUtils = void 0;
+exports.internal = exports.baggageUtils = void 0;
 __exportStar(__nccwpck_require__(61476), exports);
+__exportStar(__nccwpck_require__(54848), exports);
 __exportStar(__nccwpck_require__(82807), exports);
 __exportStar(__nccwpck_require__(69246), exports);
 __exportStar(__nccwpck_require__(32882), exports);
@@ -21226,7 +21295,54 @@ __exportStar(__nccwpck_require__(90839), exports);
 __exportStar(__nccwpck_require__(67226), exports);
 __exportStar(__nccwpck_require__(12408), exports);
 __exportStar(__nccwpck_require__(55687), exports);
+const exporter_1 = __nccwpck_require__(87795);
+exports.internal = {
+    _export: exporter_1._export,
+};
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 87795:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._export = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(54463);
+/**
+ * @internal
+ * Shared functionality used by Exporters while exporting data, including suppresion of Traces.
+ */
+function _export(exporter, arg) {
+    return new Promise(resolve => {
+        // prevent downstream exporter calls from generating spans
+        api_1.context.with((0, suppress_tracing_1.suppressTracing)(api_1.context.active()), () => {
+            exporter.export(arg, (result) => {
+                resolve(result);
+            });
+        });
+    });
+}
+exports._export = _export;
+//# sourceMappingURL=exporter.js.map
 
 /***/ }),
 
@@ -21280,6 +21396,51 @@ function validateValue(value) {
 }
 exports.validateValue = validateValue;
 //# sourceMappingURL=validators.js.map
+
+/***/ }),
+
+/***/ 42490:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._globalThis = void 0;
+// Updates to this file should also be replicated to @opentelemetry/api too.
+/**
+ * - globalThis (New standard)
+ * - self (Will return the current window instance for supported browsers)
+ * - window (fallback for older browser implementations)
+ * - global (NodeJS implementation)
+ * - <object> (When all else fails)
+ */
+/** only globals that common to node and browsers are allowed */
+// eslint-disable-next-line node/no-unsupported-features/es-builtins, no-undef
+exports._globalThis = typeof globalThis === 'object'
+    ? globalThis
+    : typeof self === 'object'
+        ? self
+        : typeof window === 'object'
+            ? window
+            : typeof global === 'object'
+                ? global
+                : {};
+//# sourceMappingURL=globalThis.js.map
 
 /***/ }),
 
@@ -21343,6 +21504,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.RandomIdGenerator = void 0;
 const SPAN_ID_BYTES = 8;
 const TRACE_ID_BYTES = 16;
+/**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
+ */
 class RandomIdGenerator {
     constructor() {
         /**
@@ -21471,15 +21635,38 @@ exports.hexToBase64 = void 0;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function hexToBase64(hexStr) {
-    const hexStrLen = hexStr.length;
-    let hexAsciiCharsStr = '';
-    for (let i = 0; i < hexStrLen; i += 2) {
-        const hexPair = hexStr.substring(i, i + 2);
-        const hexVal = parseInt(hexPair, 16);
-        hexAsciiCharsStr += String.fromCharCode(hexVal);
+function intValue(charCode) {
+    // 0-9
+    if (charCode >= 48 && charCode <= 57) {
+        return charCode - 48;
     }
-    return Buffer.from(hexAsciiCharsStr, 'ascii').toString('base64');
+    // a-f
+    if (charCode >= 97 && charCode <= 102) {
+        return charCode - 87;
+    }
+    // A-F
+    return charCode - 55;
+}
+const buf8 = Buffer.alloc(8);
+const buf16 = Buffer.alloc(16);
+function hexToBase64(hexStr) {
+    let buf;
+    if (hexStr.length === 16) {
+        buf = buf8;
+    }
+    else if (hexStr.length === 32) {
+        buf = buf16;
+    }
+    else {
+        buf = Buffer.alloc(hexStr.length / 2);
+    }
+    let offset = 0;
+    for (let i = 0; i < hexStr.length; i += 2) {
+        const hi = intValue(hexStr.charCodeAt(i));
+        const lo = intValue(hexStr.charCodeAt(i + 1));
+        buf.writeUInt8((hi << 4) | lo, offset++);
+    }
+    return buf.toString('base64');
 }
 exports.hexToBase64 = hexToBase64;
 //# sourceMappingURL=hex-to-base64.js.map
@@ -22021,7 +22208,10 @@ exports.getRPCMetadata = getRPCMetadata;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AlwaysOffSampler = void 0;
 const api_1 = __nccwpck_require__(65163);
-/** Sampler that samples no traces. */
+/**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
+ * Sampler that samples no traces.
+ */
 class AlwaysOffSampler {
     shouldSample() {
         return {
@@ -22060,7 +22250,10 @@ exports.AlwaysOffSampler = AlwaysOffSampler;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AlwaysOnSampler = void 0;
 const api_1 = __nccwpck_require__(65163);
-/** Sampler that samples all traces. */
+/**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
+ * Sampler that samples all traces.
+ */
 class AlwaysOnSampler {
     shouldSample() {
         return {
@@ -22103,6 +22296,7 @@ const global_error_handler_1 = __nccwpck_require__(69246);
 const AlwaysOffSampler_1 = __nccwpck_require__(16478);
 const AlwaysOnSampler_1 = __nccwpck_require__(88317);
 /**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
  * A composite sampler that either respects the parent span's sampling decision
  * or delegates to `delegateSampler` for root spans.
  */
@@ -22171,7 +22365,10 @@ exports.ParentBasedSampler = ParentBasedSampler;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TraceIdRatioBasedSampler = void 0;
 const api_1 = __nccwpck_require__(65163);
-/** Sampler that samples a given fraction of traces based of trace id deterministically. */
+/**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
+ * Sampler that samples a given fraction of traces based of trace id deterministically.
+ */
 class TraceIdRatioBasedSampler {
     constructor(_ratio = 0) {
         this._ratio = _ratio;
@@ -22291,8 +22488,7 @@ class BindOnceFuture {
         if (!this._isCalled) {
             this._isCalled = true;
             try {
-                Promise.resolve(this._callback.call(this._that, ...args))
-                    .then(val => this._deferred.resolve(val), err => this._deferred.reject(err));
+                Promise.resolve(this._callback.call(this._that, ...args)).then(val => this._deferred.resolve(val), err => this._deferred.reject(err));
             }
             catch (err) {
                 this._deferred.reject(err);
@@ -22327,13 +22523,18 @@ exports.BindOnceFuture = BindOnceFuture;
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.parseEnvironment = exports.DEFAULT_ENVIRONMENT = exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = void 0;
+exports.getEnvWithoutDefaults = exports.parseEnvironment = exports.DEFAULT_ENVIRONMENT = exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = void 0;
 const api_1 = __nccwpck_require__(65163);
 const sampling_1 = __nccwpck_require__(28289);
+const globalThis_1 = __nccwpck_require__(42490);
 const DEFAULT_LIST_SEPARATOR = ',';
 /**
  * Environment interface to define all names
  */
+const ENVIRONMENT_BOOLEAN_KEYS = ['OTEL_SDK_DISABLED'];
+function isEnvVarABoolean(key) {
+    return (ENVIRONMENT_BOOLEAN_KEYS.indexOf(key) > -1);
+}
 const ENVIRONMENT_NUMBERS_KEYS = [
     'OTEL_BSP_EXPORT_TIMEOUT',
     'OTEL_BSP_MAX_EXPORT_BATCH_SIZE',
@@ -22366,6 +22567,7 @@ exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = 128;
  * Default environment variables
  */
 exports.DEFAULT_ENVIRONMENT = {
+    OTEL_SDK_DISABLED: false,
     CONTAINER_NAME: '',
     ECS_CONTAINER_METADATA_URI_V4: '',
     ECS_CONTAINER_METADATA_URI: '',
@@ -22402,7 +22604,7 @@ exports.DEFAULT_ENVIRONMENT = {
     OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
     OTEL_SPAN_EVENT_COUNT_LIMIT: 128,
     OTEL_SPAN_LINK_COUNT_LIMIT: 128,
-    OTEL_TRACES_EXPORTER: 'none',
+    OTEL_TRACES_EXPORTER: '',
     OTEL_TRACES_SAMPLER: sampling_1.TracesSamplerValues.ParentBasedAlwaysOn,
     OTEL_TRACES_SAMPLER_ARG: '',
     OTEL_EXPORTER_OTLP_INSECURE: '',
@@ -22419,8 +22621,25 @@ exports.DEFAULT_ENVIRONMENT = {
     OTEL_EXPORTER_OTLP_METRICS_CLIENT_KEY: '',
     OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE: '',
     OTEL_EXPORTER_OTLP_TRACES_CLIENT_CERTIFICATE: '',
-    OTEL_EXPORTER_OTLP_METRICS_CLIENT_CERTIFICATE: ''
+    OTEL_EXPORTER_OTLP_METRICS_CLIENT_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_PROTOCOL: 'http/protobuf',
+    OTEL_EXPORTER_OTLP_TRACES_PROTOCOL: 'http/protobuf',
+    OTEL_EXPORTER_OTLP_METRICS_PROTOCOL: 'http/protobuf',
+    OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: 'cumulative',
 };
+/**
+ * @param key
+ * @param environment
+ * @param values
+ */
+function parseBoolean(key, environment, values) {
+    if (typeof values[key] === 'undefined') {
+        return;
+    }
+    const value = String(values[key]);
+    // support case-insensitive "true"
+    environment[key] = value.toLowerCase() === 'true';
+}
 /**
  * Parses a variable as number with number validation
  * @param name
@@ -22496,7 +22715,10 @@ function parseEnvironment(values) {
                 setLogLevelFromEnv(key, environment, values);
                 break;
             default:
-                if (isEnvVarANumber(key)) {
+                if (isEnvVarABoolean(key)) {
+                    parseBoolean(key, environment, values);
+                }
+                else if (isEnvVarANumber(key)) {
                     parseNumber(key, environment, values);
                 }
                 else if (isEnvVarAList(key)) {
@@ -22513,6 +22735,16 @@ function parseEnvironment(values) {
     return environment;
 }
 exports.parseEnvironment = parseEnvironment;
+/**
+ * Get environment in node or browser without
+ * populating default values.
+ */
+function getEnvWithoutDefaults() {
+    return typeof process !== 'undefined'
+        ? parseEnvironment(process.env)
+        : parseEnvironment(globalThis_1._globalThis);
+}
+exports.getEnvWithoutDefaults = getEnvWithoutDefaults;
 //# sourceMappingURL=environment.js.map
 
 /***/ }),
@@ -22605,8 +22837,9 @@ function isPlainObject(value) {
         return true;
     }
     const Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-    return typeof Ctor == 'function' && Ctor instanceof Ctor &&
-        funcToString.call(Ctor) === objectCtorString;
+    return (typeof Ctor == 'function' &&
+        Ctor instanceof Ctor &&
+        funcToString.call(Ctor) === objectCtorString);
 }
 exports.isPlainObject = isPlainObject;
 /**
@@ -22647,7 +22880,7 @@ function baseGetTag(value) {
     if (value == null) {
         return value === undefined ? undefinedTag : nullTag;
     }
-    return (symToStringTag && symToStringTag in Object(value))
+    return symToStringTag && symToStringTag in Object(value)
         ? getRawTag(value)
         : objectToString(value);
 }
@@ -22838,16 +23071,19 @@ function isFunction(value) {
     return typeof value === 'function';
 }
 function isObject(value) {
-    return !isPrimitive(value) && !isArray(value) && !isFunction(value) && typeof value === 'object';
+    return (!isPrimitive(value) &&
+        !isArray(value) &&
+        !isFunction(value) &&
+        typeof value === 'object');
 }
 function isPrimitive(value) {
-    return typeof value === 'string' ||
+    return (typeof value === 'string' ||
         typeof value === 'number' ||
         typeof value === 'boolean' ||
         typeof value === 'undefined' ||
         value instanceof Date ||
         value instanceof RegExp ||
-        value === null;
+        value === null);
 }
 function shouldMerge(one, two) {
     if (!(0, lodash_merge_1.isPlainObject)(one) || !(0, lodash_merge_1.isPlainObject)(two)) {
@@ -23050,7 +23286,7 @@ exports.isWrapped = isWrapped;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.VERSION = void 0;
 // this is autogenerated file, see scripts/version-update.js
-exports.VERSION = '1.4.0';
+exports.VERSION = '1.9.1';
 //# sourceMappingURL=version.js.map
 
 /***/ }),
@@ -32505,7 +32741,7 @@ class Resource {
         return Resource.EMPTY;
     }
     /**
-     * Returns a Resource that indentifies the SDK in use.
+     * Returns a Resource that identifies the SDK in use.
      */
     static default() {
         return new Resource({
@@ -32599,7 +32835,7 @@ class BrowserDetector {
         const browserResource = {
             [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_NAME]: 'browser',
             [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_DESCRIPTION]: 'Web Browser',
-            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_VERSION]: navigator.userAgent
+            [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_VERSION]: navigator.userAgent,
         };
         return this._getResourceAttributes(browserResource, config);
     }
@@ -32723,14 +32959,14 @@ class EnvDetector {
             let [key, value] = keyValuePair;
             // Leading and trailing whitespaces are trimmed.
             key = key.trim();
-            value = value.trim().split('^"|"$').join('');
+            value = value.trim().split(/^"|"$/).join('');
             if (!this._isValidAndNotEmpty(key)) {
                 throw new Error(`Attribute key ${this._ERROR_MESSAGE_INVALID_CHARS}`);
             }
             if (!this._isValid(value)) {
                 throw new Error(`Attribute value ${this._ERROR_MESSAGE_INVALID_VALUE}`);
             }
-            attributes[key] = value;
+            attributes[key] = decodeURIComponent(value);
         }
         return attributes;
     }
@@ -32742,12 +32978,13 @@ class EnvDetector {
      * @returns Whether the String is valid.
      */
     _isValid(name) {
-        return name.length <= this._MAX_LENGTH && this._isPrintableString(name);
+        return name.length <= this._MAX_LENGTH && this._isBaggageOctetString(name);
     }
-    _isPrintableString(str) {
+    // https://www.w3.org/TR/baggage/#definition
+    _isBaggageOctetString(str) {
         for (let i = 0; i < str.length; i++) {
-            const ch = str.charAt(i);
-            if (ch <= ' ' || ch >= '~') {
+            const ch = str.charCodeAt(i);
+            if (ch < 0x21 || ch === 0x2c || ch === 0x3b || ch === 0x5c || ch > 0x7e) {
                 return false;
             }
         }
@@ -33281,7 +33518,7 @@ class BasicTracerProvider {
         var _a;
         this._registeredSpanProcessors = [];
         this._tracers = new Map();
-        const mergedConfig = (0, core_1.merge)({}, config_1.DEFAULT_CONFIG, (0, utility_1.reconfigureLimits)(config));
+        const mergedConfig = (0, core_1.merge)({}, (0, config_1.loadDefaultConfig)(), (0, utility_1.reconfigureLimits)(config));
         this.resource = (_a = mergedConfig.resource) !== null && _a !== void 0 ? _a : resources_1.Resource.empty();
         this.resource = resources_1.Resource.default().merge(this.resource);
         this._config = Object.assign({}, mergedConfig, {
@@ -33383,13 +33620,20 @@ class BasicTracerProvider {
     shutdown() {
         return this.activeSpanProcessor.shutdown();
     }
+    /**
+     * TS cannot yet infer the type of this.constructor:
+     * https://github.com/Microsoft/TypeScript/issues/3841#issuecomment-337560146
+     * There is no need to override either of the getters in your child class.
+     * The type of the registered component maps should be the same across all
+     * classes in the inheritance tree.
+     */
     _getPropagator(name) {
         var _a;
-        return (_a = BasicTracerProvider._registeredPropagators.get(name)) === null || _a === void 0 ? void 0 : _a();
+        return (_a = this.constructor._registeredPropagators.get(name)) === null || _a === void 0 ? void 0 : _a();
     }
     _getSpanExporter(name) {
         var _a;
-        return (_a = BasicTracerProvider._registeredExporters.get(name)) === null || _a === void 0 ? void 0 : _a();
+        return (_a = this.constructor._registeredExporters.get(name)) === null || _a === void 0 ? void 0 : _a();
     }
     _buildPropagatorFromEnv() {
         // per spec, propagators from env must be deduplicated
@@ -33421,7 +33665,7 @@ class BasicTracerProvider {
     }
     _buildExporterFromEnv() {
         const exporterName = (0, core_1.getEnv)().OTEL_TRACES_EXPORTER;
-        if (exporterName === 'none')
+        if (exporterName === 'none' || exporterName === '')
             return;
         const exporter = this._getSpanExporter(exporterName);
         if (!exporter) {
@@ -33437,6 +33681,31 @@ BasicTracerProvider._registeredPropagators = new Map([
 ]);
 BasicTracerProvider._registeredExporters = new Map();
 //# sourceMappingURL=BasicTracerProvider.js.map
+
+/***/ }),
+
+/***/ 6410:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=IdGenerator.js.map
 
 /***/ }),
 
@@ -33514,6 +33783,54 @@ exports.MultiSpanProcessor = MultiSpanProcessor;
 
 /***/ }),
 
+/***/ 17446:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SamplingDecision = void 0;
+/**
+ * A sampling decision that determines how a {@link Span} will be recorded
+ * and collected.
+ */
+var SamplingDecision;
+(function (SamplingDecision) {
+    /**
+     * `Span.isRecording() === false`, span will not be recorded and all events
+     * and attributes will be dropped.
+     */
+    SamplingDecision[SamplingDecision["NOT_RECORD"] = 0] = "NOT_RECORD";
+    /**
+     * `Span.isRecording() === true`, but `Sampled` flag in {@link TraceFlags}
+     * MUST NOT be set.
+     */
+    SamplingDecision[SamplingDecision["RECORD"] = 1] = "RECORD";
+    /**
+     * `Span.isRecording() === true` AND `Sampled` flag in {@link TraceFlags}
+     * MUST be set.
+     */
+    SamplingDecision[SamplingDecision["RECORD_AND_SAMPLED"] = 2] = "RECORD_AND_SAMPLED";
+})(SamplingDecision = exports.SamplingDecision || (exports.SamplingDecision = {}));
+//# sourceMappingURL=Sampler.js.map
+
+/***/ }),
+
 /***/ 61301:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -33536,7 +33853,7 @@ exports.MultiSpanProcessor = MultiSpanProcessor;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Span = void 0;
-const api = __nccwpck_require__(65163);
+const api_1 = __nccwpck_require__(65163);
 const core_1 = __nccwpck_require__(89736);
 const semantic_conventions_1 = __nccwpck_require__(67275);
 const enums_1 = __nccwpck_require__(35092);
@@ -33544,13 +33861,18 @@ const enums_1 = __nccwpck_require__(35092);
  * This class represents a span.
  */
 class Span {
-    /** Constructs a new Span instance. */
-    constructor(parentTracer, context, spanName, spanContext, kind, parentSpanId, links = [], startTime = (0, core_1.hrTime)()) {
+    /**
+     * Constructs a new Span instance.
+     *
+     * @deprecated calling Span constructor directly is not supported. Please use tracer.startSpan.
+     * */
+    constructor(parentTracer, context, spanName, spanContext, kind, parentSpanId, links = [], startTime, _deprecatedClock // keeping this argument even though it is unused to ensure backwards compatibility
+    ) {
         this.attributes = {};
         this.links = [];
         this.events = [];
         this.status = {
-            code: api.SpanStatusCode.UNSET,
+            code: api_1.SpanStatusCode.UNSET,
         };
         this.endTime = [0, 0];
         this._ended = false;
@@ -33560,13 +33882,19 @@ class Span {
         this.parentSpanId = parentSpanId;
         this.kind = kind;
         this.links = links;
-        this.startTime = (0, core_1.timeInputToHrTime)(startTime);
+        const now = Date.now();
+        this._performanceStartTime = core_1.otperformance.now();
+        this._performanceOffset =
+            now - (this._performanceStartTime + (0, core_1.getTimeOrigin)());
+        this._startTimeProvided = startTime != null;
+        this.startTime = this._getTime(startTime !== null && startTime !== void 0 ? startTime : now);
         this.resource = parentTracer.resource;
         this.instrumentationLibrary = parentTracer.instrumentationLibrary;
         this._spanLimits = parentTracer.getSpanLimits();
         this._spanProcessor = parentTracer.getActiveSpanProcessor();
         this._spanProcessor.onStart(this, context);
-        this._attributeValueLengthLimit = this._spanLimits.attributeValueLengthLimit || 0;
+        this._attributeValueLengthLimit =
+            this._spanLimits.attributeValueLengthLimit || 0;
     }
     spanContext() {
         return this._spanContext;
@@ -33575,11 +33903,11 @@ class Span {
         if (value == null || this._isSpanEnded())
             return this;
         if (key.length === 0) {
-            api.diag.warn(`Invalid attribute key: ${key}`);
+            api_1.diag.warn(`Invalid attribute key: ${key}`);
             return this;
         }
         if (!(0, core_1.isAttributeValue)(value)) {
-            api.diag.warn(`Invalid attribute value set for key: ${key}`);
+            api_1.diag.warn(`Invalid attribute value set for key: ${key}`);
             return this;
         }
         if (Object.keys(this.attributes).length >=
@@ -33601,33 +33929,30 @@ class Span {
      * @param name Span Name
      * @param [attributesOrStartTime] Span attributes or start time
      *     if type is {@type TimeInput} and 3rd param is undefined
-     * @param [startTime] Specified start time for the event
+     * @param [timeStamp] Specified time stamp for the event
      */
-    addEvent(name, attributesOrStartTime, startTime) {
+    addEvent(name, attributesOrStartTime, timeStamp) {
         if (this._isSpanEnded())
             return this;
         if (this._spanLimits.eventCountLimit === 0) {
-            api.diag.warn('No events allowed.');
+            api_1.diag.warn('No events allowed.');
             return this;
         }
         if (this.events.length >= this._spanLimits.eventCountLimit) {
-            api.diag.warn('Dropping extra events.');
+            api_1.diag.warn('Dropping extra events.');
             this.events.shift();
         }
         if ((0, core_1.isTimeInput)(attributesOrStartTime)) {
-            if (typeof startTime === 'undefined') {
-                startTime = attributesOrStartTime;
+            if (!(0, core_1.isTimeInput)(timeStamp)) {
+                timeStamp = attributesOrStartTime;
             }
             attributesOrStartTime = undefined;
-        }
-        if (typeof startTime === 'undefined') {
-            startTime = (0, core_1.hrTime)();
         }
         const attributes = (0, core_1.sanitizeAttributes)(attributesOrStartTime);
         this.events.push({
             name,
             attributes,
-            time: (0, core_1.timeInputToHrTime)(startTime),
+            time: this._getTime(timeStamp),
         });
         return this;
     }
@@ -33643,30 +33968,56 @@ class Span {
         this.name = name;
         return this;
     }
-    end(endTime = (0, core_1.hrTime)()) {
+    end(endTime) {
         if (this._isSpanEnded()) {
-            api.diag.error('You can only call end() on a span once.');
+            api_1.diag.error('You can only call end() on a span once.');
             return;
         }
         this._ended = true;
-        this.endTime = (0, core_1.timeInputToHrTime)(endTime);
+        this.endTime = this._getTime(endTime);
         this._duration = (0, core_1.hrTimeDuration)(this.startTime, this.endTime);
         if (this._duration[0] < 0) {
-            api.diag.warn('Inconsistent start and end time, startTime > endTime', this.startTime, this.endTime);
+            api_1.diag.warn('Inconsistent start and end time, startTime > endTime. Setting span duration to 0ms.', this.startTime, this.endTime);
+            this.endTime = this.startTime.slice();
+            this._duration = [0, 0];
         }
         this._spanProcessor.onEnd(this);
+    }
+    _getTime(inp) {
+        if (typeof inp === 'number' && inp < core_1.otperformance.now()) {
+            // must be a performance timestamp
+            // apply correction and convert to hrtime
+            return (0, core_1.hrTime)(inp + this._performanceOffset);
+        }
+        if (typeof inp === 'number') {
+            return (0, core_1.millisToHrTime)(inp);
+        }
+        if (inp instanceof Date) {
+            return (0, core_1.millisToHrTime)(inp.getTime());
+        }
+        if ((0, core_1.isTimeInputHrTime)(inp)) {
+            return inp;
+        }
+        if (this._startTimeProvided) {
+            // if user provided a time for the start manually
+            // we can't use duration to calculate event/end times
+            return (0, core_1.millisToHrTime)(Date.now());
+        }
+        const msDuration = core_1.otperformance.now() - this._performanceStartTime;
+        return (0, core_1.addHrTimes)(this.startTime, (0, core_1.millisToHrTime)(msDuration));
     }
     isRecording() {
         return this._ended === false;
     }
-    recordException(exception, time = (0, core_1.hrTime)()) {
+    recordException(exception, time) {
         const attributes = {};
         if (typeof exception === 'string') {
             attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_MESSAGE] = exception;
         }
         else if (exception) {
             if (exception.code) {
-                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_TYPE] = exception.code.toString();
+                attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_TYPE] =
+                    exception.code.toString();
             }
             else if (exception.name) {
                 attributes[semantic_conventions_1.SemanticAttributes.EXCEPTION_TYPE] = exception.name;
@@ -33684,7 +34035,7 @@ class Span {
             this.addEvent(enums_1.ExceptionEventName, attributes, time);
         }
         else {
-            api.diag.warn(`Failed to record an exception ${exception}`);
+            api_1.diag.warn(`Failed to record an exception ${exception}`);
         }
     }
     get duration() {
@@ -33695,7 +34046,7 @@ class Span {
     }
     _isSpanEnded() {
         if (this._ended) {
-            api.diag.warn(`Can not execute the operation on ended Span {traceId: ${this._spanContext.traceId}, spanId: ${this._spanContext.spanId}}`);
+            api_1.diag.warn(`Can not execute the operation on ended Span {traceId: ${this._spanContext.traceId}, spanId: ${this._spanContext.spanId}}`);
         }
         return this._ended;
     }
@@ -33725,7 +34076,7 @@ class Span {
         // Check limit
         if (limit <= 0) {
             // Negative values are invalid, so do not truncate
-            api.diag.warn(`Attribute value limit must be positive, got ${limit}`);
+            api_1.diag.warn(`Attribute value limit must be positive, got ${limit}`);
             return value;
         }
         // String
@@ -33821,6 +34172,7 @@ const api = __nccwpck_require__(65163);
 const core_1 = __nccwpck_require__(89736);
 const Span_1 = __nccwpck_require__(61301);
 const utility_1 = __nccwpck_require__(54324);
+const platform_1 = __nccwpck_require__(10262);
 /**
  * This class represents a basic tracer.
  */
@@ -33834,7 +34186,7 @@ class Tracer {
         this._sampler = localConfig.sampler;
         this._generalLimits = localConfig.generalLimits;
         this._spanLimits = localConfig.spanLimits;
-        this._idGenerator = config.idGenerator || new core_1.RandomIdGenerator();
+        this._idGenerator = config.idGenerator || new platform_1.RandomIdGenerator();
         this.resource = _tracerProvider.resource;
         this.instrumentationLibrary = instrumentationLibrary;
     }
@@ -33844,20 +34196,23 @@ class Tracer {
      */
     startSpan(name, options = {}, context = api.context.active()) {
         var _a, _b;
-        if ((0, core_1.isTracingSuppressed)(context)) {
-            api.diag.debug('Instrumentation suppressed, returning Noop Span');
-            return api.trace.wrapSpanContext(api.INVALID_SPAN_CONTEXT);
-        }
         // remove span from context in case a root span is requested via options
         if (options.root) {
             context = api.trace.deleteSpan(context);
         }
-        const parentSpanContext = api.trace.getSpanContext(context);
+        const parentSpan = api.trace.getSpan(context);
+        if ((0, core_1.isTracingSuppressed)(context)) {
+            api.diag.debug('Instrumentation suppressed, returning Noop Span');
+            const nonRecordingSpan = api.trace.wrapSpanContext(api.INVALID_SPAN_CONTEXT);
+            return nonRecordingSpan;
+        }
+        const parentSpanContext = parentSpan === null || parentSpan === void 0 ? void 0 : parentSpan.spanContext();
         const spanId = this._idGenerator.generateSpanId();
         let traceId;
         let traceState;
         let parentSpanId;
-        if (!parentSpanContext || !api.trace.isSpanContextValid(parentSpanContext)) {
+        if (!parentSpanContext ||
+            !api.trace.isSpanContextValid(parentSpanContext)) {
             // New root span.
             traceId = this._idGenerator.generateTraceId();
         }
@@ -33883,7 +34238,8 @@ class Tracer {
         const spanContext = { traceId, spanId, traceFlags, traceState };
         if (samplingResult.decision === api.SamplingDecision.NOT_RECORD) {
             api.diag.debug('Recording is off, propagating context in a non-recording span');
-            return api.trace.wrapSpanContext(spanContext);
+            const nonRecordingSpan = api.trace.wrapSpanContext(spanContext);
+            return nonRecordingSpan;
         }
         const span = new Span_1.Span(this, context, name, spanContext, spanKind, parentSpanId, links, options.startTime);
         // Set initial span attributes. The attributes object may have been mutated
@@ -33954,32 +34310,41 @@ exports.Tracer = Tracer;
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.buildSamplerFromEnv = exports.DEFAULT_CONFIG = void 0;
+exports.buildSamplerFromEnv = exports.loadDefaultConfig = void 0;
 const api_1 = __nccwpck_require__(65163);
 const core_1 = __nccwpck_require__(89736);
+const AlwaysOffSampler_1 = __nccwpck_require__(68118);
+const AlwaysOnSampler_1 = __nccwpck_require__(13032);
+const ParentBasedSampler_1 = __nccwpck_require__(58070);
+const TraceIdRatioBasedSampler_1 = __nccwpck_require__(16712);
 const env = (0, core_1.getEnv)();
 const FALLBACK_OTEL_TRACES_SAMPLER = core_1.TracesSamplerValues.AlwaysOn;
 const DEFAULT_RATIO = 1;
 /**
- * Default configuration. For fields with primitive values, any user-provided
+ * Load default configuration. For fields with primitive values, any user-provided
  * value will override the corresponding default value. For fields with
  * non-primitive values (like `spanLimits`), the user-provided value will be
  * used to extend the default value.
  */
-exports.DEFAULT_CONFIG = {
-    sampler: buildSamplerFromEnv(env),
-    forceFlushTimeoutMillis: 30000,
-    generalLimits: {
-        attributeValueLengthLimit: (0, core_1.getEnv)().OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT,
-        attributeCountLimit: (0, core_1.getEnv)().OTEL_ATTRIBUTE_COUNT_LIMIT,
-    },
-    spanLimits: {
-        attributeValueLengthLimit: (0, core_1.getEnv)().OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT,
-        attributeCountLimit: (0, core_1.getEnv)().OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT,
-        linkCountLimit: (0, core_1.getEnv)().OTEL_SPAN_LINK_COUNT_LIMIT,
-        eventCountLimit: (0, core_1.getEnv)().OTEL_SPAN_EVENT_COUNT_LIMIT,
-    },
-};
+// object needs to be wrapped in this function and called when needed otherwise
+// envs are parsed before tests are ran - causes tests using these envs to fail
+function loadDefaultConfig() {
+    return {
+        sampler: buildSamplerFromEnv(env),
+        forceFlushTimeoutMillis: 30000,
+        generalLimits: {
+            attributeValueLengthLimit: (0, core_1.getEnv)().OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+            attributeCountLimit: (0, core_1.getEnv)().OTEL_ATTRIBUTE_COUNT_LIMIT,
+        },
+        spanLimits: {
+            attributeValueLengthLimit: (0, core_1.getEnv)().OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+            attributeCountLimit: (0, core_1.getEnv)().OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT,
+            linkCountLimit: (0, core_1.getEnv)().OTEL_SPAN_LINK_COUNT_LIMIT,
+            eventCountLimit: (0, core_1.getEnv)().OTEL_SPAN_EVENT_COUNT_LIMIT,
+        },
+    };
+}
+exports.loadDefaultConfig = loadDefaultConfig;
 /**
  * Based on environment, builds a sampler, complies with specification.
  * @param environment optional, by default uses getEnv(), but allows passing a value to reuse parsed environment
@@ -33987,26 +34352,26 @@ exports.DEFAULT_CONFIG = {
 function buildSamplerFromEnv(environment = (0, core_1.getEnv)()) {
     switch (environment.OTEL_TRACES_SAMPLER) {
         case core_1.TracesSamplerValues.AlwaysOn:
-            return new core_1.AlwaysOnSampler();
+            return new AlwaysOnSampler_1.AlwaysOnSampler();
         case core_1.TracesSamplerValues.AlwaysOff:
-            return new core_1.AlwaysOffSampler();
+            return new AlwaysOffSampler_1.AlwaysOffSampler();
         case core_1.TracesSamplerValues.ParentBasedAlwaysOn:
-            return new core_1.ParentBasedSampler({
-                root: new core_1.AlwaysOnSampler(),
+            return new ParentBasedSampler_1.ParentBasedSampler({
+                root: new AlwaysOnSampler_1.AlwaysOnSampler(),
             });
         case core_1.TracesSamplerValues.ParentBasedAlwaysOff:
-            return new core_1.ParentBasedSampler({
-                root: new core_1.AlwaysOffSampler(),
+            return new ParentBasedSampler_1.ParentBasedSampler({
+                root: new AlwaysOffSampler_1.AlwaysOffSampler(),
             });
         case core_1.TracesSamplerValues.TraceIdRatio:
-            return new core_1.TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment));
+            return new TraceIdRatioBasedSampler_1.TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment));
         case core_1.TracesSamplerValues.ParentBasedTraceIdRatio:
-            return new core_1.ParentBasedSampler({
-                root: new core_1.TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment)),
+            return new ParentBasedSampler_1.ParentBasedSampler({
+                root: new TraceIdRatioBasedSampler_1.TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment)),
             });
         default:
             api_1.diag.error(`OTEL_TRACES_SAMPLER value "${environment.OTEL_TRACES_SAMPLER} invalid, defaulting to ${FALLBACK_OTEL_TRACES_SAMPLER}".`);
-            return new core_1.AlwaysOnSampler();
+            return new AlwaysOnSampler_1.AlwaysOnSampler();
     }
 }
 exports.buildSamplerFromEnv = buildSamplerFromEnv;
@@ -34109,6 +34474,10 @@ class BatchSpanProcessorBase {
                 ? config.exportTimeoutMillis
                 : env.OTEL_BSP_EXPORT_TIMEOUT;
         this._shutdownOnce = new core_1.BindOnceFuture(this._shutdown, this);
+        if (this._maxExportBatchSize > this._maxQueueSize) {
+            api_1.diag.warn('BatchSpanProcessor: maxExportBatchSize must be smaller or equal to maxQueueSize, setting maxExportBatchSize to match maxQueueSize');
+            this._maxExportBatchSize = this._maxQueueSize;
+        }
     }
     forceFlush() {
         if (this._shutdownOnce.isCalled) {
@@ -34277,9 +34646,11 @@ class ConsoleSpanExporter {
      * @param span
      */
     _exportInfo(span) {
+        var _a;
         return {
             traceId: span.spanContext().traceId,
             parentId: span.parentSpanId,
+            traceState: (_a = span.spanContext().traceState) === null || _a === void 0 ? void 0 : _a.serialize(),
             name: span.name,
             id: span.spanContext().spanId,
             kind: span.kind,
@@ -34288,7 +34659,7 @@ class ConsoleSpanExporter {
             attributes: span.attributes,
             status: span.status,
             events: span.events,
-            links: span.links
+            links: span.links,
         };
     }
     /**
@@ -34484,14 +34855,16 @@ class SimpleSpanProcessor {
         if ((span.spanContext().traceFlags & api_1.TraceFlags.SAMPLED) === 0) {
             return;
         }
-        // prevent downstream exporter calls from generating spans
-        api_1.context.with((0, core_1.suppressTracing)(api_1.context.active()), () => {
-            this._exporter.export([span], result => {
-                var _a;
-                if (result.code !== core_1.ExportResultCode.SUCCESS) {
-                    (0, core_1.globalErrorHandler)((_a = result.error) !== null && _a !== void 0 ? _a : new Error(`SimpleSpanProcessor: span export failed (status ${result})`));
-                }
-            });
+        core_1.internal
+            ._export(this._exporter, [span])
+            .then((result) => {
+            var _a;
+            if (result.code !== core_1.ExportResultCode.SUCCESS) {
+                (0, core_1.globalErrorHandler)((_a = result.error) !== null && _a !== void 0 ? _a : new Error(`SimpleSpanProcessor: span export failed (status ${result})`));
+            }
+        })
+            .catch(error => {
+            (0, core_1.globalErrorHandler)(error);
         });
     }
     shutdown() {
@@ -34571,10 +34944,16 @@ __exportStar(__nccwpck_require__(25561), exports);
 __exportStar(__nccwpck_require__(89802), exports);
 __exportStar(__nccwpck_require__(4570), exports);
 __exportStar(__nccwpck_require__(69252), exports);
+__exportStar(__nccwpck_require__(68118), exports);
+__exportStar(__nccwpck_require__(13032), exports);
+__exportStar(__nccwpck_require__(58070), exports);
+__exportStar(__nccwpck_require__(16712), exports);
+__exportStar(__nccwpck_require__(17446), exports);
 __exportStar(__nccwpck_require__(61301), exports);
 __exportStar(__nccwpck_require__(3502), exports);
 __exportStar(__nccwpck_require__(86598), exports);
 __exportStar(__nccwpck_require__(49068), exports);
+__exportStar(__nccwpck_require__(6410), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -34612,6 +34991,69 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__nccwpck_require__(36573), exports);
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 97670:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RandomIdGenerator = void 0;
+const SPAN_ID_BYTES = 8;
+const TRACE_ID_BYTES = 16;
+class RandomIdGenerator {
+    constructor() {
+        /**
+         * Returns a random 16-byte trace ID formatted/encoded as a 32 lowercase hex
+         * characters corresponding to 128 bits.
+         */
+        this.generateTraceId = getIdGenerator(TRACE_ID_BYTES);
+        /**
+         * Returns a random 8-byte span ID formatted/encoded as a 16 lowercase hex
+         * characters corresponding to 64 bits.
+         */
+        this.generateSpanId = getIdGenerator(SPAN_ID_BYTES);
+    }
+}
+exports.RandomIdGenerator = RandomIdGenerator;
+const SHARED_BUFFER = Buffer.allocUnsafe(TRACE_ID_BYTES);
+function getIdGenerator(bytes) {
+    return function generateId() {
+        for (let i = 0; i < bytes / 4; i++) {
+            // unsigned right shift drops decimal part of the number
+            // it is required because if a number between 2**32 and 2**32 - 1 is generated, an out of range error is thrown by writeUInt32BE
+            SHARED_BUFFER.writeUInt32BE((Math.random() * 2 ** 32) >>> 0, i * 4);
+        }
+        // If buffer is all 0, set the last byte to 1 to guarantee a valid w3c id is generated
+        for (let i = 0; i < bytes; i++) {
+            if (SHARED_BUFFER[i] > 0) {
+                break;
+            }
+            else if (i === bytes - 1) {
+                SHARED_BUFFER[bytes - 1] = 1;
+            }
+        }
+        return SHARED_BUFFER.toString('hex', 0, bytes);
+    };
+}
+//# sourceMappingURL=RandomIdGenerator.js.map
 
 /***/ }),
 
@@ -34678,7 +35120,219 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__nccwpck_require__(97913), exports);
+__exportStar(__nccwpck_require__(97670), exports);
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 68118:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOffSampler = void 0;
+const Sampler_1 = __nccwpck_require__(17446);
+/** Sampler that samples no traces. */
+class AlwaysOffSampler {
+    shouldSample() {
+        return {
+            decision: Sampler_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return 'AlwaysOffSampler';
+    }
+}
+exports.AlwaysOffSampler = AlwaysOffSampler;
+//# sourceMappingURL=AlwaysOffSampler.js.map
+
+/***/ }),
+
+/***/ 13032:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOnSampler = void 0;
+const Sampler_1 = __nccwpck_require__(17446);
+/** Sampler that samples all traces. */
+class AlwaysOnSampler {
+    shouldSample() {
+        return {
+            decision: Sampler_1.SamplingDecision.RECORD_AND_SAMPLED,
+        };
+    }
+    toString() {
+        return 'AlwaysOnSampler';
+    }
+}
+exports.AlwaysOnSampler = AlwaysOnSampler;
+//# sourceMappingURL=AlwaysOnSampler.js.map
+
+/***/ }),
+
+/***/ 58070:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ParentBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(89736);
+const AlwaysOffSampler_1 = __nccwpck_require__(68118);
+const AlwaysOnSampler_1 = __nccwpck_require__(13032);
+/**
+ * A composite sampler that either respects the parent span's sampling decision
+ * or delegates to `delegateSampler` for root spans.
+ */
+class ParentBasedSampler {
+    constructor(config) {
+        var _a, _b, _c, _d;
+        this._root = config.root;
+        if (!this._root) {
+            (0, core_1.globalErrorHandler)(new Error('ParentBasedSampler must have a root sampler configured'));
+            this._root = new AlwaysOnSampler_1.AlwaysOnSampler();
+        }
+        this._remoteParentSampled =
+            (_a = config.remoteParentSampled) !== null && _a !== void 0 ? _a : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._remoteParentNotSampled =
+            (_b = config.remoteParentNotSampled) !== null && _b !== void 0 ? _b : new AlwaysOffSampler_1.AlwaysOffSampler();
+        this._localParentSampled =
+            (_c = config.localParentSampled) !== null && _c !== void 0 ? _c : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._localParentNotSampled =
+            (_d = config.localParentNotSampled) !== null && _d !== void 0 ? _d : new AlwaysOffSampler_1.AlwaysOffSampler();
+    }
+    shouldSample(context, traceId, spanName, spanKind, attributes, links) {
+        const parentContext = api_1.trace.getSpanContext(context);
+        if (!parentContext || !(0, api_1.isSpanContextValid)(parentContext)) {
+            return this._root.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.isRemote) {
+            if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+                return this._remoteParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+            }
+            return this._remoteParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+            return this._localParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        return this._localParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+    }
+    toString() {
+        return `ParentBased{root=${this._root.toString()}, remoteParentSampled=${this._remoteParentSampled.toString()}, remoteParentNotSampled=${this._remoteParentNotSampled.toString()}, localParentSampled=${this._localParentSampled.toString()}, localParentNotSampled=${this._localParentNotSampled.toString()}}`;
+    }
+}
+exports.ParentBasedSampler = ParentBasedSampler;
+//# sourceMappingURL=ParentBasedSampler.js.map
+
+/***/ }),
+
+/***/ 16712:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceIdRatioBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+const Sampler_1 = __nccwpck_require__(17446);
+/** Sampler that samples a given fraction of traces based of trace id deterministically. */
+class TraceIdRatioBasedSampler {
+    constructor(_ratio = 0) {
+        this._ratio = _ratio;
+        this._ratio = this._normalize(_ratio);
+        this._upperBound = Math.floor(this._ratio * 0xffffffff);
+    }
+    shouldSample(context, traceId) {
+        return {
+            decision: (0, api_1.isValidTraceId)(traceId) && this._accumulate(traceId) < this._upperBound
+                ? Sampler_1.SamplingDecision.RECORD_AND_SAMPLED
+                : Sampler_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return `TraceIdRatioBased{${this._ratio}}`;
+    }
+    _normalize(ratio) {
+        if (typeof ratio !== 'number' || isNaN(ratio))
+            return 0;
+        return ratio >= 1 ? 1 : ratio <= 0 ? 0 : ratio;
+    }
+    _accumulate(traceId) {
+        let accumulation = 0;
+        for (let i = 0; i < traceId.length / 8; i++) {
+            const pos = i * 8;
+            const part = parseInt(traceId.slice(pos, pos + 8), 16);
+            accumulation = (accumulation ^ part) >>> 0;
+        }
+        return accumulation;
+    }
+}
+exports.TraceIdRatioBasedSampler = TraceIdRatioBasedSampler;
+//# sourceMappingURL=TraceIdRatioBasedSampler.js.map
 
 /***/ }),
 
@@ -34730,6 +35384,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.reconfigureLimits = exports.mergeConfig = void 0;
 const config_1 = __nccwpck_require__(91);
+const core_1 = __nccwpck_require__(89736);
 /**
  * Function to merge Default configuration (as specified in './config') with
  * user provided configurations.
@@ -34738,9 +35393,10 @@ function mergeConfig(userConfig) {
     const perInstanceDefaults = {
         sampler: (0, config_1.buildSamplerFromEnv)(),
     };
-    const target = Object.assign({}, config_1.DEFAULT_CONFIG, perInstanceDefaults, userConfig);
-    target.generalLimits = Object.assign({}, config_1.DEFAULT_CONFIG.generalLimits, userConfig.generalLimits || {});
-    target.spanLimits = Object.assign({}, config_1.DEFAULT_CONFIG.spanLimits, userConfig.spanLimits || {});
+    const DEFAULT_CONFIG = (0, config_1.loadDefaultConfig)();
+    const target = Object.assign({}, DEFAULT_CONFIG, perInstanceDefaults, userConfig);
+    target.generalLimits = Object.assign({}, DEFAULT_CONFIG.generalLimits, userConfig.generalLimits || {});
+    target.spanLimits = Object.assign({}, DEFAULT_CONFIG.spanLimits, userConfig.spanLimits || {});
     return target;
 }
 exports.mergeConfig = mergeConfig;
@@ -34750,22 +35406,19 @@ exports.mergeConfig = mergeConfig;
  * @param userConfig User provided tracer configuration
  */
 function reconfigureLimits(userConfig) {
-    var _a, _b;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
     const spanLimits = Object.assign({}, userConfig.spanLimits);
+    const parsedEnvConfig = (0, core_1.getEnvWithoutDefaults)();
     /**
-     * When span attribute count limit is not defined, but general attribute count limit is defined
-     * Then, span attribute count limit will be same as general one
+     * Reassign span attribute count limit to use first non null value defined by user or use default value
      */
-    if (spanLimits.attributeCountLimit == null && ((_a = userConfig.generalLimits) === null || _a === void 0 ? void 0 : _a.attributeCountLimit) != null) {
-        spanLimits.attributeCountLimit = userConfig.generalLimits.attributeCountLimit;
-    }
+    spanLimits.attributeCountLimit =
+        (_f = (_e = (_d = (_b = (_a = userConfig.spanLimits) === null || _a === void 0 ? void 0 : _a.attributeCountLimit) !== null && _b !== void 0 ? _b : (_c = userConfig.generalLimits) === null || _c === void 0 ? void 0 : _c.attributeCountLimit) !== null && _d !== void 0 ? _d : parsedEnvConfig.OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT) !== null && _e !== void 0 ? _e : parsedEnvConfig.OTEL_ATTRIBUTE_COUNT_LIMIT) !== null && _f !== void 0 ? _f : core_1.DEFAULT_ATTRIBUTE_COUNT_LIMIT;
     /**
-     * When span attribute value length limit is not defined, but general attribute value length limit is defined
-     * Then, span attribute value length limit will be same as general one
+     * Reassign span attribute value length limit to use first non null value defined by user or use default value
      */
-    if (spanLimits.attributeValueLengthLimit == null && ((_b = userConfig.generalLimits) === null || _b === void 0 ? void 0 : _b.attributeValueLengthLimit) != null) {
-        spanLimits.attributeValueLengthLimit = userConfig.generalLimits.attributeValueLengthLimit;
-    }
+    spanLimits.attributeValueLengthLimit =
+        (_m = (_l = (_k = (_h = (_g = userConfig.spanLimits) === null || _g === void 0 ? void 0 : _g.attributeValueLengthLimit) !== null && _h !== void 0 ? _h : (_j = userConfig.generalLimits) === null || _j === void 0 ? void 0 : _j.attributeValueLengthLimit) !== null && _k !== void 0 ? _k : parsedEnvConfig.OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT) !== null && _l !== void 0 ? _l : parsedEnvConfig.OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT) !== null && _m !== void 0 ? _m : core_1.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT;
     return Object.assign({}, userConfig, { spanLimits });
 }
 exports.reconfigureLimits = reconfigureLimits;
@@ -34835,126 +35488,126 @@ exports.TelemetrySdkLanguageValues = exports.OsTypeValues = exports.HostArchValu
 // DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
 exports.SemanticResourceAttributes = {
     /**
-    * Name of the cloud provider.
-    */
+     * Name of the cloud provider.
+     */
     CLOUD_PROVIDER: 'cloud.provider',
     /**
-    * The cloud account ID the resource is assigned to.
-    */
+     * The cloud account ID the resource is assigned to.
+     */
     CLOUD_ACCOUNT_ID: 'cloud.account.id',
     /**
-    * The geographical region the resource is running. Refer to your provider&#39;s docs to see the available regions, for example [Alibaba Cloud regions](https://www.alibabacloud.com/help/doc-detail/40654.htm), [AWS regions](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/), [Azure regions](https://azure.microsoft.com/en-us/global-infrastructure/geographies/), or [Google Cloud regions](https://cloud.google.com/about/locations).
-    */
+     * The geographical region the resource is running. Refer to your provider&#39;s docs to see the available regions, for example [Alibaba Cloud regions](https://www.alibabacloud.com/help/doc-detail/40654.htm), [AWS regions](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/), [Azure regions](https://azure.microsoft.com/en-us/global-infrastructure/geographies/), or [Google Cloud regions](https://cloud.google.com/about/locations).
+     */
     CLOUD_REGION: 'cloud.region',
     /**
-    * Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.
-    *
-    * Note: Availability zones are called &#34;zones&#34; on Alibaba Cloud and Google Cloud.
-    */
+     * Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.
+     *
+     * Note: Availability zones are called &#34;zones&#34; on Alibaba Cloud and Google Cloud.
+     */
     CLOUD_AVAILABILITY_ZONE: 'cloud.availability_zone',
     /**
-    * The cloud platform in use.
-    *
-    * Note: The prefix of the service SHOULD match the one specified in `cloud.provider`.
-    */
+     * The cloud platform in use.
+     *
+     * Note: The prefix of the service SHOULD match the one specified in `cloud.provider`.
+     */
     CLOUD_PLATFORM: 'cloud.platform',
     /**
-    * The Amazon Resource Name (ARN) of an [ECS container instance](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html).
-    */
+     * The Amazon Resource Name (ARN) of an [ECS container instance](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html).
+     */
     AWS_ECS_CONTAINER_ARN: 'aws.ecs.container.arn',
     /**
-    * The ARN of an [ECS cluster](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/clusters.html).
-    */
+     * The ARN of an [ECS cluster](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/clusters.html).
+     */
     AWS_ECS_CLUSTER_ARN: 'aws.ecs.cluster.arn',
     /**
-    * The [launch type](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_types.html) for an ECS task.
-    */
+     * The [launch type](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_types.html) for an ECS task.
+     */
     AWS_ECS_LAUNCHTYPE: 'aws.ecs.launchtype',
     /**
-    * The ARN of an [ECS task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html).
-    */
+     * The ARN of an [ECS task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html).
+     */
     AWS_ECS_TASK_ARN: 'aws.ecs.task.arn',
     /**
-    * The task definition family this task definition is a member of.
-    */
+     * The task definition family this task definition is a member of.
+     */
     AWS_ECS_TASK_FAMILY: 'aws.ecs.task.family',
     /**
-    * The revision for this task definition.
-    */
+     * The revision for this task definition.
+     */
     AWS_ECS_TASK_REVISION: 'aws.ecs.task.revision',
     /**
-    * The ARN of an EKS cluster.
-    */
+     * The ARN of an EKS cluster.
+     */
     AWS_EKS_CLUSTER_ARN: 'aws.eks.cluster.arn',
     /**
-    * The name(s) of the AWS log group(s) an application is writing to.
-    *
-    * Note: Multiple log groups must be supported for cases like multi-container applications, where a single application has sidecar containers, and each write to their own log group.
-    */
+     * The name(s) of the AWS log group(s) an application is writing to.
+     *
+     * Note: Multiple log groups must be supported for cases like multi-container applications, where a single application has sidecar containers, and each write to their own log group.
+     */
     AWS_LOG_GROUP_NAMES: 'aws.log.group.names',
     /**
-    * The Amazon Resource Name(s) (ARN) of the AWS log group(s).
-    *
-    * Note: See the [log group ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format).
-    */
+     * The Amazon Resource Name(s) (ARN) of the AWS log group(s).
+     *
+     * Note: See the [log group ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format).
+     */
     AWS_LOG_GROUP_ARNS: 'aws.log.group.arns',
     /**
-    * The name(s) of the AWS log stream(s) an application is writing to.
-    */
+     * The name(s) of the AWS log stream(s) an application is writing to.
+     */
     AWS_LOG_STREAM_NAMES: 'aws.log.stream.names',
     /**
-    * The ARN(s) of the AWS log stream(s).
-    *
-    * Note: See the [log stream ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format). One log group can contain several log streams, so these ARNs necessarily identify both a log group and a log stream.
-    */
+     * The ARN(s) of the AWS log stream(s).
+     *
+     * Note: See the [log stream ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format). One log group can contain several log streams, so these ARNs necessarily identify both a log group and a log stream.
+     */
     AWS_LOG_STREAM_ARNS: 'aws.log.stream.arns',
     /**
-    * Container name.
-    */
+     * Container name.
+     */
     CONTAINER_NAME: 'container.name',
     /**
-    * Container ID. Usually a UUID, as for example used to [identify Docker containers](https://docs.docker.com/engine/reference/run/#container-identification). The UUID might be abbreviated.
-    */
+     * Container ID. Usually a UUID, as for example used to [identify Docker containers](https://docs.docker.com/engine/reference/run/#container-identification). The UUID might be abbreviated.
+     */
     CONTAINER_ID: 'container.id',
     /**
-    * The container runtime managing this container.
-    */
+     * The container runtime managing this container.
+     */
     CONTAINER_RUNTIME: 'container.runtime',
     /**
-    * Name of the image the container was built on.
-    */
+     * Name of the image the container was built on.
+     */
     CONTAINER_IMAGE_NAME: 'container.image.name',
     /**
-    * Container image tag.
-    */
+     * Container image tag.
+     */
     CONTAINER_IMAGE_TAG: 'container.image.tag',
     /**
-    * Name of the [deployment environment](https://en.wikipedia.org/wiki/Deployment_environment) (aka deployment tier).
-    */
+     * Name of the [deployment environment](https://en.wikipedia.org/wiki/Deployment_environment) (aka deployment tier).
+     */
     DEPLOYMENT_ENVIRONMENT: 'deployment.environment',
     /**
-    * A unique identifier representing the device.
-    *
-    * Note: The device identifier MUST only be defined using the values outlined below. This value is not an advertising identifier and MUST NOT be used as such. On iOS (Swift or Objective-C), this value MUST be equal to the [vendor identifier](https://developer.apple.com/documentation/uikit/uidevice/1620059-identifierforvendor). On Android (Java or Kotlin), this value MUST be equal to the Firebase Installation ID or a globally unique UUID which is persisted across sessions in your application. More information can be found [here](https://developer.android.com/training/articles/user-data-ids) on best practices and exact implementation details. Caution should be taken when storing personal data or anything which can identify a user. GDPR and data protection laws may apply, ensure you do your own due diligence.
-    */
+     * A unique identifier representing the device.
+     *
+     * Note: The device identifier MUST only be defined using the values outlined below. This value is not an advertising identifier and MUST NOT be used as such. On iOS (Swift or Objective-C), this value MUST be equal to the [vendor identifier](https://developer.apple.com/documentation/uikit/uidevice/1620059-identifierforvendor). On Android (Java or Kotlin), this value MUST be equal to the Firebase Installation ID or a globally unique UUID which is persisted across sessions in your application. More information can be found [here](https://developer.android.com/training/articles/user-data-ids) on best practices and exact implementation details. Caution should be taken when storing personal data or anything which can identify a user. GDPR and data protection laws may apply, ensure you do your own due diligence.
+     */
     DEVICE_ID: 'device.id',
     /**
-    * The model identifier for the device.
-    *
-    * Note: It&#39;s recommended this value represents a machine readable version of the model identifier rather than the market or consumer-friendly name of the device.
-    */
+     * The model identifier for the device.
+     *
+     * Note: It&#39;s recommended this value represents a machine readable version of the model identifier rather than the market or consumer-friendly name of the device.
+     */
     DEVICE_MODEL_IDENTIFIER: 'device.model.identifier',
     /**
-    * The marketing name for the device model.
-    *
-    * Note: It&#39;s recommended this value represents a human readable version of the device model rather than a machine readable alternative.
-    */
+     * The marketing name for the device model.
+     *
+     * Note: It&#39;s recommended this value represents a human readable version of the device model rather than a machine readable alternative.
+     */
     DEVICE_MODEL_NAME: 'device.model.name',
     /**
-    * The name of the single function that this runtime instance executes.
-    *
-    * Note: This is the name of the function as configured/deployed on the FaaS platform and is usually different from the name of the callback function (which may be stored in the [`code.namespace`/`code.function`](../../trace/semantic_conventions/span-general.md#source-code-attributes) span attributes).
-    */
+     * The name of the single function that this runtime instance executes.
+     *
+     * Note: This is the name of the function as configured/deployed on the FaaS platform and is usually different from the name of the callback function (which may be stored in the [`code.namespace`/`code.function`](../../trace/semantic_conventions/span-general.md#source-code-attributes) span attributes).
+     */
     FAAS_NAME: 'faas.name',
     /**
     * The unique ID of the single function that this runtime instance executes.
@@ -34990,226 +35643,226 @@ exports.SemanticResourceAttributes = {
     */
     FAAS_VERSION: 'faas.version',
     /**
-    * The execution environment ID as a string, that will be potentially reused for other invocations to the same function/function version.
-    *
-    * Note: * **AWS Lambda:** Use the (full) log stream name.
-    */
+     * The execution environment ID as a string, that will be potentially reused for other invocations to the same function/function version.
+     *
+     * Note: * **AWS Lambda:** Use the (full) log stream name.
+     */
     FAAS_INSTANCE: 'faas.instance',
     /**
-    * The amount of memory available to the serverless function in MiB.
-    *
-    * Note: It&#39;s recommended to set this attribute since e.g. too little memory can easily stop a Java AWS Lambda function from working correctly. On AWS Lambda, the environment variable `AWS_LAMBDA_FUNCTION_MEMORY_SIZE` provides this information.
-    */
+     * The amount of memory available to the serverless function in MiB.
+     *
+     * Note: It&#39;s recommended to set this attribute since e.g. too little memory can easily stop a Java AWS Lambda function from working correctly. On AWS Lambda, the environment variable `AWS_LAMBDA_FUNCTION_MEMORY_SIZE` provides this information.
+     */
     FAAS_MAX_MEMORY: 'faas.max_memory',
     /**
-    * Unique host ID. For Cloud, this must be the instance_id assigned by the cloud provider.
-    */
+     * Unique host ID. For Cloud, this must be the instance_id assigned by the cloud provider.
+     */
     HOST_ID: 'host.id',
     /**
-    * Name of the host. On Unix systems, it may contain what the hostname command returns, or the fully qualified hostname, or another name specified by the user.
-    */
+     * Name of the host. On Unix systems, it may contain what the hostname command returns, or the fully qualified hostname, or another name specified by the user.
+     */
     HOST_NAME: 'host.name',
     /**
-    * Type of host. For Cloud, this must be the machine type.
-    */
+     * Type of host. For Cloud, this must be the machine type.
+     */
     HOST_TYPE: 'host.type',
     /**
-    * The CPU architecture the host system is running on.
-    */
+     * The CPU architecture the host system is running on.
+     */
     HOST_ARCH: 'host.arch',
     /**
-    * Name of the VM image or OS install the host was instantiated from.
-    */
+     * Name of the VM image or OS install the host was instantiated from.
+     */
     HOST_IMAGE_NAME: 'host.image.name',
     /**
-    * VM image ID. For Cloud, this value is from the provider.
-    */
+     * VM image ID. For Cloud, this value is from the provider.
+     */
     HOST_IMAGE_ID: 'host.image.id',
     /**
-    * The version string of the VM image as defined in [Version SpanAttributes](README.md#version-attributes).
-    */
+     * The version string of the VM image as defined in [Version SpanAttributes](README.md#version-attributes).
+     */
     HOST_IMAGE_VERSION: 'host.image.version',
     /**
-    * The name of the cluster.
-    */
+     * The name of the cluster.
+     */
     K8S_CLUSTER_NAME: 'k8s.cluster.name',
     /**
-    * The name of the Node.
-    */
+     * The name of the Node.
+     */
     K8S_NODE_NAME: 'k8s.node.name',
     /**
-    * The UID of the Node.
-    */
+     * The UID of the Node.
+     */
     K8S_NODE_UID: 'k8s.node.uid',
     /**
-    * The name of the namespace that the pod is running in.
-    */
+     * The name of the namespace that the pod is running in.
+     */
     K8S_NAMESPACE_NAME: 'k8s.namespace.name',
     /**
-    * The UID of the Pod.
-    */
+     * The UID of the Pod.
+     */
     K8S_POD_UID: 'k8s.pod.uid',
     /**
-    * The name of the Pod.
-    */
+     * The name of the Pod.
+     */
     K8S_POD_NAME: 'k8s.pod.name',
     /**
-    * The name of the Container in a Pod template.
-    */
+     * The name of the Container in a Pod template.
+     */
     K8S_CONTAINER_NAME: 'k8s.container.name',
     /**
-    * The UID of the ReplicaSet.
-    */
+     * The UID of the ReplicaSet.
+     */
     K8S_REPLICASET_UID: 'k8s.replicaset.uid',
     /**
-    * The name of the ReplicaSet.
-    */
+     * The name of the ReplicaSet.
+     */
     K8S_REPLICASET_NAME: 'k8s.replicaset.name',
     /**
-    * The UID of the Deployment.
-    */
+     * The UID of the Deployment.
+     */
     K8S_DEPLOYMENT_UID: 'k8s.deployment.uid',
     /**
-    * The name of the Deployment.
-    */
+     * The name of the Deployment.
+     */
     K8S_DEPLOYMENT_NAME: 'k8s.deployment.name',
     /**
-    * The UID of the StatefulSet.
-    */
+     * The UID of the StatefulSet.
+     */
     K8S_STATEFULSET_UID: 'k8s.statefulset.uid',
     /**
-    * The name of the StatefulSet.
-    */
+     * The name of the StatefulSet.
+     */
     K8S_STATEFULSET_NAME: 'k8s.statefulset.name',
     /**
-    * The UID of the DaemonSet.
-    */
+     * The UID of the DaemonSet.
+     */
     K8S_DAEMONSET_UID: 'k8s.daemonset.uid',
     /**
-    * The name of the DaemonSet.
-    */
+     * The name of the DaemonSet.
+     */
     K8S_DAEMONSET_NAME: 'k8s.daemonset.name',
     /**
-    * The UID of the Job.
-    */
+     * The UID of the Job.
+     */
     K8S_JOB_UID: 'k8s.job.uid',
     /**
-    * The name of the Job.
-    */
+     * The name of the Job.
+     */
     K8S_JOB_NAME: 'k8s.job.name',
     /**
-    * The UID of the CronJob.
-    */
+     * The UID of the CronJob.
+     */
     K8S_CRONJOB_UID: 'k8s.cronjob.uid',
     /**
-    * The name of the CronJob.
-    */
+     * The name of the CronJob.
+     */
     K8S_CRONJOB_NAME: 'k8s.cronjob.name',
     /**
-    * The operating system type.
-    */
+     * The operating system type.
+     */
     OS_TYPE: 'os.type',
     /**
-    * Human readable (not intended to be parsed) OS version information, like e.g. reported by `ver` or `lsb_release -a` commands.
-    */
+     * Human readable (not intended to be parsed) OS version information, like e.g. reported by `ver` or `lsb_release -a` commands.
+     */
     OS_DESCRIPTION: 'os.description',
     /**
-    * Human readable operating system name.
-    */
+     * Human readable operating system name.
+     */
     OS_NAME: 'os.name',
     /**
-    * The version string of the operating system as defined in [Version SpanAttributes](../../resource/semantic_conventions/README.md#version-attributes).
-    */
+     * The version string of the operating system as defined in [Version SpanAttributes](../../resource/semantic_conventions/README.md#version-attributes).
+     */
     OS_VERSION: 'os.version',
     /**
-    * Process identifier (PID).
-    */
+     * Process identifier (PID).
+     */
     PROCESS_PID: 'process.pid',
     /**
-    * The name of the process executable. On Linux based systems, can be set to the `Name` in `proc/[pid]/status`. On Windows, can be set to the base name of `GetProcessImageFileNameW`.
-    */
+     * The name of the process executable. On Linux based systems, can be set to the `Name` in `proc/[pid]/status`. On Windows, can be set to the base name of `GetProcessImageFileNameW`.
+     */
     PROCESS_EXECUTABLE_NAME: 'process.executable.name',
     /**
-    * The full path to the process executable. On Linux based systems, can be set to the target of `proc/[pid]/exe`. On Windows, can be set to the result of `GetProcessImageFileNameW`.
-    */
+     * The full path to the process executable. On Linux based systems, can be set to the target of `proc/[pid]/exe`. On Windows, can be set to the result of `GetProcessImageFileNameW`.
+     */
     PROCESS_EXECUTABLE_PATH: 'process.executable.path',
     /**
-    * The command used to launch the process (i.e. the command name). On Linux based systems, can be set to the zeroth string in `proc/[pid]/cmdline`. On Windows, can be set to the first parameter extracted from `GetCommandLineW`.
-    */
+     * The command used to launch the process (i.e. the command name). On Linux based systems, can be set to the zeroth string in `proc/[pid]/cmdline`. On Windows, can be set to the first parameter extracted from `GetCommandLineW`.
+     */
     PROCESS_COMMAND: 'process.command',
     /**
-    * The full command used to launch the process as a single string representing the full command. On Windows, can be set to the result of `GetCommandLineW`. Do not set this if you have to assemble it just for monitoring; use `process.command_args` instead.
-    */
+     * The full command used to launch the process as a single string representing the full command. On Windows, can be set to the result of `GetCommandLineW`. Do not set this if you have to assemble it just for monitoring; use `process.command_args` instead.
+     */
     PROCESS_COMMAND_LINE: 'process.command_line',
     /**
-    * All the command arguments (including the command/executable itself) as received by the process. On Linux-based systems (and some other Unixoid systems supporting procfs), can be set according to the list of null-delimited strings extracted from `proc/[pid]/cmdline`. For libc-based executables, this would be the full argv vector passed to `main`.
-    */
+     * All the command arguments (including the command/executable itself) as received by the process. On Linux-based systems (and some other Unixoid systems supporting procfs), can be set according to the list of null-delimited strings extracted from `proc/[pid]/cmdline`. For libc-based executables, this would be the full argv vector passed to `main`.
+     */
     PROCESS_COMMAND_ARGS: 'process.command_args',
     /**
-    * The username of the user that owns the process.
-    */
+     * The username of the user that owns the process.
+     */
     PROCESS_OWNER: 'process.owner',
     /**
-    * The name of the runtime of this process. For compiled native binaries, this SHOULD be the name of the compiler.
-    */
+     * The name of the runtime of this process. For compiled native binaries, this SHOULD be the name of the compiler.
+     */
     PROCESS_RUNTIME_NAME: 'process.runtime.name',
     /**
-    * The version of the runtime of this process, as returned by the runtime without modification.
-    */
+     * The version of the runtime of this process, as returned by the runtime without modification.
+     */
     PROCESS_RUNTIME_VERSION: 'process.runtime.version',
     /**
-    * An additional description about the runtime of the process, for example a specific vendor customization of the runtime environment.
-    */
+     * An additional description about the runtime of the process, for example a specific vendor customization of the runtime environment.
+     */
     PROCESS_RUNTIME_DESCRIPTION: 'process.runtime.description',
     /**
-    * Logical name of the service.
-    *
-    * Note: MUST be the same for all instances of horizontally scaled services. If the value was not specified, SDKs MUST fallback to `unknown_service:` concatenated with [`process.executable.name`](process.md#process), e.g. `unknown_service:bash`. If `process.executable.name` is not available, the value MUST be set to `unknown_service`.
-    */
+     * Logical name of the service.
+     *
+     * Note: MUST be the same for all instances of horizontally scaled services. If the value was not specified, SDKs MUST fallback to `unknown_service:` concatenated with [`process.executable.name`](process.md#process), e.g. `unknown_service:bash`. If `process.executable.name` is not available, the value MUST be set to `unknown_service`.
+     */
     SERVICE_NAME: 'service.name',
     /**
-    * A namespace for `service.name`.
-    *
-    * Note: A string value having a meaning that helps to distinguish a group of services, for example the team name that owns a group of services. `service.name` is expected to be unique within the same namespace. If `service.namespace` is not specified in the Resource then `service.name` is expected to be unique for all services that have no explicit namespace defined (so the empty/unspecified namespace is simply one more valid namespace). Zero-length namespace string is assumed equal to unspecified namespace.
-    */
+     * A namespace for `service.name`.
+     *
+     * Note: A string value having a meaning that helps to distinguish a group of services, for example the team name that owns a group of services. `service.name` is expected to be unique within the same namespace. If `service.namespace` is not specified in the Resource then `service.name` is expected to be unique for all services that have no explicit namespace defined (so the empty/unspecified namespace is simply one more valid namespace). Zero-length namespace string is assumed equal to unspecified namespace.
+     */
     SERVICE_NAMESPACE: 'service.namespace',
     /**
-    * The string ID of the service instance.
-    *
-    * Note: MUST be unique for each instance of the same `service.namespace,service.name` pair (in other words `service.namespace,service.name,service.instance.id` triplet MUST be globally unique). The ID helps to distinguish instances of the same service that exist at the same time (e.g. instances of a horizontally scaled service). It is preferable for the ID to be persistent and stay the same for the lifetime of the service instance, however it is acceptable that the ID is ephemeral and changes during important lifetime events for the service (e.g. service restarts). If the service has no inherent unique ID that can be used as the value of this attribute it is recommended to generate a random Version 1 or Version 4 RFC 4122 UUID (services aiming for reproducible UUIDs may also use Version 5, see RFC 4122 for more recommendations).
-    */
+     * The string ID of the service instance.
+     *
+     * Note: MUST be unique for each instance of the same `service.namespace,service.name` pair (in other words `service.namespace,service.name,service.instance.id` triplet MUST be globally unique). The ID helps to distinguish instances of the same service that exist at the same time (e.g. instances of a horizontally scaled service). It is preferable for the ID to be persistent and stay the same for the lifetime of the service instance, however it is acceptable that the ID is ephemeral and changes during important lifetime events for the service (e.g. service restarts). If the service has no inherent unique ID that can be used as the value of this attribute it is recommended to generate a random Version 1 or Version 4 RFC 4122 UUID (services aiming for reproducible UUIDs may also use Version 5, see RFC 4122 for more recommendations).
+     */
     SERVICE_INSTANCE_ID: 'service.instance.id',
     /**
-    * The version string of the service API or implementation.
-    */
+     * The version string of the service API or implementation.
+     */
     SERVICE_VERSION: 'service.version',
     /**
-    * The name of the telemetry SDK as defined above.
-    */
+     * The name of the telemetry SDK as defined above.
+     */
     TELEMETRY_SDK_NAME: 'telemetry.sdk.name',
     /**
-    * The language of the telemetry SDK.
-    */
+     * The language of the telemetry SDK.
+     */
     TELEMETRY_SDK_LANGUAGE: 'telemetry.sdk.language',
     /**
-    * The version string of the telemetry SDK.
-    */
+     * The version string of the telemetry SDK.
+     */
     TELEMETRY_SDK_VERSION: 'telemetry.sdk.version',
     /**
-    * The version string of the auto instrumentation agent, if used.
-    */
+     * The version string of the auto instrumentation agent, if used.
+     */
     TELEMETRY_AUTO_VERSION: 'telemetry.auto.version',
     /**
-    * The name of the web engine.
-    */
+     * The name of the web engine.
+     */
     WEBENGINE_NAME: 'webengine.name',
     /**
-    * The version of the web engine.
-    */
+     * The version of the web engine.
+     */
     WEBENGINE_VERSION: 'webengine.version',
     /**
-    * Additional description of the web engine (e.g. detailed version and edition information).
-    */
+     * Additional description of the web engine (e.g. detailed version and edition information).
+     */
     WEBENGINE_DESCRIPTION: 'webengine.description',
 };
 exports.CloudProviderValues = {
@@ -35391,114 +36044,114 @@ exports.MessageTypeValues = exports.RpcGrpcStatusCodeValues = exports.MessagingO
 // DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
 exports.SemanticAttributes = {
     /**
-    * The full invoked ARN as provided on the `Context` passed to the function (`Lambda-Runtime-Invoked-Function-Arn` header on the `/runtime/invocation/next` applicable).
-    *
-    * Note: This may be different from `faas.id` if an alias is involved.
-    */
+     * The full invoked ARN as provided on the `Context` passed to the function (`Lambda-Runtime-Invoked-Function-Arn` header on the `/runtime/invocation/next` applicable).
+     *
+     * Note: This may be different from `faas.id` if an alias is involved.
+     */
     AWS_LAMBDA_INVOKED_ARN: 'aws.lambda.invoked_arn',
     /**
-    * An identifier for the database management system (DBMS) product being used. See below for a list of well-known identifiers.
-    */
+     * An identifier for the database management system (DBMS) product being used. See below for a list of well-known identifiers.
+     */
     DB_SYSTEM: 'db.system',
     /**
-    * The connection string used to connect to the database. It is recommended to remove embedded credentials.
-    */
+     * The connection string used to connect to the database. It is recommended to remove embedded credentials.
+     */
     DB_CONNECTION_STRING: 'db.connection_string',
     /**
-    * Username for accessing the database.
-    */
+     * Username for accessing the database.
+     */
     DB_USER: 'db.user',
     /**
-    * The fully-qualified class name of the [Java Database Connectivity (JDBC)](https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/) driver used to connect.
-    */
+     * The fully-qualified class name of the [Java Database Connectivity (JDBC)](https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/) driver used to connect.
+     */
     DB_JDBC_DRIVER_CLASSNAME: 'db.jdbc.driver_classname',
     /**
-    * If no [tech-specific attribute](#call-level-attributes-for-specific-technologies) is defined, this attribute is used to report the name of the database being accessed. For commands that switch the database, this should be set to the target database (even if the command fails).
-    *
-    * Note: In some SQL databases, the database name to be used is called &#34;schema name&#34;.
-    */
+     * If no [tech-specific attribute](#call-level-attributes-for-specific-technologies) is defined, this attribute is used to report the name of the database being accessed. For commands that switch the database, this should be set to the target database (even if the command fails).
+     *
+     * Note: In some SQL databases, the database name to be used is called &#34;schema name&#34;.
+     */
     DB_NAME: 'db.name',
     /**
-    * The database statement being executed.
-    *
-    * Note: The value may be sanitized to exclude sensitive information.
-    */
+     * The database statement being executed.
+     *
+     * Note: The value may be sanitized to exclude sensitive information.
+     */
     DB_STATEMENT: 'db.statement',
     /**
-    * The name of the operation being executed, e.g. the [MongoDB command name](https://docs.mongodb.com/manual/reference/command/#database-operations) such as `findAndModify`, or the SQL keyword.
-    *
-    * Note: When setting this to an SQL keyword, it is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if the operation name is provided by the library being instrumented. If the SQL statement has an ambiguous operation, or performs more than one operation, this value may be omitted.
-    */
+     * The name of the operation being executed, e.g. the [MongoDB command name](https://docs.mongodb.com/manual/reference/command/#database-operations) such as `findAndModify`, or the SQL keyword.
+     *
+     * Note: When setting this to an SQL keyword, it is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if the operation name is provided by the library being instrumented. If the SQL statement has an ambiguous operation, or performs more than one operation, this value may be omitted.
+     */
     DB_OPERATION: 'db.operation',
     /**
-    * The Microsoft SQL Server [instance name](https://docs.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver15) connecting to. This name is used to determine the port of a named instance.
-    *
-    * Note: If setting a `db.mssql.instance_name`, `net.peer.port` is no longer required (but still recommended if non-standard).
-    */
+     * The Microsoft SQL Server [instance name](https://docs.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver15) connecting to. This name is used to determine the port of a named instance.
+     *
+     * Note: If setting a `db.mssql.instance_name`, `net.peer.port` is no longer required (but still recommended if non-standard).
+     */
     DB_MSSQL_INSTANCE_NAME: 'db.mssql.instance_name',
     /**
-    * The name of the keyspace being accessed. To be used instead of the generic `db.name` attribute.
-    */
+     * The name of the keyspace being accessed. To be used instead of the generic `db.name` attribute.
+     */
     DB_CASSANDRA_KEYSPACE: 'db.cassandra.keyspace',
     /**
-    * The fetch size used for paging, i.e. how many rows will be returned at once.
-    */
+     * The fetch size used for paging, i.e. how many rows will be returned at once.
+     */
     DB_CASSANDRA_PAGE_SIZE: 'db.cassandra.page_size',
     /**
-    * The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).
-    */
+     * The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).
+     */
     DB_CASSANDRA_CONSISTENCY_LEVEL: 'db.cassandra.consistency_level',
     /**
-    * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
-    *
-    * Note: This mirrors the db.sql.table attribute but references cassandra rather than sql. It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
-    */
+     * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
+     *
+     * Note: This mirrors the db.sql.table attribute but references cassandra rather than sql. It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
+     */
     DB_CASSANDRA_TABLE: 'db.cassandra.table',
     /**
-    * Whether or not the query is idempotent.
-    */
+     * Whether or not the query is idempotent.
+     */
     DB_CASSANDRA_IDEMPOTENCE: 'db.cassandra.idempotence',
     /**
-    * The number of times a query was speculatively executed. Not set or `0` if the query was not executed speculatively.
-    */
+     * The number of times a query was speculatively executed. Not set or `0` if the query was not executed speculatively.
+     */
     DB_CASSANDRA_SPECULATIVE_EXECUTION_COUNT: 'db.cassandra.speculative_execution_count',
     /**
-    * The ID of the coordinating node for a query.
-    */
+     * The ID of the coordinating node for a query.
+     */
     DB_CASSANDRA_COORDINATOR_ID: 'db.cassandra.coordinator.id',
     /**
-    * The data center of the coordinating node for a query.
-    */
+     * The data center of the coordinating node for a query.
+     */
     DB_CASSANDRA_COORDINATOR_DC: 'db.cassandra.coordinator.dc',
     /**
-    * The [HBase namespace](https://hbase.apache.org/book.html#_namespace) being accessed. To be used instead of the generic `db.name` attribute.
-    */
+     * The [HBase namespace](https://hbase.apache.org/book.html#_namespace) being accessed. To be used instead of the generic `db.name` attribute.
+     */
     DB_HBASE_NAMESPACE: 'db.hbase.namespace',
     /**
-    * The index of the database being accessed as used in the [`SELECT` command](https://redis.io/commands/select), provided as an integer. To be used instead of the generic `db.name` attribute.
-    */
+     * The index of the database being accessed as used in the [`SELECT` command](https://redis.io/commands/select), provided as an integer. To be used instead of the generic `db.name` attribute.
+     */
     DB_REDIS_DATABASE_INDEX: 'db.redis.database_index',
     /**
-    * The collection being accessed within the database stated in `db.name`.
-    */
+     * The collection being accessed within the database stated in `db.name`.
+     */
     DB_MONGODB_COLLECTION: 'db.mongodb.collection',
     /**
-    * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
-    *
-    * Note: It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
-    */
+     * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
+     *
+     * Note: It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
+     */
     DB_SQL_TABLE: 'db.sql.table',
     /**
-    * The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it.
-    */
+     * The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it.
+     */
     EXCEPTION_TYPE: 'exception.type',
     /**
-    * The exception message.
-    */
+     * The exception message.
+     */
     EXCEPTION_MESSAGE: 'exception.message',
     /**
-    * A stacktrace as a string in the natural representation for the language runtime. The representation is to be determined and documented by each language SIG.
-    */
+     * A stacktrace as a string in the natural representation for the language runtime. The representation is to be determined and documented by each language SIG.
+     */
     EXCEPTION_STACKTRACE: 'exception.stacktrace',
     /**
     * SHOULD be set to true if the exception event is recorded at a point where it is known that the exception is escaping the scope of the span.
@@ -35522,214 +36175,214 @@ exports.SemanticAttributes = {
     */
     EXCEPTION_ESCAPED: 'exception.escaped',
     /**
-    * Type of the trigger on which the function is executed.
-    */
+     * Type of the trigger on which the function is executed.
+     */
     FAAS_TRIGGER: 'faas.trigger',
     /**
-    * The execution ID of the current function execution.
-    */
+     * The execution ID of the current function execution.
+     */
     FAAS_EXECUTION: 'faas.execution',
     /**
-    * The name of the source on which the triggering operation was performed. For example, in Cloud Storage or S3 corresponds to the bucket name, and in Cosmos DB to the database name.
-    */
+     * The name of the source on which the triggering operation was performed. For example, in Cloud Storage or S3 corresponds to the bucket name, and in Cosmos DB to the database name.
+     */
     FAAS_DOCUMENT_COLLECTION: 'faas.document.collection',
     /**
-    * Describes the type of the operation that was performed on the data.
-    */
+     * Describes the type of the operation that was performed on the data.
+     */
     FAAS_DOCUMENT_OPERATION: 'faas.document.operation',
     /**
-    * A string containing the time when the data was accessed in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
-    */
+     * A string containing the time when the data was accessed in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
+     */
     FAAS_DOCUMENT_TIME: 'faas.document.time',
     /**
-    * The document name/table subjected to the operation. For example, in Cloud Storage or S3 is the name of the file, and in Cosmos DB the table name.
-    */
+     * The document name/table subjected to the operation. For example, in Cloud Storage or S3 is the name of the file, and in Cosmos DB the table name.
+     */
     FAAS_DOCUMENT_NAME: 'faas.document.name',
     /**
-    * A string containing the function invocation time in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
-    */
+     * A string containing the function invocation time in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
+     */
     FAAS_TIME: 'faas.time',
     /**
-    * A string containing the schedule period as [Cron Expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).
-    */
+     * A string containing the schedule period as [Cron Expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).
+     */
     FAAS_CRON: 'faas.cron',
     /**
-    * A boolean that is true if the serverless function is executed for the first time (aka cold-start).
-    */
+     * A boolean that is true if the serverless function is executed for the first time (aka cold-start).
+     */
     FAAS_COLDSTART: 'faas.coldstart',
     /**
-    * The name of the invoked function.
-    *
-    * Note: SHOULD be equal to the `faas.name` resource attribute of the invoked function.
-    */
+     * The name of the invoked function.
+     *
+     * Note: SHOULD be equal to the `faas.name` resource attribute of the invoked function.
+     */
     FAAS_INVOKED_NAME: 'faas.invoked_name',
     /**
-    * The cloud provider of the invoked function.
-    *
-    * Note: SHOULD be equal to the `cloud.provider` resource attribute of the invoked function.
-    */
+     * The cloud provider of the invoked function.
+     *
+     * Note: SHOULD be equal to the `cloud.provider` resource attribute of the invoked function.
+     */
     FAAS_INVOKED_PROVIDER: 'faas.invoked_provider',
     /**
-    * The cloud region of the invoked function.
-    *
-    * Note: SHOULD be equal to the `cloud.region` resource attribute of the invoked function.
-    */
+     * The cloud region of the invoked function.
+     *
+     * Note: SHOULD be equal to the `cloud.region` resource attribute of the invoked function.
+     */
     FAAS_INVOKED_REGION: 'faas.invoked_region',
     /**
-    * Transport protocol used. See note below.
-    */
+     * Transport protocol used. See note below.
+     */
     NET_TRANSPORT: 'net.transport',
     /**
-    * Remote address of the peer (dotted decimal for IPv4 or [RFC5952](https://tools.ietf.org/html/rfc5952) for IPv6).
-    */
+     * Remote address of the peer (dotted decimal for IPv4 or [RFC5952](https://tools.ietf.org/html/rfc5952) for IPv6).
+     */
     NET_PEER_IP: 'net.peer.ip',
     /**
-    * Remote port number.
-    */
+     * Remote port number.
+     */
     NET_PEER_PORT: 'net.peer.port',
     /**
-    * Remote hostname or similar, see note below.
-    */
+     * Remote hostname or similar, see note below.
+     */
     NET_PEER_NAME: 'net.peer.name',
     /**
-    * Like `net.peer.ip` but for the host IP. Useful in case of a multi-IP host.
-    */
+     * Like `net.peer.ip` but for the host IP. Useful in case of a multi-IP host.
+     */
     NET_HOST_IP: 'net.host.ip',
     /**
-    * Like `net.peer.port` but for the host port.
-    */
+     * Like `net.peer.port` but for the host port.
+     */
     NET_HOST_PORT: 'net.host.port',
     /**
-    * Local hostname or similar, see note below.
-    */
+     * Local hostname or similar, see note below.
+     */
     NET_HOST_NAME: 'net.host.name',
     /**
-    * The internet connection type currently being used by the host.
-    */
+     * The internet connection type currently being used by the host.
+     */
     NET_HOST_CONNECTION_TYPE: 'net.host.connection.type',
     /**
-    * This describes more details regarding the connection.type. It may be the type of cell technology connection, but it could be used for describing details about a wifi connection.
-    */
+     * This describes more details regarding the connection.type. It may be the type of cell technology connection, but it could be used for describing details about a wifi connection.
+     */
     NET_HOST_CONNECTION_SUBTYPE: 'net.host.connection.subtype',
     /**
-    * The name of the mobile carrier.
-    */
+     * The name of the mobile carrier.
+     */
     NET_HOST_CARRIER_NAME: 'net.host.carrier.name',
     /**
-    * The mobile carrier country code.
-    */
+     * The mobile carrier country code.
+     */
     NET_HOST_CARRIER_MCC: 'net.host.carrier.mcc',
     /**
-    * The mobile carrier network code.
-    */
+     * The mobile carrier network code.
+     */
     NET_HOST_CARRIER_MNC: 'net.host.carrier.mnc',
     /**
-    * The ISO 3166-1 alpha-2 2-character country code associated with the mobile carrier network.
-    */
+     * The ISO 3166-1 alpha-2 2-character country code associated with the mobile carrier network.
+     */
     NET_HOST_CARRIER_ICC: 'net.host.carrier.icc',
     /**
-    * The [`service.name`](../../resource/semantic_conventions/README.md#service) of the remote service. SHOULD be equal to the actual `service.name` resource attribute of the remote service if any.
-    */
+     * The [`service.name`](../../resource/semantic_conventions/README.md#service) of the remote service. SHOULD be equal to the actual `service.name` resource attribute of the remote service if any.
+     */
     PEER_SERVICE: 'peer.service',
     /**
-    * Username or client_id extracted from the access token or [Authorization](https://tools.ietf.org/html/rfc7235#section-4.2) header in the inbound request from outside the system.
-    */
+     * Username or client_id extracted from the access token or [Authorization](https://tools.ietf.org/html/rfc7235#section-4.2) header in the inbound request from outside the system.
+     */
     ENDUSER_ID: 'enduser.id',
     /**
-    * Actual/assumed role the client is making the request under extracted from token or application security context.
-    */
+     * Actual/assumed role the client is making the request under extracted from token or application security context.
+     */
     ENDUSER_ROLE: 'enduser.role',
     /**
-    * Scopes or granted authorities the client currently possesses extracted from token or application security context. The value would come from the scope associated with an [OAuth 2.0 Access Token](https://tools.ietf.org/html/rfc6749#section-3.3) or an attribute value in a [SAML 2.0 Assertion](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html).
-    */
+     * Scopes or granted authorities the client currently possesses extracted from token or application security context. The value would come from the scope associated with an [OAuth 2.0 Access Token](https://tools.ietf.org/html/rfc6749#section-3.3) or an attribute value in a [SAML 2.0 Assertion](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html).
+     */
     ENDUSER_SCOPE: 'enduser.scope',
     /**
-    * Current &#34;managed&#34; thread ID (as opposed to OS thread ID).
-    */
+     * Current &#34;managed&#34; thread ID (as opposed to OS thread ID).
+     */
     THREAD_ID: 'thread.id',
     /**
-    * Current thread name.
-    */
+     * Current thread name.
+     */
     THREAD_NAME: 'thread.name',
     /**
-    * The method or function name, or equivalent (usually rightmost part of the code unit&#39;s name).
-    */
+     * The method or function name, or equivalent (usually rightmost part of the code unit&#39;s name).
+     */
     CODE_FUNCTION: 'code.function',
     /**
-    * The &#34;namespace&#34; within which `code.function` is defined. Usually the qualified class or module name, such that `code.namespace` + some separator + `code.function` form a unique identifier for the code unit.
-    */
+     * The &#34;namespace&#34; within which `code.function` is defined. Usually the qualified class or module name, such that `code.namespace` + some separator + `code.function` form a unique identifier for the code unit.
+     */
     CODE_NAMESPACE: 'code.namespace',
     /**
-    * The source code file name that identifies the code unit as uniquely as possible (preferably an absolute file path).
-    */
+     * The source code file name that identifies the code unit as uniquely as possible (preferably an absolute file path).
+     */
     CODE_FILEPATH: 'code.filepath',
     /**
-    * The line number in `code.filepath` best representing the operation. It SHOULD point within the code unit named in `code.function`.
-    */
+     * The line number in `code.filepath` best representing the operation. It SHOULD point within the code unit named in `code.function`.
+     */
     CODE_LINENO: 'code.lineno',
     /**
-    * HTTP request method.
-    */
+     * HTTP request method.
+     */
     HTTP_METHOD: 'http.method',
     /**
-    * Full HTTP request URL in the form `scheme://host[:port]/path?query[#fragment]`. Usually the fragment is not transmitted over HTTP, but if it is known, it should be included nevertheless.
-    *
-    * Note: `http.url` MUST NOT contain credentials passed via URL in form of `https://username:password@www.example.com/`. In such case the attribute&#39;s value should be `https://www.example.com/`.
-    */
+     * Full HTTP request URL in the form `scheme://host[:port]/path?query[#fragment]`. Usually the fragment is not transmitted over HTTP, but if it is known, it should be included nevertheless.
+     *
+     * Note: `http.url` MUST NOT contain credentials passed via URL in form of `https://username:password@www.example.com/`. In such case the attribute&#39;s value should be `https://www.example.com/`.
+     */
     HTTP_URL: 'http.url',
     /**
-    * The full request target as passed in a HTTP request line or equivalent.
-    */
+     * The full request target as passed in a HTTP request line or equivalent.
+     */
     HTTP_TARGET: 'http.target',
     /**
-    * The value of the [HTTP host header](https://tools.ietf.org/html/rfc7230#section-5.4). An empty Host header should also be reported, see note.
-    *
-    * Note: When the header is present but empty the attribute SHOULD be set to the empty string. Note that this is a valid situation that is expected in certain cases, according the aforementioned [section of RFC 7230](https://tools.ietf.org/html/rfc7230#section-5.4). When the header is not set the attribute MUST NOT be set.
-    */
+     * The value of the [HTTP host header](https://tools.ietf.org/html/rfc7230#section-5.4). An empty Host header should also be reported, see note.
+     *
+     * Note: When the header is present but empty the attribute SHOULD be set to the empty string. Note that this is a valid situation that is expected in certain cases, according the aforementioned [section of RFC 7230](https://tools.ietf.org/html/rfc7230#section-5.4). When the header is not set the attribute MUST NOT be set.
+     */
     HTTP_HOST: 'http.host',
     /**
-    * The URI scheme identifying the used protocol.
-    */
+     * The URI scheme identifying the used protocol.
+     */
     HTTP_SCHEME: 'http.scheme',
     /**
-    * [HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).
-    */
+     * [HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).
+     */
     HTTP_STATUS_CODE: 'http.status_code',
     /**
-    * Kind of HTTP protocol used.
-    *
-    * Note: If `net.transport` is not specified, it can be assumed to be `IP.TCP` except if `http.flavor` is `QUIC`, in which case `IP.UDP` is assumed.
-    */
+     * Kind of HTTP protocol used.
+     *
+     * Note: If `net.transport` is not specified, it can be assumed to be `IP.TCP` except if `http.flavor` is `QUIC`, in which case `IP.UDP` is assumed.
+     */
     HTTP_FLAVOR: 'http.flavor',
     /**
-    * Value of the [HTTP User-Agent](https://tools.ietf.org/html/rfc7231#section-5.5.3) header sent by the client.
-    */
+     * Value of the [HTTP User-Agent](https://tools.ietf.org/html/rfc7231#section-5.5.3) header sent by the client.
+     */
     HTTP_USER_AGENT: 'http.user_agent',
     /**
-    * The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
-    */
+     * The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
+     */
     HTTP_REQUEST_CONTENT_LENGTH: 'http.request_content_length',
     /**
-    * The size of the uncompressed request payload body after transport decoding. Not set if transport encoding not used.
-    */
+     * The size of the uncompressed request payload body after transport decoding. Not set if transport encoding not used.
+     */
     HTTP_REQUEST_CONTENT_LENGTH_UNCOMPRESSED: 'http.request_content_length_uncompressed',
     /**
-    * The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
-    */
+     * The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
+     */
     HTTP_RESPONSE_CONTENT_LENGTH: 'http.response_content_length',
     /**
-    * The size of the uncompressed response payload body after transport decoding. Not set if transport encoding not used.
-    */
+     * The size of the uncompressed response payload body after transport decoding. Not set if transport encoding not used.
+     */
     HTTP_RESPONSE_CONTENT_LENGTH_UNCOMPRESSED: 'http.response_content_length_uncompressed',
     /**
-    * The primary server name of the matched virtual host. This should be obtained via configuration. If no such configuration can be obtained, this attribute MUST NOT be set ( `net.host.name` should be used instead).
-    *
-    * Note: `http.url` is usually not readily available on the server side but would have to be assembled in a cumbersome and sometimes lossy process from other information (see e.g. open-telemetry/opentelemetry-python/pull/148). It is thus preferred to supply the raw data that is available.
-    */
+     * The primary server name of the matched virtual host. This should be obtained via configuration. If no such configuration can be obtained, this attribute MUST NOT be set ( `net.host.name` should be used instead).
+     *
+     * Note: `http.url` is usually not readily available on the server side but would have to be assembled in a cumbersome and sometimes lossy process from other information (see e.g. open-telemetry/opentelemetry-python/pull/148). It is thus preferred to supply the raw data that is available.
+     */
     HTTP_SERVER_NAME: 'http.server_name',
     /**
-    * The matched route (path template).
-    */
+     * The matched route (path template).
+     */
     HTTP_ROUTE: 'http.route',
     /**
     * The IP address of the original client behind all proxies, if known (e.g. from [X-Forwarded-For](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For)).
@@ -35748,224 +36401,224 @@ exports.SemanticAttributes = {
     */
     HTTP_CLIENT_IP: 'http.client_ip',
     /**
-    * The keys in the `RequestItems` object field.
-    */
+     * The keys in the `RequestItems` object field.
+     */
     AWS_DYNAMODB_TABLE_NAMES: 'aws.dynamodb.table_names',
     /**
-    * The JSON-serialized value of each item in the `ConsumedCapacity` response field.
-    */
+     * The JSON-serialized value of each item in the `ConsumedCapacity` response field.
+     */
     AWS_DYNAMODB_CONSUMED_CAPACITY: 'aws.dynamodb.consumed_capacity',
     /**
-    * The JSON-serialized value of the `ItemCollectionMetrics` response field.
-    */
+     * The JSON-serialized value of the `ItemCollectionMetrics` response field.
+     */
     AWS_DYNAMODB_ITEM_COLLECTION_METRICS: 'aws.dynamodb.item_collection_metrics',
     /**
-    * The value of the `ProvisionedThroughput.ReadCapacityUnits` request parameter.
-    */
+     * The value of the `ProvisionedThroughput.ReadCapacityUnits` request parameter.
+     */
     AWS_DYNAMODB_PROVISIONED_READ_CAPACITY: 'aws.dynamodb.provisioned_read_capacity',
     /**
-    * The value of the `ProvisionedThroughput.WriteCapacityUnits` request parameter.
-    */
+     * The value of the `ProvisionedThroughput.WriteCapacityUnits` request parameter.
+     */
     AWS_DYNAMODB_PROVISIONED_WRITE_CAPACITY: 'aws.dynamodb.provisioned_write_capacity',
     /**
-    * The value of the `ConsistentRead` request parameter.
-    */
+     * The value of the `ConsistentRead` request parameter.
+     */
     AWS_DYNAMODB_CONSISTENT_READ: 'aws.dynamodb.consistent_read',
     /**
-    * The value of the `ProjectionExpression` request parameter.
-    */
+     * The value of the `ProjectionExpression` request parameter.
+     */
     AWS_DYNAMODB_PROJECTION: 'aws.dynamodb.projection',
     /**
-    * The value of the `Limit` request parameter.
-    */
+     * The value of the `Limit` request parameter.
+     */
     AWS_DYNAMODB_LIMIT: 'aws.dynamodb.limit',
     /**
-    * The value of the `AttributesToGet` request parameter.
-    */
+     * The value of the `AttributesToGet` request parameter.
+     */
     AWS_DYNAMODB_ATTRIBUTES_TO_GET: 'aws.dynamodb.attributes_to_get',
     /**
-    * The value of the `IndexName` request parameter.
-    */
+     * The value of the `IndexName` request parameter.
+     */
     AWS_DYNAMODB_INDEX_NAME: 'aws.dynamodb.index_name',
     /**
-    * The value of the `Select` request parameter.
-    */
+     * The value of the `Select` request parameter.
+     */
     AWS_DYNAMODB_SELECT: 'aws.dynamodb.select',
     /**
-    * The JSON-serialized value of each item of the `GlobalSecondaryIndexes` request field.
-    */
+     * The JSON-serialized value of each item of the `GlobalSecondaryIndexes` request field.
+     */
     AWS_DYNAMODB_GLOBAL_SECONDARY_INDEXES: 'aws.dynamodb.global_secondary_indexes',
     /**
-    * The JSON-serialized value of each item of the `LocalSecondaryIndexes` request field.
-    */
+     * The JSON-serialized value of each item of the `LocalSecondaryIndexes` request field.
+     */
     AWS_DYNAMODB_LOCAL_SECONDARY_INDEXES: 'aws.dynamodb.local_secondary_indexes',
     /**
-    * The value of the `ExclusiveStartTableName` request parameter.
-    */
+     * The value of the `ExclusiveStartTableName` request parameter.
+     */
     AWS_DYNAMODB_EXCLUSIVE_START_TABLE: 'aws.dynamodb.exclusive_start_table',
     /**
-    * The the number of items in the `TableNames` response parameter.
-    */
+     * The the number of items in the `TableNames` response parameter.
+     */
     AWS_DYNAMODB_TABLE_COUNT: 'aws.dynamodb.table_count',
     /**
-    * The value of the `ScanIndexForward` request parameter.
-    */
+     * The value of the `ScanIndexForward` request parameter.
+     */
     AWS_DYNAMODB_SCAN_FORWARD: 'aws.dynamodb.scan_forward',
     /**
-    * The value of the `Segment` request parameter.
-    */
+     * The value of the `Segment` request parameter.
+     */
     AWS_DYNAMODB_SEGMENT: 'aws.dynamodb.segment',
     /**
-    * The value of the `TotalSegments` request parameter.
-    */
+     * The value of the `TotalSegments` request parameter.
+     */
     AWS_DYNAMODB_TOTAL_SEGMENTS: 'aws.dynamodb.total_segments',
     /**
-    * The value of the `Count` response parameter.
-    */
+     * The value of the `Count` response parameter.
+     */
     AWS_DYNAMODB_COUNT: 'aws.dynamodb.count',
     /**
-    * The value of the `ScannedCount` response parameter.
-    */
+     * The value of the `ScannedCount` response parameter.
+     */
     AWS_DYNAMODB_SCANNED_COUNT: 'aws.dynamodb.scanned_count',
     /**
-    * The JSON-serialized value of each item in the `AttributeDefinitions` request field.
-    */
+     * The JSON-serialized value of each item in the `AttributeDefinitions` request field.
+     */
     AWS_DYNAMODB_ATTRIBUTE_DEFINITIONS: 'aws.dynamodb.attribute_definitions',
     /**
-    * The JSON-serialized value of each item in the the `GlobalSecondaryIndexUpdates` request field.
-    */
+     * The JSON-serialized value of each item in the the `GlobalSecondaryIndexUpdates` request field.
+     */
     AWS_DYNAMODB_GLOBAL_SECONDARY_INDEX_UPDATES: 'aws.dynamodb.global_secondary_index_updates',
     /**
-    * A string identifying the messaging system.
-    */
+     * A string identifying the messaging system.
+     */
     MESSAGING_SYSTEM: 'messaging.system',
     /**
-    * The message destination name. This might be equal to the span name but is required nevertheless.
-    */
+     * The message destination name. This might be equal to the span name but is required nevertheless.
+     */
     MESSAGING_DESTINATION: 'messaging.destination',
     /**
-    * The kind of message destination.
-    */
+     * The kind of message destination.
+     */
     MESSAGING_DESTINATION_KIND: 'messaging.destination_kind',
     /**
-    * A boolean that is true if the message destination is temporary.
-    */
+     * A boolean that is true if the message destination is temporary.
+     */
     MESSAGING_TEMP_DESTINATION: 'messaging.temp_destination',
     /**
-    * The name of the transport protocol.
-    */
+     * The name of the transport protocol.
+     */
     MESSAGING_PROTOCOL: 'messaging.protocol',
     /**
-    * The version of the transport protocol.
-    */
+     * The version of the transport protocol.
+     */
     MESSAGING_PROTOCOL_VERSION: 'messaging.protocol_version',
     /**
-    * Connection string.
-    */
+     * Connection string.
+     */
     MESSAGING_URL: 'messaging.url',
     /**
-    * A value used by the messaging system as an identifier for the message, represented as a string.
-    */
+     * A value used by the messaging system as an identifier for the message, represented as a string.
+     */
     MESSAGING_MESSAGE_ID: 'messaging.message_id',
     /**
-    * The [conversation ID](#conversations) identifying the conversation to which the message belongs, represented as a string. Sometimes called &#34;Correlation ID&#34;.
-    */
+     * The [conversation ID](#conversations) identifying the conversation to which the message belongs, represented as a string. Sometimes called &#34;Correlation ID&#34;.
+     */
     MESSAGING_CONVERSATION_ID: 'messaging.conversation_id',
     /**
-    * The (uncompressed) size of the message payload in bytes. Also use this attribute if it is unknown whether the compressed or uncompressed payload size is reported.
-    */
+     * The (uncompressed) size of the message payload in bytes. Also use this attribute if it is unknown whether the compressed or uncompressed payload size is reported.
+     */
     MESSAGING_MESSAGE_PAYLOAD_SIZE_BYTES: 'messaging.message_payload_size_bytes',
     /**
-    * The compressed size of the message payload in bytes.
-    */
+     * The compressed size of the message payload in bytes.
+     */
     MESSAGING_MESSAGE_PAYLOAD_COMPRESSED_SIZE_BYTES: 'messaging.message_payload_compressed_size_bytes',
     /**
-    * A string identifying the kind of message consumption as defined in the [Operation names](#operation-names) section above. If the operation is &#34;send&#34;, this attribute MUST NOT be set, since the operation can be inferred from the span kind in that case.
-    */
+     * A string identifying the kind of message consumption as defined in the [Operation names](#operation-names) section above. If the operation is &#34;send&#34;, this attribute MUST NOT be set, since the operation can be inferred from the span kind in that case.
+     */
     MESSAGING_OPERATION: 'messaging.operation',
     /**
-    * The identifier for the consumer receiving a message. For Kafka, set it to `{messaging.kafka.consumer_group} - {messaging.kafka.client_id}`, if both are present, or only `messaging.kafka.consumer_group`. For brokers, such as RabbitMQ and Artemis, set it to the `client_id` of the client consuming the message.
-    */
+     * The identifier for the consumer receiving a message. For Kafka, set it to `{messaging.kafka.consumer_group} - {messaging.kafka.client_id}`, if both are present, or only `messaging.kafka.consumer_group`. For brokers, such as RabbitMQ and Artemis, set it to the `client_id` of the client consuming the message.
+     */
     MESSAGING_CONSUMER_ID: 'messaging.consumer_id',
     /**
-    * RabbitMQ message routing key.
-    */
+     * RabbitMQ message routing key.
+     */
     MESSAGING_RABBITMQ_ROUTING_KEY: 'messaging.rabbitmq.routing_key',
     /**
-    * Message keys in Kafka are used for grouping alike messages to ensure they&#39;re processed on the same partition. They differ from `messaging.message_id` in that they&#39;re not unique. If the key is `null`, the attribute MUST NOT be set.
-    *
-    * Note: If the key type is not string, it&#39;s string representation has to be supplied for the attribute. If the key has no unambiguous, canonical string form, don&#39;t include its value.
-    */
+     * Message keys in Kafka are used for grouping alike messages to ensure they&#39;re processed on the same partition. They differ from `messaging.message_id` in that they&#39;re not unique. If the key is `null`, the attribute MUST NOT be set.
+     *
+     * Note: If the key type is not string, it&#39;s string representation has to be supplied for the attribute. If the key has no unambiguous, canonical string form, don&#39;t include its value.
+     */
     MESSAGING_KAFKA_MESSAGE_KEY: 'messaging.kafka.message_key',
     /**
-    * Name of the Kafka Consumer Group that is handling the message. Only applies to consumers, not producers.
-    */
+     * Name of the Kafka Consumer Group that is handling the message. Only applies to consumers, not producers.
+     */
     MESSAGING_KAFKA_CONSUMER_GROUP: 'messaging.kafka.consumer_group',
     /**
-    * Client Id for the Consumer or Producer that is handling the message.
-    */
+     * Client Id for the Consumer or Producer that is handling the message.
+     */
     MESSAGING_KAFKA_CLIENT_ID: 'messaging.kafka.client_id',
     /**
-    * Partition the message is sent to.
-    */
+     * Partition the message is sent to.
+     */
     MESSAGING_KAFKA_PARTITION: 'messaging.kafka.partition',
     /**
-    * A boolean that is true if the message is a tombstone.
-    */
+     * A boolean that is true if the message is a tombstone.
+     */
     MESSAGING_KAFKA_TOMBSTONE: 'messaging.kafka.tombstone',
     /**
-    * A string identifying the remoting system.
-    */
+     * A string identifying the remoting system.
+     */
     RPC_SYSTEM: 'rpc.system',
     /**
-    * The full (logical) name of the service being called, including its package name, if applicable.
-    *
-    * Note: This is the logical name of the service from the RPC interface perspective, which can be different from the name of any implementing class. The `code.namespace` attribute may be used to store the latter (despite the attribute name, it may include a class name; e.g., class with method actually executing the call on the server side, RPC client stub class on the client side).
-    */
+     * The full (logical) name of the service being called, including its package name, if applicable.
+     *
+     * Note: This is the logical name of the service from the RPC interface perspective, which can be different from the name of any implementing class. The `code.namespace` attribute may be used to store the latter (despite the attribute name, it may include a class name; e.g., class with method actually executing the call on the server side, RPC client stub class on the client side).
+     */
     RPC_SERVICE: 'rpc.service',
     /**
-    * The name of the (logical) method being called, must be equal to the $method part in the span name.
-    *
-    * Note: This is the logical name of the method from the RPC interface perspective, which can be different from the name of any implementing method/function. The `code.function` attribute may be used to store the latter (e.g., method actually executing the call on the server side, RPC client stub method on the client side).
-    */
+     * The name of the (logical) method being called, must be equal to the $method part in the span name.
+     *
+     * Note: This is the logical name of the method from the RPC interface perspective, which can be different from the name of any implementing method/function. The `code.function` attribute may be used to store the latter (e.g., method actually executing the call on the server side, RPC client stub method on the client side).
+     */
     RPC_METHOD: 'rpc.method',
     /**
-    * The [numeric status code](https://github.com/grpc/grpc/blob/v1.33.2/doc/statuscodes.md) of the gRPC request.
-    */
+     * The [numeric status code](https://github.com/grpc/grpc/blob/v1.33.2/doc/statuscodes.md) of the gRPC request.
+     */
     RPC_GRPC_STATUS_CODE: 'rpc.grpc.status_code',
     /**
-    * Protocol version as in `jsonrpc` property of request/response. Since JSON-RPC 1.0 does not specify this, the value can be omitted.
-    */
+     * Protocol version as in `jsonrpc` property of request/response. Since JSON-RPC 1.0 does not specify this, the value can be omitted.
+     */
     RPC_JSONRPC_VERSION: 'rpc.jsonrpc.version',
     /**
-    * `id` property of request or response. Since protocol allows id to be int, string, `null` or missing (for notifications), value is expected to be cast to string for simplicity. Use empty string in case of `null` value. Omit entirely if this is a notification.
-    */
+     * `id` property of request or response. Since protocol allows id to be int, string, `null` or missing (for notifications), value is expected to be cast to string for simplicity. Use empty string in case of `null` value. Omit entirely if this is a notification.
+     */
     RPC_JSONRPC_REQUEST_ID: 'rpc.jsonrpc.request_id',
     /**
-    * `error.code` property of response if it is an error response.
-    */
+     * `error.code` property of response if it is an error response.
+     */
     RPC_JSONRPC_ERROR_CODE: 'rpc.jsonrpc.error_code',
     /**
-    * `error.message` property of response if it is an error response.
-    */
+     * `error.message` property of response if it is an error response.
+     */
     RPC_JSONRPC_ERROR_MESSAGE: 'rpc.jsonrpc.error_message',
     /**
-    * Whether this is a received or sent message.
-    */
+     * Whether this is a received or sent message.
+     */
     MESSAGE_TYPE: 'message.type',
     /**
-    * MUST be calculated as two different counters starting from `1` one for sent messages and one for received message.
-    *
-    * Note: This way we guarantee that the values will be consistent between different implementations.
-    */
+     * MUST be calculated as two different counters starting from `1` one for sent messages and one for received message.
+     *
+     * Note: This way we guarantee that the values will be consistent between different implementations.
+     */
     MESSAGE_ID: 'message.id',
     /**
-    * Compressed size of the message in bytes.
-    */
+     * Compressed size of the message in bytes.
+     */
     MESSAGE_COMPRESSED_SIZE: 'message.compressed_size',
     /**
-    * Uncompressed size of the message in bytes.
-    */
+     * Uncompressed size of the message in bytes.
+     */
     MESSAGE_UNCOMPRESSED_SIZE: 'message.uncompressed_size',
 };
 exports.DbSystemValues = {
@@ -45260,7 +45913,7 @@ JSZip.defaults = __nccwpck_require__(84697);
 
 // TODO find a better way to handle this version,
 // a require('package.json').version doesn't work with webpack, see #327
-JSZip.version = "3.7.1";
+JSZip.version = "3.8.0";
 
 JSZip.loadAsync = function (content, options) {
     return new JSZip().loadAsync(content, options);
@@ -45339,7 +45992,11 @@ module.exports = function (data, options) {
             var files = zipEntries.files;
             for (var i = 0; i < files.length; i++) {
                 var input = files[i];
-                zip.file(input.fileNameStr, input.decompressed, {
+
+                var unsafeName = input.fileNameStr;
+                var safeName = utils.resolve(input.fileNameStr);
+
+                zip.file(safeName, input.decompressed, {
                     binary: true,
                     optimizedBinaryString: true,
                     date: input.date,
@@ -45349,6 +46006,9 @@ module.exports = function (data, options) {
                     dosPermissions: input.dosPermissions,
                     createFolders: options.createFolders
                 });
+                if (!input.dir) {
+                    zip.file(safeName).unsafeOriginalName = unsafeName;
+                }
             }
             if (zipEntries.zipComment.length) {
                 zip.comment = zipEntries.zipComment;
@@ -47669,6 +48329,31 @@ exports.transformTo = function(outputType, input) {
 };
 
 /**
+ * Resolve all relative path components, "." and "..", in a path. If these relative components
+ * traverse above the root then the resulting path will only contain the final path component.
+ *
+ * All empty components, e.g. "//", are removed.
+ * @param {string} path A path with / or \ separators
+ * @returns {string} The path with all relative path components resolved.
+ */
+exports.resolve = function(path) {
+    var parts = path.split("/");
+    var result = [];
+    for (var index = 0; index < parts.length; index++) {
+        var part = parts[index];
+        // Allow the first and last component to be empty for trailing slashes.
+        if (part === "." || (part === "" && index !== 0 && index !== parts.length - 1)) {
+            continue;
+        } else if (part === "..") {
+            result.pop();
+        } else {
+            result.push(part);
+        }
+    }
+    return result.join("/");
+};
+
+/**
  * Return the type of the input.
  * The type will be in a format valid for JSZip.utils.transformTo : string, array, uint8array, arraybuffer.
  * @param {Object} input the input to identify.
@@ -47776,8 +48461,8 @@ exports.prepareContent = function(name, inputData, isBinary, isOptimizedBinarySt
 
     // if inputData is already a promise, this flatten it.
     var promise = external.Promise.resolve(inputData).then(function(data) {
-        
-        
+
+
         var isBlob = support.blob && (data instanceof Blob || ['[object File]', '[object Blob]'].indexOf(Object.prototype.toString.call(data)) !== -1);
 
         if (isBlob && typeof FileReader !== "undefined") {
