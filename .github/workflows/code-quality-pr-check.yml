@@ -6,12 +6,13 @@ on:
       - "src/**"
       - "package-lock.json"
       - "tests/**"
+      - "dist/**"
       - "tsconfig.json"
       - .github/workflows/code-quality-pr-check.yml
     branches: [main]
 
 jobs:
-  lint-and-format:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,6 +30,8 @@ jobs:
         run: npm run build
       - name: package
         run: npm run package
+      - name: validate dist
+        run: exit $(git status --porcelain | wc -l)
   tests:
     strategy:
       matrix:
