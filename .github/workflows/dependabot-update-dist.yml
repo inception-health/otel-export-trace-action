@@ -1,0 +1,26 @@
+name: dependabot-update-dist
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  update-dist:
+    if: ${{ startsWith(github.head_ref,  'dependabot-') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: "npm"
+      - name: npm ci
+        run: npm ci --ignore-scripts
+      - name: tsc
+        run: npm run package
+      - name: commit dist
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Add dist artifacts
+          file_pattern: dist
