@@ -51,7 +51,7 @@
     "jest": "^27.4.5",
     "jest-junit": "^13.0.0",
     "jest-mock-extended": "^2.0.4",
-    "prettier": "^2.5.1",
+    "prettier": "^2.8.4",
     "rimraf": "^4.4.0",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.5.0",
