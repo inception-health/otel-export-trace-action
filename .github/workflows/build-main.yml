@@ -38,7 +38,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
   release-please:
     runs-on: ubuntu-latest
-    needs: [update-dist]
+    needs: [lint-and-test]
     steps:
       - id: release
         uses: GoogleCloudPlatform/release-please-action@v2
