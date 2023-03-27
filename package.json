@@ -27,7 +27,7 @@
     "@actions/github": "^5.0.0",
     "@opentelemetry/api": "^1.1.0",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.27.0",
-    "@opentelemetry/resources": "^1.1.0",
+    "@opentelemetry/resources": "^1.10.1",
     "@opentelemetry/sdk-trace-base": "^1.1.0",
     "@opentelemetry/semantic-conventions": "^1.1.0",
     "axios": "^0.25.0",
