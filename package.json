@@ -32,7 +32,7 @@
     "@opentelemetry/semantic-conventions": "^1.1.0",
     "axios": "^0.25.0",
     "jszip": "^3.8.0",
-    "junit2json": "^2.0.6"
+    "junit2json": "^3.1.1"
   },
   "devDependencies": {
     "@octokit/rest": "^18.12.0",
