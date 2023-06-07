@@ -770,6 +770,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createTracerProvider = void 0;
+const core = __importStar(__nccwpck_require__(42186));
+const api_1 = __nccwpck_require__(65163);
+const core_1 = __nccwpck_require__(89736);
 const grpc = __importStar(__nccwpck_require__(7025));
 const sdk_trace_base_1 = __nccwpck_require__(29253);
 const exporter_trace_otlp_grpc_1 = __nccwpck_require__(60160);
@@ -790,6 +793,26 @@ function stringToHeader(value) {
         return result;
     }, {});
 }
+function enableLogging() {
+    if (core.isDebug()) {
+        api_1.diag.setLogger(new api_1.DiagConsoleLogger(), api_1.DiagLogLevel.ALL);
+    }
+    else {
+        api_1.diag.setLogger(new api_1.DiagConsoleLogger(), api_1.DiagLogLevel.INFO);
+    }
+}
+function setupErrorHandler() {
+    (0, core_1.setGlobalErrorHandler)((ex) => {
+        var _a;
+        (0, core_1.loggingErrorHandler)()(ex);
+        if (typeof ex === "string") {
+            core.setFailed(ex);
+        }
+        else {
+            core.setFailed((_a = ex.message) !== null && _a !== void 0 ? _a : "no error message, check logs");
+        }
+    });
+}
 function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs, otelServiceName) {
     const serviceName = otelServiceName ||
         workflowRunJobs.workflowRun.name ||
@@ -802,6 +825,8 @@ function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs, otelSe
     ].join("/");
     const serviceNamespace = workflowRunJobs.workflowRun.repository.full_name;
     const serviceVersion = workflowRunJobs.workflowRun.head_sha;
+    enableLogging();
+    setupErrorHandler();
     const provider = new sdk_trace_base_1.BasicTracerProvider({
         resource: new resources_1.Resource({
             [semantic_conventions_1.SemanticResourceAttributes.SERVICE_NAME]: serviceName,
