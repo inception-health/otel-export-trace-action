@@ -367,39 +367,42 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
             };
         }, {});
     }
+    // Metadata about the workflow run. These attributes will also be included in
+    // job and step spans.
+    const workflowAttributes = {
+        "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
+        "github.run_id": workflowRunJobs.workflowRun.id,
+        "github.run_number": workflowRunJobs.workflowRun.run_number,
+        "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
+        "github.html_url": workflowRunJobs.workflowRun.html_url,
+        "github.workflow_url": workflowRunJobs.workflowRun.workflow_url,
+        "github.event": workflowRunJobs.workflowRun.event,
+        "github.workflow": workflowRunJobs.workflowRun.name || undefined,
+        "github.run_started_at": workflowRunJobs.workflowRun.run_started_at,
+        "github.author_name": ((_e = (_d = workflowRunJobs.workflowRun.head_commit) === null || _d === void 0 ? void 0 : _d.author) === null || _e === void 0 ? void 0 : _e.name) || undefined,
+        "github.author_email": ((_g = (_f = workflowRunJobs.workflowRun.head_commit) === null || _f === void 0 ? void 0 : _f.author) === null || _g === void 0 ? void 0 : _g.email) || undefined,
+        "github.head_commit.id": ((_h = workflowRunJobs.workflowRun.head_commit) === null || _h === void 0 ? void 0 : _h.id) || undefined,
+        "github.head_commit.tree_id": ((_j = workflowRunJobs.workflowRun.head_commit) === null || _j === void 0 ? void 0 : _j.tree_id) || undefined,
+        "github.head_commit.author.name": ((_l = (_k = workflowRunJobs.workflowRun.head_commit) === null || _k === void 0 ? void 0 : _k.author) === null || _l === void 0 ? void 0 : _l.email) || undefined,
+        "github.head_commit.author.email": ((_o = (_m = workflowRunJobs.workflowRun.head_commit) === null || _m === void 0 ? void 0 : _m.author) === null || _o === void 0 ? void 0 : _o.email) || undefined,
+        "github.head_commit.committer.name": ((_q = (_p = workflowRunJobs.workflowRun.head_commit) === null || _p === void 0 ? void 0 : _p.committer) === null || _q === void 0 ? void 0 : _q.email) || undefined,
+        "github.head_commit.committer.email": ((_s = (_r = workflowRunJobs.workflowRun.head_commit) === null || _r === void 0 ? void 0 : _r.committer) === null || _s === void 0 ? void 0 : _s.email) || undefined,
+        "github.head_commit.message": ((_t = workflowRunJobs.workflowRun.head_commit) === null || _t === void 0 ? void 0 : _t.message) || undefined,
+        "github.head_commit.timestamp": ((_u = workflowRunJobs.workflowRun.head_commit) === null || _u === void 0 ? void 0 : _u.timestamp) || undefined,
+        "github.head_sha": workflowRunJobs.workflowRun.head_sha,
+        "github.head_ref": headRef,
+        "github.base_ref": baseRef,
+        "github.base_sha": baseSha,
+        ...pull_requests,
+    };
     const rootSpan = tracer.startSpan(workflowRunJobs.workflowRun.name ||
         `${workflowRunJobs.workflowRun.workflow_id}`, {
         attributes: {
-            "github.workflow_id": workflowRunJobs.workflowRun.workflow_id,
-            "github.run_id": workflowRunJobs.workflowRun.id,
-            "github.run_number": workflowRunJobs.workflowRun.run_number,
-            "github.run_attempt": workflowRunJobs.workflowRun.run_attempt || 1,
-            "github.html_url": workflowRunJobs.workflowRun.html_url,
-            "github.workflow_url": workflowRunJobs.workflowRun.workflow_url,
-            "github.event": workflowRunJobs.workflowRun.event,
-            "github.workflow": workflowRunJobs.workflowRun.name || undefined,
-            "github.conclusion": workflowRunJobs.workflowRun.conclusion || undefined,
+            ...workflowAttributes,
             "github.created_at": workflowRunJobs.workflowRun.created_at,
             "github.updated_at": workflowRunJobs.workflowRun.updated_at,
-            "github.run_started_at": workflowRunJobs.workflowRun.run_started_at,
-            "github.author_name": ((_e = (_d = workflowRunJobs.workflowRun.head_commit) === null || _d === void 0 ? void 0 : _d.author) === null || _e === void 0 ? void 0 : _e.name) || undefined,
-            "github.author_email": ((_g = (_f = workflowRunJobs.workflowRun.head_commit) === null || _f === void 0 ? void 0 : _f.author) === null || _g === void 0 ? void 0 : _g.email) || undefined,
-            "github.head_commit.id": ((_h = workflowRunJobs.workflowRun.head_commit) === null || _h === void 0 ? void 0 : _h.id) || undefined,
-            "github.head_commit.tree_id": ((_j = workflowRunJobs.workflowRun.head_commit) === null || _j === void 0 ? void 0 : _j.tree_id) || undefined,
-            "github.head_commit.author.name": ((_l = (_k = workflowRunJobs.workflowRun.head_commit) === null || _k === void 0 ? void 0 : _k.author) === null || _l === void 0 ? void 0 : _l.email) || undefined,
-            "github.head_commit.author.email": ((_o = (_m = workflowRunJobs.workflowRun.head_commit) === null || _m === void 0 ? void 0 : _m.author) === null || _o === void 0 ? void 0 : _o.email) || undefined,
-            "github.head_commit.committer.name": ((_q = (_p = workflowRunJobs.workflowRun.head_commit) === null || _p === void 0 ? void 0 : _p.committer) === null || _q === void 0 ? void 0 : _q.email) ||
-                undefined,
-            "github.head_commit.committer.email": ((_s = (_r = workflowRunJobs.workflowRun.head_commit) === null || _r === void 0 ? void 0 : _r.committer) === null || _s === void 0 ? void 0 : _s.email) ||
-                undefined,
-            "github.head_commit.message": ((_t = workflowRunJobs.workflowRun.head_commit) === null || _t === void 0 ? void 0 : _t.message) || undefined,
-            "github.head_commit.timestamp": ((_u = workflowRunJobs.workflowRun.head_commit) === null || _u === void 0 ? void 0 : _u.timestamp) || undefined,
-            "github.head_sha": workflowRunJobs.workflowRun.head_sha,
-            "github.head_ref": headRef,
-            "github.base_ref": baseRef,
-            "github.base_sha": baseSha,
+            "github.conclusion": workflowRunJobs.workflowRun.conclusion || undefined,
             error: workflowRunJobs.workflowRun.conclusion === "failure",
-            ...pull_requests,
         },
         root: true,
         startTime,
@@ -427,6 +430,7 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
                 tracer,
                 job,
                 workflowArtifacts: workflowRunJobs.workflowRunArtifacts,
+                workflowAttributes,
             });
         }
     }
@@ -436,30 +440,35 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
     return rootSpan.spanContext();
 }
 exports.traceWorkflowRunJobs = traceWorkflowRunJobs;
-async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, job, workflowArtifacts, }) {
+async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, job, workflowArtifacts, workflowAttributes, }) {
     var _a;
     core.debug(`Trace Job ${job.id}`);
     if (!job.completed_at) {
         console.warn(`Job ${job.id} is not completed yet`);
         return;
     }
-    job.name;
     const ctx = trace.setSpan(parentContext, parentSpan);
     const startTime = new Date(job.started_at);
     const completedTime = new Date(job.completed_at);
+    // Metadata about the workflow job. These attributes will also be included in
+    // step spans.
+    const jobAttributes = {
+        "github.job.id": job.id,
+        "github.job.name": job.name,
+        "github.job.run_id": job.run_id,
+        "github.job.run_attempt": job.run_attempt || 1,
+        "github.job.runner_group_id": job.runner_group_id || undefined,
+        "github.job.runner_group_name": job.runner_group_name || undefined,
+        "github.job.runner_name": job.runner_name || undefined,
+        "github.job.conclusion": job.conclusion || undefined,
+        "github.job.labels": job.labels.join(", ") || undefined,
+        "github.job.started_at": job.started_at || undefined,
+        "github.job.completed_at": job.completed_at || undefined,
+    };
     const span = tracer.startSpan(job.name, {
         attributes: {
-            "github.job.id": job.id,
-            "github.job.name": job.name,
-            "github.job.run_id": job.run_id,
-            "github.job.run_attempt": job.run_attempt || 1,
-            "github.job.runner_group_id": job.runner_group_id || undefined,
-            "github.job.runner_group_name": job.runner_group_name || undefined,
-            "github.job.runner_name": job.runner_name || undefined,
-            "github.job.conclusion": job.conclusion || undefined,
-            "github.job.labels": job.labels.join(", ") || undefined,
-            "github.job.started_at": job.started_at || undefined,
-            "github.job.completed_at": job.completed_at || undefined,
+            ...workflowAttributes,
+            ...jobAttributes,
             "github.conclusion": job.conclusion || undefined,
             error: job.conclusion === "failure",
         },
@@ -486,6 +495,8 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
                     tracer,
                     workflowArtifacts,
                     step,
+                    workflowAttributes,
+                    jobAttributes,
                 });
             }
         }
@@ -529,7 +540,7 @@ exports.traceWorkflowRunStep = void 0;
 const core = __importStar(__nccwpck_require__(42186));
 const api_1 = __nccwpck_require__(65163);
 const trace_otlp_file_1 = __nccwpck_require__(40535);
-async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tracer, workflowArtifacts, step, }) {
+async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tracer, workflowArtifacts, step, workflowAttributes, jobAttributes, }) {
     if (!step || !step.completed_at || !step.started_at) {
         const stepName = (step === null || step === void 0 ? void 0 : step.name) || "UNDEFINED";
         console.warn(`Step ${stepName} is not completed yet.`);
@@ -545,6 +556,8 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
     const completedTime = new Date(step.completed_at);
     const span = tracer.startSpan(step.name, {
         attributes: {
+            ...workflowAttributes,
+            ...jobAttributes,
             "github.job.step.name": step.name,
             "github.job.step.number": step.number,
             "github.job.step.started_at": step.started_at || undefined,

@@ -1,5 +1,11 @@
 import * as core from "@actions/core";
-import { TraceAPI, Context, SpanStatusCode, Span } from "@opentelemetry/api";
+import {
+  TraceAPI,
+  Context,
+  SpanStatusCode,
+  Span,
+  Attributes,
+} from "@opentelemetry/api";
 import { Tracer } from "@opentelemetry/sdk-trace-base";
 import {
   WorkflowRunJobStep,
@@ -16,7 +22,10 @@ export type TraceWorkflowRunStepParams = {
   tracer: Tracer;
   workflowArtifacts: WorkflowArtifactLookup;
   step?: WorkflowRunJobStep;
+  workflowAttributes: Attributes;
+  jobAttributes: Attributes;
 };
+
 export async function traceWorkflowRunStep({
   job,
   parentContext,
@@ -25,6 +34,8 @@ export async function traceWorkflowRunStep({
   tracer,
   workflowArtifacts,
   step,
+  workflowAttributes,
+  jobAttributes,
 }: TraceWorkflowRunStepParams) {
   if (!step || !step.completed_at || !step.started_at) {
     const stepName = step?.name || "UNDEFINED";
@@ -43,6 +54,8 @@ export async function traceWorkflowRunStep({
     step.name,
     {
       attributes: {
+        ...workflowAttributes,
+        ...jobAttributes,
         "github.job.step.name": step.name,
         "github.job.step.number": step.number,
         "github.job.step.started_at": step.started_at || undefined,
