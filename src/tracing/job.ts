@@ -219,8 +219,10 @@ async function traceWorkflowRunJob({
         "github.job.created_at": job_created_at,
         "github.job.queued_ms": queued_ms,
         "github.workflow.id": workflowRun.workflow_id,
+        "github.workflow.run_id": workflowRun.id,
         "github.workflow.run_number": workflowRun.run_number,
         "github.workflow.name": workflowRun.name || undefined,
+        "github.workflow.head_sha": workflowRun.head_sha,
         "github.conclusion": job.conclusion || undefined,
         error: job.conclusion === "failure",
       },
@@ -250,6 +252,7 @@ async function traceWorkflowRunJob({
           tracer,
           workflowArtifacts,
           step,
+          workflowRun,
         });
       }
     }
