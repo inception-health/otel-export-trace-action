@@ -14,6 +14,7 @@ import {
   WorkflowRunJob,
   WorkflowRunJobStep,
   WorkflowArtifactLookup,
+  WorkflowRun,
 } from "../github";
 
 import { traceWorkflowRunStep } from "./step";
@@ -148,6 +149,7 @@ export async function traceWorkflowRunJobs({
         trace,
         tracer,
         job,
+        workflowRun: workflowRunJobs.workflowRun,
         workflowArtifacts: workflowRunJobs.workflowRunArtifacts,
       });
     }
@@ -163,6 +165,7 @@ type TraceWorkflowRunJobParams = {
   trace: TraceAPI;
   tracer: Tracer;
   job: WorkflowRunJob;
+  workflowRun: WorkflowRun;
   workflowArtifacts: WorkflowArtifactLookup;
 };
 
@@ -172,6 +175,7 @@ async function traceWorkflowRunJob({
   parentSpan,
   tracer,
   job,
+  workflowRun,
   workflowArtifacts,
 }: TraceWorkflowRunJobParams) {
   core.debug(`Trace Job ${job.id}`);
@@ -214,6 +218,9 @@ async function traceWorkflowRunJob({
         "github.job.completed_at": job.completed_at || undefined,
         "github.job.created_at": job_created_at,
         "github.job.queued_ms": queued_ms,
+        "github.workflow.id": workflowRun.workflow_id,
+        "github.workflow.run_number": workflowRun.run_number,
+        "github.workflow.name": workflowRun.name || undefined,
         "github.conclusion": job.conclusion || undefined,
         error: job.conclusion === "failure",
       },

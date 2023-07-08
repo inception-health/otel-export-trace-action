@@ -426,6 +426,7 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
                 trace: api_1.trace,
                 tracer,
                 job,
+                workflowRun: workflowRunJobs.workflowRun,
                 workflowArtifacts: workflowRunJobs.workflowRunArtifacts,
             });
         }
@@ -436,7 +437,7 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
     return rootSpan.spanContext();
 }
 exports.traceWorkflowRunJobs = traceWorkflowRunJobs;
-async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, job, workflowArtifacts, }) {
+async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, job, workflowRun, workflowArtifacts, }) {
     var _a;
     core.debug(`Trace Job ${job.id}`);
     if (!job.completed_at) {
@@ -447,6 +448,17 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
     const ctx = trace.setSpan(parentContext, parentSpan);
     const startTime = new Date(job.started_at);
     const completedTime = new Date(job.completed_at);
+    /* eslint-disable */
+    // Tried bumping the version to 19 of @octokit/rest but created_at is not available on it :/
+    // It surely exists though https://docs.github.com/en/rest/actions/workflow-jobs?apiVersion=2022-11-28
+    // @ts-ignore
+    const job_created_at = job.created_at || undefined;
+    /* eslint-enable */
+    // jobs can be queued waiting for a runner to be available
+    const createdTime = job_created_at ? new Date(job_created_at) : undefined;
+    const queued_ms = createdTime
+        ? startTime.getTime() - createdTime.getTime()
+        : undefined;
     const span = tracer.startSpan(job.name, {
         attributes: {
             "github.job.id": job.id,
@@ -460,6 +472,11 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
             "github.job.labels": job.labels.join(", ") || undefined,
             "github.job.started_at": job.started_at || undefined,
             "github.job.completed_at": job.completed_at || undefined,
+            "github.job.created_at": job_created_at,
+            "github.job.queued_ms": queued_ms,
+            "github.workflow.id": workflowRun.workflow_id,
+            "github.workflow.run_number": workflowRun.run_number,
+            "github.workflow.name": workflowRun.name || undefined,
             "github.conclusion": job.conclusion || undefined,
             error: job.conclusion === "failure",
         },
