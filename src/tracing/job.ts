@@ -223,6 +223,7 @@ async function traceWorkflowRunJob({
         "github.workflow.run_number": workflowRun.run_number,
         "github.workflow.name": workflowRun.name || undefined,
         "github.workflow.head_sha": workflowRun.head_sha,
+        "github.workflow.head_branch": workflowRun.head_branch || undefined,
         "github.conclusion": job.conclusion || undefined,
         error: job.conclusion === "failure",
       },
