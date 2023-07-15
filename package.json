@@ -38,7 +38,7 @@
     "@octokit/rest": "^18.12.0",
     "@tsconfig/node16": "^1.0.2",
     "@types/jest": "^27.0.3",
-    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^5.7.0",
     "@vercel/ncc": "^0.31.1",
     "cross-env": "^7.0.3",
