@@ -14,6 +14,7 @@ import {
   WorkflowRunJob,
   WorkflowRunJobStep,
   WorkflowArtifactLookup,
+  WorkflowRun,
 } from "../github";
 
 import { traceWorkflowRunStep } from "./step";
@@ -148,6 +149,7 @@ export async function traceWorkflowRunJobs({
         trace,
         tracer,
         job,
+        workflowRun: workflowRunJobs.workflowRun,
         workflowArtifacts: workflowRunJobs.workflowRunArtifacts,
       });
     }
@@ -163,6 +165,7 @@ type TraceWorkflowRunJobParams = {
   trace: TraceAPI;
   tracer: Tracer;
   job: WorkflowRunJob;
+  workflowRun: WorkflowRun;
   workflowArtifacts: WorkflowArtifactLookup;
 };
 
@@ -172,6 +175,7 @@ async function traceWorkflowRunJob({
   parentSpan,
   tracer,
   job,
+  workflowRun,
   workflowArtifacts,
 }: TraceWorkflowRunJobParams) {
   core.debug(`Trace Job ${job.id}`);
@@ -183,6 +187,20 @@ async function traceWorkflowRunJob({
   const ctx = trace.setSpan(parentContext, parentSpan);
   const startTime = new Date(job.started_at);
   const completedTime = new Date(job.completed_at);
+
+  /* eslint-disable */
+  // Tried bumping the version to 19 of @octokit/rest but created_at is not available on it :/
+  // It surely exists though https://docs.github.com/en/rest/actions/workflow-jobs?apiVersion=2022-11-28
+  // @ts-ignore
+  const job_created_at: string | undefined = job.created_at || undefined;
+  /* eslint-enable */
+
+  // jobs can be queued waiting for a runner to be available
+  const createdTime = job_created_at ? new Date(job_created_at) : undefined;
+  const queued_ms = createdTime
+    ? startTime.getTime() - createdTime.getTime()
+    : undefined;
+
   const span = tracer.startSpan(
     job.name,
     {
@@ -198,6 +216,14 @@ async function traceWorkflowRunJob({
         "github.job.labels": job.labels.join(", ") || undefined,
         "github.job.started_at": job.started_at || undefined,
         "github.job.completed_at": job.completed_at || undefined,
+        "github.job.created_at": job_created_at,
+        "github.job.queued_ms": queued_ms,
+        "github.workflow_id": workflowRun.workflow_id,
+        "github.run_id": workflowRun.id,
+        "github.run_number": workflowRun.run_number,
+        "github.workflow": workflowRun.name || undefined,
+        "github.head_sha": workflowRun.head_sha,
+        "github.head_branch": workflowRun.head_branch || undefined,
         "github.conclusion": job.conclusion || undefined,
         error: job.conclusion === "failure",
       },
@@ -227,6 +253,7 @@ async function traceWorkflowRunJob({
           tracer,
           workflowArtifacts,
           step,
+          workflowRun,
         });
       }
     }

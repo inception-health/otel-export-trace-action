@@ -5,6 +5,7 @@ import {
   WorkflowRunJobStep,
   WorkflowRunJob,
   WorkflowArtifactLookup,
+  WorkflowRun,
 } from "../github";
 import { traceOTLPFile } from "./trace-otlp-file";
 
@@ -16,6 +17,7 @@ export type TraceWorkflowRunStepParams = {
   tracer: Tracer;
   workflowArtifacts: WorkflowArtifactLookup;
   step?: WorkflowRunJobStep;
+  workflowRun: WorkflowRun;
 };
 export async function traceWorkflowRunStep({
   job,
@@ -25,6 +27,7 @@ export async function traceWorkflowRunStep({
   tracer,
   workflowArtifacts,
   step,
+  workflowRun,
 }: TraceWorkflowRunStepParams) {
   if (!step || !step.completed_at || !step.started_at) {
     const stepName = step?.name || "UNDEFINED";
@@ -48,6 +51,12 @@ export async function traceWorkflowRunStep({
         "github.job.step.started_at": step.started_at || undefined,
         "github.job.step.completed_at": step.completed_at || undefined,
         "github.job.step.id": step.id,
+        "github.workflow_id": workflowRun.workflow_id,
+        "github.run_id": workflowRun.id,
+        "github.run_number": workflowRun.run_number,
+        "github.workflow": workflowRun.name || undefined,
+        "github.head_sha": workflowRun.head_sha,
+        "github.head_branch": workflowRun.head_branch || undefined,
         error: step.conclusion === "failure",
       },
       startTime,

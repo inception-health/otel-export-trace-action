@@ -426,6 +426,7 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
                 trace: api_1.trace,
                 tracer,
                 job,
+                workflowRun: workflowRunJobs.workflowRun,
                 workflowArtifacts: workflowRunJobs.workflowRunArtifacts,
             });
         }
@@ -436,7 +437,7 @@ async function traceWorkflowRunJobs({ provider, workflowRunJobs, }) {
     return rootSpan.spanContext();
 }
 exports.traceWorkflowRunJobs = traceWorkflowRunJobs;
-async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, job, workflowArtifacts, }) {
+async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, job, workflowRun, workflowArtifacts, }) {
     var _a;
     core.debug(`Trace Job ${job.id}`);
     if (!job.completed_at) {
@@ -447,6 +448,17 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
     const ctx = trace.setSpan(parentContext, parentSpan);
     const startTime = new Date(job.started_at);
     const completedTime = new Date(job.completed_at);
+    /* eslint-disable */
+    // Tried bumping the version to 19 of @octokit/rest but created_at is not available on it :/
+    // It surely exists though https://docs.github.com/en/rest/actions/workflow-jobs?apiVersion=2022-11-28
+    // @ts-ignore
+    const job_created_at = job.created_at || undefined;
+    /* eslint-enable */
+    // jobs can be queued waiting for a runner to be available
+    const createdTime = job_created_at ? new Date(job_created_at) : undefined;
+    const queued_ms = createdTime
+        ? startTime.getTime() - createdTime.getTime()
+        : undefined;
     const span = tracer.startSpan(job.name, {
         attributes: {
             "github.job.id": job.id,
@@ -460,6 +472,14 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
             "github.job.labels": job.labels.join(", ") || undefined,
             "github.job.started_at": job.started_at || undefined,
             "github.job.completed_at": job.completed_at || undefined,
+            "github.job.created_at": job_created_at,
+            "github.job.queued_ms": queued_ms,
+            "github.workflow_id": workflowRun.workflow_id,
+            "github.run_id": workflowRun.id,
+            "github.run_number": workflowRun.run_number,
+            "github.workflow": workflowRun.name || undefined,
+            "github.head_sha": workflowRun.head_sha,
+            "github.head_branch": workflowRun.head_branch || undefined,
             "github.conclusion": job.conclusion || undefined,
             error: job.conclusion === "failure",
         },
@@ -486,6 +506,7 @@ async function traceWorkflowRunJob({ parentContext, trace, parentSpan, tracer, j
                     tracer,
                     workflowArtifacts,
                     step,
+                    workflowRun,
                 });
             }
         }
@@ -529,7 +550,7 @@ exports.traceWorkflowRunStep = void 0;
 const core = __importStar(__nccwpck_require__(42186));
 const api_1 = __nccwpck_require__(65163);
 const trace_otlp_file_1 = __nccwpck_require__(40535);
-async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tracer, workflowArtifacts, step, }) {
+async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tracer, workflowArtifacts, step, workflowRun, }) {
     if (!step || !step.completed_at || !step.started_at) {
         const stepName = (step === null || step === void 0 ? void 0 : step.name) || "UNDEFINED";
         console.warn(`Step ${stepName} is not completed yet.`);
@@ -550,6 +571,12 @@ async function traceWorkflowRunStep({ job, parentContext, parentSpan, trace, tra
             "github.job.step.started_at": step.started_at || undefined,
             "github.job.step.completed_at": step.completed_at || undefined,
             "github.job.step.id": step.id,
+            "github.workflow_id": workflowRun.workflow_id,
+            "github.run_id": workflowRun.id,
+            "github.run_number": workflowRun.run_number,
+            "github.workflow": workflowRun.name || undefined,
+            "github.head_sha": workflowRun.head_sha,
+            "github.head_branch": workflowRun.head_branch || undefined,
             error: step.conclusion === "failure",
         },
         startTime,

@@ -64,7 +64,10 @@ describe("listWorkflowRunArtifacts", () => {
       statusText: "OK",
       config: {},
     });
+    /* eslint-disable */
+    // @ts-ignore
     const lookup = await listWorkflowRunArtifacts(mockContext, mockOctokit, 1);
+    /* eslint-enable */
     const response = lookup("lint-and-test", "run tests");
     if (!response) {
       fail("Lookup Failed: Did not parse zip file correctly");
