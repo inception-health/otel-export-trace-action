@@ -1,3 +1,14 @@
+import * as core from "@actions/core";
+import {
+  diag,
+  DiagConsoleLogger,
+  DiagLogLevel,
+  Exception,
+} from "@opentelemetry/api";
+import {
+  setGlobalErrorHandler,
+  loggingErrorHandler,
+} from "@opentelemetry/core";
 import * as grpc from "@grpc/grpc-js";
 import {
   BasicTracerProvider,
@@ -29,6 +40,25 @@ function stringToHeader(value: string): StringDict {
   }, {});
 }
 
+function enableLogging() {
+  if (core.isDebug()) {
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
+  } else {
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+  }
+}
+
+function setupErrorHandler() {
+  setGlobalErrorHandler((ex: Exception) => {
+    loggingErrorHandler()(ex);
+    if (typeof ex === "string") {
+      core.setFailed(ex);
+    } else {
+      core.setFailed(ex.message ?? "no error message, check logs");
+    }
+  });
+}
+
 export function createTracerProvider(
   otlpEndpoint: string,
   otlpHeaders: string,
@@ -47,6 +77,9 @@ export function createTracerProvider(
   ].join("/");
   const serviceNamespace = workflowRunJobs.workflowRun.repository.full_name;
   const serviceVersion = workflowRunJobs.workflowRun.head_sha;
+
+  enableLogging();
+  setupErrorHandler();
 
   const provider = new BasicTracerProvider({
     resource: new Resource({
