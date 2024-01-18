@@ -9,6 +9,7 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { WorkflowRunJobs } from "../github";
 import { Resource } from "@opentelemetry/resources";
+import { ErrorHandler, setGlobalErrorHandler } from "@opentelemetry/core";
 
 const OTEL_CONSOLE_ONLY = process.env.OTEL_CONSOLE_ONLY === "true";
 
@@ -33,8 +34,13 @@ export function createTracerProvider(
   otlpEndpoint: string,
   otlpHeaders: string,
   workflowRunJobs: WorkflowRunJobs,
-  otelServiceName?: string | null | undefined
+  otelServiceName?: string | null | undefined,
+  globalErrorHandler?: ErrorHandler
 ) {
+  if (globalErrorHandler) {
+    setGlobalErrorHandler(globalErrorHandler);
+  }
+
   const serviceName =
     otelServiceName ||
     workflowRunJobs.workflowRun.name ||
