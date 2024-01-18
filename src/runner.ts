@@ -3,6 +3,7 @@ import * as core from "@actions/core";
 
 import { getWorkflowRunJobs } from "./github";
 import { createTracerProvider, traceWorkflowRunJobs } from "./tracing";
+import { Exception } from "@opentelemetry/api";
 
 export async function run() {
   const ghContext = github.context;
@@ -24,7 +25,10 @@ export async function run() {
     otlpEndpoint,
     otlpHeaders,
     workflowRunJobs,
-    otelServiceName
+    otelServiceName,
+    (error: Exception) => {
+      core.setFailed(error.toString());
+    }
   );
 
   try {

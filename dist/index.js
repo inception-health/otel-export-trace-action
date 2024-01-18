@@ -261,7 +261,9 @@ async function run() {
     core.info(`Get Workflow Run Jobs for ${runId}`);
     const workflowRunJobs = await (0, github_1.getWorkflowRunJobs)(ghContext, octokit, runId);
     core.info(`Create Trace Provider for ${otlpEndpoint}`);
-    const provider = (0, tracing_1.createTracerProvider)(otlpEndpoint, otlpHeaders, workflowRunJobs, otelServiceName);
+    const provider = (0, tracing_1.createTracerProvider)(otlpEndpoint, otlpHeaders, workflowRunJobs, otelServiceName, (error) => {
+        core.setFailed(error.toString());
+    });
     try {
         core.info(`Trace Workflow Run Jobs for ${runId} and export to ${otlpEndpoint}`);
         const spanContext = await (0, tracing_1.traceWorkflowRunJobs)({
@@ -775,6 +777,7 @@ const sdk_trace_base_1 = __nccwpck_require__(29253);
 const exporter_trace_otlp_grpc_1 = __nccwpck_require__(60160);
 const semantic_conventions_1 = __nccwpck_require__(67275);
 const resources_1 = __nccwpck_require__(3871);
+const core_1 = __nccwpck_require__(89736);
 const OTEL_CONSOLE_ONLY = process.env.OTEL_CONSOLE_ONLY === "true";
 function stringToHeader(value) {
     const pairs = value.split(",");
@@ -790,7 +793,10 @@ function stringToHeader(value) {
         return result;
     }, {});
 }
-function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs, otelServiceName) {
+function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs, otelServiceName, globalErrorHandler) {
+    if (globalErrorHandler) {
+        (0, core_1.setGlobalErrorHandler)(globalErrorHandler);
+    }
     const serviceName = otelServiceName ||
         workflowRunJobs.workflowRun.name ||
         `${workflowRunJobs.workflowRun.workflow_id}`;
@@ -20634,7 +20640,9 @@ class W3CBaggagePropagator {
     }
     extract(context, carrier, getter) {
         const headerValue = getter.get(carrier, constants_1.BAGGAGE_HEADER);
-        const baggageString = Array.isArray(headerValue) ? headerValue.join(constants_1.BAGGAGE_ITEMS_SEPARATOR) : headerValue;
+        const baggageString = Array.isArray(headerValue)
+            ? headerValue.join(constants_1.BAGGAGE_ITEMS_SEPARATOR)
+            : headerValue;
         if (!baggageString)
             return context;
         const baggage = {};
@@ -20716,11 +20724,11 @@ function parsePairKeyValue(entry) {
     const keyPairPart = valueProps.shift();
     if (!keyPairPart)
         return;
-    const keyPair = keyPairPart.split(constants_1.BAGGAGE_KEY_PAIR_SEPARATOR);
-    if (keyPair.length !== 2)
+    const separatorIndex = keyPairPart.indexOf(constants_1.BAGGAGE_KEY_PAIR_SEPARATOR);
+    if (separatorIndex <= 0)
         return;
-    const key = decodeURIComponent(keyPair[0].trim());
-    const value = decodeURIComponent(keyPair[1].trim());
+    const key = decodeURIComponent(keyPairPart.substring(0, separatorIndex).trim());
+    const value = decodeURIComponent(keyPairPart.substring(separatorIndex + 1).trim());
     let metadata;
     if (valueProps.length > 0) {
         metadata = (0, api_1.baggageEntryMetadataFromString)(valueProps.join(constants_1.BAGGAGE_PROPERTIES_SEPARATOR));
@@ -20749,6 +20757,71 @@ function parseKeyPairsIntoRecord(value) {
 }
 exports.parseKeyPairsIntoRecord = parseKeyPairsIntoRecord;
 //# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 54848:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AnchoredClock = void 0;
+/**
+ * A utility for returning wall times anchored to a given point in time. Wall time measurements will
+ * not be taken from the system, but instead are computed by adding a monotonic clock time
+ * to the anchor point.
+ *
+ * This is needed because the system time can change and result in unexpected situations like
+ * spans ending before they are started. Creating an anchored clock for each local root span
+ * ensures that span timings and durations are accurate while preventing span times from drifting
+ * too far from the system clock.
+ *
+ * Only creating an anchored clock once per local trace ensures span times are correct relative
+ * to each other. For example, a child span will never have a start time before its parent even
+ * if the system clock is corrected during the local trace.
+ *
+ * Heavily inspired by the OTel Java anchored clock
+ * https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk/trace/src/main/java/io/opentelemetry/sdk/trace/AnchoredClock.java
+ */
+class AnchoredClock {
+    /**
+     * Create a new AnchoredClock anchored to the current time returned by systemClock.
+     *
+     * @param systemClock should be a clock that returns the number of milliseconds since January 1 1970 such as Date
+     * @param monotonicClock should be a clock that counts milliseconds monotonically such as window.performance or perf_hooks.performance
+     */
+    constructor(systemClock, monotonicClock) {
+        this._monotonicClock = monotonicClock;
+        this._epochMillis = systemClock.now();
+        this._performanceMillis = monotonicClock.now();
+    }
+    /**
+     * Returns the current time by adding the number of milliseconds since the
+     * AnchoredClock was created to the creation epoch time
+     */
+    now() {
+        const delta = this._monotonicClock.now() - this._performanceMillis;
+        return this._epochMillis + delta;
+    }
+}
+exports.AnchoredClock = AnchoredClock;
+//# sourceMappingURL=anchored-clock.js.map
 
 /***/ }),
 
@@ -20895,6 +20968,55 @@ exports.globalErrorHandler = globalErrorHandler;
 
 /***/ }),
 
+/***/ 54986:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.hexToBinary = void 0;
+function intValue(charCode) {
+    // 0-9
+    if (charCode >= 48 && charCode <= 57) {
+        return charCode - 48;
+    }
+    // a-f
+    if (charCode >= 97 && charCode <= 102) {
+        return charCode - 87;
+    }
+    // A-F
+    return charCode - 55;
+}
+function hexToBinary(hexStr) {
+    const buf = new Uint8Array(hexStr.length / 2);
+    let offset = 0;
+    for (let i = 0; i < hexStr.length; i += 2) {
+        const hi = intValue(hexStr.charCodeAt(i));
+        const lo = intValue(hexStr.charCodeAt(i + 1));
+        buf[offset++] = (hi << 4) | lo;
+    }
+    return buf;
+}
+exports.hexToBinary = hexToBinary;
+//# sourceMappingURL=hex-to-binary.js.map
+
+/***/ }),
+
 /***/ 32882:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -20986,31 +21108,25 @@ function flattenException(ex) {
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isTimeInput = exports.isTimeInputHrTime = exports.hrTimeToMicroseconds = exports.hrTimeToMilliseconds = exports.hrTimeToNanoseconds = exports.hrTimeToTimeStamp = exports.hrTimeDuration = exports.timeInputToHrTime = exports.hrTime = void 0;
+exports.addHrTimes = exports.isTimeInput = exports.isTimeInputHrTime = exports.hrTimeToMicroseconds = exports.hrTimeToMilliseconds = exports.hrTimeToNanoseconds = exports.hrTimeToTimeStamp = exports.hrTimeDuration = exports.timeInputToHrTime = exports.hrTime = exports.getTimeOrigin = exports.millisToHrTime = void 0;
 const platform_1 = __nccwpck_require__(6730);
 const NANOSECOND_DIGITS = 9;
+const NANOSECOND_DIGITS_IN_MILLIS = 6;
+const MILLISECONDS_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS_IN_MILLIS);
 const SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS);
 /**
- * Converts a number to HrTime, HrTime = [number, number].
- * The first number is UNIX Epoch time in seconds since 00:00:00 UTC on 1 January 1970.
- * The second number represents the partial second elapsed since Unix Epoch time represented by first number in nanoseconds.
- * For example, 2021-01-01T12:30:10.150Z in UNIX Epoch time in milliseconds is represented as 1609504210150.
- * numberToHrtime calculates the first number by converting and truncating the Epoch time in milliseconds to seconds:
- * HrTime[0] = Math.trunc(1609504210150 / 1000) = 1609504210.
- * numberToHrtime calculates the second number by converting the digits after the decimal point of the subtraction, (1609504210150 / 1000) - HrTime[0], to nanoseconds:
- * HrTime[1] = Number((1609504210.150 - HrTime[0]).toFixed(9)) * SECOND_TO_NANOSECONDS = 150000000.
- * This is represented in HrTime format as [1609504210, 150000000].
+ * Converts a number of milliseconds from epoch to HrTime([seconds, remainder in nanoseconds]).
  * @param epochMillis
  */
-function numberToHrtime(epochMillis) {
+function millisToHrTime(epochMillis) {
     const epochSeconds = epochMillis / 1000;
     // Decimals only.
     const seconds = Math.trunc(epochSeconds);
     // Round sub-nanosecond accuracy to nanosecond.
-    const nanos = Number((epochSeconds - seconds).toFixed(NANOSECOND_DIGITS)) *
-        SECOND_TO_NANOSECONDS;
+    const nanos = Math.round((epochMillis % 1000) * MILLISECONDS_TO_NANOSECONDS);
     return [seconds, nanos];
 }
+exports.millisToHrTime = millisToHrTime;
 function getTimeOrigin() {
     let timeOrigin = platform_1.otperformance.timeOrigin;
     if (typeof timeOrigin !== 'number') {
@@ -21019,21 +21135,15 @@ function getTimeOrigin() {
     }
     return timeOrigin;
 }
+exports.getTimeOrigin = getTimeOrigin;
 /**
  * Returns an hrtime calculated via performance component.
  * @param performanceNow
  */
 function hrTime(performanceNow) {
-    const timeOrigin = numberToHrtime(getTimeOrigin());
-    const now = numberToHrtime(typeof performanceNow === 'number' ? performanceNow : platform_1.otperformance.now());
-    let seconds = timeOrigin[0] + now[0];
-    let nanos = timeOrigin[1] + now[1];
-    // Nanoseconds
-    if (nanos > SECOND_TO_NANOSECONDS) {
-        nanos -= SECOND_TO_NANOSECONDS;
-        seconds += 1;
-    }
-    return [seconds, nanos];
+    const timeOrigin = millisToHrTime(getTimeOrigin());
+    const now = millisToHrTime(typeof performanceNow === 'number' ? performanceNow : platform_1.otperformance.now());
+    return addHrTimes(timeOrigin, now);
 }
 exports.hrTime = hrTime;
 /**
@@ -21053,11 +21163,11 @@ function timeInputToHrTime(time) {
         }
         else {
             // epoch milliseconds or performance.timeOrigin
-            return numberToHrtime(time);
+            return millisToHrTime(time);
         }
     }
     else if (time instanceof Date) {
-        return numberToHrtime(time.getTime());
+        return millisToHrTime(time.getTime());
     }
     else {
         throw TypeError('Invalid input type');
@@ -21106,7 +21216,7 @@ exports.hrTimeToNanoseconds = hrTimeToNanoseconds;
  * @param time
  */
 function hrTimeToMilliseconds(time) {
-    return Math.round(time[0] * 1e3 + time[1] / 1e6);
+    return time[0] * 1e3 + time[1] / 1e6;
 }
 exports.hrTimeToMilliseconds = hrTimeToMilliseconds;
 /**
@@ -21114,7 +21224,7 @@ exports.hrTimeToMilliseconds = hrTimeToMilliseconds;
  * @param time
  */
 function hrTimeToMicroseconds(time) {
-    return Math.round(time[0] * 1e6 + time[1] / 1e3);
+    return time[0] * 1e6 + time[1] / 1e3;
 }
 exports.hrTimeToMicroseconds = hrTimeToMicroseconds;
 /**
@@ -21138,6 +21248,19 @@ function isTimeInput(value) {
         value instanceof Date);
 }
 exports.isTimeInput = isTimeInput;
+/**
+ * Given 2 HrTime formatted times, return their sum as an HrTime.
+ */
+function addHrTimes(time1, time2) {
+    const out = [time1[0] + time2[0], time1[1] + time2[1]];
+    // Nanoseconds
+    if (out[1] >= SECOND_TO_NANOSECONDS) {
+        out[1] -= SECOND_TO_NANOSECONDS;
+        out[0] += 1;
+    }
+    return out;
+}
+exports.addHrTimes = addHrTimes;
 //# sourceMappingURL=time.js.map
 
 /***/ }),
@@ -21198,15 +21321,16 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.baggageUtils = void 0;
+exports.internal = exports.baggageUtils = void 0;
 __exportStar(__nccwpck_require__(61476), exports);
+__exportStar(__nccwpck_require__(54848), exports);
 __exportStar(__nccwpck_require__(82807), exports);
 __exportStar(__nccwpck_require__(69246), exports);
 __exportStar(__nccwpck_require__(32882), exports);
 __exportStar(__nccwpck_require__(86161), exports);
 __exportStar(__nccwpck_require__(27342), exports);
+__exportStar(__nccwpck_require__(54986), exports);
 __exportStar(__nccwpck_require__(67959), exports);
-__exportStar(__nccwpck_require__(55687), exports);
 exports.baggageUtils = __nccwpck_require__(49884);
 __exportStar(__nccwpck_require__(6730), exports);
 __exportStar(__nccwpck_require__(57785), exports);
@@ -21222,11 +21346,59 @@ __exportStar(__nccwpck_require__(1914), exports);
 __exportStar(__nccwpck_require__(7238), exports);
 __exportStar(__nccwpck_require__(65387), exports);
 __exportStar(__nccwpck_require__(28289), exports);
+__exportStar(__nccwpck_require__(48400), exports);
 __exportStar(__nccwpck_require__(90839), exports);
 __exportStar(__nccwpck_require__(67226), exports);
 __exportStar(__nccwpck_require__(12408), exports);
 __exportStar(__nccwpck_require__(55687), exports);
+const exporter_1 = __nccwpck_require__(87795);
+exports.internal = {
+    _export: exporter_1._export,
+};
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 87795:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._export = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(54463);
+/**
+ * @internal
+ * Shared functionality used by Exporters while exporting data, including suppresion of Traces.
+ */
+function _export(exporter, arg) {
+    return new Promise(resolve => {
+        // prevent downstream exporter calls from generating spans
+        api_1.context.with((0, suppress_tracing_1.suppressTracing)(api_1.context.active()), () => {
+            exporter.export(arg, (result) => {
+                resolve(result);
+            });
+        });
+    });
+}
+exports._export = _export;
+//# sourceMappingURL=exporter.js.map
 
 /***/ }),
 
@@ -21280,6 +21452,51 @@ function validateValue(value) {
 }
 exports.validateValue = validateValue;
 //# sourceMappingURL=validators.js.map
+
+/***/ }),
+
+/***/ 42490:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._globalThis = void 0;
+// Updates to this file should also be replicated to @opentelemetry/api too.
+/**
+ * - globalThis (New standard)
+ * - self (Will return the current window instance for supported browsers)
+ * - window (fallback for older browser implementations)
+ * - global (NodeJS implementation)
+ * - <object> (When all else fails)
+ */
+/** only globals that common to node and browsers are allowed */
+// eslint-disable-next-line node/no-unsupported-features/es-builtins, no-undef
+exports._globalThis = typeof globalThis === 'object'
+    ? globalThis
+    : typeof self === 'object'
+        ? self
+        : typeof window === 'object'
+            ? window
+            : typeof global === 'object'
+                ? global
+                : {};
+//# sourceMappingURL=globalThis.js.map
 
 /***/ }),
 
@@ -21343,6 +21560,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.RandomIdGenerator = void 0;
 const SPAN_ID_BYTES = 8;
 const TRACE_ID_BYTES = 16;
+/**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
+ */
 class RandomIdGenerator {
     constructor() {
         /**
@@ -21450,7 +21670,7 @@ exports._globalThis = typeof globalThis === 'object' ? globalThis : global;
 /***/ }),
 
 /***/ 75004:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -21471,15 +21691,9 @@ exports.hexToBase64 = void 0;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const hex_to_binary_1 = __nccwpck_require__(54986);
 function hexToBase64(hexStr) {
-    const hexStrLen = hexStr.length;
-    let hexAsciiCharsStr = '';
-    for (let i = 0; i < hexStrLen; i += 2) {
-        const hexPair = hexStr.substring(i, i + 2);
-        const hexVal = parseInt(hexPair, 16);
-        hexAsciiCharsStr += String.fromCharCode(hexVal);
-    }
-    return Buffer.from(hexAsciiCharsStr, 'ascii').toString('base64');
+    return Buffer.from((0, hex_to_binary_1.hexToBinary)(hexStr)).toString('base64');
 }
 exports.hexToBase64 = hexToBase64;
 //# sourceMappingURL=hex-to-base64.js.map
@@ -21579,7 +21793,7 @@ exports.otperformance = perf_hooks_1.performance;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SDK_INFO = void 0;
 const version_1 = __nccwpck_require__(55687);
-const semantic_conventions_1 = __nccwpck_require__(67275);
+const semantic_conventions_1 = __nccwpck_require__(62656);
 /** Constants describing the SDK in use */
 exports.SDK_INFO = {
     [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME]: 'opentelemetry',
@@ -22021,7 +22235,10 @@ exports.getRPCMetadata = getRPCMetadata;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AlwaysOffSampler = void 0;
 const api_1 = __nccwpck_require__(65163);
-/** Sampler that samples no traces. */
+/**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
+ * Sampler that samples no traces.
+ */
 class AlwaysOffSampler {
     shouldSample() {
         return {
@@ -22060,7 +22277,10 @@ exports.AlwaysOffSampler = AlwaysOffSampler;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AlwaysOnSampler = void 0;
 const api_1 = __nccwpck_require__(65163);
-/** Sampler that samples all traces. */
+/**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
+ * Sampler that samples all traces.
+ */
 class AlwaysOnSampler {
     shouldSample() {
         return {
@@ -22103,6 +22323,7 @@ const global_error_handler_1 = __nccwpck_require__(69246);
 const AlwaysOffSampler_1 = __nccwpck_require__(16478);
 const AlwaysOnSampler_1 = __nccwpck_require__(88317);
 /**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
  * A composite sampler that either respects the parent span's sampling decision
  * or delegates to `delegateSampler` for root spans.
  */
@@ -22171,7 +22392,10 @@ exports.ParentBasedSampler = ParentBasedSampler;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TraceIdRatioBasedSampler = void 0;
 const api_1 = __nccwpck_require__(65163);
-/** Sampler that samples a given fraction of traces based of trace id deterministically. */
+/**
+ * @deprecated Use the one defined in @opentelemetry/sdk-trace-base instead.
+ * Sampler that samples a given fraction of traces based of trace id deterministically.
+ */
 class TraceIdRatioBasedSampler {
     constructor(_ratio = 0) {
         this._ratio = _ratio;
@@ -22291,8 +22515,7 @@ class BindOnceFuture {
         if (!this._isCalled) {
             this._isCalled = true;
             try {
-                Promise.resolve(this._callback.call(this._that, ...args))
-                    .then(val => this._deferred.resolve(val), err => this._deferred.reject(err));
+                Promise.resolve(this._callback.call(this._that, ...args)).then(val => this._deferred.resolve(val), err => this._deferred.reject(err));
             }
             catch (err) {
                 this._deferred.reject(err);
@@ -22327,27 +22550,41 @@ exports.BindOnceFuture = BindOnceFuture;
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.parseEnvironment = exports.DEFAULT_ENVIRONMENT = exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = void 0;
+exports.getEnvWithoutDefaults = exports.parseEnvironment = exports.DEFAULT_ENVIRONMENT = exports.DEFAULT_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT = exports.DEFAULT_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = void 0;
 const api_1 = __nccwpck_require__(65163);
 const sampling_1 = __nccwpck_require__(28289);
+const globalThis_1 = __nccwpck_require__(42490);
 const DEFAULT_LIST_SEPARATOR = ',';
 /**
  * Environment interface to define all names
  */
+const ENVIRONMENT_BOOLEAN_KEYS = ['OTEL_SDK_DISABLED'];
+function isEnvVarABoolean(key) {
+    return (ENVIRONMENT_BOOLEAN_KEYS.indexOf(key) > -1);
+}
 const ENVIRONMENT_NUMBERS_KEYS = [
     'OTEL_BSP_EXPORT_TIMEOUT',
     'OTEL_BSP_MAX_EXPORT_BATCH_SIZE',
     'OTEL_BSP_MAX_QUEUE_SIZE',
     'OTEL_BSP_SCHEDULE_DELAY',
+    'OTEL_BLRP_EXPORT_TIMEOUT',
+    'OTEL_BLRP_MAX_EXPORT_BATCH_SIZE',
+    'OTEL_BLRP_MAX_QUEUE_SIZE',
+    'OTEL_BLRP_SCHEDULE_DELAY',
     'OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT',
     'OTEL_ATTRIBUTE_COUNT_LIMIT',
     'OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT',
     'OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT',
+    'OTEL_LOGRECORD_ATTRIBUTE_VALUE_LENGTH_LIMIT',
+    'OTEL_LOGRECORD_ATTRIBUTE_COUNT_LIMIT',
     'OTEL_SPAN_EVENT_COUNT_LIMIT',
     'OTEL_SPAN_LINK_COUNT_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT',
     'OTEL_EXPORTER_OTLP_TIMEOUT',
     'OTEL_EXPORTER_OTLP_TRACES_TIMEOUT',
     'OTEL_EXPORTER_OTLP_METRICS_TIMEOUT',
+    'OTEL_EXPORTER_OTLP_LOGS_TIMEOUT',
     'OTEL_EXPORTER_JAEGER_AGENT_PORT',
 ];
 function isEnvVarANumber(key) {
@@ -22362,10 +22599,13 @@ function isEnvVarAList(key) {
 }
 exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = Infinity;
 exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = 128;
+exports.DEFAULT_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT = 128;
+exports.DEFAULT_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT = 128;
 /**
  * Default environment variables
  */
 exports.DEFAULT_ENVIRONMENT = {
+    OTEL_SDK_DISABLED: false,
     CONTAINER_NAME: '',
     ECS_CONTAINER_METADATA_URI_V4: '',
     ECS_CONTAINER_METADATA_URI: '',
@@ -22376,6 +22616,10 @@ exports.DEFAULT_ENVIRONMENT = {
     OTEL_BSP_MAX_EXPORT_BATCH_SIZE: 512,
     OTEL_BSP_MAX_QUEUE_SIZE: 2048,
     OTEL_BSP_SCHEDULE_DELAY: 5000,
+    OTEL_BLRP_EXPORT_TIMEOUT: 30000,
+    OTEL_BLRP_MAX_EXPORT_BATCH_SIZE: 512,
+    OTEL_BLRP_MAX_QUEUE_SIZE: 2048,
+    OTEL_BLRP_SCHEDULE_DELAY: 5000,
     OTEL_EXPORTER_JAEGER_AGENT_HOST: '',
     OTEL_EXPORTER_JAEGER_AGENT_PORT: 6832,
     OTEL_EXPORTER_JAEGER_ENDPOINT: '',
@@ -22384,12 +22628,15 @@ exports.DEFAULT_ENVIRONMENT = {
     OTEL_EXPORTER_OTLP_ENDPOINT: '',
     OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: '',
     OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: '',
     OTEL_EXPORTER_OTLP_HEADERS: '',
     OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',
     OTEL_EXPORTER_OTLP_METRICS_HEADERS: '',
+    OTEL_EXPORTER_OTLP_LOGS_HEADERS: '',
     OTEL_EXPORTER_OTLP_TIMEOUT: 10000,
     OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: 10000,
     OTEL_EXPORTER_OTLP_METRICS_TIMEOUT: 10000,
+    OTEL_EXPORTER_OTLP_LOGS_TIMEOUT: 10000,
     OTEL_EXPORTER_ZIPKIN_ENDPOINT: 'http://localhost:9411/api/v2/spans',
     OTEL_LOG_LEVEL: api_1.DiagLogLevel.INFO,
     OTEL_NO_PATCH_MODULES: [],
@@ -22400,27 +22647,55 @@ exports.DEFAULT_ENVIRONMENT = {
     OTEL_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
     OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
     OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
+    OTEL_LOGRECORD_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+    OTEL_LOGRECORD_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
     OTEL_SPAN_EVENT_COUNT_LIMIT: 128,
     OTEL_SPAN_LINK_COUNT_LIMIT: 128,
-    OTEL_TRACES_EXPORTER: 'none',
+    OTEL_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT: exports.DEFAULT_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT,
+    OTEL_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT: exports.DEFAULT_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT,
+    OTEL_TRACES_EXPORTER: '',
     OTEL_TRACES_SAMPLER: sampling_1.TracesSamplerValues.ParentBasedAlwaysOn,
     OTEL_TRACES_SAMPLER_ARG: '',
+    OTEL_LOGS_EXPORTER: '',
     OTEL_EXPORTER_OTLP_INSECURE: '',
     OTEL_EXPORTER_OTLP_TRACES_INSECURE: '',
     OTEL_EXPORTER_OTLP_METRICS_INSECURE: '',
+    OTEL_EXPORTER_OTLP_LOGS_INSECURE: '',
     OTEL_EXPORTER_OTLP_CERTIFICATE: '',
     OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE: '',
     OTEL_EXPORTER_OTLP_METRICS_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE: '',
     OTEL_EXPORTER_OTLP_COMPRESSION: '',
     OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: '',
     OTEL_EXPORTER_OTLP_METRICS_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_LOGS_COMPRESSION: '',
     OTEL_EXPORTER_OTLP_CLIENT_KEY: '',
     OTEL_EXPORTER_OTLP_TRACES_CLIENT_KEY: '',
     OTEL_EXPORTER_OTLP_METRICS_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_LOGS_CLIENT_KEY: '',
     OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE: '',
     OTEL_EXPORTER_OTLP_TRACES_CLIENT_CERTIFICATE: '',
-    OTEL_EXPORTER_OTLP_METRICS_CLIENT_CERTIFICATE: ''
+    OTEL_EXPORTER_OTLP_METRICS_CLIENT_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_LOGS_CLIENT_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_PROTOCOL: 'http/protobuf',
+    OTEL_EXPORTER_OTLP_TRACES_PROTOCOL: 'http/protobuf',
+    OTEL_EXPORTER_OTLP_METRICS_PROTOCOL: 'http/protobuf',
+    OTEL_EXPORTER_OTLP_LOGS_PROTOCOL: 'http/protobuf',
+    OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: 'cumulative',
 };
+/**
+ * @param key
+ * @param environment
+ * @param values
+ */
+function parseBoolean(key, environment, values) {
+    if (typeof values[key] === 'undefined') {
+        return;
+    }
+    const value = String(values[key]);
+    // support case-insensitive "true"
+    environment[key] = value.toLowerCase() === 'true';
+}
 /**
  * Parses a variable as number with number validation
  * @param name
@@ -22496,7 +22771,10 @@ function parseEnvironment(values) {
                 setLogLevelFromEnv(key, environment, values);
                 break;
             default:
-                if (isEnvVarANumber(key)) {
+                if (isEnvVarABoolean(key)) {
+                    parseBoolean(key, environment, values);
+                }
+                else if (isEnvVarANumber(key)) {
                     parseNumber(key, environment, values);
                 }
                 else if (isEnvVarAList(key)) {
@@ -22513,6 +22791,16 @@ function parseEnvironment(values) {
     return environment;
 }
 exports.parseEnvironment = parseEnvironment;
+/**
+ * Get environment in node or browser without
+ * populating default values.
+ */
+function getEnvWithoutDefaults() {
+    return typeof process !== 'undefined' && process && process.env
+        ? parseEnvironment(process.env)
+        : parseEnvironment(globalThis_1._globalThis);
+}
+exports.getEnvWithoutDefaults = getEnvWithoutDefaults;
 //# sourceMappingURL=environment.js.map
 
 /***/ }),
@@ -22605,8 +22893,9 @@ function isPlainObject(value) {
         return true;
     }
     const Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-    return typeof Ctor == 'function' && Ctor instanceof Ctor &&
-        funcToString.call(Ctor) === objectCtorString;
+    return (typeof Ctor == 'function' &&
+        Ctor instanceof Ctor &&
+        funcToString.call(Ctor) === objectCtorString);
 }
 exports.isPlainObject = isPlainObject;
 /**
@@ -22647,7 +22936,7 @@ function baseGetTag(value) {
     if (value == null) {
         return value === undefined ? undefinedTag : nullTag;
     }
-    return (symToStringTag && symToStringTag in Object(value))
+    return symToStringTag && symToStringTag in Object(value)
         ? getRawTag(value)
         : objectToString(value);
 }
@@ -22838,16 +23127,19 @@ function isFunction(value) {
     return typeof value === 'function';
 }
 function isObject(value) {
-    return !isPrimitive(value) && !isArray(value) && !isFunction(value) && typeof value === 'object';
+    return (!isPrimitive(value) &&
+        !isArray(value) &&
+        !isFunction(value) &&
+        typeof value === 'object');
 }
 function isPrimitive(value) {
-    return typeof value === 'string' ||
+    return (typeof value === 'string' ||
         typeof value === 'number' ||
         typeof value === 'boolean' ||
         typeof value === 'undefined' ||
         value instanceof Date ||
         value instanceof RegExp ||
-        value === null;
+        value === null);
 }
 function shouldMerge(one, two) {
     if (!(0, lodash_merge_1.isPlainObject)(one) || !(0, lodash_merge_1.isPlainObject)(two)) {
@@ -22935,6 +23227,69 @@ var TracesSamplerValues;
     TracesSamplerValues["TraceIdRatio"] = "traceidratio";
 })(TracesSamplerValues = exports.TracesSamplerValues || (exports.TracesSamplerValues = {}));
 //# sourceMappingURL=sampling.js.map
+
+/***/ }),
+
+/***/ 48400:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.callWithTimeout = exports.TimeoutError = void 0;
+/**
+ * Error that is thrown on timeouts.
+ */
+class TimeoutError extends Error {
+    constructor(message) {
+        super(message);
+        // manually adjust prototype to retain `instanceof` functionality when targeting ES5, see:
+        // https://github.com/Microsoft/TypeScript-wiki/blob/main/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+        Object.setPrototypeOf(this, TimeoutError.prototype);
+    }
+}
+exports.TimeoutError = TimeoutError;
+/**
+ * Adds a timeout to a promise and rejects if the specified timeout has elapsed. Also rejects if the specified promise
+ * rejects, and resolves if the specified promise resolves.
+ *
+ * <p> NOTE: this operation will continue even after it throws a {@link TimeoutError}.
+ *
+ * @param promise promise to use with timeout.
+ * @param timeout the timeout in milliseconds until the returned promise is rejected.
+ */
+function callWithTimeout(promise, timeout) {
+    let timeoutHandle;
+    const timeoutPromise = new Promise(function timeoutFunction(_resolve, reject) {
+        timeoutHandle = setTimeout(function timeoutHandler() {
+            reject(new TimeoutError('Operation timed out.'));
+        }, timeout);
+    });
+    return Promise.race([promise, timeoutPromise]).then(result => {
+        clearTimeout(timeoutHandle);
+        return result;
+    }, reason => {
+        clearTimeout(timeoutHandle);
+        throw reason;
+    });
+}
+exports.callWithTimeout = callWithTimeout;
+//# sourceMappingURL=timeout.js.map
 
 /***/ }),
 
@@ -23050,8 +23405,1531 @@ exports.isWrapped = isWrapped;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.VERSION = void 0;
 // this is autogenerated file, see scripts/version-update.js
-exports.VERSION = '1.4.0';
+exports.VERSION = '1.20.0';
 //# sourceMappingURL=version.js.map
+
+/***/ }),
+
+/***/ 62656:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(40424), exports);
+__exportStar(__nccwpck_require__(73943), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 4149:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TelemetrySdkLanguageValues = exports.OsTypeValues = exports.HostArchValues = exports.AwsEcsLaunchtypeValues = exports.CloudPlatformValues = exports.CloudProviderValues = exports.SemanticResourceAttributes = void 0;
+// DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+exports.SemanticResourceAttributes = {
+    /**
+     * Name of the cloud provider.
+     */
+    CLOUD_PROVIDER: 'cloud.provider',
+    /**
+     * The cloud account ID the resource is assigned to.
+     */
+    CLOUD_ACCOUNT_ID: 'cloud.account.id',
+    /**
+     * The geographical region the resource is running. Refer to your provider&#39;s docs to see the available regions, for example [Alibaba Cloud regions](https://www.alibabacloud.com/help/doc-detail/40654.htm), [AWS regions](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/), [Azure regions](https://azure.microsoft.com/en-us/global-infrastructure/geographies/), or [Google Cloud regions](https://cloud.google.com/about/locations).
+     */
+    CLOUD_REGION: 'cloud.region',
+    /**
+     * Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.
+     *
+     * Note: Availability zones are called &#34;zones&#34; on Alibaba Cloud and Google Cloud.
+     */
+    CLOUD_AVAILABILITY_ZONE: 'cloud.availability_zone',
+    /**
+     * The cloud platform in use.
+     *
+     * Note: The prefix of the service SHOULD match the one specified in `cloud.provider`.
+     */
+    CLOUD_PLATFORM: 'cloud.platform',
+    /**
+     * The Amazon Resource Name (ARN) of an [ECS container instance](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html).
+     */
+    AWS_ECS_CONTAINER_ARN: 'aws.ecs.container.arn',
+    /**
+     * The ARN of an [ECS cluster](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/clusters.html).
+     */
+    AWS_ECS_CLUSTER_ARN: 'aws.ecs.cluster.arn',
+    /**
+     * The [launch type](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_types.html) for an ECS task.
+     */
+    AWS_ECS_LAUNCHTYPE: 'aws.ecs.launchtype',
+    /**
+     * The ARN of an [ECS task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html).
+     */
+    AWS_ECS_TASK_ARN: 'aws.ecs.task.arn',
+    /**
+     * The task definition family this task definition is a member of.
+     */
+    AWS_ECS_TASK_FAMILY: 'aws.ecs.task.family',
+    /**
+     * The revision for this task definition.
+     */
+    AWS_ECS_TASK_REVISION: 'aws.ecs.task.revision',
+    /**
+     * The ARN of an EKS cluster.
+     */
+    AWS_EKS_CLUSTER_ARN: 'aws.eks.cluster.arn',
+    /**
+     * The name(s) of the AWS log group(s) an application is writing to.
+     *
+     * Note: Multiple log groups must be supported for cases like multi-container applications, where a single application has sidecar containers, and each write to their own log group.
+     */
+    AWS_LOG_GROUP_NAMES: 'aws.log.group.names',
+    /**
+     * The Amazon Resource Name(s) (ARN) of the AWS log group(s).
+     *
+     * Note: See the [log group ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format).
+     */
+    AWS_LOG_GROUP_ARNS: 'aws.log.group.arns',
+    /**
+     * The name(s) of the AWS log stream(s) an application is writing to.
+     */
+    AWS_LOG_STREAM_NAMES: 'aws.log.stream.names',
+    /**
+     * The ARN(s) of the AWS log stream(s).
+     *
+     * Note: See the [log stream ARN format documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html#CWL_ARN_Format). One log group can contain several log streams, so these ARNs necessarily identify both a log group and a log stream.
+     */
+    AWS_LOG_STREAM_ARNS: 'aws.log.stream.arns',
+    /**
+     * Container name.
+     */
+    CONTAINER_NAME: 'container.name',
+    /**
+     * Container ID. Usually a UUID, as for example used to [identify Docker containers](https://docs.docker.com/engine/reference/run/#container-identification). The UUID might be abbreviated.
+     */
+    CONTAINER_ID: 'container.id',
+    /**
+     * The container runtime managing this container.
+     */
+    CONTAINER_RUNTIME: 'container.runtime',
+    /**
+     * Name of the image the container was built on.
+     */
+    CONTAINER_IMAGE_NAME: 'container.image.name',
+    /**
+     * Container image tag.
+     */
+    CONTAINER_IMAGE_TAG: 'container.image.tag',
+    /**
+     * Name of the [deployment environment](https://en.wikipedia.org/wiki/Deployment_environment) (aka deployment tier).
+     */
+    DEPLOYMENT_ENVIRONMENT: 'deployment.environment',
+    /**
+     * A unique identifier representing the device.
+     *
+     * Note: The device identifier MUST only be defined using the values outlined below. This value is not an advertising identifier and MUST NOT be used as such. On iOS (Swift or Objective-C), this value MUST be equal to the [vendor identifier](https://developer.apple.com/documentation/uikit/uidevice/1620059-identifierforvendor). On Android (Java or Kotlin), this value MUST be equal to the Firebase Installation ID or a globally unique UUID which is persisted across sessions in your application. More information can be found [here](https://developer.android.com/training/articles/user-data-ids) on best practices and exact implementation details. Caution should be taken when storing personal data or anything which can identify a user. GDPR and data protection laws may apply, ensure you do your own due diligence.
+     */
+    DEVICE_ID: 'device.id',
+    /**
+     * The model identifier for the device.
+     *
+     * Note: It&#39;s recommended this value represents a machine readable version of the model identifier rather than the market or consumer-friendly name of the device.
+     */
+    DEVICE_MODEL_IDENTIFIER: 'device.model.identifier',
+    /**
+     * The marketing name for the device model.
+     *
+     * Note: It&#39;s recommended this value represents a human readable version of the device model rather than a machine readable alternative.
+     */
+    DEVICE_MODEL_NAME: 'device.model.name',
+    /**
+     * The name of the single function that this runtime instance executes.
+     *
+     * Note: This is the name of the function as configured/deployed on the FaaS platform and is usually different from the name of the callback function (which may be stored in the [`code.namespace`/`code.function`](../../trace/semantic_conventions/span-general.md#source-code-attributes) span attributes).
+     */
+    FAAS_NAME: 'faas.name',
+    /**
+    * The unique ID of the single function that this runtime instance executes.
+    *
+    * Note: Depending on the cloud provider, use:
+  
+  * **AWS Lambda:** The function [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
+  Take care not to use the &#34;invoked ARN&#34; directly but replace any
+  [alias suffix](https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html) with the resolved function version, as the same runtime instance may be invokable with multiple
+  different aliases.
+  * **GCP:** The [URI of the resource](https://cloud.google.com/iam/docs/full-resource-names)
+  * **Azure:** The [Fully Qualified Resource ID](https://docs.microsoft.com/en-us/rest/api/resources/resources/get-by-id).
+  
+  On some providers, it may not be possible to determine the full ID at startup,
+  which is why this field cannot be made required. For example, on AWS the account ID
+  part of the ARN is not available without calling another AWS API
+  which may be deemed too slow for a short-running lambda function.
+  As an alternative, consider setting `faas.id` as a span attribute instead.
+    */
+    FAAS_ID: 'faas.id',
+    /**
+    * The immutable version of the function being executed.
+    *
+    * Note: Depending on the cloud provider and platform, use:
+  
+  * **AWS Lambda:** The [function version](https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html)
+    (an integer represented as a decimal string).
+  * **Google Cloud Run:** The [revision](https://cloud.google.com/run/docs/managing/revisions)
+    (i.e., the function name plus the revision suffix).
+  * **Google Cloud Functions:** The value of the
+    [`K_REVISION` environment variable](https://cloud.google.com/functions/docs/env-var#runtime_environment_variables_set_automatically).
+  * **Azure Functions:** Not applicable. Do not set this attribute.
+    */
+    FAAS_VERSION: 'faas.version',
+    /**
+     * The execution environment ID as a string, that will be potentially reused for other invocations to the same function/function version.
+     *
+     * Note: * **AWS Lambda:** Use the (full) log stream name.
+     */
+    FAAS_INSTANCE: 'faas.instance',
+    /**
+     * The amount of memory available to the serverless function in MiB.
+     *
+     * Note: It&#39;s recommended to set this attribute since e.g. too little memory can easily stop a Java AWS Lambda function from working correctly. On AWS Lambda, the environment variable `AWS_LAMBDA_FUNCTION_MEMORY_SIZE` provides this information.
+     */
+    FAAS_MAX_MEMORY: 'faas.max_memory',
+    /**
+     * Unique host ID. For Cloud, this must be the instance_id assigned by the cloud provider.
+     */
+    HOST_ID: 'host.id',
+    /**
+     * Name of the host. On Unix systems, it may contain what the hostname command returns, or the fully qualified hostname, or another name specified by the user.
+     */
+    HOST_NAME: 'host.name',
+    /**
+     * Type of host. For Cloud, this must be the machine type.
+     */
+    HOST_TYPE: 'host.type',
+    /**
+     * The CPU architecture the host system is running on.
+     */
+    HOST_ARCH: 'host.arch',
+    /**
+     * Name of the VM image or OS install the host was instantiated from.
+     */
+    HOST_IMAGE_NAME: 'host.image.name',
+    /**
+     * VM image ID. For Cloud, this value is from the provider.
+     */
+    HOST_IMAGE_ID: 'host.image.id',
+    /**
+     * The version string of the VM image as defined in [Version SpanAttributes](README.md#version-attributes).
+     */
+    HOST_IMAGE_VERSION: 'host.image.version',
+    /**
+     * The name of the cluster.
+     */
+    K8S_CLUSTER_NAME: 'k8s.cluster.name',
+    /**
+     * The name of the Node.
+     */
+    K8S_NODE_NAME: 'k8s.node.name',
+    /**
+     * The UID of the Node.
+     */
+    K8S_NODE_UID: 'k8s.node.uid',
+    /**
+     * The name of the namespace that the pod is running in.
+     */
+    K8S_NAMESPACE_NAME: 'k8s.namespace.name',
+    /**
+     * The UID of the Pod.
+     */
+    K8S_POD_UID: 'k8s.pod.uid',
+    /**
+     * The name of the Pod.
+     */
+    K8S_POD_NAME: 'k8s.pod.name',
+    /**
+     * The name of the Container in a Pod template.
+     */
+    K8S_CONTAINER_NAME: 'k8s.container.name',
+    /**
+     * The UID of the ReplicaSet.
+     */
+    K8S_REPLICASET_UID: 'k8s.replicaset.uid',
+    /**
+     * The name of the ReplicaSet.
+     */
+    K8S_REPLICASET_NAME: 'k8s.replicaset.name',
+    /**
+     * The UID of the Deployment.
+     */
+    K8S_DEPLOYMENT_UID: 'k8s.deployment.uid',
+    /**
+     * The name of the Deployment.
+     */
+    K8S_DEPLOYMENT_NAME: 'k8s.deployment.name',
+    /**
+     * The UID of the StatefulSet.
+     */
+    K8S_STATEFULSET_UID: 'k8s.statefulset.uid',
+    /**
+     * The name of the StatefulSet.
+     */
+    K8S_STATEFULSET_NAME: 'k8s.statefulset.name',
+    /**
+     * The UID of the DaemonSet.
+     */
+    K8S_DAEMONSET_UID: 'k8s.daemonset.uid',
+    /**
+     * The name of the DaemonSet.
+     */
+    K8S_DAEMONSET_NAME: 'k8s.daemonset.name',
+    /**
+     * The UID of the Job.
+     */
+    K8S_JOB_UID: 'k8s.job.uid',
+    /**
+     * The name of the Job.
+     */
+    K8S_JOB_NAME: 'k8s.job.name',
+    /**
+     * The UID of the CronJob.
+     */
+    K8S_CRONJOB_UID: 'k8s.cronjob.uid',
+    /**
+     * The name of the CronJob.
+     */
+    K8S_CRONJOB_NAME: 'k8s.cronjob.name',
+    /**
+     * The operating system type.
+     */
+    OS_TYPE: 'os.type',
+    /**
+     * Human readable (not intended to be parsed) OS version information, like e.g. reported by `ver` or `lsb_release -a` commands.
+     */
+    OS_DESCRIPTION: 'os.description',
+    /**
+     * Human readable operating system name.
+     */
+    OS_NAME: 'os.name',
+    /**
+     * The version string of the operating system as defined in [Version SpanAttributes](../../resource/semantic_conventions/README.md#version-attributes).
+     */
+    OS_VERSION: 'os.version',
+    /**
+     * Process identifier (PID).
+     */
+    PROCESS_PID: 'process.pid',
+    /**
+     * The name of the process executable. On Linux based systems, can be set to the `Name` in `proc/[pid]/status`. On Windows, can be set to the base name of `GetProcessImageFileNameW`.
+     */
+    PROCESS_EXECUTABLE_NAME: 'process.executable.name',
+    /**
+     * The full path to the process executable. On Linux based systems, can be set to the target of `proc/[pid]/exe`. On Windows, can be set to the result of `GetProcessImageFileNameW`.
+     */
+    PROCESS_EXECUTABLE_PATH: 'process.executable.path',
+    /**
+     * The command used to launch the process (i.e. the command name). On Linux based systems, can be set to the zeroth string in `proc/[pid]/cmdline`. On Windows, can be set to the first parameter extracted from `GetCommandLineW`.
+     */
+    PROCESS_COMMAND: 'process.command',
+    /**
+     * The full command used to launch the process as a single string representing the full command. On Windows, can be set to the result of `GetCommandLineW`. Do not set this if you have to assemble it just for monitoring; use `process.command_args` instead.
+     */
+    PROCESS_COMMAND_LINE: 'process.command_line',
+    /**
+     * All the command arguments (including the command/executable itself) as received by the process. On Linux-based systems (and some other Unixoid systems supporting procfs), can be set according to the list of null-delimited strings extracted from `proc/[pid]/cmdline`. For libc-based executables, this would be the full argv vector passed to `main`.
+     */
+    PROCESS_COMMAND_ARGS: 'process.command_args',
+    /**
+     * The username of the user that owns the process.
+     */
+    PROCESS_OWNER: 'process.owner',
+    /**
+     * The name of the runtime of this process. For compiled native binaries, this SHOULD be the name of the compiler.
+     */
+    PROCESS_RUNTIME_NAME: 'process.runtime.name',
+    /**
+     * The version of the runtime of this process, as returned by the runtime without modification.
+     */
+    PROCESS_RUNTIME_VERSION: 'process.runtime.version',
+    /**
+     * An additional description about the runtime of the process, for example a specific vendor customization of the runtime environment.
+     */
+    PROCESS_RUNTIME_DESCRIPTION: 'process.runtime.description',
+    /**
+     * Logical name of the service.
+     *
+     * Note: MUST be the same for all instances of horizontally scaled services. If the value was not specified, SDKs MUST fallback to `unknown_service:` concatenated with [`process.executable.name`](process.md#process), e.g. `unknown_service:bash`. If `process.executable.name` is not available, the value MUST be set to `unknown_service`.
+     */
+    SERVICE_NAME: 'service.name',
+    /**
+     * A namespace for `service.name`.
+     *
+     * Note: A string value having a meaning that helps to distinguish a group of services, for example the team name that owns a group of services. `service.name` is expected to be unique within the same namespace. If `service.namespace` is not specified in the Resource then `service.name` is expected to be unique for all services that have no explicit namespace defined (so the empty/unspecified namespace is simply one more valid namespace). Zero-length namespace string is assumed equal to unspecified namespace.
+     */
+    SERVICE_NAMESPACE: 'service.namespace',
+    /**
+     * The string ID of the service instance.
+     *
+     * Note: MUST be unique for each instance of the same `service.namespace,service.name` pair (in other words `service.namespace,service.name,service.instance.id` triplet MUST be globally unique). The ID helps to distinguish instances of the same service that exist at the same time (e.g. instances of a horizontally scaled service). It is preferable for the ID to be persistent and stay the same for the lifetime of the service instance, however it is acceptable that the ID is ephemeral and changes during important lifetime events for the service (e.g. service restarts). If the service has no inherent unique ID that can be used as the value of this attribute it is recommended to generate a random Version 1 or Version 4 RFC 4122 UUID (services aiming for reproducible UUIDs may also use Version 5, see RFC 4122 for more recommendations).
+     */
+    SERVICE_INSTANCE_ID: 'service.instance.id',
+    /**
+     * The version string of the service API or implementation.
+     */
+    SERVICE_VERSION: 'service.version',
+    /**
+     * The name of the telemetry SDK as defined above.
+     */
+    TELEMETRY_SDK_NAME: 'telemetry.sdk.name',
+    /**
+     * The language of the telemetry SDK.
+     */
+    TELEMETRY_SDK_LANGUAGE: 'telemetry.sdk.language',
+    /**
+     * The version string of the telemetry SDK.
+     */
+    TELEMETRY_SDK_VERSION: 'telemetry.sdk.version',
+    /**
+     * The version string of the auto instrumentation agent, if used.
+     */
+    TELEMETRY_AUTO_VERSION: 'telemetry.auto.version',
+    /**
+     * The name of the web engine.
+     */
+    WEBENGINE_NAME: 'webengine.name',
+    /**
+     * The version of the web engine.
+     */
+    WEBENGINE_VERSION: 'webengine.version',
+    /**
+     * Additional description of the web engine (e.g. detailed version and edition information).
+     */
+    WEBENGINE_DESCRIPTION: 'webengine.description',
+};
+exports.CloudProviderValues = {
+    /** Alibaba Cloud. */
+    ALIBABA_CLOUD: 'alibaba_cloud',
+    /** Amazon Web Services. */
+    AWS: 'aws',
+    /** Microsoft Azure. */
+    AZURE: 'azure',
+    /** Google Cloud Platform. */
+    GCP: 'gcp',
+};
+exports.CloudPlatformValues = {
+    /** Alibaba Cloud Elastic Compute Service. */
+    ALIBABA_CLOUD_ECS: 'alibaba_cloud_ecs',
+    /** Alibaba Cloud Function Compute. */
+    ALIBABA_CLOUD_FC: 'alibaba_cloud_fc',
+    /** AWS Elastic Compute Cloud. */
+    AWS_EC2: 'aws_ec2',
+    /** AWS Elastic Container Service. */
+    AWS_ECS: 'aws_ecs',
+    /** AWS Elastic Kubernetes Service. */
+    AWS_EKS: 'aws_eks',
+    /** AWS Lambda. */
+    AWS_LAMBDA: 'aws_lambda',
+    /** AWS Elastic Beanstalk. */
+    AWS_ELASTIC_BEANSTALK: 'aws_elastic_beanstalk',
+    /** Azure Virtual Machines. */
+    AZURE_VM: 'azure_vm',
+    /** Azure Container Instances. */
+    AZURE_CONTAINER_INSTANCES: 'azure_container_instances',
+    /** Azure Kubernetes Service. */
+    AZURE_AKS: 'azure_aks',
+    /** Azure Functions. */
+    AZURE_FUNCTIONS: 'azure_functions',
+    /** Azure App Service. */
+    AZURE_APP_SERVICE: 'azure_app_service',
+    /** Google Cloud Compute Engine (GCE). */
+    GCP_COMPUTE_ENGINE: 'gcp_compute_engine',
+    /** Google Cloud Run. */
+    GCP_CLOUD_RUN: 'gcp_cloud_run',
+    /** Google Cloud Kubernetes Engine (GKE). */
+    GCP_KUBERNETES_ENGINE: 'gcp_kubernetes_engine',
+    /** Google Cloud Functions (GCF). */
+    GCP_CLOUD_FUNCTIONS: 'gcp_cloud_functions',
+    /** Google Cloud App Engine (GAE). */
+    GCP_APP_ENGINE: 'gcp_app_engine',
+};
+exports.AwsEcsLaunchtypeValues = {
+    /** ec2. */
+    EC2: 'ec2',
+    /** fargate. */
+    FARGATE: 'fargate',
+};
+exports.HostArchValues = {
+    /** AMD64. */
+    AMD64: 'amd64',
+    /** ARM32. */
+    ARM32: 'arm32',
+    /** ARM64. */
+    ARM64: 'arm64',
+    /** Itanium. */
+    IA64: 'ia64',
+    /** 32-bit PowerPC. */
+    PPC32: 'ppc32',
+    /** 64-bit PowerPC. */
+    PPC64: 'ppc64',
+    /** 32-bit x86. */
+    X86: 'x86',
+};
+exports.OsTypeValues = {
+    /** Microsoft Windows. */
+    WINDOWS: 'windows',
+    /** Linux. */
+    LINUX: 'linux',
+    /** Apple Darwin. */
+    DARWIN: 'darwin',
+    /** FreeBSD. */
+    FREEBSD: 'freebsd',
+    /** NetBSD. */
+    NETBSD: 'netbsd',
+    /** OpenBSD. */
+    OPENBSD: 'openbsd',
+    /** DragonFly BSD. */
+    DRAGONFLYBSD: 'dragonflybsd',
+    /** HP-UX (Hewlett Packard Unix). */
+    HPUX: 'hpux',
+    /** AIX (Advanced Interactive eXecutive). */
+    AIX: 'aix',
+    /** Oracle Solaris. */
+    SOLARIS: 'solaris',
+    /** IBM z/OS. */
+    Z_OS: 'z_os',
+};
+exports.TelemetrySdkLanguageValues = {
+    /** cpp. */
+    CPP: 'cpp',
+    /** dotnet. */
+    DOTNET: 'dotnet',
+    /** erlang. */
+    ERLANG: 'erlang',
+    /** go. */
+    GO: 'go',
+    /** java. */
+    JAVA: 'java',
+    /** nodejs. */
+    NODEJS: 'nodejs',
+    /** php. */
+    PHP: 'php',
+    /** python. */
+    PYTHON: 'python',
+    /** ruby. */
+    RUBY: 'ruby',
+    /** webjs. */
+    WEBJS: 'webjs',
+};
+//# sourceMappingURL=SemanticResourceAttributes.js.map
+
+/***/ }),
+
+/***/ 73943:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(4149), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 75051:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MessageTypeValues = exports.RpcGrpcStatusCodeValues = exports.MessagingOperationValues = exports.MessagingDestinationKindValues = exports.HttpFlavorValues = exports.NetHostConnectionSubtypeValues = exports.NetHostConnectionTypeValues = exports.NetTransportValues = exports.FaasInvokedProviderValues = exports.FaasDocumentOperationValues = exports.FaasTriggerValues = exports.DbCassandraConsistencyLevelValues = exports.DbSystemValues = exports.SemanticAttributes = void 0;
+// DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+exports.SemanticAttributes = {
+    /**
+     * The full invoked ARN as provided on the `Context` passed to the function (`Lambda-Runtime-Invoked-Function-Arn` header on the `/runtime/invocation/next` applicable).
+     *
+     * Note: This may be different from `faas.id` if an alias is involved.
+     */
+    AWS_LAMBDA_INVOKED_ARN: 'aws.lambda.invoked_arn',
+    /**
+     * An identifier for the database management system (DBMS) product being used. See below for a list of well-known identifiers.
+     */
+    DB_SYSTEM: 'db.system',
+    /**
+     * The connection string used to connect to the database. It is recommended to remove embedded credentials.
+     */
+    DB_CONNECTION_STRING: 'db.connection_string',
+    /**
+     * Username for accessing the database.
+     */
+    DB_USER: 'db.user',
+    /**
+     * The fully-qualified class name of the [Java Database Connectivity (JDBC)](https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/) driver used to connect.
+     */
+    DB_JDBC_DRIVER_CLASSNAME: 'db.jdbc.driver_classname',
+    /**
+     * If no [tech-specific attribute](#call-level-attributes-for-specific-technologies) is defined, this attribute is used to report the name of the database being accessed. For commands that switch the database, this should be set to the target database (even if the command fails).
+     *
+     * Note: In some SQL databases, the database name to be used is called &#34;schema name&#34;.
+     */
+    DB_NAME: 'db.name',
+    /**
+     * The database statement being executed.
+     *
+     * Note: The value may be sanitized to exclude sensitive information.
+     */
+    DB_STATEMENT: 'db.statement',
+    /**
+     * The name of the operation being executed, e.g. the [MongoDB command name](https://docs.mongodb.com/manual/reference/command/#database-operations) such as `findAndModify`, or the SQL keyword.
+     *
+     * Note: When setting this to an SQL keyword, it is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if the operation name is provided by the library being instrumented. If the SQL statement has an ambiguous operation, or performs more than one operation, this value may be omitted.
+     */
+    DB_OPERATION: 'db.operation',
+    /**
+     * The Microsoft SQL Server [instance name](https://docs.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver15) connecting to. This name is used to determine the port of a named instance.
+     *
+     * Note: If setting a `db.mssql.instance_name`, `net.peer.port` is no longer required (but still recommended if non-standard).
+     */
+    DB_MSSQL_INSTANCE_NAME: 'db.mssql.instance_name',
+    /**
+     * The name of the keyspace being accessed. To be used instead of the generic `db.name` attribute.
+     */
+    DB_CASSANDRA_KEYSPACE: 'db.cassandra.keyspace',
+    /**
+     * The fetch size used for paging, i.e. how many rows will be returned at once.
+     */
+    DB_CASSANDRA_PAGE_SIZE: 'db.cassandra.page_size',
+    /**
+     * The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).
+     */
+    DB_CASSANDRA_CONSISTENCY_LEVEL: 'db.cassandra.consistency_level',
+    /**
+     * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
+     *
+     * Note: This mirrors the db.sql.table attribute but references cassandra rather than sql. It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
+     */
+    DB_CASSANDRA_TABLE: 'db.cassandra.table',
+    /**
+     * Whether or not the query is idempotent.
+     */
+    DB_CASSANDRA_IDEMPOTENCE: 'db.cassandra.idempotence',
+    /**
+     * The number of times a query was speculatively executed. Not set or `0` if the query was not executed speculatively.
+     */
+    DB_CASSANDRA_SPECULATIVE_EXECUTION_COUNT: 'db.cassandra.speculative_execution_count',
+    /**
+     * The ID of the coordinating node for a query.
+     */
+    DB_CASSANDRA_COORDINATOR_ID: 'db.cassandra.coordinator.id',
+    /**
+     * The data center of the coordinating node for a query.
+     */
+    DB_CASSANDRA_COORDINATOR_DC: 'db.cassandra.coordinator.dc',
+    /**
+     * The [HBase namespace](https://hbase.apache.org/book.html#_namespace) being accessed. To be used instead of the generic `db.name` attribute.
+     */
+    DB_HBASE_NAMESPACE: 'db.hbase.namespace',
+    /**
+     * The index of the database being accessed as used in the [`SELECT` command](https://redis.io/commands/select), provided as an integer. To be used instead of the generic `db.name` attribute.
+     */
+    DB_REDIS_DATABASE_INDEX: 'db.redis.database_index',
+    /**
+     * The collection being accessed within the database stated in `db.name`.
+     */
+    DB_MONGODB_COLLECTION: 'db.mongodb.collection',
+    /**
+     * The name of the primary table that the operation is acting upon, including the schema name (if applicable).
+     *
+     * Note: It is not recommended to attempt any client-side parsing of `db.statement` just to get this property, but it should be set if it is provided by the library being instrumented. If the operation is acting upon an anonymous table, or more than one table, this value MUST NOT be set.
+     */
+    DB_SQL_TABLE: 'db.sql.table',
+    /**
+     * The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it.
+     */
+    EXCEPTION_TYPE: 'exception.type',
+    /**
+     * The exception message.
+     */
+    EXCEPTION_MESSAGE: 'exception.message',
+    /**
+     * A stacktrace as a string in the natural representation for the language runtime. The representation is to be determined and documented by each language SIG.
+     */
+    EXCEPTION_STACKTRACE: 'exception.stacktrace',
+    /**
+    * SHOULD be set to true if the exception event is recorded at a point where it is known that the exception is escaping the scope of the span.
+    *
+    * Note: An exception is considered to have escaped (or left) the scope of a span,
+  if that span is ended while the exception is still logically &#34;in flight&#34;.
+  This may be actually &#34;in flight&#34; in some languages (e.g. if the exception
+  is passed to a Context manager&#39;s `__exit__` method in Python) but will
+  usually be caught at the point of recording the exception in most languages.
+  
+  It is usually not possible to determine at the point where an exception is thrown
+  whether it will escape the scope of a span.
+  However, it is trivial to know that an exception
+  will escape, if one checks for an active exception just before ending the span,
+  as done in the [example above](#exception-end-example).
+  
+  It follows that an exception may still escape the scope of the span
+  even if the `exception.escaped` attribute was not set or set to false,
+  since the event might have been recorded at a time where it was not
+  clear whether the exception will escape.
+    */
+    EXCEPTION_ESCAPED: 'exception.escaped',
+    /**
+     * Type of the trigger on which the function is executed.
+     */
+    FAAS_TRIGGER: 'faas.trigger',
+    /**
+     * The execution ID of the current function execution.
+     */
+    FAAS_EXECUTION: 'faas.execution',
+    /**
+     * The name of the source on which the triggering operation was performed. For example, in Cloud Storage or S3 corresponds to the bucket name, and in Cosmos DB to the database name.
+     */
+    FAAS_DOCUMENT_COLLECTION: 'faas.document.collection',
+    /**
+     * Describes the type of the operation that was performed on the data.
+     */
+    FAAS_DOCUMENT_OPERATION: 'faas.document.operation',
+    /**
+     * A string containing the time when the data was accessed in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
+     */
+    FAAS_DOCUMENT_TIME: 'faas.document.time',
+    /**
+     * The document name/table subjected to the operation. For example, in Cloud Storage or S3 is the name of the file, and in Cosmos DB the table name.
+     */
+    FAAS_DOCUMENT_NAME: 'faas.document.name',
+    /**
+     * A string containing the function invocation time in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
+     */
+    FAAS_TIME: 'faas.time',
+    /**
+     * A string containing the schedule period as [Cron Expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).
+     */
+    FAAS_CRON: 'faas.cron',
+    /**
+     * A boolean that is true if the serverless function is executed for the first time (aka cold-start).
+     */
+    FAAS_COLDSTART: 'faas.coldstart',
+    /**
+     * The name of the invoked function.
+     *
+     * Note: SHOULD be equal to the `faas.name` resource attribute of the invoked function.
+     */
+    FAAS_INVOKED_NAME: 'faas.invoked_name',
+    /**
+     * The cloud provider of the invoked function.
+     *
+     * Note: SHOULD be equal to the `cloud.provider` resource attribute of the invoked function.
+     */
+    FAAS_INVOKED_PROVIDER: 'faas.invoked_provider',
+    /**
+     * The cloud region of the invoked function.
+     *
+     * Note: SHOULD be equal to the `cloud.region` resource attribute of the invoked function.
+     */
+    FAAS_INVOKED_REGION: 'faas.invoked_region',
+    /**
+     * Transport protocol used. See note below.
+     */
+    NET_TRANSPORT: 'net.transport',
+    /**
+     * Remote address of the peer (dotted decimal for IPv4 or [RFC5952](https://tools.ietf.org/html/rfc5952) for IPv6).
+     */
+    NET_PEER_IP: 'net.peer.ip',
+    /**
+     * Remote port number.
+     */
+    NET_PEER_PORT: 'net.peer.port',
+    /**
+     * Remote hostname or similar, see note below.
+     */
+    NET_PEER_NAME: 'net.peer.name',
+    /**
+     * Like `net.peer.ip` but for the host IP. Useful in case of a multi-IP host.
+     */
+    NET_HOST_IP: 'net.host.ip',
+    /**
+     * Like `net.peer.port` but for the host port.
+     */
+    NET_HOST_PORT: 'net.host.port',
+    /**
+     * Local hostname or similar, see note below.
+     */
+    NET_HOST_NAME: 'net.host.name',
+    /**
+     * The internet connection type currently being used by the host.
+     */
+    NET_HOST_CONNECTION_TYPE: 'net.host.connection.type',
+    /**
+     * This describes more details regarding the connection.type. It may be the type of cell technology connection, but it could be used for describing details about a wifi connection.
+     */
+    NET_HOST_CONNECTION_SUBTYPE: 'net.host.connection.subtype',
+    /**
+     * The name of the mobile carrier.
+     */
+    NET_HOST_CARRIER_NAME: 'net.host.carrier.name',
+    /**
+     * The mobile carrier country code.
+     */
+    NET_HOST_CARRIER_MCC: 'net.host.carrier.mcc',
+    /**
+     * The mobile carrier network code.
+     */
+    NET_HOST_CARRIER_MNC: 'net.host.carrier.mnc',
+    /**
+     * The ISO 3166-1 alpha-2 2-character country code associated with the mobile carrier network.
+     */
+    NET_HOST_CARRIER_ICC: 'net.host.carrier.icc',
+    /**
+     * The [`service.name`](../../resource/semantic_conventions/README.md#service) of the remote service. SHOULD be equal to the actual `service.name` resource attribute of the remote service if any.
+     */
+    PEER_SERVICE: 'peer.service',
+    /**
+     * Username or client_id extracted from the access token or [Authorization](https://tools.ietf.org/html/rfc7235#section-4.2) header in the inbound request from outside the system.
+     */
+    ENDUSER_ID: 'enduser.id',
+    /**
+     * Actual/assumed role the client is making the request under extracted from token or application security context.
+     */
+    ENDUSER_ROLE: 'enduser.role',
+    /**
+     * Scopes or granted authorities the client currently possesses extracted from token or application security context. The value would come from the scope associated with an [OAuth 2.0 Access Token](https://tools.ietf.org/html/rfc6749#section-3.3) or an attribute value in a [SAML 2.0 Assertion](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html).
+     */
+    ENDUSER_SCOPE: 'enduser.scope',
+    /**
+     * Current &#34;managed&#34; thread ID (as opposed to OS thread ID).
+     */
+    THREAD_ID: 'thread.id',
+    /**
+     * Current thread name.
+     */
+    THREAD_NAME: 'thread.name',
+    /**
+     * The method or function name, or equivalent (usually rightmost part of the code unit&#39;s name).
+     */
+    CODE_FUNCTION: 'code.function',
+    /**
+     * The &#34;namespace&#34; within which `code.function` is defined. Usually the qualified class or module name, such that `code.namespace` + some separator + `code.function` form a unique identifier for the code unit.
+     */
+    CODE_NAMESPACE: 'code.namespace',
+    /**
+     * The source code file name that identifies the code unit as uniquely as possible (preferably an absolute file path).
+     */
+    CODE_FILEPATH: 'code.filepath',
+    /**
+     * The line number in `code.filepath` best representing the operation. It SHOULD point within the code unit named in `code.function`.
+     */
+    CODE_LINENO: 'code.lineno',
+    /**
+     * HTTP request method.
+     */
+    HTTP_METHOD: 'http.method',
+    /**
+     * Full HTTP request URL in the form `scheme://host[:port]/path?query[#fragment]`. Usually the fragment is not transmitted over HTTP, but if it is known, it should be included nevertheless.
+     *
+     * Note: `http.url` MUST NOT contain credentials passed via URL in form of `https://username:password@www.example.com/`. In such case the attribute&#39;s value should be `https://www.example.com/`.
+     */
+    HTTP_URL: 'http.url',
+    /**
+     * The full request target as passed in a HTTP request line or equivalent.
+     */
+    HTTP_TARGET: 'http.target',
+    /**
+     * The value of the [HTTP host header](https://tools.ietf.org/html/rfc7230#section-5.4). An empty Host header should also be reported, see note.
+     *
+     * Note: When the header is present but empty the attribute SHOULD be set to the empty string. Note that this is a valid situation that is expected in certain cases, according the aforementioned [section of RFC 7230](https://tools.ietf.org/html/rfc7230#section-5.4). When the header is not set the attribute MUST NOT be set.
+     */
+    HTTP_HOST: 'http.host',
+    /**
+     * The URI scheme identifying the used protocol.
+     */
+    HTTP_SCHEME: 'http.scheme',
+    /**
+     * [HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).
+     */
+    HTTP_STATUS_CODE: 'http.status_code',
+    /**
+     * Kind of HTTP protocol used.
+     *
+     * Note: If `net.transport` is not specified, it can be assumed to be `IP.TCP` except if `http.flavor` is `QUIC`, in which case `IP.UDP` is assumed.
+     */
+    HTTP_FLAVOR: 'http.flavor',
+    /**
+     * Value of the [HTTP User-Agent](https://tools.ietf.org/html/rfc7231#section-5.5.3) header sent by the client.
+     */
+    HTTP_USER_AGENT: 'http.user_agent',
+    /**
+     * The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
+     */
+    HTTP_REQUEST_CONTENT_LENGTH: 'http.request_content_length',
+    /**
+     * The size of the uncompressed request payload body after transport decoding. Not set if transport encoding not used.
+     */
+    HTTP_REQUEST_CONTENT_LENGTH_UNCOMPRESSED: 'http.request_content_length_uncompressed',
+    /**
+     * The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://tools.ietf.org/html/rfc7230#section-3.3.2) header. For requests using transport encoding, this should be the compressed size.
+     */
+    HTTP_RESPONSE_CONTENT_LENGTH: 'http.response_content_length',
+    /**
+     * The size of the uncompressed response payload body after transport decoding. Not set if transport encoding not used.
+     */
+    HTTP_RESPONSE_CONTENT_LENGTH_UNCOMPRESSED: 'http.response_content_length_uncompressed',
+    /**
+     * The primary server name of the matched virtual host. This should be obtained via configuration. If no such configuration can be obtained, this attribute MUST NOT be set ( `net.host.name` should be used instead).
+     *
+     * Note: `http.url` is usually not readily available on the server side but would have to be assembled in a cumbersome and sometimes lossy process from other information (see e.g. open-telemetry/opentelemetry-python/pull/148). It is thus preferred to supply the raw data that is available.
+     */
+    HTTP_SERVER_NAME: 'http.server_name',
+    /**
+     * The matched route (path template).
+     */
+    HTTP_ROUTE: 'http.route',
+    /**
+    * The IP address of the original client behind all proxies, if known (e.g. from [X-Forwarded-For](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For)).
+    *
+    * Note: This is not necessarily the same as `net.peer.ip`, which would
+  identify the network-level peer, which may be a proxy.
+  
+  This attribute should be set when a source of information different
+  from the one used for `net.peer.ip`, is available even if that other
+  source just confirms the same value as `net.peer.ip`.
+  Rationale: For `net.peer.ip`, one typically does not know if it
+  comes from a proxy, reverse proxy, or the actual client. Setting
+  `http.client_ip` when it&#39;s the same as `net.peer.ip` means that
+  one is at least somewhat confident that the address is not that of
+  the closest proxy.
+    */
+    HTTP_CLIENT_IP: 'http.client_ip',
+    /**
+     * The keys in the `RequestItems` object field.
+     */
+    AWS_DYNAMODB_TABLE_NAMES: 'aws.dynamodb.table_names',
+    /**
+     * The JSON-serialized value of each item in the `ConsumedCapacity` response field.
+     */
+    AWS_DYNAMODB_CONSUMED_CAPACITY: 'aws.dynamodb.consumed_capacity',
+    /**
+     * The JSON-serialized value of the `ItemCollectionMetrics` response field.
+     */
+    AWS_DYNAMODB_ITEM_COLLECTION_METRICS: 'aws.dynamodb.item_collection_metrics',
+    /**
+     * The value of the `ProvisionedThroughput.ReadCapacityUnits` request parameter.
+     */
+    AWS_DYNAMODB_PROVISIONED_READ_CAPACITY: 'aws.dynamodb.provisioned_read_capacity',
+    /**
+     * The value of the `ProvisionedThroughput.WriteCapacityUnits` request parameter.
+     */
+    AWS_DYNAMODB_PROVISIONED_WRITE_CAPACITY: 'aws.dynamodb.provisioned_write_capacity',
+    /**
+     * The value of the `ConsistentRead` request parameter.
+     */
+    AWS_DYNAMODB_CONSISTENT_READ: 'aws.dynamodb.consistent_read',
+    /**
+     * The value of the `ProjectionExpression` request parameter.
+     */
+    AWS_DYNAMODB_PROJECTION: 'aws.dynamodb.projection',
+    /**
+     * The value of the `Limit` request parameter.
+     */
+    AWS_DYNAMODB_LIMIT: 'aws.dynamodb.limit',
+    /**
+     * The value of the `AttributesToGet` request parameter.
+     */
+    AWS_DYNAMODB_ATTRIBUTES_TO_GET: 'aws.dynamodb.attributes_to_get',
+    /**
+     * The value of the `IndexName` request parameter.
+     */
+    AWS_DYNAMODB_INDEX_NAME: 'aws.dynamodb.index_name',
+    /**
+     * The value of the `Select` request parameter.
+     */
+    AWS_DYNAMODB_SELECT: 'aws.dynamodb.select',
+    /**
+     * The JSON-serialized value of each item of the `GlobalSecondaryIndexes` request field.
+     */
+    AWS_DYNAMODB_GLOBAL_SECONDARY_INDEXES: 'aws.dynamodb.global_secondary_indexes',
+    /**
+     * The JSON-serialized value of each item of the `LocalSecondaryIndexes` request field.
+     */
+    AWS_DYNAMODB_LOCAL_SECONDARY_INDEXES: 'aws.dynamodb.local_secondary_indexes',
+    /**
+     * The value of the `ExclusiveStartTableName` request parameter.
+     */
+    AWS_DYNAMODB_EXCLUSIVE_START_TABLE: 'aws.dynamodb.exclusive_start_table',
+    /**
+     * The the number of items in the `TableNames` response parameter.
+     */
+    AWS_DYNAMODB_TABLE_COUNT: 'aws.dynamodb.table_count',
+    /**
+     * The value of the `ScanIndexForward` request parameter.
+     */
+    AWS_DYNAMODB_SCAN_FORWARD: 'aws.dynamodb.scan_forward',
+    /**
+     * The value of the `Segment` request parameter.
+     */
+    AWS_DYNAMODB_SEGMENT: 'aws.dynamodb.segment',
+    /**
+     * The value of the `TotalSegments` request parameter.
+     */
+    AWS_DYNAMODB_TOTAL_SEGMENTS: 'aws.dynamodb.total_segments',
+    /**
+     * The value of the `Count` response parameter.
+     */
+    AWS_DYNAMODB_COUNT: 'aws.dynamodb.count',
+    /**
+     * The value of the `ScannedCount` response parameter.
+     */
+    AWS_DYNAMODB_SCANNED_COUNT: 'aws.dynamodb.scanned_count',
+    /**
+     * The JSON-serialized value of each item in the `AttributeDefinitions` request field.
+     */
+    AWS_DYNAMODB_ATTRIBUTE_DEFINITIONS: 'aws.dynamodb.attribute_definitions',
+    /**
+     * The JSON-serialized value of each item in the the `GlobalSecondaryIndexUpdates` request field.
+     */
+    AWS_DYNAMODB_GLOBAL_SECONDARY_INDEX_UPDATES: 'aws.dynamodb.global_secondary_index_updates',
+    /**
+     * A string identifying the messaging system.
+     */
+    MESSAGING_SYSTEM: 'messaging.system',
+    /**
+     * The message destination name. This might be equal to the span name but is required nevertheless.
+     */
+    MESSAGING_DESTINATION: 'messaging.destination',
+    /**
+     * The kind of message destination.
+     */
+    MESSAGING_DESTINATION_KIND: 'messaging.destination_kind',
+    /**
+     * A boolean that is true if the message destination is temporary.
+     */
+    MESSAGING_TEMP_DESTINATION: 'messaging.temp_destination',
+    /**
+     * The name of the transport protocol.
+     */
+    MESSAGING_PROTOCOL: 'messaging.protocol',
+    /**
+     * The version of the transport protocol.
+     */
+    MESSAGING_PROTOCOL_VERSION: 'messaging.protocol_version',
+    /**
+     * Connection string.
+     */
+    MESSAGING_URL: 'messaging.url',
+    /**
+     * A value used by the messaging system as an identifier for the message, represented as a string.
+     */
+    MESSAGING_MESSAGE_ID: 'messaging.message_id',
+    /**
+     * The [conversation ID](#conversations) identifying the conversation to which the message belongs, represented as a string. Sometimes called &#34;Correlation ID&#34;.
+     */
+    MESSAGING_CONVERSATION_ID: 'messaging.conversation_id',
+    /**
+     * The (uncompressed) size of the message payload in bytes. Also use this attribute if it is unknown whether the compressed or uncompressed payload size is reported.
+     */
+    MESSAGING_MESSAGE_PAYLOAD_SIZE_BYTES: 'messaging.message_payload_size_bytes',
+    /**
+     * The compressed size of the message payload in bytes.
+     */
+    MESSAGING_MESSAGE_PAYLOAD_COMPRESSED_SIZE_BYTES: 'messaging.message_payload_compressed_size_bytes',
+    /**
+     * A string identifying the kind of message consumption as defined in the [Operation names](#operation-names) section above. If the operation is &#34;send&#34;, this attribute MUST NOT be set, since the operation can be inferred from the span kind in that case.
+     */
+    MESSAGING_OPERATION: 'messaging.operation',
+    /**
+     * The identifier for the consumer receiving a message. For Kafka, set it to `{messaging.kafka.consumer_group} - {messaging.kafka.client_id}`, if both are present, or only `messaging.kafka.consumer_group`. For brokers, such as RabbitMQ and Artemis, set it to the `client_id` of the client consuming the message.
+     */
+    MESSAGING_CONSUMER_ID: 'messaging.consumer_id',
+    /**
+     * RabbitMQ message routing key.
+     */
+    MESSAGING_RABBITMQ_ROUTING_KEY: 'messaging.rabbitmq.routing_key',
+    /**
+     * Message keys in Kafka are used for grouping alike messages to ensure they&#39;re processed on the same partition. They differ from `messaging.message_id` in that they&#39;re not unique. If the key is `null`, the attribute MUST NOT be set.
+     *
+     * Note: If the key type is not string, it&#39;s string representation has to be supplied for the attribute. If the key has no unambiguous, canonical string form, don&#39;t include its value.
+     */
+    MESSAGING_KAFKA_MESSAGE_KEY: 'messaging.kafka.message_key',
+    /**
+     * Name of the Kafka Consumer Group that is handling the message. Only applies to consumers, not producers.
+     */
+    MESSAGING_KAFKA_CONSUMER_GROUP: 'messaging.kafka.consumer_group',
+    /**
+     * Client Id for the Consumer or Producer that is handling the message.
+     */
+    MESSAGING_KAFKA_CLIENT_ID: 'messaging.kafka.client_id',
+    /**
+     * Partition the message is sent to.
+     */
+    MESSAGING_KAFKA_PARTITION: 'messaging.kafka.partition',
+    /**
+     * A boolean that is true if the message is a tombstone.
+     */
+    MESSAGING_KAFKA_TOMBSTONE: 'messaging.kafka.tombstone',
+    /**
+     * A string identifying the remoting system.
+     */
+    RPC_SYSTEM: 'rpc.system',
+    /**
+     * The full (logical) name of the service being called, including its package name, if applicable.
+     *
+     * Note: This is the logical name of the service from the RPC interface perspective, which can be different from the name of any implementing class. The `code.namespace` attribute may be used to store the latter (despite the attribute name, it may include a class name; e.g., class with method actually executing the call on the server side, RPC client stub class on the client side).
+     */
+    RPC_SERVICE: 'rpc.service',
+    /**
+     * The name of the (logical) method being called, must be equal to the $method part in the span name.
+     *
+     * Note: This is the logical name of the method from the RPC interface perspective, which can be different from the name of any implementing method/function. The `code.function` attribute may be used to store the latter (e.g., method actually executing the call on the server side, RPC client stub method on the client side).
+     */
+    RPC_METHOD: 'rpc.method',
+    /**
+     * The [numeric status code](https://github.com/grpc/grpc/blob/v1.33.2/doc/statuscodes.md) of the gRPC request.
+     */
+    RPC_GRPC_STATUS_CODE: 'rpc.grpc.status_code',
+    /**
+     * Protocol version as in `jsonrpc` property of request/response. Since JSON-RPC 1.0 does not specify this, the value can be omitted.
+     */
+    RPC_JSONRPC_VERSION: 'rpc.jsonrpc.version',
+    /**
+     * `id` property of request or response. Since protocol allows id to be int, string, `null` or missing (for notifications), value is expected to be cast to string for simplicity. Use empty string in case of `null` value. Omit entirely if this is a notification.
+     */
+    RPC_JSONRPC_REQUEST_ID: 'rpc.jsonrpc.request_id',
+    /**
+     * `error.code` property of response if it is an error response.
+     */
+    RPC_JSONRPC_ERROR_CODE: 'rpc.jsonrpc.error_code',
+    /**
+     * `error.message` property of response if it is an error response.
+     */
+    RPC_JSONRPC_ERROR_MESSAGE: 'rpc.jsonrpc.error_message',
+    /**
+     * Whether this is a received or sent message.
+     */
+    MESSAGE_TYPE: 'message.type',
+    /**
+     * MUST be calculated as two different counters starting from `1` one for sent messages and one for received message.
+     *
+     * Note: This way we guarantee that the values will be consistent between different implementations.
+     */
+    MESSAGE_ID: 'message.id',
+    /**
+     * Compressed size of the message in bytes.
+     */
+    MESSAGE_COMPRESSED_SIZE: 'message.compressed_size',
+    /**
+     * Uncompressed size of the message in bytes.
+     */
+    MESSAGE_UNCOMPRESSED_SIZE: 'message.uncompressed_size',
+};
+exports.DbSystemValues = {
+    /** Some other SQL database. Fallback only. See notes. */
+    OTHER_SQL: 'other_sql',
+    /** Microsoft SQL Server. */
+    MSSQL: 'mssql',
+    /** MySQL. */
+    MYSQL: 'mysql',
+    /** Oracle Database. */
+    ORACLE: 'oracle',
+    /** IBM Db2. */
+    DB2: 'db2',
+    /** PostgreSQL. */
+    POSTGRESQL: 'postgresql',
+    /** Amazon Redshift. */
+    REDSHIFT: 'redshift',
+    /** Apache Hive. */
+    HIVE: 'hive',
+    /** Cloudscape. */
+    CLOUDSCAPE: 'cloudscape',
+    /** HyperSQL DataBase. */
+    HSQLDB: 'hsqldb',
+    /** Progress Database. */
+    PROGRESS: 'progress',
+    /** SAP MaxDB. */
+    MAXDB: 'maxdb',
+    /** SAP HANA. */
+    HANADB: 'hanadb',
+    /** Ingres. */
+    INGRES: 'ingres',
+    /** FirstSQL. */
+    FIRSTSQL: 'firstsql',
+    /** EnterpriseDB. */
+    EDB: 'edb',
+    /** InterSystems Caché. */
+    CACHE: 'cache',
+    /** Adabas (Adaptable Database System). */
+    ADABAS: 'adabas',
+    /** Firebird. */
+    FIREBIRD: 'firebird',
+    /** Apache Derby. */
+    DERBY: 'derby',
+    /** FileMaker. */
+    FILEMAKER: 'filemaker',
+    /** Informix. */
+    INFORMIX: 'informix',
+    /** InstantDB. */
+    INSTANTDB: 'instantdb',
+    /** InterBase. */
+    INTERBASE: 'interbase',
+    /** MariaDB. */
+    MARIADB: 'mariadb',
+    /** Netezza. */
+    NETEZZA: 'netezza',
+    /** Pervasive PSQL. */
+    PERVASIVE: 'pervasive',
+    /** PointBase. */
+    POINTBASE: 'pointbase',
+    /** SQLite. */
+    SQLITE: 'sqlite',
+    /** Sybase. */
+    SYBASE: 'sybase',
+    /** Teradata. */
+    TERADATA: 'teradata',
+    /** Vertica. */
+    VERTICA: 'vertica',
+    /** H2. */
+    H2: 'h2',
+    /** ColdFusion IMQ. */
+    COLDFUSION: 'coldfusion',
+    /** Apache Cassandra. */
+    CASSANDRA: 'cassandra',
+    /** Apache HBase. */
+    HBASE: 'hbase',
+    /** MongoDB. */
+    MONGODB: 'mongodb',
+    /** Redis. */
+    REDIS: 'redis',
+    /** Couchbase. */
+    COUCHBASE: 'couchbase',
+    /** CouchDB. */
+    COUCHDB: 'couchdb',
+    /** Microsoft Azure Cosmos DB. */
+    COSMOSDB: 'cosmosdb',
+    /** Amazon DynamoDB. */
+    DYNAMODB: 'dynamodb',
+    /** Neo4j. */
+    NEO4J: 'neo4j',
+    /** Apache Geode. */
+    GEODE: 'geode',
+    /** Elasticsearch. */
+    ELASTICSEARCH: 'elasticsearch',
+    /** Memcached. */
+    MEMCACHED: 'memcached',
+    /** CockroachDB. */
+    COCKROACHDB: 'cockroachdb',
+};
+exports.DbCassandraConsistencyLevelValues = {
+    /** all. */
+    ALL: 'all',
+    /** each_quorum. */
+    EACH_QUORUM: 'each_quorum',
+    /** quorum. */
+    QUORUM: 'quorum',
+    /** local_quorum. */
+    LOCAL_QUORUM: 'local_quorum',
+    /** one. */
+    ONE: 'one',
+    /** two. */
+    TWO: 'two',
+    /** three. */
+    THREE: 'three',
+    /** local_one. */
+    LOCAL_ONE: 'local_one',
+    /** any. */
+    ANY: 'any',
+    /** serial. */
+    SERIAL: 'serial',
+    /** local_serial. */
+    LOCAL_SERIAL: 'local_serial',
+};
+exports.FaasTriggerValues = {
+    /** A response to some data source operation such as a database or filesystem read/write. */
+    DATASOURCE: 'datasource',
+    /** To provide an answer to an inbound HTTP request. */
+    HTTP: 'http',
+    /** A function is set to be executed when messages are sent to a messaging system. */
+    PUBSUB: 'pubsub',
+    /** A function is scheduled to be executed regularly. */
+    TIMER: 'timer',
+    /** If none of the others apply. */
+    OTHER: 'other',
+};
+exports.FaasDocumentOperationValues = {
+    /** When a new object is created. */
+    INSERT: 'insert',
+    /** When an object is modified. */
+    EDIT: 'edit',
+    /** When an object is deleted. */
+    DELETE: 'delete',
+};
+exports.FaasInvokedProviderValues = {
+    /** Alibaba Cloud. */
+    ALIBABA_CLOUD: 'alibaba_cloud',
+    /** Amazon Web Services. */
+    AWS: 'aws',
+    /** Microsoft Azure. */
+    AZURE: 'azure',
+    /** Google Cloud Platform. */
+    GCP: 'gcp',
+};
+exports.NetTransportValues = {
+    /** ip_tcp. */
+    IP_TCP: 'ip_tcp',
+    /** ip_udp. */
+    IP_UDP: 'ip_udp',
+    /** Another IP-based protocol. */
+    IP: 'ip',
+    /** Unix Domain socket. See below. */
+    UNIX: 'unix',
+    /** Named or anonymous pipe. See note below. */
+    PIPE: 'pipe',
+    /** In-process communication. */
+    INPROC: 'inproc',
+    /** Something else (non IP-based). */
+    OTHER: 'other',
+};
+exports.NetHostConnectionTypeValues = {
+    /** wifi. */
+    WIFI: 'wifi',
+    /** wired. */
+    WIRED: 'wired',
+    /** cell. */
+    CELL: 'cell',
+    /** unavailable. */
+    UNAVAILABLE: 'unavailable',
+    /** unknown. */
+    UNKNOWN: 'unknown',
+};
+exports.NetHostConnectionSubtypeValues = {
+    /** GPRS. */
+    GPRS: 'gprs',
+    /** EDGE. */
+    EDGE: 'edge',
+    /** UMTS. */
+    UMTS: 'umts',
+    /** CDMA. */
+    CDMA: 'cdma',
+    /** EVDO Rel. 0. */
+    EVDO_0: 'evdo_0',
+    /** EVDO Rev. A. */
+    EVDO_A: 'evdo_a',
+    /** CDMA2000 1XRTT. */
+    CDMA2000_1XRTT: 'cdma2000_1xrtt',
+    /** HSDPA. */
+    HSDPA: 'hsdpa',
+    /** HSUPA. */
+    HSUPA: 'hsupa',
+    /** HSPA. */
+    HSPA: 'hspa',
+    /** IDEN. */
+    IDEN: 'iden',
+    /** EVDO Rev. B. */
+    EVDO_B: 'evdo_b',
+    /** LTE. */
+    LTE: 'lte',
+    /** EHRPD. */
+    EHRPD: 'ehrpd',
+    /** HSPAP. */
+    HSPAP: 'hspap',
+    /** GSM. */
+    GSM: 'gsm',
+    /** TD-SCDMA. */
+    TD_SCDMA: 'td_scdma',
+    /** IWLAN. */
+    IWLAN: 'iwlan',
+    /** 5G NR (New Radio). */
+    NR: 'nr',
+    /** 5G NRNSA (New Radio Non-Standalone). */
+    NRNSA: 'nrnsa',
+    /** LTE CA. */
+    LTE_CA: 'lte_ca',
+};
+exports.HttpFlavorValues = {
+    /** HTTP 1.0. */
+    HTTP_1_0: '1.0',
+    /** HTTP 1.1. */
+    HTTP_1_1: '1.1',
+    /** HTTP 2. */
+    HTTP_2_0: '2.0',
+    /** SPDY protocol. */
+    SPDY: 'SPDY',
+    /** QUIC protocol. */
+    QUIC: 'QUIC',
+};
+exports.MessagingDestinationKindValues = {
+    /** A message sent to a queue. */
+    QUEUE: 'queue',
+    /** A message sent to a topic. */
+    TOPIC: 'topic',
+};
+exports.MessagingOperationValues = {
+    /** receive. */
+    RECEIVE: 'receive',
+    /** process. */
+    PROCESS: 'process',
+};
+exports.RpcGrpcStatusCodeValues = {
+    /** OK. */
+    OK: 0,
+    /** CANCELLED. */
+    CANCELLED: 1,
+    /** UNKNOWN. */
+    UNKNOWN: 2,
+    /** INVALID_ARGUMENT. */
+    INVALID_ARGUMENT: 3,
+    /** DEADLINE_EXCEEDED. */
+    DEADLINE_EXCEEDED: 4,
+    /** NOT_FOUND. */
+    NOT_FOUND: 5,
+    /** ALREADY_EXISTS. */
+    ALREADY_EXISTS: 6,
+    /** PERMISSION_DENIED. */
+    PERMISSION_DENIED: 7,
+    /** RESOURCE_EXHAUSTED. */
+    RESOURCE_EXHAUSTED: 8,
+    /** FAILED_PRECONDITION. */
+    FAILED_PRECONDITION: 9,
+    /** ABORTED. */
+    ABORTED: 10,
+    /** OUT_OF_RANGE. */
+    OUT_OF_RANGE: 11,
+    /** UNIMPLEMENTED. */
+    UNIMPLEMENTED: 12,
+    /** INTERNAL. */
+    INTERNAL: 13,
+    /** UNAVAILABLE. */
+    UNAVAILABLE: 14,
+    /** DATA_LOSS. */
+    DATA_LOSS: 15,
+    /** UNAUTHENTICATED. */
+    UNAUTHENTICATED: 16,
+};
+exports.MessageTypeValues = {
+    /** sent. */
+    SENT: 'SENT',
+    /** received. */
+    RECEIVED: 'RECEIVED',
+};
+//# sourceMappingURL=SemanticAttributes.js.map
+
+/***/ }),
+
+/***/ 40424:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(75051), exports);
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -32482,7 +34360,7 @@ __exportStar(__nccwpck_require__(92572), exports);
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Resource = void 0;
 const semantic_conventions_1 = __nccwpck_require__(67275);
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(98156);
 const platform_1 = __nccwpck_require__(7784);
 /**
  * A Resource describes the entity for which a signals (metrics or trace) are
@@ -32648,7 +34526,7 @@ exports.browserDetector = new BrowserDetector();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.envDetector = void 0;
 const api_1 = __nccwpck_require__(65163);
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(98156);
 const semantic_conventions_1 = __nccwpck_require__(67275);
 const Resource_1 = __nccwpck_require__(72723);
 /**
@@ -33235,6 +35113,2544 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
+/***/ 79285:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExportResultCode = void 0;
+var ExportResultCode;
+(function (ExportResultCode) {
+    ExportResultCode[ExportResultCode["SUCCESS"] = 0] = "SUCCESS";
+    ExportResultCode[ExportResultCode["FAILED"] = 1] = "FAILED";
+})(ExportResultCode = exports.ExportResultCode || (exports.ExportResultCode = {}));
+//# sourceMappingURL=ExportResult.js.map
+
+/***/ }),
+
+/***/ 15121:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BAGGAGE_MAX_TOTAL_LENGTH = exports.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS = exports.BAGGAGE_MAX_NAME_VALUE_PAIRS = exports.BAGGAGE_HEADER = exports.BAGGAGE_ITEMS_SEPARATOR = exports.BAGGAGE_PROPERTIES_SEPARATOR = exports.BAGGAGE_KEY_PAIR_SEPARATOR = void 0;
+exports.BAGGAGE_KEY_PAIR_SEPARATOR = '=';
+exports.BAGGAGE_PROPERTIES_SEPARATOR = ';';
+exports.BAGGAGE_ITEMS_SEPARATOR = ',';
+// Name of the http header used to propagate the baggage
+exports.BAGGAGE_HEADER = 'baggage';
+// Maximum number of name-value pairs allowed by w3c spec
+exports.BAGGAGE_MAX_NAME_VALUE_PAIRS = 180;
+// Maximum number of bytes per a single name-value pair allowed by w3c spec
+exports.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS = 4096;
+// Maximum total length of all name-value pairs allowed by w3c spec
+exports.BAGGAGE_MAX_TOTAL_LENGTH = 8192;
+//# sourceMappingURL=constants.js.map
+
+/***/ }),
+
+/***/ 46439:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.W3CBaggagePropagator = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(54777);
+const constants_1 = __nccwpck_require__(15121);
+const utils_1 = __nccwpck_require__(31576);
+/**
+ * Propagates {@link Baggage} through Context format propagation.
+ *
+ * Based on the Baggage specification:
+ * https://w3c.github.io/baggage/
+ */
+class W3CBaggagePropagator {
+    inject(context, carrier, setter) {
+        const baggage = api_1.propagation.getBaggage(context);
+        if (!baggage || (0, suppress_tracing_1.isTracingSuppressed)(context))
+            return;
+        const keyPairs = (0, utils_1.getKeyPairs)(baggage)
+            .filter((pair) => {
+            return pair.length <= constants_1.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS;
+        })
+            .slice(0, constants_1.BAGGAGE_MAX_NAME_VALUE_PAIRS);
+        const headerValue = (0, utils_1.serializeKeyPairs)(keyPairs);
+        if (headerValue.length > 0) {
+            setter.set(carrier, constants_1.BAGGAGE_HEADER, headerValue);
+        }
+    }
+    extract(context, carrier, getter) {
+        const headerValue = getter.get(carrier, constants_1.BAGGAGE_HEADER);
+        const baggageString = Array.isArray(headerValue) ? headerValue.join(constants_1.BAGGAGE_ITEMS_SEPARATOR) : headerValue;
+        if (!baggageString)
+            return context;
+        const baggage = {};
+        if (baggageString.length === 0) {
+            return context;
+        }
+        const pairs = baggageString.split(constants_1.BAGGAGE_ITEMS_SEPARATOR);
+        pairs.forEach(entry => {
+            const keyPair = (0, utils_1.parsePairKeyValue)(entry);
+            if (keyPair) {
+                const baggageEntry = { value: keyPair.value };
+                if (keyPair.metadata) {
+                    baggageEntry.metadata = keyPair.metadata;
+                }
+                baggage[keyPair.key] = baggageEntry;
+            }
+        });
+        if (Object.entries(baggage).length === 0) {
+            return context;
+        }
+        return api_1.propagation.setBaggage(context, api_1.propagation.createBaggage(baggage));
+    }
+    fields() {
+        return [constants_1.BAGGAGE_HEADER];
+    }
+}
+exports.W3CBaggagePropagator = W3CBaggagePropagator;
+//# sourceMappingURL=W3CBaggagePropagator.js.map
+
+/***/ }),
+
+/***/ 31576:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseKeyPairsIntoRecord = exports.parsePairKeyValue = exports.getKeyPairs = exports.serializeKeyPairs = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+const api_1 = __nccwpck_require__(65163);
+const constants_1 = __nccwpck_require__(15121);
+function serializeKeyPairs(keyPairs) {
+    return keyPairs.reduce((hValue, current) => {
+        const value = `${hValue}${hValue !== '' ? constants_1.BAGGAGE_ITEMS_SEPARATOR : ''}${current}`;
+        return value.length > constants_1.BAGGAGE_MAX_TOTAL_LENGTH ? hValue : value;
+    }, '');
+}
+exports.serializeKeyPairs = serializeKeyPairs;
+function getKeyPairs(baggage) {
+    return baggage.getAllEntries().map(([key, value]) => {
+        let entry = `${encodeURIComponent(key)}=${encodeURIComponent(value.value)}`;
+        // include opaque metadata if provided
+        // NOTE: we intentionally don't URI-encode the metadata - that responsibility falls on the metadata implementation
+        if (value.metadata !== undefined) {
+            entry += constants_1.BAGGAGE_PROPERTIES_SEPARATOR + value.metadata.toString();
+        }
+        return entry;
+    });
+}
+exports.getKeyPairs = getKeyPairs;
+function parsePairKeyValue(entry) {
+    const valueProps = entry.split(constants_1.BAGGAGE_PROPERTIES_SEPARATOR);
+    if (valueProps.length <= 0)
+        return;
+    const keyPairPart = valueProps.shift();
+    if (!keyPairPart)
+        return;
+    const keyPair = keyPairPart.split(constants_1.BAGGAGE_KEY_PAIR_SEPARATOR);
+    if (keyPair.length !== 2)
+        return;
+    const key = decodeURIComponent(keyPair[0].trim());
+    const value = decodeURIComponent(keyPair[1].trim());
+    let metadata;
+    if (valueProps.length > 0) {
+        metadata = (0, api_1.baggageEntryMetadataFromString)(valueProps.join(constants_1.BAGGAGE_PROPERTIES_SEPARATOR));
+    }
+    return { key, value, metadata };
+}
+exports.parsePairKeyValue = parsePairKeyValue;
+/**
+ * Parse a string serialized in the baggage HTTP Format (without metadata):
+ * https://github.com/w3c/baggage/blob/master/baggage/HTTP_HEADER_FORMAT.md
+ */
+function parseKeyPairsIntoRecord(value) {
+    if (typeof value !== 'string' || value.length === 0)
+        return {};
+    return value
+        .split(constants_1.BAGGAGE_ITEMS_SEPARATOR)
+        .map(entry => {
+        return parsePairKeyValue(entry);
+    })
+        .filter(keyPair => keyPair !== undefined && keyPair.value.length > 0)
+        .reduce((headers, keyPair) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        headers[keyPair.key] = keyPair.value;
+        return headers;
+    }, {});
+}
+exports.parseKeyPairsIntoRecord = parseKeyPairsIntoRecord;
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 14764:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isAttributeValue = exports.isAttributeKey = exports.sanitizeAttributes = void 0;
+const api_1 = __nccwpck_require__(65163);
+function sanitizeAttributes(attributes) {
+    const out = {};
+    if (typeof attributes !== 'object' || attributes == null) {
+        return out;
+    }
+    for (const [key, val] of Object.entries(attributes)) {
+        if (!isAttributeKey(key)) {
+            api_1.diag.warn(`Invalid attribute key: ${key}`);
+            continue;
+        }
+        if (!isAttributeValue(val)) {
+            api_1.diag.warn(`Invalid attribute value set for key: ${key}`);
+            continue;
+        }
+        if (Array.isArray(val)) {
+            out[key] = val.slice();
+        }
+        else {
+            out[key] = val;
+        }
+    }
+    return out;
+}
+exports.sanitizeAttributes = sanitizeAttributes;
+function isAttributeKey(key) {
+    return typeof key === 'string' && key.length > 0;
+}
+exports.isAttributeKey = isAttributeKey;
+function isAttributeValue(val) {
+    if (val == null) {
+        return true;
+    }
+    if (Array.isArray(val)) {
+        return isHomogeneousAttributeValueArray(val);
+    }
+    return isValidPrimitiveAttributeValue(val);
+}
+exports.isAttributeValue = isAttributeValue;
+function isHomogeneousAttributeValueArray(arr) {
+    let type;
+    for (const element of arr) {
+        // null/undefined elements are allowed
+        if (element == null)
+            continue;
+        if (!type) {
+            if (isValidPrimitiveAttributeValue(element)) {
+                type = typeof element;
+                continue;
+            }
+            // encountered an invalid primitive
+            return false;
+        }
+        if (typeof element === type) {
+            continue;
+        }
+        return false;
+    }
+    return true;
+}
+function isValidPrimitiveAttributeValue(val) {
+    switch (typeof val) {
+        case 'number':
+        case 'boolean':
+        case 'string':
+            return true;
+    }
+    return false;
+}
+//# sourceMappingURL=attributes.js.map
+
+/***/ }),
+
+/***/ 85207:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.globalErrorHandler = exports.setGlobalErrorHandler = void 0;
+const logging_error_handler_1 = __nccwpck_require__(27173);
+/** The global error handler delegate */
+let delegateHandler = (0, logging_error_handler_1.loggingErrorHandler)();
+/**
+ * Set the global error handler
+ * @param {ErrorHandler} handler
+ */
+function setGlobalErrorHandler(handler) {
+    delegateHandler = handler;
+}
+exports.setGlobalErrorHandler = setGlobalErrorHandler;
+/**
+ * Return the global error handler
+ * @param {Exception} ex
+ */
+function globalErrorHandler(ex) {
+    try {
+        delegateHandler(ex);
+    }
+    catch (_a) { } // eslint-disable-line no-empty
+}
+exports.globalErrorHandler = globalErrorHandler;
+//# sourceMappingURL=global-error-handler.js.map
+
+/***/ }),
+
+/***/ 27173:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loggingErrorHandler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/**
+ * Returns a function that logs an error using the provided logger, or a
+ * console logger if one was not provided.
+ */
+function loggingErrorHandler() {
+    return (ex) => {
+        api_1.diag.error(stringifyException(ex));
+    };
+}
+exports.loggingErrorHandler = loggingErrorHandler;
+/**
+ * Converts an exception into a string representation
+ * @param {Exception} ex
+ */
+function stringifyException(ex) {
+    if (typeof ex === 'string') {
+        return ex;
+    }
+    else {
+        return JSON.stringify(flattenException(ex));
+    }
+}
+/**
+ * Flattens an exception into key-value pairs by traversing the prototype chain
+ * and coercing values to strings. Duplicate properties will not be overwritten;
+ * the first insert wins.
+ */
+function flattenException(ex) {
+    const result = {};
+    let current = ex;
+    while (current !== null) {
+        Object.getOwnPropertyNames(current).forEach(propertyName => {
+            if (result[propertyName])
+                return;
+            const value = current[propertyName];
+            if (value) {
+                result[propertyName] = String(value);
+            }
+        });
+        current = Object.getPrototypeOf(current);
+    }
+    return result;
+}
+//# sourceMappingURL=logging-error-handler.js.map
+
+/***/ }),
+
+/***/ 45604:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isTimeInput = exports.isTimeInputHrTime = exports.hrTimeToMicroseconds = exports.hrTimeToMilliseconds = exports.hrTimeToNanoseconds = exports.hrTimeToTimeStamp = exports.hrTimeDuration = exports.timeInputToHrTime = exports.hrTime = void 0;
+const platform_1 = __nccwpck_require__(3887);
+const NANOSECOND_DIGITS = 9;
+const SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS);
+/**
+ * Converts a number to HrTime, HrTime = [number, number].
+ * The first number is UNIX Epoch time in seconds since 00:00:00 UTC on 1 January 1970.
+ * The second number represents the partial second elapsed since Unix Epoch time represented by first number in nanoseconds.
+ * For example, 2021-01-01T12:30:10.150Z in UNIX Epoch time in milliseconds is represented as 1609504210150.
+ * numberToHrtime calculates the first number by converting and truncating the Epoch time in milliseconds to seconds:
+ * HrTime[0] = Math.trunc(1609504210150 / 1000) = 1609504210.
+ * numberToHrtime calculates the second number by converting the digits after the decimal point of the subtraction, (1609504210150 / 1000) - HrTime[0], to nanoseconds:
+ * HrTime[1] = Number((1609504210.150 - HrTime[0]).toFixed(9)) * SECOND_TO_NANOSECONDS = 150000000.
+ * This is represented in HrTime format as [1609504210, 150000000].
+ * @param epochMillis
+ */
+function numberToHrtime(epochMillis) {
+    const epochSeconds = epochMillis / 1000;
+    // Decimals only.
+    const seconds = Math.trunc(epochSeconds);
+    // Round sub-nanosecond accuracy to nanosecond.
+    const nanos = Number((epochSeconds - seconds).toFixed(NANOSECOND_DIGITS)) *
+        SECOND_TO_NANOSECONDS;
+    return [seconds, nanos];
+}
+function getTimeOrigin() {
+    let timeOrigin = platform_1.otperformance.timeOrigin;
+    if (typeof timeOrigin !== 'number') {
+        const perf = platform_1.otperformance;
+        timeOrigin = perf.timing && perf.timing.fetchStart;
+    }
+    return timeOrigin;
+}
+/**
+ * Returns an hrtime calculated via performance component.
+ * @param performanceNow
+ */
+function hrTime(performanceNow) {
+    const timeOrigin = numberToHrtime(getTimeOrigin());
+    const now = numberToHrtime(typeof performanceNow === 'number' ? performanceNow : platform_1.otperformance.now());
+    let seconds = timeOrigin[0] + now[0];
+    let nanos = timeOrigin[1] + now[1];
+    // Nanoseconds
+    if (nanos > SECOND_TO_NANOSECONDS) {
+        nanos -= SECOND_TO_NANOSECONDS;
+        seconds += 1;
+    }
+    return [seconds, nanos];
+}
+exports.hrTime = hrTime;
+/**
+ *
+ * Converts a TimeInput to an HrTime, defaults to _hrtime().
+ * @param time
+ */
+function timeInputToHrTime(time) {
+    // process.hrtime
+    if (isTimeInputHrTime(time)) {
+        return time;
+    }
+    else if (typeof time === 'number') {
+        // Must be a performance.now() if it's smaller than process start time.
+        if (time < getTimeOrigin()) {
+            return hrTime(time);
+        }
+        else {
+            // epoch milliseconds or performance.timeOrigin
+            return numberToHrtime(time);
+        }
+    }
+    else if (time instanceof Date) {
+        return numberToHrtime(time.getTime());
+    }
+    else {
+        throw TypeError('Invalid input type');
+    }
+}
+exports.timeInputToHrTime = timeInputToHrTime;
+/**
+ * Returns a duration of two hrTime.
+ * @param startTime
+ * @param endTime
+ */
+function hrTimeDuration(startTime, endTime) {
+    let seconds = endTime[0] - startTime[0];
+    let nanos = endTime[1] - startTime[1];
+    // overflow
+    if (nanos < 0) {
+        seconds -= 1;
+        // negate
+        nanos += SECOND_TO_NANOSECONDS;
+    }
+    return [seconds, nanos];
+}
+exports.hrTimeDuration = hrTimeDuration;
+/**
+ * Convert hrTime to timestamp, for example "2019-05-14T17:00:00.000123456Z"
+ * @param time
+ */
+function hrTimeToTimeStamp(time) {
+    const precision = NANOSECOND_DIGITS;
+    const tmp = `${'0'.repeat(precision)}${time[1]}Z`;
+    const nanoString = tmp.substr(tmp.length - precision - 1);
+    const date = new Date(time[0] * 1000).toISOString();
+    return date.replace('000Z', nanoString);
+}
+exports.hrTimeToTimeStamp = hrTimeToTimeStamp;
+/**
+ * Convert hrTime to nanoseconds.
+ * @param time
+ */
+function hrTimeToNanoseconds(time) {
+    return time[0] * SECOND_TO_NANOSECONDS + time[1];
+}
+exports.hrTimeToNanoseconds = hrTimeToNanoseconds;
+/**
+ * Convert hrTime to milliseconds.
+ * @param time
+ */
+function hrTimeToMilliseconds(time) {
+    return Math.round(time[0] * 1e3 + time[1] / 1e6);
+}
+exports.hrTimeToMilliseconds = hrTimeToMilliseconds;
+/**
+ * Convert hrTime to microseconds.
+ * @param time
+ */
+function hrTimeToMicroseconds(time) {
+    return Math.round(time[0] * 1e6 + time[1] / 1e3);
+}
+exports.hrTimeToMicroseconds = hrTimeToMicroseconds;
+/**
+ * check if time is HrTime
+ * @param value
+ */
+function isTimeInputHrTime(value) {
+    return (Array.isArray(value) &&
+        value.length === 2 &&
+        typeof value[0] === 'number' &&
+        typeof value[1] === 'number');
+}
+exports.isTimeInputHrTime = isTimeInputHrTime;
+/**
+ * check if input value is a correct types.TimeInput
+ * @param value
+ */
+function isTimeInput(value) {
+    return (isTimeInputHrTime(value) ||
+        typeof value === 'number' ||
+        value instanceof Date);
+}
+exports.isTimeInput = isTimeInput;
+//# sourceMappingURL=time.js.map
+
+/***/ }),
+
+/***/ 69946:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
+/***/ 98156:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.baggageUtils = void 0;
+__exportStar(__nccwpck_require__(46439), exports);
+__exportStar(__nccwpck_require__(14764), exports);
+__exportStar(__nccwpck_require__(85207), exports);
+__exportStar(__nccwpck_require__(27173), exports);
+__exportStar(__nccwpck_require__(45604), exports);
+__exportStar(__nccwpck_require__(69946), exports);
+__exportStar(__nccwpck_require__(79285), exports);
+__exportStar(__nccwpck_require__(12421), exports);
+exports.baggageUtils = __nccwpck_require__(31576);
+__exportStar(__nccwpck_require__(3887), exports);
+__exportStar(__nccwpck_require__(24627), exports);
+__exportStar(__nccwpck_require__(93280), exports);
+__exportStar(__nccwpck_require__(33176), exports);
+__exportStar(__nccwpck_require__(91787), exports);
+__exportStar(__nccwpck_require__(8204), exports);
+__exportStar(__nccwpck_require__(81598), exports);
+__exportStar(__nccwpck_require__(7291), exports);
+__exportStar(__nccwpck_require__(17973), exports);
+__exportStar(__nccwpck_require__(54777), exports);
+__exportStar(__nccwpck_require__(87297), exports);
+__exportStar(__nccwpck_require__(50157), exports);
+__exportStar(__nccwpck_require__(60317), exports);
+__exportStar(__nccwpck_require__(18963), exports);
+__exportStar(__nccwpck_require__(17839), exports);
+__exportStar(__nccwpck_require__(46644), exports);
+__exportStar(__nccwpck_require__(57297), exports);
+__exportStar(__nccwpck_require__(12421), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 54107:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.validateValue = exports.validateKey = void 0;
+const VALID_KEY_CHAR_RANGE = '[_0-9a-z-*/]';
+const VALID_KEY = `[a-z]${VALID_KEY_CHAR_RANGE}{0,255}`;
+const VALID_VENDOR_KEY = `[a-z0-9]${VALID_KEY_CHAR_RANGE}{0,240}@[a-z]${VALID_KEY_CHAR_RANGE}{0,13}`;
+const VALID_KEY_REGEX = new RegExp(`^(?:${VALID_KEY}|${VALID_VENDOR_KEY})$`);
+const VALID_VALUE_BASE_REGEX = /^[ -~]{0,255}[!-~]$/;
+const INVALID_VALUE_COMMA_EQUAL_REGEX = /,|=/;
+/**
+ * Key is opaque string up to 256 characters printable. It MUST begin with a
+ * lowercase letter, and can only contain lowercase letters a-z, digits 0-9,
+ * underscores _, dashes -, asterisks *, and forward slashes /.
+ * For multi-tenant vendor scenarios, an at sign (@) can be used to prefix the
+ * vendor name. Vendors SHOULD set the tenant ID at the beginning of the key.
+ * see https://www.w3.org/TR/trace-context/#key
+ */
+function validateKey(key) {
+    return VALID_KEY_REGEX.test(key);
+}
+exports.validateKey = validateKey;
+/**
+ * Value is opaque string up to 256 characters printable ASCII RFC0020
+ * characters (i.e., the range 0x20 to 0x7E) except comma , and =.
+ */
+function validateValue(value) {
+    return (VALID_VALUE_BASE_REGEX.test(value) &&
+        !INVALID_VALUE_COMMA_EQUAL_REGEX.test(value));
+}
+exports.validateValue = validateValue;
+//# sourceMappingURL=validators.js.map
+
+/***/ }),
+
+/***/ 3887:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(83021), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 10720:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RandomIdGenerator = void 0;
+const SPAN_ID_BYTES = 8;
+const TRACE_ID_BYTES = 16;
+class RandomIdGenerator {
+    constructor() {
+        /**
+         * Returns a random 16-byte trace ID formatted/encoded as a 32 lowercase hex
+         * characters corresponding to 128 bits.
+         */
+        this.generateTraceId = getIdGenerator(TRACE_ID_BYTES);
+        /**
+         * Returns a random 8-byte span ID formatted/encoded as a 16 lowercase hex
+         * characters corresponding to 64 bits.
+         */
+        this.generateSpanId = getIdGenerator(SPAN_ID_BYTES);
+    }
+}
+exports.RandomIdGenerator = RandomIdGenerator;
+const SHARED_BUFFER = Buffer.allocUnsafe(TRACE_ID_BYTES);
+function getIdGenerator(bytes) {
+    return function generateId() {
+        for (let i = 0; i < bytes / 4; i++) {
+            // unsigned right shift drops decimal part of the number
+            // it is required because if a number between 2**32 and 2**32 - 1 is generated, an out of range error is thrown by writeUInt32BE
+            SHARED_BUFFER.writeUInt32BE((Math.random() * 2 ** 32) >>> 0, i * 4);
+        }
+        // If buffer is all 0, set the last byte to 1 to guarantee a valid w3c id is generated
+        for (let i = 0; i < bytes; i++) {
+            if (SHARED_BUFFER[i] > 0) {
+                break;
+            }
+            else if (i === bytes - 1) {
+                SHARED_BUFFER[bytes - 1] = 1;
+            }
+        }
+        return SHARED_BUFFER.toString('hex', 0, bytes);
+    };
+}
+//# sourceMappingURL=RandomIdGenerator.js.map
+
+/***/ }),
+
+/***/ 1518:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getEnv = void 0;
+const os = __nccwpck_require__(12087);
+const environment_1 = __nccwpck_require__(50157);
+/**
+ * Gets the environment variables
+ */
+function getEnv() {
+    const processEnv = (0, environment_1.parseEnvironment)(process.env);
+    return Object.assign({
+        HOSTNAME: os.hostname(),
+    }, environment_1.DEFAULT_ENVIRONMENT, processEnv);
+}
+exports.getEnv = getEnv;
+//# sourceMappingURL=environment.js.map
+
+/***/ }),
+
+/***/ 71595:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._globalThis = void 0;
+/** only globals that common to node and browsers are allowed */
+// eslint-disable-next-line node/no-unsupported-features/es-builtins
+exports._globalThis = typeof globalThis === 'object' ? globalThis : global;
+//# sourceMappingURL=globalThis.js.map
+
+/***/ }),
+
+/***/ 64978:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.hexToBase64 = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function hexToBase64(hexStr) {
+    const hexStrLen = hexStr.length;
+    let hexAsciiCharsStr = '';
+    for (let i = 0; i < hexStrLen; i += 2) {
+        const hexPair = hexStr.substring(i, i + 2);
+        const hexVal = parseInt(hexPair, 16);
+        hexAsciiCharsStr += String.fromCharCode(hexVal);
+    }
+    return Buffer.from(hexAsciiCharsStr, 'ascii').toString('base64');
+}
+exports.hexToBase64 = hexToBase64;
+//# sourceMappingURL=hex-to-base64.js.map
+
+/***/ }),
+
+/***/ 83021:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(1518), exports);
+__exportStar(__nccwpck_require__(71595), exports);
+__exportStar(__nccwpck_require__(64978), exports);
+__exportStar(__nccwpck_require__(10720), exports);
+__exportStar(__nccwpck_require__(38502), exports);
+__exportStar(__nccwpck_require__(16826), exports);
+__exportStar(__nccwpck_require__(17049), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 38502:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.otperformance = void 0;
+const perf_hooks_1 = __nccwpck_require__(70630);
+exports.otperformance = perf_hooks_1.performance;
+//# sourceMappingURL=performance.js.map
+
+/***/ }),
+
+/***/ 16826:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SDK_INFO = void 0;
+const version_1 = __nccwpck_require__(12421);
+const semantic_conventions_1 = __nccwpck_require__(67275);
+/** Constants describing the SDK in use */
+exports.SDK_INFO = {
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME]: 'opentelemetry',
+    [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_NAME]: 'node',
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE]: semantic_conventions_1.TelemetrySdkLanguageValues.NODEJS,
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_VERSION]: version_1.VERSION,
+};
+//# sourceMappingURL=sdk-info.js.map
+
+/***/ }),
+
+/***/ 17049:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.unrefTimer = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function unrefTimer(timer) {
+    timer.unref();
+}
+exports.unrefTimer = unrefTimer;
+//# sourceMappingURL=timer-util.js.map
+
+/***/ }),
+
+/***/ 24627:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CompositePropagator = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Combines multiple propagators into a single propagator. */
+class CompositePropagator {
+    /**
+     * Construct a composite propagator from a list of propagators.
+     *
+     * @param [config] Configuration object for composite propagator
+     */
+    constructor(config = {}) {
+        var _a;
+        this._propagators = (_a = config.propagators) !== null && _a !== void 0 ? _a : [];
+        this._fields = Array.from(new Set(this._propagators
+            // older propagators may not have fields function, null check to be sure
+            .map(p => (typeof p.fields === 'function' ? p.fields() : []))
+            .reduce((x, y) => x.concat(y), [])));
+    }
+    /**
+     * Run each of the configured propagators with the given context and carrier.
+     * Propagators are run in the order they are configured, so if multiple
+     * propagators write the same carrier key, the propagator later in the list
+     * will "win".
+     *
+     * @param context Context to inject
+     * @param carrier Carrier into which context will be injected
+     */
+    inject(context, carrier, setter) {
+        for (const propagator of this._propagators) {
+            try {
+                propagator.inject(context, carrier, setter);
+            }
+            catch (err) {
+                api_1.diag.warn(`Failed to inject with ${propagator.constructor.name}. Err: ${err.message}`);
+            }
+        }
+    }
+    /**
+     * Run each of the configured propagators with the given context and carrier.
+     * Propagators are run in the order they are configured, so if multiple
+     * propagators write the same context key, the propagator later in the list
+     * will "win".
+     *
+     * @param context Context to add values to
+     * @param carrier Carrier from which to extract context
+     */
+    extract(context, carrier, getter) {
+        return this._propagators.reduce((ctx, propagator) => {
+            try {
+                return propagator.extract(ctx, carrier, getter);
+            }
+            catch (err) {
+                api_1.diag.warn(`Failed to inject with ${propagator.constructor.name}. Err: ${err.message}`);
+            }
+            return ctx;
+        }, context);
+    }
+    fields() {
+        // return a new array so our fields cannot be modified
+        return this._fields.slice();
+    }
+}
+exports.CompositePropagator = CompositePropagator;
+//# sourceMappingURL=composite.js.map
+
+/***/ }),
+
+/***/ 33176:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=IdGenerator.js.map
+
+/***/ }),
+
+/***/ 87297:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceState = void 0;
+const validators_1 = __nccwpck_require__(54107);
+const MAX_TRACE_STATE_ITEMS = 32;
+const MAX_TRACE_STATE_LEN = 512;
+const LIST_MEMBERS_SEPARATOR = ',';
+const LIST_MEMBER_KEY_VALUE_SPLITTER = '=';
+/**
+ * TraceState must be a class and not a simple object type because of the spec
+ * requirement (https://www.w3.org/TR/trace-context/#tracestate-field).
+ *
+ * Here is the list of allowed mutations:
+ * - New key-value pair should be added into the beginning of the list
+ * - The value of any key can be updated. Modified keys MUST be moved to the
+ * beginning of the list.
+ */
+class TraceState {
+    constructor(rawTraceState) {
+        this._internalState = new Map();
+        if (rawTraceState)
+            this._parse(rawTraceState);
+    }
+    set(key, value) {
+        // TODO: Benchmark the different approaches(map vs list) and
+        // use the faster one.
+        const traceState = this._clone();
+        if (traceState._internalState.has(key)) {
+            traceState._internalState.delete(key);
+        }
+        traceState._internalState.set(key, value);
+        return traceState;
+    }
+    unset(key) {
+        const traceState = this._clone();
+        traceState._internalState.delete(key);
+        return traceState;
+    }
+    get(key) {
+        return this._internalState.get(key);
+    }
+    serialize() {
+        return this._keys()
+            .reduce((agg, key) => {
+            agg.push(key + LIST_MEMBER_KEY_VALUE_SPLITTER + this.get(key));
+            return agg;
+        }, [])
+            .join(LIST_MEMBERS_SEPARATOR);
+    }
+    _parse(rawTraceState) {
+        if (rawTraceState.length > MAX_TRACE_STATE_LEN)
+            return;
+        this._internalState = rawTraceState
+            .split(LIST_MEMBERS_SEPARATOR)
+            .reverse() // Store in reverse so new keys (.set(...)) will be placed at the beginning
+            .reduce((agg, part) => {
+            const listMember = part.trim(); // Optional Whitespace (OWS) handling
+            const i = listMember.indexOf(LIST_MEMBER_KEY_VALUE_SPLITTER);
+            if (i !== -1) {
+                const key = listMember.slice(0, i);
+                const value = listMember.slice(i + 1, part.length);
+                if ((0, validators_1.validateKey)(key) && (0, validators_1.validateValue)(value)) {
+                    agg.set(key, value);
+                }
+                else {
+                    // TODO: Consider to add warning log
+                }
+            }
+            return agg;
+        }, new Map());
+        // Because of the reverse() requirement, trunc must be done after map is created
+        if (this._internalState.size > MAX_TRACE_STATE_ITEMS) {
+            this._internalState = new Map(Array.from(this._internalState.entries())
+                .reverse() // Use reverse same as original tracestate parse chain
+                .slice(0, MAX_TRACE_STATE_ITEMS));
+        }
+    }
+    _keys() {
+        return Array.from(this._internalState.keys()).reverse();
+    }
+    _clone() {
+        const traceState = new TraceState();
+        traceState._internalState = new Map(this._internalState);
+        return traceState;
+    }
+}
+exports.TraceState = TraceState;
+//# sourceMappingURL=TraceState.js.map
+
+/***/ }),
+
+/***/ 93280:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.W3CTraceContextPropagator = exports.parseTraceParent = exports.TRACE_STATE_HEADER = exports.TRACE_PARENT_HEADER = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(54777);
+const TraceState_1 = __nccwpck_require__(87297);
+exports.TRACE_PARENT_HEADER = 'traceparent';
+exports.TRACE_STATE_HEADER = 'tracestate';
+const VERSION = '00';
+const VERSION_PART = '(?!ff)[\\da-f]{2}';
+const TRACE_ID_PART = '(?![0]{32})[\\da-f]{32}';
+const PARENT_ID_PART = '(?![0]{16})[\\da-f]{16}';
+const FLAGS_PART = '[\\da-f]{2}';
+const TRACE_PARENT_REGEX = new RegExp(`^\\s?(${VERSION_PART})-(${TRACE_ID_PART})-(${PARENT_ID_PART})-(${FLAGS_PART})(-.*)?\\s?$`);
+/**
+ * Parses information from the [traceparent] span tag and converts it into {@link SpanContext}
+ * @param traceParent - A meta property that comes from server.
+ *     It should be dynamically generated server side to have the server's request trace Id,
+ *     a parent span Id that was set on the server's request span,
+ *     and the trace flags to indicate the server's sampling decision
+ *     (01 = sampled, 00 = not sampled).
+ *     for example: '{version}-{traceId}-{spanId}-{sampleDecision}'
+ *     For more information see {@link https://www.w3.org/TR/trace-context/}
+ */
+function parseTraceParent(traceParent) {
+    const match = TRACE_PARENT_REGEX.exec(traceParent);
+    if (!match)
+        return null;
+    // According to the specification the implementation should be compatible
+    // with future versions. If there are more parts, we only reject it if it's using version 00
+    // See https://www.w3.org/TR/trace-context/#versioning-of-traceparent
+    if (match[1] === '00' && match[5])
+        return null;
+    return {
+        traceId: match[2],
+        spanId: match[3],
+        traceFlags: parseInt(match[4], 16),
+    };
+}
+exports.parseTraceParent = parseTraceParent;
+/**
+ * Propagates {@link SpanContext} through Trace Context format propagation.
+ *
+ * Based on the Trace Context specification:
+ * https://www.w3.org/TR/trace-context/
+ */
+class W3CTraceContextPropagator {
+    inject(context, carrier, setter) {
+        const spanContext = api_1.trace.getSpanContext(context);
+        if (!spanContext ||
+            (0, suppress_tracing_1.isTracingSuppressed)(context) ||
+            !(0, api_1.isSpanContextValid)(spanContext))
+            return;
+        const traceParent = `${VERSION}-${spanContext.traceId}-${spanContext.spanId}-0${Number(spanContext.traceFlags || api_1.TraceFlags.NONE).toString(16)}`;
+        setter.set(carrier, exports.TRACE_PARENT_HEADER, traceParent);
+        if (spanContext.traceState) {
+            setter.set(carrier, exports.TRACE_STATE_HEADER, spanContext.traceState.serialize());
+        }
+    }
+    extract(context, carrier, getter) {
+        const traceParentHeader = getter.get(carrier, exports.TRACE_PARENT_HEADER);
+        if (!traceParentHeader)
+            return context;
+        const traceParent = Array.isArray(traceParentHeader)
+            ? traceParentHeader[0]
+            : traceParentHeader;
+        if (typeof traceParent !== 'string')
+            return context;
+        const spanContext = parseTraceParent(traceParent);
+        if (!spanContext)
+            return context;
+        spanContext.isRemote = true;
+        const traceStateHeader = getter.get(carrier, exports.TRACE_STATE_HEADER);
+        if (traceStateHeader) {
+            // If more than one `tracestate` header is found, we merge them into a
+            // single header.
+            const state = Array.isArray(traceStateHeader)
+                ? traceStateHeader.join(',')
+                : traceStateHeader;
+            spanContext.traceState = new TraceState_1.TraceState(typeof state === 'string' ? state : undefined);
+        }
+        return api_1.trace.setSpanContext(context, spanContext);
+    }
+    fields() {
+        return [exports.TRACE_PARENT_HEADER, exports.TRACE_STATE_HEADER];
+    }
+}
+exports.W3CTraceContextPropagator = W3CTraceContextPropagator;
+//# sourceMappingURL=W3CTraceContextPropagator.js.map
+
+/***/ }),
+
+/***/ 91787:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getRPCMetadata = exports.deleteRPCMetadata = exports.setRPCMetadata = exports.RPCType = void 0;
+const api_1 = __nccwpck_require__(65163);
+const RPC_METADATA_KEY = (0, api_1.createContextKey)('OpenTelemetry SDK Context Key RPC_METADATA');
+var RPCType;
+(function (RPCType) {
+    RPCType["HTTP"] = "http";
+})(RPCType = exports.RPCType || (exports.RPCType = {}));
+function setRPCMetadata(context, meta) {
+    return context.setValue(RPC_METADATA_KEY, meta);
+}
+exports.setRPCMetadata = setRPCMetadata;
+function deleteRPCMetadata(context) {
+    return context.deleteValue(RPC_METADATA_KEY);
+}
+exports.deleteRPCMetadata = deleteRPCMetadata;
+function getRPCMetadata(context) {
+    return context.getValue(RPC_METADATA_KEY);
+}
+exports.getRPCMetadata = getRPCMetadata;
+//# sourceMappingURL=rpc-metadata.js.map
+
+/***/ }),
+
+/***/ 8204:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOffSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples no traces. */
+class AlwaysOffSampler {
+    shouldSample() {
+        return {
+            decision: api_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return 'AlwaysOffSampler';
+    }
+}
+exports.AlwaysOffSampler = AlwaysOffSampler;
+//# sourceMappingURL=AlwaysOffSampler.js.map
+
+/***/ }),
+
+/***/ 81598:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOnSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples all traces. */
+class AlwaysOnSampler {
+    shouldSample() {
+        return {
+            decision: api_1.SamplingDecision.RECORD_AND_SAMPLED,
+        };
+    }
+    toString() {
+        return 'AlwaysOnSampler';
+    }
+}
+exports.AlwaysOnSampler = AlwaysOnSampler;
+//# sourceMappingURL=AlwaysOnSampler.js.map
+
+/***/ }),
+
+/***/ 7291:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ParentBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+const global_error_handler_1 = __nccwpck_require__(85207);
+const AlwaysOffSampler_1 = __nccwpck_require__(8204);
+const AlwaysOnSampler_1 = __nccwpck_require__(81598);
+/**
+ * A composite sampler that either respects the parent span's sampling decision
+ * or delegates to `delegateSampler` for root spans.
+ */
+class ParentBasedSampler {
+    constructor(config) {
+        var _a, _b, _c, _d;
+        this._root = config.root;
+        if (!this._root) {
+            (0, global_error_handler_1.globalErrorHandler)(new Error('ParentBasedSampler must have a root sampler configured'));
+            this._root = new AlwaysOnSampler_1.AlwaysOnSampler();
+        }
+        this._remoteParentSampled =
+            (_a = config.remoteParentSampled) !== null && _a !== void 0 ? _a : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._remoteParentNotSampled =
+            (_b = config.remoteParentNotSampled) !== null && _b !== void 0 ? _b : new AlwaysOffSampler_1.AlwaysOffSampler();
+        this._localParentSampled =
+            (_c = config.localParentSampled) !== null && _c !== void 0 ? _c : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._localParentNotSampled =
+            (_d = config.localParentNotSampled) !== null && _d !== void 0 ? _d : new AlwaysOffSampler_1.AlwaysOffSampler();
+    }
+    shouldSample(context, traceId, spanName, spanKind, attributes, links) {
+        const parentContext = api_1.trace.getSpanContext(context);
+        if (!parentContext || !(0, api_1.isSpanContextValid)(parentContext)) {
+            return this._root.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.isRemote) {
+            if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+                return this._remoteParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+            }
+            return this._remoteParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+            return this._localParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        return this._localParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+    }
+    toString() {
+        return `ParentBased{root=${this._root.toString()}, remoteParentSampled=${this._remoteParentSampled.toString()}, remoteParentNotSampled=${this._remoteParentNotSampled.toString()}, localParentSampled=${this._localParentSampled.toString()}, localParentNotSampled=${this._localParentNotSampled.toString()}}`;
+    }
+}
+exports.ParentBasedSampler = ParentBasedSampler;
+//# sourceMappingURL=ParentBasedSampler.js.map
+
+/***/ }),
+
+/***/ 17973:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceIdRatioBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples a given fraction of traces based of trace id deterministically. */
+class TraceIdRatioBasedSampler {
+    constructor(_ratio = 0) {
+        this._ratio = _ratio;
+        this._ratio = this._normalize(_ratio);
+        this._upperBound = Math.floor(this._ratio * 0xffffffff);
+    }
+    shouldSample(context, traceId) {
+        return {
+            decision: (0, api_1.isValidTraceId)(traceId) && this._accumulate(traceId) < this._upperBound
+                ? api_1.SamplingDecision.RECORD_AND_SAMPLED
+                : api_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return `TraceIdRatioBased{${this._ratio}}`;
+    }
+    _normalize(ratio) {
+        if (typeof ratio !== 'number' || isNaN(ratio))
+            return 0;
+        return ratio >= 1 ? 1 : ratio <= 0 ? 0 : ratio;
+    }
+    _accumulate(traceId) {
+        let accumulation = 0;
+        for (let i = 0; i < traceId.length / 8; i++) {
+            const pos = i * 8;
+            const part = parseInt(traceId.slice(pos, pos + 8), 16);
+            accumulation = (accumulation ^ part) >>> 0;
+        }
+        return accumulation;
+    }
+}
+exports.TraceIdRatioBasedSampler = TraceIdRatioBasedSampler;
+//# sourceMappingURL=TraceIdRatioBasedSampler.js.map
+
+/***/ }),
+
+/***/ 54777:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isTracingSuppressed = exports.unsuppressTracing = exports.suppressTracing = void 0;
+const api_1 = __nccwpck_require__(65163);
+const SUPPRESS_TRACING_KEY = (0, api_1.createContextKey)('OpenTelemetry SDK Context Key SUPPRESS_TRACING');
+function suppressTracing(context) {
+    return context.setValue(SUPPRESS_TRACING_KEY, true);
+}
+exports.suppressTracing = suppressTracing;
+function unsuppressTracing(context) {
+    return context.deleteValue(SUPPRESS_TRACING_KEY);
+}
+exports.unsuppressTracing = unsuppressTracing;
+function isTracingSuppressed(context) {
+    return context.getValue(SUPPRESS_TRACING_KEY) === true;
+}
+exports.isTracingSuppressed = isTracingSuppressed;
+//# sourceMappingURL=suppress-tracing.js.map
+
+/***/ }),
+
+/***/ 57297:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BindOnceFuture = void 0;
+const promise_1 = __nccwpck_require__(7857);
+/**
+ * Bind the callback and only invoke the callback once regardless how many times `BindOnceFuture.call` is invoked.
+ */
+class BindOnceFuture {
+    constructor(_callback, _that) {
+        this._callback = _callback;
+        this._that = _that;
+        this._isCalled = false;
+        this._deferred = new promise_1.Deferred();
+    }
+    get isCalled() {
+        return this._isCalled;
+    }
+    get promise() {
+        return this._deferred.promise;
+    }
+    call(...args) {
+        if (!this._isCalled) {
+            this._isCalled = true;
+            try {
+                Promise.resolve(this._callback.call(this._that, ...args))
+                    .then(val => this._deferred.resolve(val), err => this._deferred.reject(err));
+            }
+            catch (err) {
+                this._deferred.reject(err);
+            }
+        }
+        return this._deferred.promise;
+    }
+}
+exports.BindOnceFuture = BindOnceFuture;
+//# sourceMappingURL=callback.js.map
+
+/***/ }),
+
+/***/ 50157:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseEnvironment = exports.DEFAULT_ENVIRONMENT = exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = void 0;
+const api_1 = __nccwpck_require__(65163);
+const sampling_1 = __nccwpck_require__(18963);
+const DEFAULT_LIST_SEPARATOR = ',';
+/**
+ * Environment interface to define all names
+ */
+const ENVIRONMENT_NUMBERS_KEYS = [
+    'OTEL_BSP_EXPORT_TIMEOUT',
+    'OTEL_BSP_MAX_EXPORT_BATCH_SIZE',
+    'OTEL_BSP_MAX_QUEUE_SIZE',
+    'OTEL_BSP_SCHEDULE_DELAY',
+    'OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT',
+    'OTEL_ATTRIBUTE_COUNT_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT',
+    'OTEL_SPAN_EVENT_COUNT_LIMIT',
+    'OTEL_SPAN_LINK_COUNT_LIMIT',
+    'OTEL_EXPORTER_OTLP_TIMEOUT',
+    'OTEL_EXPORTER_OTLP_TRACES_TIMEOUT',
+    'OTEL_EXPORTER_OTLP_METRICS_TIMEOUT',
+    'OTEL_EXPORTER_JAEGER_AGENT_PORT',
+];
+function isEnvVarANumber(key) {
+    return (ENVIRONMENT_NUMBERS_KEYS.indexOf(key) > -1);
+}
+const ENVIRONMENT_LISTS_KEYS = [
+    'OTEL_NO_PATCH_MODULES',
+    'OTEL_PROPAGATORS',
+];
+function isEnvVarAList(key) {
+    return ENVIRONMENT_LISTS_KEYS.indexOf(key) > -1;
+}
+exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = Infinity;
+exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = 128;
+/**
+ * Default environment variables
+ */
+exports.DEFAULT_ENVIRONMENT = {
+    CONTAINER_NAME: '',
+    ECS_CONTAINER_METADATA_URI_V4: '',
+    ECS_CONTAINER_METADATA_URI: '',
+    HOSTNAME: '',
+    KUBERNETES_SERVICE_HOST: '',
+    NAMESPACE: '',
+    OTEL_BSP_EXPORT_TIMEOUT: 30000,
+    OTEL_BSP_MAX_EXPORT_BATCH_SIZE: 512,
+    OTEL_BSP_MAX_QUEUE_SIZE: 2048,
+    OTEL_BSP_SCHEDULE_DELAY: 5000,
+    OTEL_EXPORTER_JAEGER_AGENT_HOST: '',
+    OTEL_EXPORTER_JAEGER_AGENT_PORT: 6832,
+    OTEL_EXPORTER_JAEGER_ENDPOINT: '',
+    OTEL_EXPORTER_JAEGER_PASSWORD: '',
+    OTEL_EXPORTER_JAEGER_USER: '',
+    OTEL_EXPORTER_OTLP_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_HEADERS: '',
+    OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',
+    OTEL_EXPORTER_OTLP_METRICS_HEADERS: '',
+    OTEL_EXPORTER_OTLP_TIMEOUT: 10000,
+    OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: 10000,
+    OTEL_EXPORTER_OTLP_METRICS_TIMEOUT: 10000,
+    OTEL_EXPORTER_ZIPKIN_ENDPOINT: 'http://localhost:9411/api/v2/spans',
+    OTEL_LOG_LEVEL: api_1.DiagLogLevel.INFO,
+    OTEL_NO_PATCH_MODULES: [],
+    OTEL_PROPAGATORS: ['tracecontext', 'baggage'],
+    OTEL_RESOURCE_ATTRIBUTES: '',
+    OTEL_SERVICE_NAME: '',
+    OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+    OTEL_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
+    OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+    OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
+    OTEL_SPAN_EVENT_COUNT_LIMIT: 128,
+    OTEL_SPAN_LINK_COUNT_LIMIT: 128,
+    OTEL_TRACES_EXPORTER: 'none',
+    OTEL_TRACES_SAMPLER: sampling_1.TracesSamplerValues.ParentBasedAlwaysOn,
+    OTEL_TRACES_SAMPLER_ARG: '',
+    OTEL_EXPORTER_OTLP_INSECURE: '',
+    OTEL_EXPORTER_OTLP_TRACES_INSECURE: '',
+    OTEL_EXPORTER_OTLP_METRICS_INSECURE: '',
+    OTEL_EXPORTER_OTLP_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_METRICS_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_METRICS_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_TRACES_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_METRICS_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_TRACES_CLIENT_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_METRICS_CLIENT_CERTIFICATE: ''
+};
+/**
+ * Parses a variable as number with number validation
+ * @param name
+ * @param environment
+ * @param values
+ * @param min
+ * @param max
+ */
+function parseNumber(name, environment, values, min = -Infinity, max = Infinity) {
+    if (typeof values[name] !== 'undefined') {
+        const value = Number(values[name]);
+        if (!isNaN(value)) {
+            if (value < min) {
+                environment[name] = min;
+            }
+            else if (value > max) {
+                environment[name] = max;
+            }
+            else {
+                environment[name] = value;
+            }
+        }
+    }
+}
+/**
+ * Parses list-like strings from input into output.
+ * @param name
+ * @param environment
+ * @param values
+ * @param separator
+ */
+function parseStringList(name, output, input, separator = DEFAULT_LIST_SEPARATOR) {
+    const givenValue = input[name];
+    if (typeof givenValue === 'string') {
+        output[name] = givenValue.split(separator).map(v => v.trim());
+    }
+}
+// The support string -> DiagLogLevel mappings
+const logLevelMap = {
+    ALL: api_1.DiagLogLevel.ALL,
+    VERBOSE: api_1.DiagLogLevel.VERBOSE,
+    DEBUG: api_1.DiagLogLevel.DEBUG,
+    INFO: api_1.DiagLogLevel.INFO,
+    WARN: api_1.DiagLogLevel.WARN,
+    ERROR: api_1.DiagLogLevel.ERROR,
+    NONE: api_1.DiagLogLevel.NONE,
+};
+/**
+ * Environmentally sets log level if valid log level string is provided
+ * @param key
+ * @param environment
+ * @param values
+ */
+function setLogLevelFromEnv(key, environment, values) {
+    const value = values[key];
+    if (typeof value === 'string') {
+        const theLevel = logLevelMap[value.toUpperCase()];
+        if (theLevel != null) {
+            environment[key] = theLevel;
+        }
+    }
+}
+/**
+ * Parses environment values
+ * @param values
+ */
+function parseEnvironment(values) {
+    const environment = {};
+    for (const env in exports.DEFAULT_ENVIRONMENT) {
+        const key = env;
+        switch (key) {
+            case 'OTEL_LOG_LEVEL':
+                setLogLevelFromEnv(key, environment, values);
+                break;
+            default:
+                if (isEnvVarANumber(key)) {
+                    parseNumber(key, environment, values);
+                }
+                else if (isEnvVarAList(key)) {
+                    parseStringList(key, environment, values);
+                }
+                else {
+                    const value = values[key];
+                    if (typeof value !== 'undefined' && value !== null) {
+                        environment[key] = String(value);
+                    }
+                }
+        }
+    }
+    return environment;
+}
+exports.parseEnvironment = parseEnvironment;
+//# sourceMappingURL=environment.js.map
+
+/***/ }),
+
+/***/ 55366:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isPlainObject = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * based on lodash in order to support esm builds without esModuleInterop.
+ * lodash is using MIT License.
+ **/
+const objectTag = '[object Object]';
+const nullTag = '[object Null]';
+const undefinedTag = '[object Undefined]';
+const funcProto = Function.prototype;
+const funcToString = funcProto.toString;
+const objectCtorString = funcToString.call(Object);
+const getPrototype = overArg(Object.getPrototypeOf, Object);
+const objectProto = Object.prototype;
+const hasOwnProperty = objectProto.hasOwnProperty;
+const symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+const nativeObjectToString = objectProto.toString;
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+    return function (arg) {
+        return func(transform(arg));
+    };
+}
+/**
+ * Checks if `value` is a plain object, that is, an object created by the
+ * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.8.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * _.isPlainObject(new Foo);
+ * // => false
+ *
+ * _.isPlainObject([1, 2, 3]);
+ * // => false
+ *
+ * _.isPlainObject({ 'x': 0, 'y': 0 });
+ * // => true
+ *
+ * _.isPlainObject(Object.create(null));
+ * // => true
+ */
+function isPlainObject(value) {
+    if (!isObjectLike(value) || baseGetTag(value) !== objectTag) {
+        return false;
+    }
+    const proto = getPrototype(value);
+    if (proto === null) {
+        return true;
+    }
+    const Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+    return typeof Ctor == 'function' && Ctor instanceof Ctor &&
+        funcToString.call(Ctor) === objectCtorString;
+}
+exports.isPlainObject = isPlainObject;
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+}
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+    if (value == null) {
+        return value === undefined ? undefinedTag : nullTag;
+    }
+    return (symToStringTag && symToStringTag in Object(value))
+        ? getRawTag(value)
+        : objectToString(value);
+}
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+    const isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
+    let unmasked = false;
+    try {
+        value[symToStringTag] = undefined;
+        unmasked = true;
+    }
+    catch (e) {
+        // silence
+    }
+    const result = nativeObjectToString.call(value);
+    if (unmasked) {
+        if (isOwn) {
+            value[symToStringTag] = tag;
+        }
+        else {
+            delete value[symToStringTag];
+        }
+    }
+    return result;
+}
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+    return nativeObjectToString.call(value);
+}
+//# sourceMappingURL=lodash.merge.js.map
+
+/***/ }),
+
+/***/ 60317:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.merge = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const lodash_merge_1 = __nccwpck_require__(55366);
+const MAX_LEVEL = 20;
+/**
+ * Merges objects together
+ * @param args - objects / values to be merged
+ */
+function merge(...args) {
+    let result = args.shift();
+    const objects = new WeakMap();
+    while (args.length > 0) {
+        result = mergeTwoObjects(result, args.shift(), 0, objects);
+    }
+    return result;
+}
+exports.merge = merge;
+function takeValue(value) {
+    if (isArray(value)) {
+        return value.slice();
+    }
+    return value;
+}
+/**
+ * Merges two objects
+ * @param one - first object
+ * @param two - second object
+ * @param level - current deep level
+ * @param objects - objects holder that has been already referenced - to prevent
+ * cyclic dependency
+ */
+function mergeTwoObjects(one, two, level = 0, objects) {
+    let result;
+    if (level > MAX_LEVEL) {
+        return undefined;
+    }
+    level++;
+    if (isPrimitive(one) || isPrimitive(two) || isFunction(two)) {
+        result = takeValue(two);
+    }
+    else if (isArray(one)) {
+        result = one.slice();
+        if (isArray(two)) {
+            for (let i = 0, j = two.length; i < j; i++) {
+                result.push(takeValue(two[i]));
+            }
+        }
+        else if (isObject(two)) {
+            const keys = Object.keys(two);
+            for (let i = 0, j = keys.length; i < j; i++) {
+                const key = keys[i];
+                result[key] = takeValue(two[key]);
+            }
+        }
+    }
+    else if (isObject(one)) {
+        if (isObject(two)) {
+            if (!shouldMerge(one, two)) {
+                return two;
+            }
+            result = Object.assign({}, one);
+            const keys = Object.keys(two);
+            for (let i = 0, j = keys.length; i < j; i++) {
+                const key = keys[i];
+                const twoValue = two[key];
+                if (isPrimitive(twoValue)) {
+                    if (typeof twoValue === 'undefined') {
+                        delete result[key];
+                    }
+                    else {
+                        // result[key] = takeValue(twoValue);
+                        result[key] = twoValue;
+                    }
+                }
+                else {
+                    const obj1 = result[key];
+                    const obj2 = twoValue;
+                    if (wasObjectReferenced(one, key, objects) ||
+                        wasObjectReferenced(two, key, objects)) {
+                        delete result[key];
+                    }
+                    else {
+                        if (isObject(obj1) && isObject(obj2)) {
+                            const arr1 = objects.get(obj1) || [];
+                            const arr2 = objects.get(obj2) || [];
+                            arr1.push({ obj: one, key });
+                            arr2.push({ obj: two, key });
+                            objects.set(obj1, arr1);
+                            objects.set(obj2, arr2);
+                        }
+                        result[key] = mergeTwoObjects(result[key], twoValue, level, objects);
+                    }
+                }
+            }
+        }
+        else {
+            result = two;
+        }
+    }
+    return result;
+}
+/**
+ * Function to check if object has been already reference
+ * @param obj
+ * @param key
+ * @param objects
+ */
+function wasObjectReferenced(obj, key, objects) {
+    const arr = objects.get(obj[key]) || [];
+    for (let i = 0, j = arr.length; i < j; i++) {
+        const info = arr[i];
+        if (info.key === key && info.obj === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+function isArray(value) {
+    return Array.isArray(value);
+}
+function isFunction(value) {
+    return typeof value === 'function';
+}
+function isObject(value) {
+    return !isPrimitive(value) && !isArray(value) && !isFunction(value) && typeof value === 'object';
+}
+function isPrimitive(value) {
+    return typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean' ||
+        typeof value === 'undefined' ||
+        value instanceof Date ||
+        value instanceof RegExp ||
+        value === null;
+}
+function shouldMerge(one, two) {
+    if (!(0, lodash_merge_1.isPlainObject)(one) || !(0, lodash_merge_1.isPlainObject)(two)) {
+        return false;
+    }
+    return true;
+}
+//# sourceMappingURL=merge.js.map
+
+/***/ }),
+
+/***/ 7857:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Deferred = void 0;
+class Deferred {
+    constructor() {
+        this._promise = new Promise((resolve, reject) => {
+            this._resolve = resolve;
+            this._reject = reject;
+        });
+    }
+    get promise() {
+        return this._promise;
+    }
+    resolve(val) {
+        this._resolve(val);
+    }
+    reject(err) {
+        this._reject(err);
+    }
+}
+exports.Deferred = Deferred;
+//# sourceMappingURL=promise.js.map
+
+/***/ }),
+
+/***/ 18963:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TracesSamplerValues = void 0;
+var TracesSamplerValues;
+(function (TracesSamplerValues) {
+    TracesSamplerValues["AlwaysOff"] = "always_off";
+    TracesSamplerValues["AlwaysOn"] = "always_on";
+    TracesSamplerValues["ParentBasedAlwaysOff"] = "parentbased_always_off";
+    TracesSamplerValues["ParentBasedAlwaysOn"] = "parentbased_always_on";
+    TracesSamplerValues["ParentBasedTraceIdRatio"] = "parentbased_traceidratio";
+    TracesSamplerValues["TraceIdRatio"] = "traceidratio";
+})(TracesSamplerValues = exports.TracesSamplerValues || (exports.TracesSamplerValues = {}));
+//# sourceMappingURL=sampling.js.map
+
+/***/ }),
+
+/***/ 17839:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isUrlIgnored = exports.urlMatches = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function urlMatches(url, urlToMatch) {
+    if (typeof urlToMatch === 'string') {
+        return url === urlToMatch;
+    }
+    else {
+        return !!url.match(urlToMatch);
+    }
+}
+exports.urlMatches = urlMatches;
+/**
+ * Check if {@param url} should be ignored when comparing against {@param ignoredUrls}
+ * @param url
+ * @param ignoredUrls
+ */
+function isUrlIgnored(url, ignoredUrls) {
+    if (!ignoredUrls) {
+        return false;
+    }
+    for (const ignoreUrl of ignoredUrls) {
+        if (urlMatches(url, ignoreUrl)) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isUrlIgnored = isUrlIgnored;
+//# sourceMappingURL=url.js.map
+
+/***/ }),
+
+/***/ 46644:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isWrapped = void 0;
+/**
+ * Checks if certain function has been already wrapped
+ * @param func
+ */
+function isWrapped(func) {
+    return (typeof func === 'function' &&
+        typeof func.__original === 'function' &&
+        typeof func.__unwrap === 'function' &&
+        func.__wrapped === true);
+}
+exports.isWrapped = isWrapped;
+//# sourceMappingURL=wrap.js.map
+
+/***/ }),
+
+/***/ 12421:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.VERSION = void 0;
+// this is autogenerated file, see scripts/version-update.js
+exports.VERSION = '1.4.0';
+//# sourceMappingURL=version.js.map
+
+/***/ }),
+
 /***/ 78920:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -33258,7 +37674,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BasicTracerProvider = exports.ForceFlushState = void 0;
 const api_1 = __nccwpck_require__(65163);
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(56460);
 const resources_1 = __nccwpck_require__(3871);
 const _1 = __nccwpck_require__(29253);
 const config_1 = __nccwpck_require__(91);
@@ -33462,7 +37878,7 @@ BasicTracerProvider._registeredExporters = new Map();
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.MultiSpanProcessor = void 0;
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(56460);
 /**
  * Implementation of the {@link SpanProcessor} that simply forwards all
  * received events to a list of {@link SpanProcessor}s.
@@ -33537,7 +37953,7 @@ exports.MultiSpanProcessor = MultiSpanProcessor;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Span = void 0;
 const api = __nccwpck_require__(65163);
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(56460);
 const semantic_conventions_1 = __nccwpck_require__(67275);
 const enums_1 = __nccwpck_require__(35092);
 /**
@@ -33818,7 +38234,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Tracer = void 0;
 const api = __nccwpck_require__(65163);
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(56460);
 const Span_1 = __nccwpck_require__(61301);
 const utility_1 = __nccwpck_require__(54324);
 /**
@@ -33956,7 +38372,7 @@ exports.Tracer = Tracer;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.buildSamplerFromEnv = exports.DEFAULT_CONFIG = void 0;
 const api_1 = __nccwpck_require__(65163);
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(56460);
 const env = (0, core_1.getEnv)();
 const FALLBACK_OTEL_TRACES_SAMPLER = core_1.TracesSamplerValues.AlwaysOn;
 const DEFAULT_RATIO = 1;
@@ -34082,7 +38498,7 @@ exports.ExceptionEventName = 'exception';
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BatchSpanProcessorBase = void 0;
 const api_1 = __nccwpck_require__(65163);
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(56460);
 /**
  * Implementation of the {@link SpanProcessor} that batches spans exported by
  * the SDK then pushes them to the exporter pipeline.
@@ -34250,7 +38666,7 @@ exports.BatchSpanProcessorBase = BatchSpanProcessorBase;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ConsoleSpanExporter = void 0;
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(56460);
 /**
  * This is implementation of {@link SpanExporter} that prints spans to the
  * console. This class can be used for diagnostic purposes.
@@ -34332,7 +38748,7 @@ exports.ConsoleSpanExporter = ConsoleSpanExporter;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.InMemorySpanExporter = void 0;
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(56460);
 /**
  * This class can be used for testing purposes. It stores the exported spans
  * in a list in memory that can be retrieved using the `getFinishedSpans()`
@@ -34459,7 +38875,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SimpleSpanProcessor = void 0;
 const api_1 = __nccwpck_require__(65163);
-const core_1 = __nccwpck_require__(89736);
+const core_1 = __nccwpck_require__(56460);
 /**
  * An implementation of the {@link SpanProcessor} that converts the {@link Span}
  * to {@link ReadableSpan} and passes it to the configured exporter.
@@ -34770,6 +39186,2544 @@ function reconfigureLimits(userConfig) {
 }
 exports.reconfigureLimits = reconfigureLimits;
 //# sourceMappingURL=utility.js.map
+
+/***/ }),
+
+/***/ 59872:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExportResultCode = void 0;
+var ExportResultCode;
+(function (ExportResultCode) {
+    ExportResultCode[ExportResultCode["SUCCESS"] = 0] = "SUCCESS";
+    ExportResultCode[ExportResultCode["FAILED"] = 1] = "FAILED";
+})(ExportResultCode = exports.ExportResultCode || (exports.ExportResultCode = {}));
+//# sourceMappingURL=ExportResult.js.map
+
+/***/ }),
+
+/***/ 2477:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BAGGAGE_MAX_TOTAL_LENGTH = exports.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS = exports.BAGGAGE_MAX_NAME_VALUE_PAIRS = exports.BAGGAGE_HEADER = exports.BAGGAGE_ITEMS_SEPARATOR = exports.BAGGAGE_PROPERTIES_SEPARATOR = exports.BAGGAGE_KEY_PAIR_SEPARATOR = void 0;
+exports.BAGGAGE_KEY_PAIR_SEPARATOR = '=';
+exports.BAGGAGE_PROPERTIES_SEPARATOR = ';';
+exports.BAGGAGE_ITEMS_SEPARATOR = ',';
+// Name of the http header used to propagate the baggage
+exports.BAGGAGE_HEADER = 'baggage';
+// Maximum number of name-value pairs allowed by w3c spec
+exports.BAGGAGE_MAX_NAME_VALUE_PAIRS = 180;
+// Maximum number of bytes per a single name-value pair allowed by w3c spec
+exports.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS = 4096;
+// Maximum total length of all name-value pairs allowed by w3c spec
+exports.BAGGAGE_MAX_TOTAL_LENGTH = 8192;
+//# sourceMappingURL=constants.js.map
+
+/***/ }),
+
+/***/ 76683:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.W3CBaggagePropagator = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(1761);
+const constants_1 = __nccwpck_require__(2477);
+const utils_1 = __nccwpck_require__(37830);
+/**
+ * Propagates {@link Baggage} through Context format propagation.
+ *
+ * Based on the Baggage specification:
+ * https://w3c.github.io/baggage/
+ */
+class W3CBaggagePropagator {
+    inject(context, carrier, setter) {
+        const baggage = api_1.propagation.getBaggage(context);
+        if (!baggage || (0, suppress_tracing_1.isTracingSuppressed)(context))
+            return;
+        const keyPairs = (0, utils_1.getKeyPairs)(baggage)
+            .filter((pair) => {
+            return pair.length <= constants_1.BAGGAGE_MAX_PER_NAME_VALUE_PAIRS;
+        })
+            .slice(0, constants_1.BAGGAGE_MAX_NAME_VALUE_PAIRS);
+        const headerValue = (0, utils_1.serializeKeyPairs)(keyPairs);
+        if (headerValue.length > 0) {
+            setter.set(carrier, constants_1.BAGGAGE_HEADER, headerValue);
+        }
+    }
+    extract(context, carrier, getter) {
+        const headerValue = getter.get(carrier, constants_1.BAGGAGE_HEADER);
+        const baggageString = Array.isArray(headerValue) ? headerValue.join(constants_1.BAGGAGE_ITEMS_SEPARATOR) : headerValue;
+        if (!baggageString)
+            return context;
+        const baggage = {};
+        if (baggageString.length === 0) {
+            return context;
+        }
+        const pairs = baggageString.split(constants_1.BAGGAGE_ITEMS_SEPARATOR);
+        pairs.forEach(entry => {
+            const keyPair = (0, utils_1.parsePairKeyValue)(entry);
+            if (keyPair) {
+                const baggageEntry = { value: keyPair.value };
+                if (keyPair.metadata) {
+                    baggageEntry.metadata = keyPair.metadata;
+                }
+                baggage[keyPair.key] = baggageEntry;
+            }
+        });
+        if (Object.entries(baggage).length === 0) {
+            return context;
+        }
+        return api_1.propagation.setBaggage(context, api_1.propagation.createBaggage(baggage));
+    }
+    fields() {
+        return [constants_1.BAGGAGE_HEADER];
+    }
+}
+exports.W3CBaggagePropagator = W3CBaggagePropagator;
+//# sourceMappingURL=W3CBaggagePropagator.js.map
+
+/***/ }),
+
+/***/ 37830:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseKeyPairsIntoRecord = exports.parsePairKeyValue = exports.getKeyPairs = exports.serializeKeyPairs = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+const api_1 = __nccwpck_require__(65163);
+const constants_1 = __nccwpck_require__(2477);
+function serializeKeyPairs(keyPairs) {
+    return keyPairs.reduce((hValue, current) => {
+        const value = `${hValue}${hValue !== '' ? constants_1.BAGGAGE_ITEMS_SEPARATOR : ''}${current}`;
+        return value.length > constants_1.BAGGAGE_MAX_TOTAL_LENGTH ? hValue : value;
+    }, '');
+}
+exports.serializeKeyPairs = serializeKeyPairs;
+function getKeyPairs(baggage) {
+    return baggage.getAllEntries().map(([key, value]) => {
+        let entry = `${encodeURIComponent(key)}=${encodeURIComponent(value.value)}`;
+        // include opaque metadata if provided
+        // NOTE: we intentionally don't URI-encode the metadata - that responsibility falls on the metadata implementation
+        if (value.metadata !== undefined) {
+            entry += constants_1.BAGGAGE_PROPERTIES_SEPARATOR + value.metadata.toString();
+        }
+        return entry;
+    });
+}
+exports.getKeyPairs = getKeyPairs;
+function parsePairKeyValue(entry) {
+    const valueProps = entry.split(constants_1.BAGGAGE_PROPERTIES_SEPARATOR);
+    if (valueProps.length <= 0)
+        return;
+    const keyPairPart = valueProps.shift();
+    if (!keyPairPart)
+        return;
+    const keyPair = keyPairPart.split(constants_1.BAGGAGE_KEY_PAIR_SEPARATOR);
+    if (keyPair.length !== 2)
+        return;
+    const key = decodeURIComponent(keyPair[0].trim());
+    const value = decodeURIComponent(keyPair[1].trim());
+    let metadata;
+    if (valueProps.length > 0) {
+        metadata = (0, api_1.baggageEntryMetadataFromString)(valueProps.join(constants_1.BAGGAGE_PROPERTIES_SEPARATOR));
+    }
+    return { key, value, metadata };
+}
+exports.parsePairKeyValue = parsePairKeyValue;
+/**
+ * Parse a string serialized in the baggage HTTP Format (without metadata):
+ * https://github.com/w3c/baggage/blob/master/baggage/HTTP_HEADER_FORMAT.md
+ */
+function parseKeyPairsIntoRecord(value) {
+    if (typeof value !== 'string' || value.length === 0)
+        return {};
+    return value
+        .split(constants_1.BAGGAGE_ITEMS_SEPARATOR)
+        .map(entry => {
+        return parsePairKeyValue(entry);
+    })
+        .filter(keyPair => keyPair !== undefined && keyPair.value.length > 0)
+        .reduce((headers, keyPair) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        headers[keyPair.key] = keyPair.value;
+        return headers;
+    }, {});
+}
+exports.parseKeyPairsIntoRecord = parseKeyPairsIntoRecord;
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 49925:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isAttributeValue = exports.isAttributeKey = exports.sanitizeAttributes = void 0;
+const api_1 = __nccwpck_require__(65163);
+function sanitizeAttributes(attributes) {
+    const out = {};
+    if (typeof attributes !== 'object' || attributes == null) {
+        return out;
+    }
+    for (const [key, val] of Object.entries(attributes)) {
+        if (!isAttributeKey(key)) {
+            api_1.diag.warn(`Invalid attribute key: ${key}`);
+            continue;
+        }
+        if (!isAttributeValue(val)) {
+            api_1.diag.warn(`Invalid attribute value set for key: ${key}`);
+            continue;
+        }
+        if (Array.isArray(val)) {
+            out[key] = val.slice();
+        }
+        else {
+            out[key] = val;
+        }
+    }
+    return out;
+}
+exports.sanitizeAttributes = sanitizeAttributes;
+function isAttributeKey(key) {
+    return typeof key === 'string' && key.length > 0;
+}
+exports.isAttributeKey = isAttributeKey;
+function isAttributeValue(val) {
+    if (val == null) {
+        return true;
+    }
+    if (Array.isArray(val)) {
+        return isHomogeneousAttributeValueArray(val);
+    }
+    return isValidPrimitiveAttributeValue(val);
+}
+exports.isAttributeValue = isAttributeValue;
+function isHomogeneousAttributeValueArray(arr) {
+    let type;
+    for (const element of arr) {
+        // null/undefined elements are allowed
+        if (element == null)
+            continue;
+        if (!type) {
+            if (isValidPrimitiveAttributeValue(element)) {
+                type = typeof element;
+                continue;
+            }
+            // encountered an invalid primitive
+            return false;
+        }
+        if (typeof element === type) {
+            continue;
+        }
+        return false;
+    }
+    return true;
+}
+function isValidPrimitiveAttributeValue(val) {
+    switch (typeof val) {
+        case 'number':
+        case 'boolean':
+        case 'string':
+            return true;
+    }
+    return false;
+}
+//# sourceMappingURL=attributes.js.map
+
+/***/ }),
+
+/***/ 54328:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.globalErrorHandler = exports.setGlobalErrorHandler = void 0;
+const logging_error_handler_1 = __nccwpck_require__(76149);
+/** The global error handler delegate */
+let delegateHandler = (0, logging_error_handler_1.loggingErrorHandler)();
+/**
+ * Set the global error handler
+ * @param {ErrorHandler} handler
+ */
+function setGlobalErrorHandler(handler) {
+    delegateHandler = handler;
+}
+exports.setGlobalErrorHandler = setGlobalErrorHandler;
+/**
+ * Return the global error handler
+ * @param {Exception} ex
+ */
+function globalErrorHandler(ex) {
+    try {
+        delegateHandler(ex);
+    }
+    catch (_a) { } // eslint-disable-line no-empty
+}
+exports.globalErrorHandler = globalErrorHandler;
+//# sourceMappingURL=global-error-handler.js.map
+
+/***/ }),
+
+/***/ 76149:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loggingErrorHandler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/**
+ * Returns a function that logs an error using the provided logger, or a
+ * console logger if one was not provided.
+ */
+function loggingErrorHandler() {
+    return (ex) => {
+        api_1.diag.error(stringifyException(ex));
+    };
+}
+exports.loggingErrorHandler = loggingErrorHandler;
+/**
+ * Converts an exception into a string representation
+ * @param {Exception} ex
+ */
+function stringifyException(ex) {
+    if (typeof ex === 'string') {
+        return ex;
+    }
+    else {
+        return JSON.stringify(flattenException(ex));
+    }
+}
+/**
+ * Flattens an exception into key-value pairs by traversing the prototype chain
+ * and coercing values to strings. Duplicate properties will not be overwritten;
+ * the first insert wins.
+ */
+function flattenException(ex) {
+    const result = {};
+    let current = ex;
+    while (current !== null) {
+        Object.getOwnPropertyNames(current).forEach(propertyName => {
+            if (result[propertyName])
+                return;
+            const value = current[propertyName];
+            if (value) {
+                result[propertyName] = String(value);
+            }
+        });
+        current = Object.getPrototypeOf(current);
+    }
+    return result;
+}
+//# sourceMappingURL=logging-error-handler.js.map
+
+/***/ }),
+
+/***/ 94806:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isTimeInput = exports.isTimeInputHrTime = exports.hrTimeToMicroseconds = exports.hrTimeToMilliseconds = exports.hrTimeToNanoseconds = exports.hrTimeToTimeStamp = exports.hrTimeDuration = exports.timeInputToHrTime = exports.hrTime = void 0;
+const platform_1 = __nccwpck_require__(45649);
+const NANOSECOND_DIGITS = 9;
+const SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS);
+/**
+ * Converts a number to HrTime, HrTime = [number, number].
+ * The first number is UNIX Epoch time in seconds since 00:00:00 UTC on 1 January 1970.
+ * The second number represents the partial second elapsed since Unix Epoch time represented by first number in nanoseconds.
+ * For example, 2021-01-01T12:30:10.150Z in UNIX Epoch time in milliseconds is represented as 1609504210150.
+ * numberToHrtime calculates the first number by converting and truncating the Epoch time in milliseconds to seconds:
+ * HrTime[0] = Math.trunc(1609504210150 / 1000) = 1609504210.
+ * numberToHrtime calculates the second number by converting the digits after the decimal point of the subtraction, (1609504210150 / 1000) - HrTime[0], to nanoseconds:
+ * HrTime[1] = Number((1609504210.150 - HrTime[0]).toFixed(9)) * SECOND_TO_NANOSECONDS = 150000000.
+ * This is represented in HrTime format as [1609504210, 150000000].
+ * @param epochMillis
+ */
+function numberToHrtime(epochMillis) {
+    const epochSeconds = epochMillis / 1000;
+    // Decimals only.
+    const seconds = Math.trunc(epochSeconds);
+    // Round sub-nanosecond accuracy to nanosecond.
+    const nanos = Number((epochSeconds - seconds).toFixed(NANOSECOND_DIGITS)) *
+        SECOND_TO_NANOSECONDS;
+    return [seconds, nanos];
+}
+function getTimeOrigin() {
+    let timeOrigin = platform_1.otperformance.timeOrigin;
+    if (typeof timeOrigin !== 'number') {
+        const perf = platform_1.otperformance;
+        timeOrigin = perf.timing && perf.timing.fetchStart;
+    }
+    return timeOrigin;
+}
+/**
+ * Returns an hrtime calculated via performance component.
+ * @param performanceNow
+ */
+function hrTime(performanceNow) {
+    const timeOrigin = numberToHrtime(getTimeOrigin());
+    const now = numberToHrtime(typeof performanceNow === 'number' ? performanceNow : platform_1.otperformance.now());
+    let seconds = timeOrigin[0] + now[0];
+    let nanos = timeOrigin[1] + now[1];
+    // Nanoseconds
+    if (nanos > SECOND_TO_NANOSECONDS) {
+        nanos -= SECOND_TO_NANOSECONDS;
+        seconds += 1;
+    }
+    return [seconds, nanos];
+}
+exports.hrTime = hrTime;
+/**
+ *
+ * Converts a TimeInput to an HrTime, defaults to _hrtime().
+ * @param time
+ */
+function timeInputToHrTime(time) {
+    // process.hrtime
+    if (isTimeInputHrTime(time)) {
+        return time;
+    }
+    else if (typeof time === 'number') {
+        // Must be a performance.now() if it's smaller than process start time.
+        if (time < getTimeOrigin()) {
+            return hrTime(time);
+        }
+        else {
+            // epoch milliseconds or performance.timeOrigin
+            return numberToHrtime(time);
+        }
+    }
+    else if (time instanceof Date) {
+        return numberToHrtime(time.getTime());
+    }
+    else {
+        throw TypeError('Invalid input type');
+    }
+}
+exports.timeInputToHrTime = timeInputToHrTime;
+/**
+ * Returns a duration of two hrTime.
+ * @param startTime
+ * @param endTime
+ */
+function hrTimeDuration(startTime, endTime) {
+    let seconds = endTime[0] - startTime[0];
+    let nanos = endTime[1] - startTime[1];
+    // overflow
+    if (nanos < 0) {
+        seconds -= 1;
+        // negate
+        nanos += SECOND_TO_NANOSECONDS;
+    }
+    return [seconds, nanos];
+}
+exports.hrTimeDuration = hrTimeDuration;
+/**
+ * Convert hrTime to timestamp, for example "2019-05-14T17:00:00.000123456Z"
+ * @param time
+ */
+function hrTimeToTimeStamp(time) {
+    const precision = NANOSECOND_DIGITS;
+    const tmp = `${'0'.repeat(precision)}${time[1]}Z`;
+    const nanoString = tmp.substr(tmp.length - precision - 1);
+    const date = new Date(time[0] * 1000).toISOString();
+    return date.replace('000Z', nanoString);
+}
+exports.hrTimeToTimeStamp = hrTimeToTimeStamp;
+/**
+ * Convert hrTime to nanoseconds.
+ * @param time
+ */
+function hrTimeToNanoseconds(time) {
+    return time[0] * SECOND_TO_NANOSECONDS + time[1];
+}
+exports.hrTimeToNanoseconds = hrTimeToNanoseconds;
+/**
+ * Convert hrTime to milliseconds.
+ * @param time
+ */
+function hrTimeToMilliseconds(time) {
+    return Math.round(time[0] * 1e3 + time[1] / 1e6);
+}
+exports.hrTimeToMilliseconds = hrTimeToMilliseconds;
+/**
+ * Convert hrTime to microseconds.
+ * @param time
+ */
+function hrTimeToMicroseconds(time) {
+    return Math.round(time[0] * 1e6 + time[1] / 1e3);
+}
+exports.hrTimeToMicroseconds = hrTimeToMicroseconds;
+/**
+ * check if time is HrTime
+ * @param value
+ */
+function isTimeInputHrTime(value) {
+    return (Array.isArray(value) &&
+        value.length === 2 &&
+        typeof value[0] === 'number' &&
+        typeof value[1] === 'number');
+}
+exports.isTimeInputHrTime = isTimeInputHrTime;
+/**
+ * check if input value is a correct types.TimeInput
+ * @param value
+ */
+function isTimeInput(value) {
+    return (isTimeInputHrTime(value) ||
+        typeof value === 'number' ||
+        value instanceof Date);
+}
+exports.isTimeInput = isTimeInput;
+//# sourceMappingURL=time.js.map
+
+/***/ }),
+
+/***/ 23342:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
+/***/ 56460:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.baggageUtils = void 0;
+__exportStar(__nccwpck_require__(76683), exports);
+__exportStar(__nccwpck_require__(49925), exports);
+__exportStar(__nccwpck_require__(54328), exports);
+__exportStar(__nccwpck_require__(76149), exports);
+__exportStar(__nccwpck_require__(94806), exports);
+__exportStar(__nccwpck_require__(23342), exports);
+__exportStar(__nccwpck_require__(59872), exports);
+__exportStar(__nccwpck_require__(33802), exports);
+exports.baggageUtils = __nccwpck_require__(37830);
+__exportStar(__nccwpck_require__(45649), exports);
+__exportStar(__nccwpck_require__(74712), exports);
+__exportStar(__nccwpck_require__(39344), exports);
+__exportStar(__nccwpck_require__(55421), exports);
+__exportStar(__nccwpck_require__(84727), exports);
+__exportStar(__nccwpck_require__(11742), exports);
+__exportStar(__nccwpck_require__(30137), exports);
+__exportStar(__nccwpck_require__(67801), exports);
+__exportStar(__nccwpck_require__(12900), exports);
+__exportStar(__nccwpck_require__(1761), exports);
+__exportStar(__nccwpck_require__(13837), exports);
+__exportStar(__nccwpck_require__(15017), exports);
+__exportStar(__nccwpck_require__(85841), exports);
+__exportStar(__nccwpck_require__(30731), exports);
+__exportStar(__nccwpck_require__(38966), exports);
+__exportStar(__nccwpck_require__(49625), exports);
+__exportStar(__nccwpck_require__(86119), exports);
+__exportStar(__nccwpck_require__(33802), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 94763:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.validateValue = exports.validateKey = void 0;
+const VALID_KEY_CHAR_RANGE = '[_0-9a-z-*/]';
+const VALID_KEY = `[a-z]${VALID_KEY_CHAR_RANGE}{0,255}`;
+const VALID_VENDOR_KEY = `[a-z0-9]${VALID_KEY_CHAR_RANGE}{0,240}@[a-z]${VALID_KEY_CHAR_RANGE}{0,13}`;
+const VALID_KEY_REGEX = new RegExp(`^(?:${VALID_KEY}|${VALID_VENDOR_KEY})$`);
+const VALID_VALUE_BASE_REGEX = /^[ -~]{0,255}[!-~]$/;
+const INVALID_VALUE_COMMA_EQUAL_REGEX = /,|=/;
+/**
+ * Key is opaque string up to 256 characters printable. It MUST begin with a
+ * lowercase letter, and can only contain lowercase letters a-z, digits 0-9,
+ * underscores _, dashes -, asterisks *, and forward slashes /.
+ * For multi-tenant vendor scenarios, an at sign (@) can be used to prefix the
+ * vendor name. Vendors SHOULD set the tenant ID at the beginning of the key.
+ * see https://www.w3.org/TR/trace-context/#key
+ */
+function validateKey(key) {
+    return VALID_KEY_REGEX.test(key);
+}
+exports.validateKey = validateKey;
+/**
+ * Value is opaque string up to 256 characters printable ASCII RFC0020
+ * characters (i.e., the range 0x20 to 0x7E) except comma , and =.
+ */
+function validateValue(value) {
+    return (VALID_VALUE_BASE_REGEX.test(value) &&
+        !INVALID_VALUE_COMMA_EQUAL_REGEX.test(value));
+}
+exports.validateValue = validateValue;
+//# sourceMappingURL=validators.js.map
+
+/***/ }),
+
+/***/ 45649:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+__exportStar(__nccwpck_require__(63591), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 25336:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RandomIdGenerator = void 0;
+const SPAN_ID_BYTES = 8;
+const TRACE_ID_BYTES = 16;
+class RandomIdGenerator {
+    constructor() {
+        /**
+         * Returns a random 16-byte trace ID formatted/encoded as a 32 lowercase hex
+         * characters corresponding to 128 bits.
+         */
+        this.generateTraceId = getIdGenerator(TRACE_ID_BYTES);
+        /**
+         * Returns a random 8-byte span ID formatted/encoded as a 16 lowercase hex
+         * characters corresponding to 64 bits.
+         */
+        this.generateSpanId = getIdGenerator(SPAN_ID_BYTES);
+    }
+}
+exports.RandomIdGenerator = RandomIdGenerator;
+const SHARED_BUFFER = Buffer.allocUnsafe(TRACE_ID_BYTES);
+function getIdGenerator(bytes) {
+    return function generateId() {
+        for (let i = 0; i < bytes / 4; i++) {
+            // unsigned right shift drops decimal part of the number
+            // it is required because if a number between 2**32 and 2**32 - 1 is generated, an out of range error is thrown by writeUInt32BE
+            SHARED_BUFFER.writeUInt32BE((Math.random() * 2 ** 32) >>> 0, i * 4);
+        }
+        // If buffer is all 0, set the last byte to 1 to guarantee a valid w3c id is generated
+        for (let i = 0; i < bytes; i++) {
+            if (SHARED_BUFFER[i] > 0) {
+                break;
+            }
+            else if (i === bytes - 1) {
+                SHARED_BUFFER[bytes - 1] = 1;
+            }
+        }
+        return SHARED_BUFFER.toString('hex', 0, bytes);
+    };
+}
+//# sourceMappingURL=RandomIdGenerator.js.map
+
+/***/ }),
+
+/***/ 61542:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getEnv = void 0;
+const os = __nccwpck_require__(12087);
+const environment_1 = __nccwpck_require__(15017);
+/**
+ * Gets the environment variables
+ */
+function getEnv() {
+    const processEnv = (0, environment_1.parseEnvironment)(process.env);
+    return Object.assign({
+        HOSTNAME: os.hostname(),
+    }, environment_1.DEFAULT_ENVIRONMENT, processEnv);
+}
+exports.getEnv = getEnv;
+//# sourceMappingURL=environment.js.map
+
+/***/ }),
+
+/***/ 40247:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._globalThis = void 0;
+/** only globals that common to node and browsers are allowed */
+// eslint-disable-next-line node/no-unsupported-features/es-builtins
+exports._globalThis = typeof globalThis === 'object' ? globalThis : global;
+//# sourceMappingURL=globalThis.js.map
+
+/***/ }),
+
+/***/ 94028:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.hexToBase64 = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function hexToBase64(hexStr) {
+    const hexStrLen = hexStr.length;
+    let hexAsciiCharsStr = '';
+    for (let i = 0; i < hexStrLen; i += 2) {
+        const hexPair = hexStr.substring(i, i + 2);
+        const hexVal = parseInt(hexPair, 16);
+        hexAsciiCharsStr += String.fromCharCode(hexVal);
+    }
+    return Buffer.from(hexAsciiCharsStr, 'ascii').toString('base64');
+}
+exports.hexToBase64 = hexToBase64;
+//# sourceMappingURL=hex-to-base64.js.map
+
+/***/ }),
+
+/***/ 63591:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(61542), exports);
+__exportStar(__nccwpck_require__(40247), exports);
+__exportStar(__nccwpck_require__(94028), exports);
+__exportStar(__nccwpck_require__(25336), exports);
+__exportStar(__nccwpck_require__(54813), exports);
+__exportStar(__nccwpck_require__(97526), exports);
+__exportStar(__nccwpck_require__(84589), exports);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 54813:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.otperformance = void 0;
+const perf_hooks_1 = __nccwpck_require__(70630);
+exports.otperformance = perf_hooks_1.performance;
+//# sourceMappingURL=performance.js.map
+
+/***/ }),
+
+/***/ 97526:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SDK_INFO = void 0;
+const version_1 = __nccwpck_require__(33802);
+const semantic_conventions_1 = __nccwpck_require__(67275);
+/** Constants describing the SDK in use */
+exports.SDK_INFO = {
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_NAME]: 'opentelemetry',
+    [semantic_conventions_1.SemanticResourceAttributes.PROCESS_RUNTIME_NAME]: 'node',
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE]: semantic_conventions_1.TelemetrySdkLanguageValues.NODEJS,
+    [semantic_conventions_1.SemanticResourceAttributes.TELEMETRY_SDK_VERSION]: version_1.VERSION,
+};
+//# sourceMappingURL=sdk-info.js.map
+
+/***/ }),
+
+/***/ 84589:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.unrefTimer = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function unrefTimer(timer) {
+    timer.unref();
+}
+exports.unrefTimer = unrefTimer;
+//# sourceMappingURL=timer-util.js.map
+
+/***/ }),
+
+/***/ 74712:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CompositePropagator = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Combines multiple propagators into a single propagator. */
+class CompositePropagator {
+    /**
+     * Construct a composite propagator from a list of propagators.
+     *
+     * @param [config] Configuration object for composite propagator
+     */
+    constructor(config = {}) {
+        var _a;
+        this._propagators = (_a = config.propagators) !== null && _a !== void 0 ? _a : [];
+        this._fields = Array.from(new Set(this._propagators
+            // older propagators may not have fields function, null check to be sure
+            .map(p => (typeof p.fields === 'function' ? p.fields() : []))
+            .reduce((x, y) => x.concat(y), [])));
+    }
+    /**
+     * Run each of the configured propagators with the given context and carrier.
+     * Propagators are run in the order they are configured, so if multiple
+     * propagators write the same carrier key, the propagator later in the list
+     * will "win".
+     *
+     * @param context Context to inject
+     * @param carrier Carrier into which context will be injected
+     */
+    inject(context, carrier, setter) {
+        for (const propagator of this._propagators) {
+            try {
+                propagator.inject(context, carrier, setter);
+            }
+            catch (err) {
+                api_1.diag.warn(`Failed to inject with ${propagator.constructor.name}. Err: ${err.message}`);
+            }
+        }
+    }
+    /**
+     * Run each of the configured propagators with the given context and carrier.
+     * Propagators are run in the order they are configured, so if multiple
+     * propagators write the same context key, the propagator later in the list
+     * will "win".
+     *
+     * @param context Context to add values to
+     * @param carrier Carrier from which to extract context
+     */
+    extract(context, carrier, getter) {
+        return this._propagators.reduce((ctx, propagator) => {
+            try {
+                return propagator.extract(ctx, carrier, getter);
+            }
+            catch (err) {
+                api_1.diag.warn(`Failed to inject with ${propagator.constructor.name}. Err: ${err.message}`);
+            }
+            return ctx;
+        }, context);
+    }
+    fields() {
+        // return a new array so our fields cannot be modified
+        return this._fields.slice();
+    }
+}
+exports.CompositePropagator = CompositePropagator;
+//# sourceMappingURL=composite.js.map
+
+/***/ }),
+
+/***/ 55421:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=IdGenerator.js.map
+
+/***/ }),
+
+/***/ 13837:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceState = void 0;
+const validators_1 = __nccwpck_require__(94763);
+const MAX_TRACE_STATE_ITEMS = 32;
+const MAX_TRACE_STATE_LEN = 512;
+const LIST_MEMBERS_SEPARATOR = ',';
+const LIST_MEMBER_KEY_VALUE_SPLITTER = '=';
+/**
+ * TraceState must be a class and not a simple object type because of the spec
+ * requirement (https://www.w3.org/TR/trace-context/#tracestate-field).
+ *
+ * Here is the list of allowed mutations:
+ * - New key-value pair should be added into the beginning of the list
+ * - The value of any key can be updated. Modified keys MUST be moved to the
+ * beginning of the list.
+ */
+class TraceState {
+    constructor(rawTraceState) {
+        this._internalState = new Map();
+        if (rawTraceState)
+            this._parse(rawTraceState);
+    }
+    set(key, value) {
+        // TODO: Benchmark the different approaches(map vs list) and
+        // use the faster one.
+        const traceState = this._clone();
+        if (traceState._internalState.has(key)) {
+            traceState._internalState.delete(key);
+        }
+        traceState._internalState.set(key, value);
+        return traceState;
+    }
+    unset(key) {
+        const traceState = this._clone();
+        traceState._internalState.delete(key);
+        return traceState;
+    }
+    get(key) {
+        return this._internalState.get(key);
+    }
+    serialize() {
+        return this._keys()
+            .reduce((agg, key) => {
+            agg.push(key + LIST_MEMBER_KEY_VALUE_SPLITTER + this.get(key));
+            return agg;
+        }, [])
+            .join(LIST_MEMBERS_SEPARATOR);
+    }
+    _parse(rawTraceState) {
+        if (rawTraceState.length > MAX_TRACE_STATE_LEN)
+            return;
+        this._internalState = rawTraceState
+            .split(LIST_MEMBERS_SEPARATOR)
+            .reverse() // Store in reverse so new keys (.set(...)) will be placed at the beginning
+            .reduce((agg, part) => {
+            const listMember = part.trim(); // Optional Whitespace (OWS) handling
+            const i = listMember.indexOf(LIST_MEMBER_KEY_VALUE_SPLITTER);
+            if (i !== -1) {
+                const key = listMember.slice(0, i);
+                const value = listMember.slice(i + 1, part.length);
+                if ((0, validators_1.validateKey)(key) && (0, validators_1.validateValue)(value)) {
+                    agg.set(key, value);
+                }
+                else {
+                    // TODO: Consider to add warning log
+                }
+            }
+            return agg;
+        }, new Map());
+        // Because of the reverse() requirement, trunc must be done after map is created
+        if (this._internalState.size > MAX_TRACE_STATE_ITEMS) {
+            this._internalState = new Map(Array.from(this._internalState.entries())
+                .reverse() // Use reverse same as original tracestate parse chain
+                .slice(0, MAX_TRACE_STATE_ITEMS));
+        }
+    }
+    _keys() {
+        return Array.from(this._internalState.keys()).reverse();
+    }
+    _clone() {
+        const traceState = new TraceState();
+        traceState._internalState = new Map(this._internalState);
+        return traceState;
+    }
+}
+exports.TraceState = TraceState;
+//# sourceMappingURL=TraceState.js.map
+
+/***/ }),
+
+/***/ 39344:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.W3CTraceContextPropagator = exports.parseTraceParent = exports.TRACE_STATE_HEADER = exports.TRACE_PARENT_HEADER = void 0;
+const api_1 = __nccwpck_require__(65163);
+const suppress_tracing_1 = __nccwpck_require__(1761);
+const TraceState_1 = __nccwpck_require__(13837);
+exports.TRACE_PARENT_HEADER = 'traceparent';
+exports.TRACE_STATE_HEADER = 'tracestate';
+const VERSION = '00';
+const VERSION_PART = '(?!ff)[\\da-f]{2}';
+const TRACE_ID_PART = '(?![0]{32})[\\da-f]{32}';
+const PARENT_ID_PART = '(?![0]{16})[\\da-f]{16}';
+const FLAGS_PART = '[\\da-f]{2}';
+const TRACE_PARENT_REGEX = new RegExp(`^\\s?(${VERSION_PART})-(${TRACE_ID_PART})-(${PARENT_ID_PART})-(${FLAGS_PART})(-.*)?\\s?$`);
+/**
+ * Parses information from the [traceparent] span tag and converts it into {@link SpanContext}
+ * @param traceParent - A meta property that comes from server.
+ *     It should be dynamically generated server side to have the server's request trace Id,
+ *     a parent span Id that was set on the server's request span,
+ *     and the trace flags to indicate the server's sampling decision
+ *     (01 = sampled, 00 = not sampled).
+ *     for example: '{version}-{traceId}-{spanId}-{sampleDecision}'
+ *     For more information see {@link https://www.w3.org/TR/trace-context/}
+ */
+function parseTraceParent(traceParent) {
+    const match = TRACE_PARENT_REGEX.exec(traceParent);
+    if (!match)
+        return null;
+    // According to the specification the implementation should be compatible
+    // with future versions. If there are more parts, we only reject it if it's using version 00
+    // See https://www.w3.org/TR/trace-context/#versioning-of-traceparent
+    if (match[1] === '00' && match[5])
+        return null;
+    return {
+        traceId: match[2],
+        spanId: match[3],
+        traceFlags: parseInt(match[4], 16),
+    };
+}
+exports.parseTraceParent = parseTraceParent;
+/**
+ * Propagates {@link SpanContext} through Trace Context format propagation.
+ *
+ * Based on the Trace Context specification:
+ * https://www.w3.org/TR/trace-context/
+ */
+class W3CTraceContextPropagator {
+    inject(context, carrier, setter) {
+        const spanContext = api_1.trace.getSpanContext(context);
+        if (!spanContext ||
+            (0, suppress_tracing_1.isTracingSuppressed)(context) ||
+            !(0, api_1.isSpanContextValid)(spanContext))
+            return;
+        const traceParent = `${VERSION}-${spanContext.traceId}-${spanContext.spanId}-0${Number(spanContext.traceFlags || api_1.TraceFlags.NONE).toString(16)}`;
+        setter.set(carrier, exports.TRACE_PARENT_HEADER, traceParent);
+        if (spanContext.traceState) {
+            setter.set(carrier, exports.TRACE_STATE_HEADER, spanContext.traceState.serialize());
+        }
+    }
+    extract(context, carrier, getter) {
+        const traceParentHeader = getter.get(carrier, exports.TRACE_PARENT_HEADER);
+        if (!traceParentHeader)
+            return context;
+        const traceParent = Array.isArray(traceParentHeader)
+            ? traceParentHeader[0]
+            : traceParentHeader;
+        if (typeof traceParent !== 'string')
+            return context;
+        const spanContext = parseTraceParent(traceParent);
+        if (!spanContext)
+            return context;
+        spanContext.isRemote = true;
+        const traceStateHeader = getter.get(carrier, exports.TRACE_STATE_HEADER);
+        if (traceStateHeader) {
+            // If more than one `tracestate` header is found, we merge them into a
+            // single header.
+            const state = Array.isArray(traceStateHeader)
+                ? traceStateHeader.join(',')
+                : traceStateHeader;
+            spanContext.traceState = new TraceState_1.TraceState(typeof state === 'string' ? state : undefined);
+        }
+        return api_1.trace.setSpanContext(context, spanContext);
+    }
+    fields() {
+        return [exports.TRACE_PARENT_HEADER, exports.TRACE_STATE_HEADER];
+    }
+}
+exports.W3CTraceContextPropagator = W3CTraceContextPropagator;
+//# sourceMappingURL=W3CTraceContextPropagator.js.map
+
+/***/ }),
+
+/***/ 84727:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getRPCMetadata = exports.deleteRPCMetadata = exports.setRPCMetadata = exports.RPCType = void 0;
+const api_1 = __nccwpck_require__(65163);
+const RPC_METADATA_KEY = (0, api_1.createContextKey)('OpenTelemetry SDK Context Key RPC_METADATA');
+var RPCType;
+(function (RPCType) {
+    RPCType["HTTP"] = "http";
+})(RPCType = exports.RPCType || (exports.RPCType = {}));
+function setRPCMetadata(context, meta) {
+    return context.setValue(RPC_METADATA_KEY, meta);
+}
+exports.setRPCMetadata = setRPCMetadata;
+function deleteRPCMetadata(context) {
+    return context.deleteValue(RPC_METADATA_KEY);
+}
+exports.deleteRPCMetadata = deleteRPCMetadata;
+function getRPCMetadata(context) {
+    return context.getValue(RPC_METADATA_KEY);
+}
+exports.getRPCMetadata = getRPCMetadata;
+//# sourceMappingURL=rpc-metadata.js.map
+
+/***/ }),
+
+/***/ 11742:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOffSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples no traces. */
+class AlwaysOffSampler {
+    shouldSample() {
+        return {
+            decision: api_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return 'AlwaysOffSampler';
+    }
+}
+exports.AlwaysOffSampler = AlwaysOffSampler;
+//# sourceMappingURL=AlwaysOffSampler.js.map
+
+/***/ }),
+
+/***/ 30137:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AlwaysOnSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples all traces. */
+class AlwaysOnSampler {
+    shouldSample() {
+        return {
+            decision: api_1.SamplingDecision.RECORD_AND_SAMPLED,
+        };
+    }
+    toString() {
+        return 'AlwaysOnSampler';
+    }
+}
+exports.AlwaysOnSampler = AlwaysOnSampler;
+//# sourceMappingURL=AlwaysOnSampler.js.map
+
+/***/ }),
+
+/***/ 67801:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ParentBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+const global_error_handler_1 = __nccwpck_require__(54328);
+const AlwaysOffSampler_1 = __nccwpck_require__(11742);
+const AlwaysOnSampler_1 = __nccwpck_require__(30137);
+/**
+ * A composite sampler that either respects the parent span's sampling decision
+ * or delegates to `delegateSampler` for root spans.
+ */
+class ParentBasedSampler {
+    constructor(config) {
+        var _a, _b, _c, _d;
+        this._root = config.root;
+        if (!this._root) {
+            (0, global_error_handler_1.globalErrorHandler)(new Error('ParentBasedSampler must have a root sampler configured'));
+            this._root = new AlwaysOnSampler_1.AlwaysOnSampler();
+        }
+        this._remoteParentSampled =
+            (_a = config.remoteParentSampled) !== null && _a !== void 0 ? _a : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._remoteParentNotSampled =
+            (_b = config.remoteParentNotSampled) !== null && _b !== void 0 ? _b : new AlwaysOffSampler_1.AlwaysOffSampler();
+        this._localParentSampled =
+            (_c = config.localParentSampled) !== null && _c !== void 0 ? _c : new AlwaysOnSampler_1.AlwaysOnSampler();
+        this._localParentNotSampled =
+            (_d = config.localParentNotSampled) !== null && _d !== void 0 ? _d : new AlwaysOffSampler_1.AlwaysOffSampler();
+    }
+    shouldSample(context, traceId, spanName, spanKind, attributes, links) {
+        const parentContext = api_1.trace.getSpanContext(context);
+        if (!parentContext || !(0, api_1.isSpanContextValid)(parentContext)) {
+            return this._root.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.isRemote) {
+            if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+                return this._remoteParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+            }
+            return this._remoteParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        if (parentContext.traceFlags & api_1.TraceFlags.SAMPLED) {
+            return this._localParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+        }
+        return this._localParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+    }
+    toString() {
+        return `ParentBased{root=${this._root.toString()}, remoteParentSampled=${this._remoteParentSampled.toString()}, remoteParentNotSampled=${this._remoteParentNotSampled.toString()}, localParentSampled=${this._localParentSampled.toString()}, localParentNotSampled=${this._localParentNotSampled.toString()}}`;
+    }
+}
+exports.ParentBasedSampler = ParentBasedSampler;
+//# sourceMappingURL=ParentBasedSampler.js.map
+
+/***/ }),
+
+/***/ 12900:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TraceIdRatioBasedSampler = void 0;
+const api_1 = __nccwpck_require__(65163);
+/** Sampler that samples a given fraction of traces based of trace id deterministically. */
+class TraceIdRatioBasedSampler {
+    constructor(_ratio = 0) {
+        this._ratio = _ratio;
+        this._ratio = this._normalize(_ratio);
+        this._upperBound = Math.floor(this._ratio * 0xffffffff);
+    }
+    shouldSample(context, traceId) {
+        return {
+            decision: (0, api_1.isValidTraceId)(traceId) && this._accumulate(traceId) < this._upperBound
+                ? api_1.SamplingDecision.RECORD_AND_SAMPLED
+                : api_1.SamplingDecision.NOT_RECORD,
+        };
+    }
+    toString() {
+        return `TraceIdRatioBased{${this._ratio}}`;
+    }
+    _normalize(ratio) {
+        if (typeof ratio !== 'number' || isNaN(ratio))
+            return 0;
+        return ratio >= 1 ? 1 : ratio <= 0 ? 0 : ratio;
+    }
+    _accumulate(traceId) {
+        let accumulation = 0;
+        for (let i = 0; i < traceId.length / 8; i++) {
+            const pos = i * 8;
+            const part = parseInt(traceId.slice(pos, pos + 8), 16);
+            accumulation = (accumulation ^ part) >>> 0;
+        }
+        return accumulation;
+    }
+}
+exports.TraceIdRatioBasedSampler = TraceIdRatioBasedSampler;
+//# sourceMappingURL=TraceIdRatioBasedSampler.js.map
+
+/***/ }),
+
+/***/ 1761:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isTracingSuppressed = exports.unsuppressTracing = exports.suppressTracing = void 0;
+const api_1 = __nccwpck_require__(65163);
+const SUPPRESS_TRACING_KEY = (0, api_1.createContextKey)('OpenTelemetry SDK Context Key SUPPRESS_TRACING');
+function suppressTracing(context) {
+    return context.setValue(SUPPRESS_TRACING_KEY, true);
+}
+exports.suppressTracing = suppressTracing;
+function unsuppressTracing(context) {
+    return context.deleteValue(SUPPRESS_TRACING_KEY);
+}
+exports.unsuppressTracing = unsuppressTracing;
+function isTracingSuppressed(context) {
+    return context.getValue(SUPPRESS_TRACING_KEY) === true;
+}
+exports.isTracingSuppressed = isTracingSuppressed;
+//# sourceMappingURL=suppress-tracing.js.map
+
+/***/ }),
+
+/***/ 86119:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BindOnceFuture = void 0;
+const promise_1 = __nccwpck_require__(1491);
+/**
+ * Bind the callback and only invoke the callback once regardless how many times `BindOnceFuture.call` is invoked.
+ */
+class BindOnceFuture {
+    constructor(_callback, _that) {
+        this._callback = _callback;
+        this._that = _that;
+        this._isCalled = false;
+        this._deferred = new promise_1.Deferred();
+    }
+    get isCalled() {
+        return this._isCalled;
+    }
+    get promise() {
+        return this._deferred.promise;
+    }
+    call(...args) {
+        if (!this._isCalled) {
+            this._isCalled = true;
+            try {
+                Promise.resolve(this._callback.call(this._that, ...args))
+                    .then(val => this._deferred.resolve(val), err => this._deferred.reject(err));
+            }
+            catch (err) {
+                this._deferred.reject(err);
+            }
+        }
+        return this._deferred.promise;
+    }
+}
+exports.BindOnceFuture = BindOnceFuture;
+//# sourceMappingURL=callback.js.map
+
+/***/ }),
+
+/***/ 15017:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseEnvironment = exports.DEFAULT_ENVIRONMENT = exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = void 0;
+const api_1 = __nccwpck_require__(65163);
+const sampling_1 = __nccwpck_require__(30731);
+const DEFAULT_LIST_SEPARATOR = ',';
+/**
+ * Environment interface to define all names
+ */
+const ENVIRONMENT_NUMBERS_KEYS = [
+    'OTEL_BSP_EXPORT_TIMEOUT',
+    'OTEL_BSP_MAX_EXPORT_BATCH_SIZE',
+    'OTEL_BSP_MAX_QUEUE_SIZE',
+    'OTEL_BSP_SCHEDULE_DELAY',
+    'OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT',
+    'OTEL_ATTRIBUTE_COUNT_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT',
+    'OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT',
+    'OTEL_SPAN_EVENT_COUNT_LIMIT',
+    'OTEL_SPAN_LINK_COUNT_LIMIT',
+    'OTEL_EXPORTER_OTLP_TIMEOUT',
+    'OTEL_EXPORTER_OTLP_TRACES_TIMEOUT',
+    'OTEL_EXPORTER_OTLP_METRICS_TIMEOUT',
+    'OTEL_EXPORTER_JAEGER_AGENT_PORT',
+];
+function isEnvVarANumber(key) {
+    return (ENVIRONMENT_NUMBERS_KEYS.indexOf(key) > -1);
+}
+const ENVIRONMENT_LISTS_KEYS = [
+    'OTEL_NO_PATCH_MODULES',
+    'OTEL_PROPAGATORS',
+];
+function isEnvVarAList(key) {
+    return ENVIRONMENT_LISTS_KEYS.indexOf(key) > -1;
+}
+exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = Infinity;
+exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT = 128;
+/**
+ * Default environment variables
+ */
+exports.DEFAULT_ENVIRONMENT = {
+    CONTAINER_NAME: '',
+    ECS_CONTAINER_METADATA_URI_V4: '',
+    ECS_CONTAINER_METADATA_URI: '',
+    HOSTNAME: '',
+    KUBERNETES_SERVICE_HOST: '',
+    NAMESPACE: '',
+    OTEL_BSP_EXPORT_TIMEOUT: 30000,
+    OTEL_BSP_MAX_EXPORT_BATCH_SIZE: 512,
+    OTEL_BSP_MAX_QUEUE_SIZE: 2048,
+    OTEL_BSP_SCHEDULE_DELAY: 5000,
+    OTEL_EXPORTER_JAEGER_AGENT_HOST: '',
+    OTEL_EXPORTER_JAEGER_AGENT_PORT: 6832,
+    OTEL_EXPORTER_JAEGER_ENDPOINT: '',
+    OTEL_EXPORTER_JAEGER_PASSWORD: '',
+    OTEL_EXPORTER_JAEGER_USER: '',
+    OTEL_EXPORTER_OTLP_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: '',
+    OTEL_EXPORTER_OTLP_HEADERS: '',
+    OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',
+    OTEL_EXPORTER_OTLP_METRICS_HEADERS: '',
+    OTEL_EXPORTER_OTLP_TIMEOUT: 10000,
+    OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: 10000,
+    OTEL_EXPORTER_OTLP_METRICS_TIMEOUT: 10000,
+    OTEL_EXPORTER_ZIPKIN_ENDPOINT: 'http://localhost:9411/api/v2/spans',
+    OTEL_LOG_LEVEL: api_1.DiagLogLevel.INFO,
+    OTEL_NO_PATCH_MODULES: [],
+    OTEL_PROPAGATORS: ['tracecontext', 'baggage'],
+    OTEL_RESOURCE_ATTRIBUTES: '',
+    OTEL_SERVICE_NAME: '',
+    OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+    OTEL_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
+    OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT: exports.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
+    OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT: exports.DEFAULT_ATTRIBUTE_COUNT_LIMIT,
+    OTEL_SPAN_EVENT_COUNT_LIMIT: 128,
+    OTEL_SPAN_LINK_COUNT_LIMIT: 128,
+    OTEL_TRACES_EXPORTER: 'none',
+    OTEL_TRACES_SAMPLER: sampling_1.TracesSamplerValues.ParentBasedAlwaysOn,
+    OTEL_TRACES_SAMPLER_ARG: '',
+    OTEL_EXPORTER_OTLP_INSECURE: '',
+    OTEL_EXPORTER_OTLP_TRACES_INSECURE: '',
+    OTEL_EXPORTER_OTLP_METRICS_INSECURE: '',
+    OTEL_EXPORTER_OTLP_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_METRICS_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_METRICS_COMPRESSION: '',
+    OTEL_EXPORTER_OTLP_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_TRACES_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_METRICS_CLIENT_KEY: '',
+    OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_TRACES_CLIENT_CERTIFICATE: '',
+    OTEL_EXPORTER_OTLP_METRICS_CLIENT_CERTIFICATE: ''
+};
+/**
+ * Parses a variable as number with number validation
+ * @param name
+ * @param environment
+ * @param values
+ * @param min
+ * @param max
+ */
+function parseNumber(name, environment, values, min = -Infinity, max = Infinity) {
+    if (typeof values[name] !== 'undefined') {
+        const value = Number(values[name]);
+        if (!isNaN(value)) {
+            if (value < min) {
+                environment[name] = min;
+            }
+            else if (value > max) {
+                environment[name] = max;
+            }
+            else {
+                environment[name] = value;
+            }
+        }
+    }
+}
+/**
+ * Parses list-like strings from input into output.
+ * @param name
+ * @param environment
+ * @param values
+ * @param separator
+ */
+function parseStringList(name, output, input, separator = DEFAULT_LIST_SEPARATOR) {
+    const givenValue = input[name];
+    if (typeof givenValue === 'string') {
+        output[name] = givenValue.split(separator).map(v => v.trim());
+    }
+}
+// The support string -> DiagLogLevel mappings
+const logLevelMap = {
+    ALL: api_1.DiagLogLevel.ALL,
+    VERBOSE: api_1.DiagLogLevel.VERBOSE,
+    DEBUG: api_1.DiagLogLevel.DEBUG,
+    INFO: api_1.DiagLogLevel.INFO,
+    WARN: api_1.DiagLogLevel.WARN,
+    ERROR: api_1.DiagLogLevel.ERROR,
+    NONE: api_1.DiagLogLevel.NONE,
+};
+/**
+ * Environmentally sets log level if valid log level string is provided
+ * @param key
+ * @param environment
+ * @param values
+ */
+function setLogLevelFromEnv(key, environment, values) {
+    const value = values[key];
+    if (typeof value === 'string') {
+        const theLevel = logLevelMap[value.toUpperCase()];
+        if (theLevel != null) {
+            environment[key] = theLevel;
+        }
+    }
+}
+/**
+ * Parses environment values
+ * @param values
+ */
+function parseEnvironment(values) {
+    const environment = {};
+    for (const env in exports.DEFAULT_ENVIRONMENT) {
+        const key = env;
+        switch (key) {
+            case 'OTEL_LOG_LEVEL':
+                setLogLevelFromEnv(key, environment, values);
+                break;
+            default:
+                if (isEnvVarANumber(key)) {
+                    parseNumber(key, environment, values);
+                }
+                else if (isEnvVarAList(key)) {
+                    parseStringList(key, environment, values);
+                }
+                else {
+                    const value = values[key];
+                    if (typeof value !== 'undefined' && value !== null) {
+                        environment[key] = String(value);
+                    }
+                }
+        }
+    }
+    return environment;
+}
+exports.parseEnvironment = parseEnvironment;
+//# sourceMappingURL=environment.js.map
+
+/***/ }),
+
+/***/ 35449:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isPlainObject = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * based on lodash in order to support esm builds without esModuleInterop.
+ * lodash is using MIT License.
+ **/
+const objectTag = '[object Object]';
+const nullTag = '[object Null]';
+const undefinedTag = '[object Undefined]';
+const funcProto = Function.prototype;
+const funcToString = funcProto.toString;
+const objectCtorString = funcToString.call(Object);
+const getPrototype = overArg(Object.getPrototypeOf, Object);
+const objectProto = Object.prototype;
+const hasOwnProperty = objectProto.hasOwnProperty;
+const symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+const nativeObjectToString = objectProto.toString;
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+    return function (arg) {
+        return func(transform(arg));
+    };
+}
+/**
+ * Checks if `value` is a plain object, that is, an object created by the
+ * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.8.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * _.isPlainObject(new Foo);
+ * // => false
+ *
+ * _.isPlainObject([1, 2, 3]);
+ * // => false
+ *
+ * _.isPlainObject({ 'x': 0, 'y': 0 });
+ * // => true
+ *
+ * _.isPlainObject(Object.create(null));
+ * // => true
+ */
+function isPlainObject(value) {
+    if (!isObjectLike(value) || baseGetTag(value) !== objectTag) {
+        return false;
+    }
+    const proto = getPrototype(value);
+    if (proto === null) {
+        return true;
+    }
+    const Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+    return typeof Ctor == 'function' && Ctor instanceof Ctor &&
+        funcToString.call(Ctor) === objectCtorString;
+}
+exports.isPlainObject = isPlainObject;
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+}
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+    if (value == null) {
+        return value === undefined ? undefinedTag : nullTag;
+    }
+    return (symToStringTag && symToStringTag in Object(value))
+        ? getRawTag(value)
+        : objectToString(value);
+}
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+    const isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
+    let unmasked = false;
+    try {
+        value[symToStringTag] = undefined;
+        unmasked = true;
+    }
+    catch (e) {
+        // silence
+    }
+    const result = nativeObjectToString.call(value);
+    if (unmasked) {
+        if (isOwn) {
+            value[symToStringTag] = tag;
+        }
+        else {
+            delete value[symToStringTag];
+        }
+    }
+    return result;
+}
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+    return nativeObjectToString.call(value);
+}
+//# sourceMappingURL=lodash.merge.js.map
+
+/***/ }),
+
+/***/ 85841:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.merge = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const lodash_merge_1 = __nccwpck_require__(35449);
+const MAX_LEVEL = 20;
+/**
+ * Merges objects together
+ * @param args - objects / values to be merged
+ */
+function merge(...args) {
+    let result = args.shift();
+    const objects = new WeakMap();
+    while (args.length > 0) {
+        result = mergeTwoObjects(result, args.shift(), 0, objects);
+    }
+    return result;
+}
+exports.merge = merge;
+function takeValue(value) {
+    if (isArray(value)) {
+        return value.slice();
+    }
+    return value;
+}
+/**
+ * Merges two objects
+ * @param one - first object
+ * @param two - second object
+ * @param level - current deep level
+ * @param objects - objects holder that has been already referenced - to prevent
+ * cyclic dependency
+ */
+function mergeTwoObjects(one, two, level = 0, objects) {
+    let result;
+    if (level > MAX_LEVEL) {
+        return undefined;
+    }
+    level++;
+    if (isPrimitive(one) || isPrimitive(two) || isFunction(two)) {
+        result = takeValue(two);
+    }
+    else if (isArray(one)) {
+        result = one.slice();
+        if (isArray(two)) {
+            for (let i = 0, j = two.length; i < j; i++) {
+                result.push(takeValue(two[i]));
+            }
+        }
+        else if (isObject(two)) {
+            const keys = Object.keys(two);
+            for (let i = 0, j = keys.length; i < j; i++) {
+                const key = keys[i];
+                result[key] = takeValue(two[key]);
+            }
+        }
+    }
+    else if (isObject(one)) {
+        if (isObject(two)) {
+            if (!shouldMerge(one, two)) {
+                return two;
+            }
+            result = Object.assign({}, one);
+            const keys = Object.keys(two);
+            for (let i = 0, j = keys.length; i < j; i++) {
+                const key = keys[i];
+                const twoValue = two[key];
+                if (isPrimitive(twoValue)) {
+                    if (typeof twoValue === 'undefined') {
+                        delete result[key];
+                    }
+                    else {
+                        // result[key] = takeValue(twoValue);
+                        result[key] = twoValue;
+                    }
+                }
+                else {
+                    const obj1 = result[key];
+                    const obj2 = twoValue;
+                    if (wasObjectReferenced(one, key, objects) ||
+                        wasObjectReferenced(two, key, objects)) {
+                        delete result[key];
+                    }
+                    else {
+                        if (isObject(obj1) && isObject(obj2)) {
+                            const arr1 = objects.get(obj1) || [];
+                            const arr2 = objects.get(obj2) || [];
+                            arr1.push({ obj: one, key });
+                            arr2.push({ obj: two, key });
+                            objects.set(obj1, arr1);
+                            objects.set(obj2, arr2);
+                        }
+                        result[key] = mergeTwoObjects(result[key], twoValue, level, objects);
+                    }
+                }
+            }
+        }
+        else {
+            result = two;
+        }
+    }
+    return result;
+}
+/**
+ * Function to check if object has been already reference
+ * @param obj
+ * @param key
+ * @param objects
+ */
+function wasObjectReferenced(obj, key, objects) {
+    const arr = objects.get(obj[key]) || [];
+    for (let i = 0, j = arr.length; i < j; i++) {
+        const info = arr[i];
+        if (info.key === key && info.obj === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+function isArray(value) {
+    return Array.isArray(value);
+}
+function isFunction(value) {
+    return typeof value === 'function';
+}
+function isObject(value) {
+    return !isPrimitive(value) && !isArray(value) && !isFunction(value) && typeof value === 'object';
+}
+function isPrimitive(value) {
+    return typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean' ||
+        typeof value === 'undefined' ||
+        value instanceof Date ||
+        value instanceof RegExp ||
+        value === null;
+}
+function shouldMerge(one, two) {
+    if (!(0, lodash_merge_1.isPlainObject)(one) || !(0, lodash_merge_1.isPlainObject)(two)) {
+        return false;
+    }
+    return true;
+}
+//# sourceMappingURL=merge.js.map
+
+/***/ }),
+
+/***/ 1491:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Deferred = void 0;
+class Deferred {
+    constructor() {
+        this._promise = new Promise((resolve, reject) => {
+            this._resolve = resolve;
+            this._reject = reject;
+        });
+    }
+    get promise() {
+        return this._promise;
+    }
+    resolve(val) {
+        this._resolve(val);
+    }
+    reject(err) {
+        this._reject(err);
+    }
+}
+exports.Deferred = Deferred;
+//# sourceMappingURL=promise.js.map
+
+/***/ }),
+
+/***/ 30731:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TracesSamplerValues = void 0;
+var TracesSamplerValues;
+(function (TracesSamplerValues) {
+    TracesSamplerValues["AlwaysOff"] = "always_off";
+    TracesSamplerValues["AlwaysOn"] = "always_on";
+    TracesSamplerValues["ParentBasedAlwaysOff"] = "parentbased_always_off";
+    TracesSamplerValues["ParentBasedAlwaysOn"] = "parentbased_always_on";
+    TracesSamplerValues["ParentBasedTraceIdRatio"] = "parentbased_traceidratio";
+    TracesSamplerValues["TraceIdRatio"] = "traceidratio";
+})(TracesSamplerValues = exports.TracesSamplerValues || (exports.TracesSamplerValues = {}));
+//# sourceMappingURL=sampling.js.map
+
+/***/ }),
+
+/***/ 38966:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isUrlIgnored = exports.urlMatches = void 0;
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function urlMatches(url, urlToMatch) {
+    if (typeof urlToMatch === 'string') {
+        return url === urlToMatch;
+    }
+    else {
+        return !!url.match(urlToMatch);
+    }
+}
+exports.urlMatches = urlMatches;
+/**
+ * Check if {@param url} should be ignored when comparing against {@param ignoredUrls}
+ * @param url
+ * @param ignoredUrls
+ */
+function isUrlIgnored(url, ignoredUrls) {
+    if (!ignoredUrls) {
+        return false;
+    }
+    for (const ignoreUrl of ignoredUrls) {
+        if (urlMatches(url, ignoreUrl)) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isUrlIgnored = isUrlIgnored;
+//# sourceMappingURL=url.js.map
+
+/***/ }),
+
+/***/ 49625:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isWrapped = void 0;
+/**
+ * Checks if certain function has been already wrapped
+ * @param func
+ */
+function isWrapped(func) {
+    return (typeof func === 'function' &&
+        typeof func.__original === 'function' &&
+        typeof func.__unwrap === 'function' &&
+        func.__wrapped === true);
+}
+exports.isWrapped = isWrapped;
+//# sourceMappingURL=wrap.js.map
+
+/***/ }),
+
+/***/ 33802:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/*
+ * Copyright The OpenTelemetry Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.VERSION = void 0;
+// this is autogenerated file, see scripts/version-update.js
+exports.VERSION = '1.4.0';
+//# sourceMappingURL=version.js.map
 
 /***/ }),
 
