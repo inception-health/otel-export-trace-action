@@ -3,7 +3,7 @@ description: Exports Workflow Run Telemetry Trace over OLTP
 author: Inception Health
 
 runs:
-  using: node16
+  using: node20
   main: dist/index.js
 
 inputs:
