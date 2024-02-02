@@ -71,5 +71,8 @@
     "classNameTemplate": "{classname}",
     "includeConsoleOutput": "true",
     "reportTestSuiteErrors": "true"
+  },
+  "engines": {
+    "node": "^20"
   }
 }
