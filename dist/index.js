@@ -773,6 +773,7 @@ exports.createTracerProvider = void 0;
 const grpc = __importStar(__nccwpck_require__(7025));
 const sdk_trace_base_1 = __nccwpck_require__(29253);
 const exporter_trace_otlp_grpc_1 = __nccwpck_require__(60160);
+const exporter_trace_otlp_http_1 = __nccwpck_require__(35401);
 const semantic_conventions_1 = __nccwpck_require__(67275);
 const resources_1 = __nccwpck_require__(3871);
 const OTEL_CONSOLE_ONLY = process.env.OTEL_CONSOLE_ONLY === "true";
@@ -789,6 +790,9 @@ function stringToHeader(value) {
         // istanbul ignore next
         return result;
     }, {});
+}
+function isHttpEndpoint(endpoint) {
+    return endpoint.startsWith("http://") || endpoint.startsWith("https://");
 }
 function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs, otelServiceName) {
     const serviceName = otelServiceName ||
@@ -812,11 +816,19 @@ function createTracerProvider(otlpEndpoint, otlpHeaders, workflowRunJobs, otelSe
     });
     let exporter = new sdk_trace_base_1.ConsoleSpanExporter();
     if (!OTEL_CONSOLE_ONLY) {
-        exporter = new exporter_trace_otlp_grpc_1.OTLPTraceExporter({
-            url: otlpEndpoint,
-            credentials: grpc.credentials.createSsl(),
-            metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
-        });
+        if (isHttpEndpoint(otlpEndpoint)) {
+            exporter = new exporter_trace_otlp_http_1.OTLPTraceExporter({
+                url: otlpEndpoint,
+                headers: stringToHeader(otlpHeaders),
+            });
+        }
+        else {
+            exporter = new exporter_trace_otlp_grpc_1.OTLPTraceExporter({
+                url: otlpEndpoint,
+                credentials: grpc.credentials.createSsl(),
+                metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
+            });
+        }
     }
     provider.addSpanProcessor(new sdk_trace_base_1.SimpleSpanProcessor(exporter));
     provider.register();
