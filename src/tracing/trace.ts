@@ -6,6 +6,7 @@ import {
   SpanExporter,
 } from "@opentelemetry/sdk-trace-base";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
+import { OTLPTraceExporter as HttpOTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { WorkflowRunJobs } from "../github";
 import { Resource } from "@opentelemetry/resources";
@@ -27,6 +28,10 @@ function stringToHeader(value: string): StringDict {
     // istanbul ignore next
     return result;
   }, {});
+}
+
+function isHttpEndpoint(endpoint: string): boolean {
+  return endpoint.startsWith("http://") || endpoint.startsWith("https://");
 }
 
 export function createTracerProvider(
@@ -60,11 +65,18 @@ export function createTracerProvider(
   let exporter: SpanExporter = new ConsoleSpanExporter();
 
   if (!OTEL_CONSOLE_ONLY) {
-    exporter = new OTLPTraceExporter({
-      url: otlpEndpoint,
-      credentials: grpc.credentials.createSsl(),
-      metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
-    });
+    if (isHttpEndpoint(otlpEndpoint)) {
+      exporter = new HttpOTLPTraceExporter({
+        url: otlpEndpoint,
+        headers: stringToHeader(otlpHeaders),
+      });
+    } else {
+      exporter = new OTLPTraceExporter({
+        url: otlpEndpoint,
+        credentials: grpc.credentials.createSsl(),
+        metadata: grpc.Metadata.fromHttp2Headers(stringToHeader(otlpHeaders)),
+      });
+    }
   }
 
   provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
